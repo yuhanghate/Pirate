@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:visibility="invisible"
+            android:layout_height="80dp">
+
+        <View
+                android:background="#f2f2f2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            <TextView
+                    android:id="@+id/chapter_dir_tv"
+                    android:layout_width="match_parent"
+                    android:text="目录"
+                    android:textColor="@color/primary_text"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:textSize="17sp"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="match_parent"
+                    android:focusable="true"/>
+
+            <TextView
+                    android:id="@+id/content_background_tv"
+                    android:layout_width="match_parent"
+                    android:text="背景"
+                    android:textColor="@color/primary_text"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:textSize="17sp"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="match_parent"
+                    android:focusable="true"/>
+
+            <TextView
+                    android:id="@+id/font_tv"
+                    android:layout_width="match_parent"
+                    android:text="字体"
+                    android:textColor="@color/primary_text"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:textSize="17sp"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="match_parent"
+                    android:focusable="true"/>
+
+            <TextView
+                    android:id="@+id/chapter_progress_tv"
+                    android:layout_width="match_parent"
+                    android:text="进度"
+                    android:textColor="@color/primary_text"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:textSize="17sp"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="match_parent"
+                    android:focusable="true"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

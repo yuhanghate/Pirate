@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_cl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <View
+                android:id="@+id/head_v"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <View
+                android:id="@+id/footer_v"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+
+            <com.yuhang.novel.pirate.widget.pageview.TextPagerView
+                android:id="@+id/text_page"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.yuhang.novel.pirate.widget.pageview.TextPagerView>
+
+            <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/head_v">
+
+                <ezy.ui.layout.LoadingLayout
+                    android:id="@+id/loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#F6EFDD"
+                    app:llErrorImage="@drawable/ic_page_error"
+                    app:llErrorText="内容加载失败">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/item_read_book" />
+                </ezy.ui.layout.LoadingLayout>
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/footer_v"
+                app:layout_constraintTop_toTopOf="@+id/head_v">
+
+                <View
+                    android:id="@+id/bg_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#66000000"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/layout_top"
+                    layout="@layout/layout_read_book_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_alignParentTop="true" />
+
+
+                <include
+                    android:id="@+id/layout_button"
+                    layout="@layout/layout_read_book_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_alignParentBottom="true" />
+
+
+            </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@+id/footer_v"
+            android:layout_gravity="start"
+            android:tag="START">
+
+
+            <fragment
+                android:id="@+id/fg_left_menu"
+                android:name="com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:tag="LEFT"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout="@layout/fragment_drawerlayout_left" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>

@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+
+
+android {
+    compileSdkVersion 29
+//    buildToolsVersion rootProject.ext.buildToolsVersion
+
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
+
+
+}
+

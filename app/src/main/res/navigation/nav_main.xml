@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_main"
+            app:startDestination="@id/mainFragment"
+            tools:ignore="UnusedNavigation">
+
+    <fragment android:id="@+id/mainFragment" android:name="com.yuhang.novel.pirate.ui.main.fragment.MainFragment"
+              tools:layout="@layout/fragment_main"
+              android:label="MainFragment">
+        <action android:id="@+id/action_mainFragment_to_storeFragment" app:destination="@id/storeFragment"/>
+    </fragment>
+    <fragment android:id="@+id/storeFragment" android:name="com.yuhang.novel.pirate.ui.main.fragment.StoreFragment"
+              tools:layout="@layout/fragment_sotre"
+              android:label="StoreFragment">
+        <action android:id="@+id/action_storeFragment_to_meFragment" app:destination="@id/meFragment"/>
+    </fragment>
+    <fragment android:id="@+id/meFragment" android:name="com.yuhang.novel.pirate.ui.main.fragment.MeFragment"
+              tools:layout="@layout/fragment_me"
+              android:label="MeFragment">
+        <action android:id="@+id/action_meFragment_to_storeFragment" app:destination="@id/storeFragment"/>
+    </fragment>
+</navigation>

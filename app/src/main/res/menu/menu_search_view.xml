@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_location"
+        android:title="站内"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_taxi"
+        android:title="追书"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_change_colors"
+        android:title="宜搜"
+        android:orderInCategory="4"
+        app:showAsAction="never"/>
+</menu>

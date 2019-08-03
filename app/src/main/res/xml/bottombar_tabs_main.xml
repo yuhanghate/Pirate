@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_main"
+        icon="@drawable/ic_tab_main_normal"
+        title="主页" />
+    <tab
+        id="@+id/tab_store"
+        icon="@drawable/ic_tab_store_normal"
+        title="书城" />
+    <tab
+        id="@+id/tab_me"
+        icon="@drawable/ic_tab_me_normal"
+        title="我的" />
+</tabs>
