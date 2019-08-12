@@ -21,7 +21,8 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
  * @author yuhang
  */
 @Database(entities = {BookInfoKSEntity.class, AuthorBookKSEntity.class, BookCollectionKSEntity.class,
-        SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class, BookReadHistoryEntity.class}, version = 5, exportSchema = false)
+        SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
+        BookReadHistoryEntity.class, UserEntity.class}, version = 5, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -84,6 +85,12 @@ public abstract class AppDatabase
      * @return
      */
     public abstract BookReadHistoryKSDao getBookReadHistoryKSDao();
+
+    /**
+     * 用户名
+     * @return
+     */
+    public abstract  UserDao getUserDao();
 
 
 }

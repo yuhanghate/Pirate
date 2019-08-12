@@ -12,10 +12,15 @@ object NetURL {
 
 
     //后台API调用接口
-    private const val HOST_DEVELOP = "http://212.129.142.66:2050/"
+    private const val HOST_DEVELOP = "http://47.97.41.233:8088/"
     private const val HOST_MASTER = "http://zhanxin.nbmankan.com/"
     private const val HOST_QA = "http://47.100.216.212:3000/mock/17/"
     private const val HOST_STAGE = "http://47.100.216.212:3000/mock/17/"
+
+    /**
+     * 资源文件
+     */
+    val HOST_RESOUCE = "http://47.97.41.233:8090"
 
     val HOST :String by lazy {
         when (type) {

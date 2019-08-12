@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
-import android.os.SystemClock
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -22,15 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
-import com.gyb.live.mitang.extension.niceToast
+import com.yuhang.novel.pirate.extension.niceToast
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
-import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
-import com.yuhang.novel.pirate.eventbus.CollectionEvent
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
@@ -42,10 +39,8 @@ import com.yuhang.novel.pirate.viewholder.ItemReadBookVH
 import com.yuhang.novel.pirate.widget.OnScrollListener
 import com.yuhang.novel.pirate.widget.ReadBookTextView
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
-import org.greenrobot.eventbus.EventBus
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
-import kotlin.math.log
 
 
 /**

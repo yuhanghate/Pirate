@@ -13,7 +13,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
 
-
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
     override fun onLayoutId(): Int {
@@ -77,13 +76,12 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     }
 
 
-
     /**
      * 延迟3秒钟, 10分钟更新一次章节目录
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        Flowable.interval(3, 60 * 10,  TimeUnit.SECONDS)
+        Flowable.interval(3, 60 * 10, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .subscribe({ mViewModel.updateChapterToDB() }, {
                     Logger.i("")
@@ -102,5 +100,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     fun onEvent(obj: UpdateChapterEvent) {
         mViewModel.updateChapterToDB()
     }
+
 
 }

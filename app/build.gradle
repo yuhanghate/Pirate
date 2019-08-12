@@ -179,11 +179,18 @@ dependencies {
     implementation 'com.quinn.hunter:hunter-debug-library:0.9.6'
 
 
-    implementation 'com.github.markzhai:blockcanary-android:1.5.0'
+//    implementation 'com.github.markzhai:blockcanary-android:1.5.0'
 
     // 仅在dIebug包启用BlockCanary进行卡顿监控和提示的话，可以这么用
     debugImplementation 'com.github.markzhai:blockcanary-android:1.5.0'
     releaseImplementation 'com.github.markzhai:blockcanary-no-op:1.5.0'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
+
+    //Toast样式
+    implementation 'com.github.sephiroth74:android-target-tooltip:2.0.4'
+
+    //基础工具库
+    implementation "com.github.tamsiree.RxTool:RxKit:2.3.9"
+    implementation 'com.lzy.net:okgo:3.0.4'
 }

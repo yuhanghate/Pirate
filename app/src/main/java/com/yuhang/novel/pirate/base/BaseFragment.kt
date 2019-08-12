@@ -25,7 +25,7 @@ import java.lang.reflect.ParameterizedType
 
 abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragment(), LifecycleProvider<FragmentEvent> {
 
-  var mActivity: AppCompatActivity? = null
+  var mActivity: BaseActivity<*,*>? = null
 
   lateinit var mBinding: D
 
@@ -87,7 +87,7 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
    */
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    mActivity = context as AppCompatActivity
+    mActivity = context as BaseActivity<*, *>
   }
 
   /**

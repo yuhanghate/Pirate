@@ -1,35 +1,44 @@
 package com.yuhang.novel.pirate.repository.database.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity
-data class UserEntity(
-        @PrimaryKey(autoGenerate = true)
-        var id: Int = 0,
+class UserEntity {
+    /**
+     * 用户id
+     */
+    @PrimaryKey(autoGenerate = false)
+    var uid: String = ""
 
-        @ColumnInfo(name = "access_token")
-        var accessToken: String = "",
+    /**
+     * 昵称
+     */
+    var username: String = ""
 
-        @ColumnInfo(name = "refresh_token")
-        var refreshToken: String = "",
+    /**
+     * 性别
+     */
+    var gender: String = ""
 
-        @ColumnInfo(name = "nickname")
-        var nickname: String = "",
+    /**
+     * 邮箱
+     */
+    var email: String = ""
 
-        var uid: String = "",
+    /**
+     * 手机号
+     */
+    var tel: String = ""
 
-        var gender: String = "",
-        /**
-         * 云信id
-         */
-        @ColumnInfo(name = "imId")
-        var imId: String = "",
+    /**
+     * 令牌
+     */
+    var token :String = ""
 
-        /**
-         * 云信token
-         */
-        @ColumnInfo(name = "imToken")
-        var imToken: String = ""
-)
+    /**
+     * 最后登陆时间
+     */
+    var lastTime:Date  = Date()
+}

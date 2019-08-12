@@ -123,7 +123,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 打开进度等待条
      */
-    fun startProgressbar(message:String = "加载中") {
+    fun showProgressbar(message:String = "加载中") {
         if (!::mProgressbar.isInitialized) {
             mProgressbar = ProgressDialog(this)
         }

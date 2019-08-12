@@ -2,15 +2,18 @@ package com.yuhang.novel.pirate.repository
 
 import android.content.Context
 import com.google.gson.Gson
-import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
+import com.yuhang.novel.pirate.extension.niceBody
 import com.yuhang.novel.pirate.extension.niceDir
 import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.CollectionResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import io.reactivex.Flowable
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -59,7 +62,6 @@ class DataRepository(val context: Context) {
     /**
      * 书本详情
      */
-    @HunterDebug
     fun getBookDetails(id: Int): Flowable<BookDetailsResult> {
         return getKSNetApi().getBookDetails(dirId = niceDir(id), bookId = id)
     }
@@ -67,20 +69,18 @@ class DataRepository(val context: Context) {
     /**
      * 书本章节目录
      */
-    @HunterDebug
     fun getBookChapterList(id: Int): Flowable<ChapterListResult> {
         //返回的格式第二条数据是空的,单独进行处理
         return getKSNetApi().getBookChapterList(dirId = niceDir(id), bookId = id).map { it.replace("},]}}", "}]}}") }
-                .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
+            .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
 
     /**
      * 获取章节内容
      */
-    @HunterDebug
     fun getChapterContent(
-            bookid: Int,
-            chapterid: Int
+        bookid: Int,
+        chapterid: Int
     ): Flowable<ContentResult> {
         return getKSNetApi().getChapterContent(niceDir(bookid), bookid, chapterid)
     }
@@ -89,8 +89,8 @@ class DataRepository(val context: Context) {
      * 下载章节内容
      */
     fun downloadChapterContent(
-            bookid: Int,
-            chapterid: Int
+        bookid: Int,
+        chapterid: Int
     ): Flowable<ContentResult> {
         return getKSNetApi().downloadChapterContent(niceDir(bookid), bookid, chapterid)
     }
@@ -105,7 +105,6 @@ class DataRepository(val context: Context) {
     /**
      * 查询数据库书籍章节
      */
-    @HunterDebug
     fun queryChapterObjList(bookid: Int): List<BookChapterKSEntity> {
         return mDatabase.bookChapterKSDao.queryObj(bookid)
     }
@@ -113,7 +112,6 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库书籍章节
      */
-    @HunterDebug
     fun insertChapterList(list: List<BookChapterKSEntity>) {
         mDatabase.bookChapterKSDao.insert(list)
     }
@@ -121,7 +119,6 @@ class DataRepository(val context: Context) {
     /**
      * 删除数据库书籍对应的章节列表
      */
-    @HunterDebug
     fun deleteChapterList(bookid: Int) {
         mDatabase.bookChapterKSDao.delete(bookid)
     }
@@ -129,7 +126,6 @@ class DataRepository(val context: Context) {
     /**
      * 从数据库查询当前id对应的书籍信息
      */
-    @HunterDebug
     fun queryBookInfo(bookid: Int): BookInfoKSEntity? {
         return mDatabase.bookInfoKSDao.query(bookid)
     }
@@ -137,7 +133,6 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库书籍信息
      */
-    @HunterDebug
     fun insertBookInfo(obj: BookInfoKSEntity) {
         mDatabase.bookInfoKSDao.insert(obj)
     }
@@ -145,7 +140,6 @@ class DataRepository(val context: Context) {
     /**
      * 更新数据库书籍信息
      */
-    @HunterDebug
     fun updateBookInfo(obj: BookInfoKSEntity) {
         mDatabase.bookInfoKSDao.update(obj)
     }
@@ -153,7 +147,6 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    @HunterDebug
     fun queryBookContent(bookid: Int, chapterid: Int): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }
@@ -161,7 +154,6 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库章节内容
      */
-    @HunterDebug
     @Synchronized
     fun insertBookContent(obj: BookContentKSEntity) {
         val contentObj = queryBookContentObj(obj.bookId, obj.chapterId)
@@ -176,7 +168,6 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    @HunterDebug
     fun queryBookContentObj(bookid: Int, chapterid: Int): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.queryObj(bookid, chapterid)
     }
@@ -185,7 +176,6 @@ class DataRepository(val context: Context) {
     /**
      * 查询搜索记录记录
      */
-    @HunterDebug
     fun querySearchHistoryList(): List<SearchHistoryKSEntity?> {
         return mDatabase.searchHistoryKSDao.query()
     }
@@ -193,7 +183,6 @@ class DataRepository(val context: Context) {
     /**
      * 插入历史记录
      */
-    @HunterDebug
     fun insertSearchHistory(obj: SearchHistoryKSEntity) {
         return mDatabase.searchHistoryKSDao.insert(obj)
     }
@@ -201,7 +190,6 @@ class DataRepository(val context: Context) {
     /**
      * 删除历史记录
      */
-    @HunterDebug
     fun deleteSearchHistory(obj: SearchHistoryKSEntity) {
         return mDatabase.searchHistoryKSDao.delete(obj)
     }
@@ -209,7 +197,6 @@ class DataRepository(val context: Context) {
     /**
      * 搜索历史记录
      */
-    @HunterDebug
     fun querySearchHisotry(keyword: String): SearchHistoryKSEntity? {
         return mDatabase.searchHistoryKSDao.query(keyword)
     }
@@ -217,21 +204,19 @@ class DataRepository(val context: Context) {
     /**
      * 收藏书籍
      */
-    @HunterDebug
     fun insertCollection(bookid: Int) {
 
         mDatabase.bookCollectionKSDao.insert(
-                BookCollectionKSEntity(
-                        bookid = bookid,
-                        time = System.currentTimeMillis() / 1000
-                )
+            BookCollectionKSEntity(
+                bookid = bookid,
+                time = System.currentTimeMillis() / 1000
+            )
         )
     }
 
     /**
      * 查询书箱
      */
-    @HunterDebug
     fun queryCollection(bookid: Int): BookCollectionKSEntity? {
         return mDatabase.bookCollectionKSDao.query(bookid)
 
@@ -240,7 +225,6 @@ class DataRepository(val context: Context) {
     /**
      * 查询所有收藏的书箱
      */
-    @HunterDebug
     fun queryCollectionAll(): List<BookCollectionKSEntity?> {
         return mDatabase.bookCollectionKSDao.queryAll()
     }
@@ -248,7 +232,6 @@ class DataRepository(val context: Context) {
     /**
      * 删除收藏
      */
-    @HunterDebug
     fun deleteCollection(bookid: Int) {
         mDatabase.bookCollectionKSDao.delete(bookid)
     }
@@ -263,7 +246,6 @@ class DataRepository(val context: Context) {
     /**
      * 更新置顶时间戳
      */
-    @HunterDebug
     fun updateBookInfoStickTime(bookid: Int) {
         mDatabase.bookInfoKSDao.update(System.currentTimeMillis() / 1000, bookid)
         val query = mDatabase.bookInfoKSDao.query(bookid)
@@ -273,7 +255,6 @@ class DataRepository(val context: Context) {
     /**
      * 查询所有收藏的书箱信息
      */
-    @HunterDebug
     fun queryBookInfoAll(): List<BookInfoKSEntity?> {
         return mDatabase.bookInfoKSDao.queryCollectionAll()
     }
@@ -282,7 +263,6 @@ class DataRepository(val context: Context) {
     /**
      * 排行榜
      */
-    @HunterDebug
     fun getRankingList(gender: String, type: String, date: String, pageNum: Int): Flowable<RankingListResult> {
         return getKSNetApi().getRankingList(gender, type, date, pageNum)
     }
@@ -290,7 +270,6 @@ class DataRepository(val context: Context) {
     /**
      * 获取最近浏览的小说
      */
-    @HunterDebug
     fun queryReadHistoryList(pageNum: Int): List<BookInfoKSEntity?> {
         return getDatabase().bookInfoKSDao.queryReadHistoryList(pageNum)
     }
@@ -298,19 +277,17 @@ class DataRepository(val context: Context) {
     /**
      * 更新最后一次打开的时间和内容角标
      */
-    @HunterDebug
     fun updateLastOpenContent(chapterid: Int, lastContentPosition: Int) {
         getDatabase().bookContentKSDao.updateLastOpenContent(
-                chapterid,
-                Date(),
-                lastContentPosition
+            chapterid,
+            Date(),
+            lastContentPosition
         )
     }
 
     /**
      * 根据小说id查询最近阅读章节
      */
-    @HunterDebug
     fun queryLastOpenChapter(bookid: Int): BookContentKSEntity? {
         return getDatabase().bookContentKSDao.queryLastOpenChapter(bookid)
     }
@@ -318,7 +295,6 @@ class DataRepository(val context: Context) {
     /**
      * 获取第一章节id
      */
-    @HunterDebug
     fun queryFirstChapterid(bookid: Int): Int {
         return getDatabase().bookChapterKSDao.queryFirstChapterid(bookid)
     }
@@ -326,7 +302,6 @@ class DataRepository(val context: Context) {
     /**
      * 是否显示更新标签
      */
-    @HunterDebug
     fun isShowUpdateLable(): Int {
         return getDatabase().bookContentKSDao.isShowUpdateLable()
     }
@@ -343,5 +318,91 @@ class DataRepository(val context: Context) {
      */
     fun queryTimeAndChapterid(bookid: Int): List<BookContentKSEntity?> {
         return getDatabase().bookContentKSDao.queryTimeAndChapterid(bookid)
+    }
+
+    /**
+     * 登陆
+     */
+    fun login(username: String, password: String):Flowable<UserResult> {
+        val map = hashMapOf<String, String>("username" to username, "password" to password)
+        return getNetApi().login(niceBody(map))
+    }
+
+    /**
+     * 注册
+     */
+    fun register(username: String, password: String, email: String) :Flowable<UserResult>{
+        val map = hashMapOf<String, String>("username" to username, "password" to password, "email" to email)
+        return getNetApi().register(niceBody(map))
+    }
+
+    /**
+     * 添加收藏
+     */
+    fun addCollection(
+        bookName: String, bookid: String, author: String, conver: String,
+        description: String, bookStatus: String, classifyName: String, resouceType: String
+    ) :Flowable<StatusResult>{
+        val map = hashMapOf<String, String>(
+            "bookName" to bookName,
+            "bookid" to bookid,
+            "author" to author,
+            "conver" to conver,
+            "description" to description,
+            "bookStatus" to bookStatus,
+            "classifyName" to classifyName,
+            "resouceType" to resouceType
+        )
+
+        return getNetApi().addCollection(niceBody(map))
+    }
+
+    /**
+     * 获取收藏列表
+     */
+    fun getCollectionList(pageNum: Int): Flowable<CollectionResult> {
+        return getNetApi().getCollectionList(pageNum, pageSize = 30)
+    }
+
+    /**
+     * 检测版本号
+     */
+    fun checkVersion(versionName: String): Flowable<VersionResult> {
+        return getNetApi().checkVersion(versionName)
+    }
+
+    /**
+     * 查找最后一次登陆帐号
+     */
+    fun getLastUser(): UserEntity? {
+        return getDatabase().userDao.queryUser()
+    }
+
+    /**
+     * 插入一条帐号
+     */
+    fun insert(userEntity: UserEntity) {
+        getDatabase().userDao.insert(userEntity)
+    }
+
+    /**
+     * 修改最后登陆时间
+     */
+    fun updateUserLastTime(uid: String) {
+        getDatabase().userDao.updateLastTime(uid, Date())
+    }
+
+    /**
+     * 删除用户
+     */
+    fun deleteUser(userEntity: UserEntity) {
+        getDatabase().userDao.delete(userEntity)
+    }
+
+    /**
+     * 根据uid查询
+     */
+    fun queryUser(username: String): UserEntity? {
+        return getDatabase().userDao.queryUser(username)
     }
 }

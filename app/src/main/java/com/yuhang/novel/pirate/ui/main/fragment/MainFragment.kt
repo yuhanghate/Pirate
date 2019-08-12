@@ -12,15 +12,13 @@ import androidx.appcompat.widget.PopupMenu
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
-import com.gyb.live.mitang.extension.niceToast
+import com.yuhang.novel.pirate.extension.niceToast
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
-import com.yuhang.novel.pirate.eventbus.CollectionEvent
-import com.yuhang.novel.pirate.eventbus.UpdateReadHistoryEvent
 import com.yuhang.novel.pirate.extension.findNavController
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -33,8 +31,6 @@ import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import com.yuhang.novel.pirate.viewholder.ItemMainVH
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 
 /**

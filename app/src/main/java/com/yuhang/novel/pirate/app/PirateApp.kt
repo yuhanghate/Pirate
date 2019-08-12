@@ -3,13 +3,9 @@ package com.yuhang.novel.pirate.app
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.os.StrictMode.VmPolicy
 import android.text.TextUtils
-import androidx.annotation.RequiresApi
-import com.github.moduth.blockcanary.BlockCanary
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -20,8 +16,6 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
-
-
 
 
 
@@ -60,25 +54,26 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         PreferenceUtil.init(this)
         initRefreshLayout()
         initLog()
-        BlockCanary.install(this, AppContext()).start()
 
         // 分别为MainThread和VM设置Strict Mode
-//        if (BuildConfig.DEBUG) {
-//            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-//                    .detectDiskReads()
-//                    .detectDiskWrites()
-//                    .detectAll()   // or .detectAll() for all detectable problems
-//                    .penaltyLog()
-//                    .build())
-//
-//            StrictMode.setVmPolicy(VmPolicy.Builder()
-//                    .detectLeakedSqlLiteObjects()
-//                    .detectLeakedClosableObjects()
-//                    .penaltyLog()
-//                    .penaltyDeath()
-//                    .build())
-//
-//        }
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectAll()   // or .detectAll() for all detectable problems
+                    .penaltyLog()
+                    .build())
+
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build())
+
+        }
+
     }
 
     /**
