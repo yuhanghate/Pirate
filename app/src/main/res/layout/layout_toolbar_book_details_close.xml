@@ -4,7 +4,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/md_white_1000"
+        android:background="@color/item_color"
         android:orientation="vertical">
 
         <ImageView
@@ -26,7 +26,7 @@
             android:lines="1"
             android:maxLength="10"
             android:text="凡人修仙传"
-            android:textColor="#333333"
+            android:textColor="@color/primary_text"
             android:textSize="17sp"
             android:visibility="visible" />
 

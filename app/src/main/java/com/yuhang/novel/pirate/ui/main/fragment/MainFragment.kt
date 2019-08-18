@@ -9,17 +9,20 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
-import com.yuhang.novel.pirate.extension.niceToast
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
+import com.yuhang.novel.pirate.eventbus.LoginEvent
+import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.extension.findNavController
+import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
@@ -30,7 +33,8 @@ import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
-import com.yuhang.novel.pirate.viewholder.ItemMainVH
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 /**
@@ -38,8 +42,16 @@ import com.yuhang.novel.pirate.viewholder.ItemMainVH
  */
 @SuppressLint("CheckResult")
 class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefreshLoadMoreListener,
-    OnClickItemMoreListener, OnClickItemLongListener, OnClickItemListener, PopupMenu.OnMenuItemClickListener {
+        OnClickItemMoreListener, OnClickItemLongListener, OnClickItemListener, PopupMenu.OnMenuItemClickListener {
 
+    var isLogin = false
+
+
+    companion object {
+        fun newInstance(): MainFragment {
+            return MainFragment()
+        }
+    }
 
     override fun onLayoutId(): Int {
         return R.layout.fragment_main
@@ -51,13 +63,30 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         netLocalData()
     }
 
+    override fun onDestroyView() {
+        onDestryEventbus(this)
+        super.onDestroyView()
+    }
 
     override fun initView() {
         super.initView()
+        onCreateEventbus(this)
         initRecyclerView()
         initRefreshLayout()
         onClick()
         netData()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+
+            if (isLogin) {
+                isLogin = false
+                netLocalData()
+            }
+
+        }
     }
 
 
@@ -75,9 +104,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun initRecyclerView() {
         super.initRecyclerView()
         mViewModel.adapter
-            .setDecorationMargin(20f)
-            .setListener(this)
-            .setRecyclerView(mBinding.recyclerView)
+                .setDecorationMargin(20f)
+                .setListener(this)
+                .setlayoutManager(null)
+                .setDecorationColor(ContextCompat.getColor(mActivity!!, R.color.list_divider_color))
+                .setRecyclerView(mBinding.recyclerView)
     }
 
 
@@ -87,7 +118,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     private fun onClick() {
         mBinding.mainBtn.setOnClickListener {
             findNavController().navigate(
-                R.id.storeFragment, null, getNavOptions()
+                    R.id.storeFragment, null, getNavOptions()
             )
         }
         mBinding.btnMore.setOnClickListener { showPopupMenu(mBinding.btnMore, R.menu.menu_main, itemListener = this) }
@@ -105,8 +136,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * Item长按事件
      */
     override fun onClickItemLongListener(
-        view: View,
-        position: Int
+            view: View,
+            position: Int
     ) {
         val bookInfoKSEntity = mViewModel.adapter.getObj(position)
         val myItems = listOf("书籍详情", "目录书摘", "删除", "置顶")
@@ -203,21 +234,21 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     private fun netLocalData() {
         mViewModel.getBookInfoListLocal()
-            .subscribe({
-                mBinding.loading.showContent()
-                mBinding.refreshLayout.finishRefresh()
-                mBinding.refreshLayout.setEnableLoadMore(false)
+                .subscribe({
+                    mBinding.loading.showContent()
+                    mBinding.refreshLayout.finishRefresh()
+                    mBinding.refreshLayout.setEnableLoadMore(false)
 
-                val list = arrayListOf<BookInfoKSEntity>()
-                it.filterNotNull().forEach { list.add(it) }
-                mViewModel.adapter.setRefersh(list)
+                    val list = arrayListOf<BookInfoKSEntity>()
+                    it.filterNotNull().forEach { list.add(it) }
+                    mViewModel.adapter.setRefersh(list)
 
 //                showNewUpdateLabel()
-            }, {
-                mBinding.loading.showContent()
-                mViewModel.adapter.setRefersh(arrayListOf())
-                mBinding.refreshLayout.finishRefresh(false)
-            })
+                }, {
+                    mBinding.loading.showContent()
+                    mViewModel.adapter.setRefersh(arrayListOf())
+                    mBinding.refreshLayout.finishRefresh(false)
+                })
     }
 
     /**
@@ -227,56 +258,31 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     private fun netServiceData() {
         val list = arrayListOf<BookInfoKSEntity>()
         mViewModel.getBookDetailsList()
-            .compose(bindToLifecycle())
-            .subscribe({
-                it?.let { list.add(it) }
-            }, {
-                mBinding.loading.showContent()
-                mViewModel.adapter.setRefersh(list)
-                mBinding.refreshLayout.finishRefresh(false)
-            }, {
+                .compose(bindToLifecycle())
+                .subscribe({
+                    it?.let { list.add(it) }
+                }, {
+                    mBinding.loading.showContent()
+                    mViewModel.adapter.setRefersh(list)
+                    mBinding.refreshLayout.finishRefresh(false)
+                }, {
 
-                netLocalData()
-                PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
-            })
+                    netLocalData()
+                    PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
+                })
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(obj: LogoutEvent) {
+//        netLocalData()
     }
 
     /**
-     * 显示更新标签
+     * 登陆成功回调
      */
-    private fun showNewUpdateLabel() {
-        mViewModel.adapter.getList().forEachIndexed { index, bookInfoKSEntity ->
-            val bookid = bookInfoKSEntity.bookid
-            val chapterId = bookInfoKSEntity.lastChapterId
-            val childAt = mBinding.recyclerView.getChildAt(index) ?: return@forEachIndexed
-            val viewHolder = mBinding.recyclerView.getChildViewHolder(childAt) as? ItemMainVH
-//            mViewModel.isShowNewLabel(bookid, chapterId)
-//                .compose(bindToLifecycle())
-//                .subscribe({
-//                                            viewHolder?.mBinding?.imageIv?.isLabelVisual = it
-////                    bookInfoKSEntity.isShowLabel = it
-//
-//                }, {}, { mViewModel.adapter.notifyDataSetChanged() })
-
-        }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(obj: LoginEvent) {
+        isLogin = true
     }
 
-//    /**
-//     * 加入书架/移除书架
-//     */
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun onEvent(obj: CollectionEvent) {
-//        //刷新界面
-//        isRefresh = true
-//
-//    }
-//
-//    /**
-//     * '更新'标签显示状态
-//     */
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun onEvent(obj: UpdateReadHistoryEvent) {
-//        netLocalData()
-//    }
 }

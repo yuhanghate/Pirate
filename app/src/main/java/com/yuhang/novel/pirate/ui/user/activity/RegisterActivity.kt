@@ -56,6 +56,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 .compose(bindToLifecycle())
                 .subscribe({
                     if (it.code == 200) {
+                        mViewModel.saveAccount(it)
                         AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
                         onBackPressed()
                     }

@@ -1,17 +1,17 @@
 package com.yuhang.novel.pirate.base
 
-import android.graphics.Color
 import android.view.SoundEffectConstants
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
-import com.yuhang.novel.pirate.app.PirateApp
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
+import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
 
 abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, ViewDataBinding>>() {
@@ -25,12 +25,13 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
     /**
      * 分隔线高度
      */
-    private var mDecorationSize:Int  = 2
+    private var mDecorationSize: Int = 2
 
     /**
      * 分隔线颜色
      */
-    private var mdecorationColor = Color.parseColor("#F2F2F2")
+    @ColorInt
+    private var mdecorationColor = -1
 
     /**
      * 分隔线左右间距
@@ -86,7 +87,7 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
         return this
     }
 
-    fun setlayoutManager(layoutManager: RecyclerView.LayoutManager): BaseAdapter<T> {
+    fun setlayoutManager(layoutManager: RecyclerView.LayoutManager?): BaseAdapter<T> {
         this.layoutManager = layoutManager
         return this
     }
@@ -106,7 +107,7 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
      * 下拉刷新
      */
     fun setRefersh(list: List<T>) {
-        if (list.isEmpty()) return
+//        if (list.isEmpty()) return
         mList.clear()
         mList.addAll(list)
         notifyDataSetChanged()
@@ -127,12 +128,15 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
     /**
      * 设置RecyclerView
      */
-    fun setRecyclerView(recyclerView: RecyclerView, isDecoration :Boolean = true): BaseAdapter<T> {
+    fun setRecyclerView(recyclerView: RecyclerView, isDecoration: Boolean = true): BaseAdapter<T> {
+        if (mdecorationColor <= 0) {
+            mdecorationColor = ContextCompat.getColor(recyclerView.context, R.color.list_divider_color)
+        }
         val decoration = HorizontalDividerItemDecoration.Builder(recyclerView.context)
-            .size(mDecorationSize)
-            .color(mdecorationColor)
-            .margin(mDecorationMargin, mDecorationMargin)
-            .build()
+                .size(mDecorationSize)
+                .color(mdecorationColor)
+                .margin(mDecorationMargin, mDecorationMargin)
+                .build()
         if (layoutManager == null) {
             layoutManager = WrapContentLinearLayoutManager(recyclerView.context)
 
@@ -178,54 +182,6 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
 
 
     }
-
-    /**
-     * 创建ViewHolder
-     */
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, ViewDataBinding> {
-//        if (viewTypeMap.size > 1) {
-//            return createViewHolder(viewTypeMap[viewType]?: error("类型不匹配,请检测 ViewHolder类型是否对应 viewType "), parent)
-//        } else {
-//            //一个类型
-//            val iterator = viewTypeMap.iterator()
-//            while (iterator.hasNext()) {
-//                return createViewHolder(iterator.next().value, parent)
-//            }
-//        }
-//        return EmptyLayoutVH(parent)
-//    }
-
-    /**
-     * 创建ViewHolder
-     */
-//    private fun createViewHolder(clazz:Class<BaseViewHolder<T, ViewDataBinding>>, parent: ViewGroup): BaseViewHolder<T, ViewDataBinding> {
-//        val constructor = clazz.getDeclaredConstructor(ViewGroup::class.java)
-//        constructor.isAccessible = true
-//        return constructor.newInstance(parent)
-//    }
-
-//    /**
-//     * 初始化一个ViewHolder
-//     * 不能和ViewHolder列表
-//     */
-//    fun addViewHolder(clazz: Class<? : BaseViewHolder<T, *>>):BaseAdapter<T> {
-//        viewTypeMap[0] = clazz
-//        return this
-//    }
-//
-//    /**
-//     * 需要加载的ViewHolder列表
-//     */
-//    fun addViewHolder(viewType: Int, clazz: Class<BaseViewHolder<T, ViewDataBinding>>) :BaseAdapter<T>{
-//
-//        if (viewTypeMap.keys.contains(viewType)) {
-//            error("viewType 不能重复,角标必须从0开始")
-//        }
-//        viewTypeMap[viewType] = clazz
-//        return this
-//    }
-
-//    abstract fun initAdapter()
 
 
 }

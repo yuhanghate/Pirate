@@ -1,23 +1,21 @@
 package com.yuhang.novel.pirate.ui.main.viewmodel
 
 import android.annotation.SuppressLint
+import android.text.TextUtils
 import com.orhanobut.logger.Logger
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.constant.BookKSConstant
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class MainViewModel : BaseViewModel() {
@@ -29,10 +27,12 @@ class MainViewModel : BaseViewModel() {
      */
     fun getBookInfoListLocal(): Flowable<List<BookInfoKSEntity?>> {
         return Flowable.just("")
-            .map { mDataRepository.queryBookInfoAll() }
-            .map {list ->
+            .flatMap { getCollectionId() }
+            .map { mDataRepository.queryCollectionAll(it.toTypedArray()) }
+            .map { list ->
                 return@map list.map {
                     if (it == null) return@map it
+
                     it.isShowLabel = isShowNewLabel()
                     return@map it
                 }.toList()
@@ -42,18 +42,42 @@ class MainViewModel : BaseViewModel() {
     }
 
     /**
+     * 查询所有收藏的bookid
+     * 如果登陆数据从服务器获取,未登陆数据从本地获取
+     */
+    private fun getCollectionId(): Flowable<List<Int>> {
+        return Flowable.just("")
+            .flatMap {
+                val user = mDataRepository.getLastUser()
+                if (user != null) {
+                    return@flatMap mDataRepository.getCollectionList(1)
+                        .map { it.data.list.map { it.bookid.toInt() }.toList() }
+                } else {
+                    return@flatMap queryCollectionAll().map {
+                        it.map {
+                            val bookid = it?.bookid!!
+                            //从服务器获取收藏列表并插入本地
+                            mDataRepository.insertCollection(bookid)
+                            bookid
+                        }.toList()
+                    }
+                }
+            }
+    }
+
+
+    /**
      * 获取所有书本详情
      */
     @SuppressLint("CheckResult")
     fun getBookDetailsList(): Flowable<BookInfoKSEntity?> {
-        return queryCollectionAll()
+        return getCollectionId()
             .flatMap { Flowable.fromArray(* it.toTypedArray()) }
-            .flatMap { mDataRepository.getBookDetails(it.bookid) }
+            .flatMap { mDataRepository.getBookDetails(it) }
             .filter { it.status == 1 }
             .map { it.data.niceBookInfoKSEntity() }
             .flatMap {
                 val bookInfo = queryBookInfo(it.bookid)
-//                val bookContent = mDataRepository.queryBookContent(it.bookid, it.lastChapterId)
 //
 //                //如果没有阅读过,就不显示标签
 //                it.isShowLabel = bookContent != null
@@ -165,7 +189,18 @@ class MainViewModel : BaseViewModel() {
     /**
      * 删除收藏书箱
      */
+    @SuppressLint("CheckResult")
     fun deleteCollection(bookid: Int) {
+        //删除线上收藏
+        if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
+            mDataRepository.deleteNetCollect(bookid, "KS")
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .compose(mFragment?.bindToLifecycle())
+                .subscribe({}, {})
+        }
+
+
+        //删除本地收藏
         thread { mDataRepository.deleteCollection(bookid) }
     }
 
@@ -175,7 +210,7 @@ class MainViewModel : BaseViewModel() {
      * false:不更新
      */
     private fun isShowNewLabel(): Boolean {
-        return mDataRepository.isShowUpdateLable() == 1
+        return mDataRepository.isShowUpdateLable()
 
     }
 }

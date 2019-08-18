@@ -13,12 +13,13 @@ import com.trello.rxlifecycle2.LifecycleTransformer
 import com.trello.rxlifecycle2.RxLifecycle
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import me.yokeyword.fragmentation.SupportFragment
 
 
 /**
  * Rxjava释放生命周期
  */
-open class RxFragment:Fragment() {
+open class RxFragment: SupportFragment() {
 
     private val lifecycleSubject = BehaviorSubject.create<FragmentEvent>()
 

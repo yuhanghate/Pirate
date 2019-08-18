@@ -1,12 +1,11 @@
 package com.yuhang.novel.pirate.extension
 
-import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity
+import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListDataResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ContentDataResult
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.RankingDataListResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
 import java.util.*
 
@@ -55,7 +54,7 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     val obj = this
     return BookInfoKSEntity().apply {
         this.bookid = obj.id
-        this.name = obj.name
+        this.bookName = obj.name
         this.lastTime = Date()
         this.firstChapterId = obj.pid
         this.lastChapterId = obj.cid
@@ -71,9 +70,9 @@ fun BookDetailsDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     return BookInfoKSEntity().apply {
         this.bookid = obj.Id
         this.cover = obj.Img
-        this.name = obj.Name
+        this.bookName = obj.Name
         this.author = obj.Author
-        this.desc = obj.Desc
+        this.description = obj.Desc
         this.lastTime = Date(obj.LastTime)
         this.firstChapterId = obj.FirstChapterId
         this.lastChapterName = obj.LastChapter
@@ -91,5 +90,43 @@ fun SearchHistoryKSEntity.niceSearchResult(): SearchResult {
     val keyword = this.keyword
     return SearchResult().apply {
         this.keyword = keyword
+    }
+}
+
+/**
+ * 排行榜对象转数据库
+ */
+fun RankingDataListResult.niceRankingListEntity(): RankingListEntity {
+
+    val result = this
+    return RankingListEntity().apply {
+        author = result.Author
+        bookName = result.Name
+        bookdid = result.Id
+        chapterName = result.CName
+        cover = result.Img
+        desc = result.Desc
+        score = result.Score
+    }
+}
+
+/**
+ * 数据库对象转排行榜
+ */
+fun RankingListEntity.niceRankingDataListResult(): RankingDataListResult {
+    return RankingDataListResult(Author = this.author, Name = this.bookName, Id = this.bookdid, CName = this.chapterName,
+        Img = this.cover, Desc = this.desc, Score = this.score)
+}
+
+/**
+ * 最近阅读对象互转
+ */
+fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
+    val result = this
+    return BookInfoKSEntity().apply {
+        this.bookName = result.bookName
+        this.description = result.description
+        this.author = result.author
+        this.cover = result.cover
     }
 }

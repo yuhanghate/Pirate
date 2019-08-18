@@ -8,6 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemMainBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
+import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
@@ -29,7 +30,7 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
          * 加载原始数据
          */
         val time = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(obj.lastTime)
-        mBinding.titleTv.text = obj.name
+        mBinding.titleTv.text = obj.bookName
         mBinding.chapterTv.text = obj.lastChapterName
         mBinding.timeTv.text = time
         mBinding.imageIv.isLabelVisual = obj.isShowLabel
@@ -43,7 +44,7 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
                 .error(drawable)
         getGlide().load("https://imgapi.jiaston.com/BookFiles/BookImages/${obj.cover}")
             .apply(placeholder)
-            .into(mBinding.imageIv)
+            .into(niceGlideInto(mBinding.imageIv))
 
         mBinding.btnMore.setOnClickListener {
             getListener<OnClickItemMoreListener>()?.onClickItemMoreListener(

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_material_40dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/btn_back_black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="免责申明"
+                android:textColor="@color/primary_text"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f4f4f4" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="20dp"
+                android:text="        随便看书提醒您:在使用随便看书前，请您务必仔细阅读并透彻理解本声明。您可以选择不使用随便看书，但如果您使用随便看书，您的使用行为将被视为对本声明全部内容的认可。\n\n
+
+        随便看书是一款提供网络小说即时更新的工具，为广大小说爱好者提供一种方便、快捷、舒适的试读体验。随便看书致力于最大程度的减少网络小说阅读者在自行搜索过程中毫无意义的时间浪费，通过专业搜索展示不同网站中网络小说最新章节。随便看书为广大小说爱好者提供方便、快捷、舒适的试读体验的同时，也使优秀网络小说得以更迅捷、更广泛的传播，从而达到了在一定程度促进网络文学充分繁荣发展之目的。\n\n
+
+        当您点击搜索一本书时，随便看书会将该书的书名以关键词的形式提交到第三方网站或搜索引擎（如百度，宜搜，贴吧等）。第三方网站返回的内容与随便看书无关，随便看书对其概不负责，亦不承担任何法律责任。任何通过使用随便看书而链接到的第三方网页均系他人制作或提供，您可能从第三方网页上获得其他服务，随便看书对其合法性概不负责，亦不承担任何法律责任。第三方搜索引擎的结果根据您提交的书名自动搜索获得并提供试读，不代表随便看书赞成被搜索链接到的第三方网页上的内容或立场。您应该对使用搜索引擎的结果自行承担风险。随便看书不做任何形式的保证：不保证第三方搜索引擎的搜索结果满足您的要求，不保证搜索服务不中断，不保证搜索结果的安全性、正确性、及时性、合法性。因网络状况、通讯线路、第三方网站等任何原因而导致您不能正常使用随便看书，随便看书不承担任何法律责任。\n\n
+
+        随便看书尊重并保护所有使用随便看书用户的个人隐私权，您注册的用户、电子邮件地址等个人资料，非经您亲自许可与或根据相关法律、法规的强制性规定，随便看书不会主动地泄露给第三方。\n\n
+
+        随便看书鼓励广大小说爱好者通过随便看书发现优秀网络小说以及提供商，并建议阅读正版图书，任何单位或个人认为通过随便看书搜索链接到的第三方的网页内容有可能涉嫌侵犯其信息网络传播权，应该及时向随便看书提出书面权利通知，并提供身份证明、权属证明及详细侵权情况证明。随便看书在收到上述法律文件后，将会依法尽快断开相关链接内容。\n\n"
+                android:textColor="@color/primary_text"
+                android:textSize="15sp" />
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+</layout>

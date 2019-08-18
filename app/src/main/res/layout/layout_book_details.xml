@@ -6,6 +6,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/window_background"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -65,7 +66,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:background="#f4f4f4" />
+            android:background="@color/list_divider_color" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -96,7 +97,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:background="#f4f4f4" />
+            android:background="@color/list_divider_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -117,6 +118,8 @@
                 android:layout_width="match_parent"
                 android:background="@drawable/bg_material_item"
                 android:clickable="true"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:orientation="vertical"
@@ -147,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginTop="15dp"
-            android:background="#f4f4f4" />
+            android:background="@color/divider" />
 
         <TextView
             android:id="@+id/author_all_book_tv"
@@ -230,7 +233,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:background="#f4f4f4" />
+                android:background="@color/list_divider_color" />
 
 
             <LinearLayout
@@ -293,7 +296,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:background="#f4f4f4" />
+                android:background="@color/list_divider_color" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -355,7 +358,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:background="#f4f4f4" />
+                android:background="@color/list_divider_color" />
 
             <LinearLayout
                 android:layout_width="match_parent"

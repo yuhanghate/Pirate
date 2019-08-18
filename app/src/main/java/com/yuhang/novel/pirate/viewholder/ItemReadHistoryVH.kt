@@ -8,6 +8,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemReadHistoryBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
+import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
@@ -17,9 +18,9 @@ class ItemReadHistoryVH(parent:ViewGroup):BaseViewHolder<BookInfoKSEntity, ItemR
     override fun onBindViewHolder(obj: BookInfoKSEntity, position: Int) {
         super.onBindViewHolder(obj, position)
 
-        mBinding.titleTv.text  = obj.name
-        mBinding.descTv.text = obj.desc
-        mBinding.authorTv.text = "${obj.author} | ${obj.classifyName}"
+        mBinding.titleTv.text  = obj.bookName
+        mBinding.descTv.text = obj.description
+        mBinding.authorTv.text = "${obj.author}"
         /**
          * 加载头像
          */
@@ -30,6 +31,6 @@ class ItemReadHistoryVH(parent:ViewGroup):BaseViewHolder<BookInfoKSEntity, ItemR
                         .error(drawable)
         getGlide().load("https://imgapi.jiaston.com/BookFiles/BookImages/${obj.cover}")
                 .apply(placeholder)
-                .into(mBinding.coverIv)
+                .into(niceGlideInto(mBinding.coverIv))
     }
 }

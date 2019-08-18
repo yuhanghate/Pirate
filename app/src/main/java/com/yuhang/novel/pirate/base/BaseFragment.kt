@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.base
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
@@ -30,6 +31,8 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
   lateinit var mBinding: D
 
   lateinit var mViewModel: VM
+
+  lateinit var mProgressbar: ProgressDialog
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -204,6 +207,34 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
         popEnter = anim.slide_in_left
         popExit = anim.slide_out_right
       }
+    }
+  }
+
+  /**
+   * 打开进度等待条
+   */
+  fun showProgressbar(message:String = "加载中") {
+    if (!::mProgressbar.isInitialized) {
+      mProgressbar = ProgressDialog(mActivity!!)
+    }
+    if (!mProgressbar.isShowing) {
+      mProgressbar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      mProgressbar.setMessage(message)
+      mProgressbar.setCancelable(false)
+      mProgressbar.show()
+    }
+  }
+
+  /**
+   * 关闭等待条
+   */
+  fun closeProgressbar() {
+    if (!::mProgressbar.isInitialized) {
+      mProgressbar = ProgressDialog(mActivity!!)
+    }
+
+    if (mProgressbar.isShowing) {
+      mProgressbar.dismiss()
     }
   }
 

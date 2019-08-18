@@ -13,12 +13,6 @@ interface BookChapterKSDao {
    * 根据书籍id查找所有章节
    */
   @Query("select * from bookchapterksentity as c where c.bookId = :bookid group by c.chapterId order by c.chapterId asc ")
-  fun query(bookid:Int):Flowable<List<BookChapterKSEntity>>
-
-  /**
-   * 根据书籍id查找所有章节
-   */
-  @Query("select * from bookchapterksentity as c where c.bookId = :bookid group by c.chapterId order by c.chapterId asc ")
   fun queryObj(bookid:Int):List<BookChapterKSEntity>
 
   /**
@@ -38,5 +32,8 @@ interface BookChapterKSDao {
    */
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId asc limit 1")
   fun queryFirstChapterid(bookid: Int):Int
+
+  @Query("delete from bookchapterksentity")
+  fun clear()
 
 }

@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.repository.network
 
+import com.yuhang.novel.pirate.app.PirateApp
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -16,11 +17,8 @@ class TokenInterceptor : Interceptor {
         val original = chain?.request()
 
         val originalHttpUrl = original?.newBuilder()
-//                ?.header("source", "2")
-//                ?.header("channel", "android")
-//                ?.header("application", "yyx")
-//                ?.header("Accept", "application/json")
-                ?.build()
+            ?.header("token", PirateApp.getInstance().getToken())
+            ?.build()
 
         // Request customization: add request headers
 

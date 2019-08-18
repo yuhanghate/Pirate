@@ -76,10 +76,7 @@ abstract class BaseSwipeBackActivity<D : ViewDataBinding, VM : BaseViewModel>: B
         mSwipeBackHelper.swipeBackward()
     }
 
-    /**
-     * 关闭Activity
-     */
-    override fun onBackPressed() {
+    override fun onBackPressedSupport() {
         // 正在滑动返回的时候取消返回按钮事件
         if (mSwipeBackHelper.isSliding) return
         mSwipeBackHelper.backward()

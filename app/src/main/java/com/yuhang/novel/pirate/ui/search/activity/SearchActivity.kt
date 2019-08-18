@@ -101,6 +101,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      * 点击历史搜索
      */
     override fun onSuggestionClicked(searchSuggestion: SearchSuggestion?) {
+        mBinding.floatingSearchView.showProgress()
         if (searchSuggestion != null) {
             netServiceSearch(searchSuggestion.body)
 

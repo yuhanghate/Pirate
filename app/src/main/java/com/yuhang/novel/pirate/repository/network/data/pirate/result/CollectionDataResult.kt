@@ -11,6 +11,6 @@ data class CollectionDataResult(
     val author: String,
     val bookName: String,
     val bookid: String,
-    val conver: String,
+    val cover: String,
     val resouceType: String
 )

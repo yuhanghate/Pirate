@@ -6,6 +6,7 @@ import android.app.Application
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
+import androidx.appcompat.app.AppCompatDelegate
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -16,18 +17,24 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
-
-
+import com.yuhang.novel.pirate.utils.ThemeHelper
+import me.yokeyword.fragmentation.Fragmentation
+import kotlin.concurrent.thread
 
 
 @SuppressLint("Registered")
 open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
+
     private var mDataRepository: DataRepository? = null
 
-    private var imgServer:String = ""
-    private var userid :String = ""
-    private var userAvatar : String = ""
+    private var imgServer: String = ""
+
+    /**
+     * 全局token
+     */
+    private var token = ""
+
     companion object {
         var mInstance: PirateApp? = null
 
@@ -40,6 +47,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
 
+
     override fun onCreate() {
         mInstance = this
         super.onCreate()
@@ -50,30 +58,54 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     /**
      * 初始化Application
      */
-    fun initAppcation() {
+    private fun initAppcation() {
         PreferenceUtil.init(this)
         initRefreshLayout()
         initLog()
+        initToken()
+
+
+
+        Fragmentation.builder()
+            // show stack view. Mode: BUBBLE, SHAKE, NONE
+            .stackViewMode(Fragmentation.BUBBLE)
+            .debug(BuildConfig.DEBUG)
+        .install();
 
         // 分别为MainThread和VM设置Strict Mode
-        if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectAll()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build())
+//        if (BuildConfig.DEBUG) {
+//            StrictMode.setThreadPolicy(
+//                StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectAll()   // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .build()
+//            )
+//
+//            StrictMode.setVmPolicy(
+//                StrictMode.VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .penaltyLog()
+//                    .penaltyDeath()
+//                    .build()
+//            )
+//
+//        }
 
-            StrictMode.setVmPolicy(
-                StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build())
+    }
 
+
+    /**
+     * 初始化Token
+     */
+    private fun initToken() {
+        thread {
+            getDataRepository().getLastUser()?.let {
+                setToken(this.getToken())
+            }
         }
-
     }
 
     /**
@@ -114,17 +146,28 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
 
-
     /**
      * 获取图片域名
      */
-    fun getImgServer() :String{
+    fun getImgServer(): String {
         if (TextUtils.isEmpty(imgServer)) {
-            imgServer = PreferenceUtil.getString("imgServer","")
+            imgServer = PreferenceUtil.getString("imgServer", "")
         }
         return imgServer
     }
 
+
+    fun getToken(): String {
+        if (TextUtils.isEmpty(token)) {
+            token = PreferenceUtil.getString("token", "")
+        }
+        return token
+    }
+
+    fun setToken(token: String) {
+        this.token = token
+        PreferenceUtil.commitString("token", token)
+    }
 
 
     override fun onActivityPaused(activity: Activity?) {

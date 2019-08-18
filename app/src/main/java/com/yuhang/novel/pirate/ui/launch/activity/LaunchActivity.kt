@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 class LaunchActivity : AppCompatActivity() {
 
     companion object {
-        const val MAX_TIME: Long = 1
+        const val MAX_TIME: Long = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

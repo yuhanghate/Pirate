@@ -7,13 +7,13 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F6EFDD"
+        android:background="@color/window_background"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F6EFDD">
+            android:background="@color/item_color">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                         android:lines="1"
                         android:maxLength="10"
                         android:text="章节目录"
-                        android:textColor="#333333"
+                        android:textColor="@color/primary_text"
                         android:textSize="17sp"
                         android:visibility="visible" />
 

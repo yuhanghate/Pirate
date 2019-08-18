@@ -42,4 +42,7 @@ interface BookCollectionKSDao {
      */
     @Query("update bookcollectionksentity set time = :time where bookid = :bookid")
     fun updateTime(bookid: Int, time:Long)
+
+    @Query("delete from bookcollectionksentity")
+    fun clear()
 }

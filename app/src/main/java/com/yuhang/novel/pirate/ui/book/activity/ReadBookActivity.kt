@@ -53,7 +53,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         OnPageIndexListener {
 
 
-    val TAG = ReadBookActivity::class.java.simpleName
+
     private var mTopInAnim: Animation? = null
     private var mTopOutAnim: Animation? = null
     private var mBottomInAnim: Animation? = null
@@ -69,7 +69,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     var fragment: DrawerLayoutLeftFragment? = null
 
     companion object {
-
+        val TAG = ReadBookActivity::class.java.simpleName
         const val BOOK_ID = "book_id"
         const val DURATION: Long = 190
 
@@ -90,8 +90,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        val logger = getLogger()
-//        logger.addSplit("onCreate")
         //去除标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         //去除状态栏
@@ -102,39 +100,29 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         super.onCreate(savedInstanceState)
         window.navigationBarColor = Color.parseColor("#F6EFDD")
-//        logger.addSplit("onCreate")
-
     }
 
 
     override fun onStart() {
-//        val logger = getLogger()
-//        logger.addSplit("onStart")
         keepScreenOnWithPermissionCheck(true)
         initBattery()
         super.onStart()
-//        SystemClock.sleep(20 * 1000);
-//        logger.addSplit("onStart")
     }
 
     override fun onPause() {
-//        val logger = getLogger()
-//        logger.addSplit("onPause")
-        unregisterReceiver(mReceiver)
-        mReceiver = null
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver)
+            mReceiver = null
+        }
+
+
         keepScreenOnWithPermissionCheck(false)
         super.onPause()
-
-
-
-//        logger.addSplit("onPause")
     }
 
 
     override fun initView() {
         super.initView()
-//        val logger = getLogger()
-//        logger.addSplit("initView")
         initViewModel()
         initContentViewHeight()
         initRefreshLayout()
@@ -143,10 +131,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initDrawerView()
         onClick()
         initBackground()
-
-//        logger.addSplit("initView")
-//        logger.dumpToLog()
-//        initBattery()
     }
 
     /**
@@ -218,8 +202,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 默认是隐藏的
      */
     private fun toggleMenu() {
-//        val logger = getLogger()
-//        logger.addSplit("toggleMenu")
         initMenuAnim()
 
         if (mBinding.layoutTop.root.visibility == View.VISIBLE) {
@@ -318,27 +300,24 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     @SuppressLint("CheckResult")
     private fun netDataChatpterContent() {
-//        val logger = getLogger()
         mViewModel.isCollectionBook()
         mViewModel.getLastOpenContent()
-                .compose(bindUntilEvent(ActivityEvent.PAUSE))
+                .compose(bindToLifecycle())
                 .subscribe({
                     mBinding.loading.showContent()
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory()
+
                     mViewModel.adapter.setRefersh(list)
                     mBinding.recyclerView.scrollToPosition(it.lastContentPosition)
                     onPageIndexListener(it.lastContentPosition)
                     mViewModel.preloadedChapterContent(it.pid)
                     mViewModel.preloadedChapterContent(it.nid)
-//                logger.addSplit("netDataChatpterContent -> success")
-//                logger.dumpToLog()
                 }, {
 
                     if (!mBinding.loading.isError) {
                         mBinding.loading.showError()
                     }
-//                logger.addSplit("netDataChatpterContent - error")
-//                logger.dumpToLog()
                 }, {})
     }
 
@@ -347,14 +326,13 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      */
     @SuppressLint("CheckResult")
     private fun netDataChapterContentFromId(chapterid: Int) {
-//        val logger = getLogger()
         mBinding.loading.showLoading()
         mViewModel.getContentFromChapterid(chapterid)
                 .compose(bindUntilEvent(ActivityEvent.PAUSE))
                 .subscribe({
-                    //                    onPageIndexListener(0)
 
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory()
 
                     mViewModel.adapter.setRefersh(list)
                     moveToPosition(0)
@@ -363,15 +341,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                     }, 200)
 
                     mBinding.loading.showContent()
-//                logger.addSplit("getContentFromChapterid->success")
-//                logger.dumpToLog()
 
                 }, {
                     if (!mBinding.loading.isError) {
                         mBinding.loading.showError()
                     }
-//                logger.addSplit("getContentFromChapterid->error")
-//                logger.dumpToLog()
                 })
     }
 
@@ -397,6 +371,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                         mBinding.loading.showContent()
 
                         val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                        mViewModel.updateReadHistory()
+
                         mViewModel.adapter.loadMore(list)
 //                    logger.addSplit("onClickNextListener->success")
 //                    logger.dumpToLog()
@@ -430,27 +406,21 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         Logger.i("onClickPreviousListener obj.pid=${obj.pid} listitem=${mViewModel.getLastItemPosition()}")
         //过滤重复加载
         if (position == 1 || position == 0) {
-//            val logger = getLogger()
-//            logger.addSplit("onClickPreviousListener")
             //加载上一页数据
             mViewModel.getContentFromChapterid(obj.pid)
                     .compose(bindUntilEvent(ActivityEvent.PAUSE))
                     .subscribe({
                         mBinding.loading.showContent()
                         val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                        mViewModel.updateReadHistory()
 
                         //上一页如果不指定角标,默认会刷新返回第一页
                         mViewModel.adapter.getList().addAll(0, list)
                         mViewModel.adapter.notifyDataSetChanged()
-//                    mViewModel.adapter.notifyItemRangeInserted(0, list.size)
                         moveToPosition(list.size)
                         Logger.i("onClickPreviousListener list=${list.size}  listitem=${mViewModel.getLastItemPosition()}")
 
-//                    logger.addSplit("onClickPreviousListener->success")
-//                    logger.dumpToLog()
                     }, {
-                        //                    logger.addSplit("onClickPreviousListener->error")
-//                    logger.dumpToLog()
                     })
         }
 
@@ -467,8 +437,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 移动到指定位置
      */
     private fun moveToPosition(position: Int) {
-        val logger = getLogger()
-//        logger.addSplit("moveToPosition")
         val manager = mBinding.recyclerView.layoutManager as LinearLayoutManager
         val recyclerview = mBinding.recyclerView
         val firstItem = manager.findFirstVisibleItemPosition()
@@ -481,9 +449,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         } else {
             recyclerview.scrollToPosition(position)
         }
-
-//        logger.addSplit("moveToPosition")
-//        logger.dumpToLog()
     }
 
 
@@ -509,7 +474,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      */
     @SuppressLint("CheckResult")
     override fun onRefresh(firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) {
-//        val logger = getLogger()
         Logger.i("readbook = onRefresh")
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
         if (obj.pid == -1) return
@@ -519,13 +483,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 .subscribe({
                     mBinding.loading.showContent()
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory()
+
                     mViewModel.adapter.getList().addAll(0, list)
                     mViewModel.adapter.notifyItemRangeInserted(0, list.size)
-//                logger.addSplit("onRefresh -> success")
-//                logger.dumpToLog()
                 }, {
-                    //                logger.addSplit("onRefresh -> error")
-//                logger.dumpToLog()
                 })
     }
 
@@ -537,7 +499,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         Logger.i("onLoadMore firstVisibleItemPosition=$firstVisibleItemPosition  lastVisibleItemPosition=$lastVisibleItemPosition")
 
 
-//        val logger = getLogger()
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
 
         if (obj.nid == -1) {
@@ -550,14 +511,12 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                     mBinding.loading.showContent()
 
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory()
+
                     mViewModel.adapter.loadMore(list)
 
-//                logger.addSplit("onLoadMore")
-//                logger.dumpToLog()
                 }, {
                     Logger.i(it.message!!)
-//                logger.addSplit("onLoadMore")
-//                logger.dumpToLog()
                 })
     }
 
@@ -565,7 +524,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 当前滑动的界面角标
      */
     override fun onPageIndexListener(position: Int) {
-//        val logger = getLogger()
         //如果是最后一页.返回.因为是假数据
         if (position == mViewModel.adapter.itemCount - 1 || position < 0) {
             return
@@ -575,6 +533,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mViewModel.nid = obj.nid
         mViewModel.pid = obj.pid
         mViewModel.currentPosition = position
+        mViewModel.chapterName = obj.chapterName
 
 
         fragment?.setCurrentReadItem(obj.chapterId)
@@ -592,11 +551,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mViewModel.preloadedChapterContent(obj.pid)
         mViewModel.preloadedChapterContent(obj.nid)
 
-//        logger.addSplit("onPageIndexListener")
-//        logger.dumpToLog()
+
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressedSupport() {
         if (toggleMenuSwitch) {
             //如果上下切换栏显示就隐藏起来
             toggleMenu()
@@ -605,7 +563,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 //没收藏弹框
                 showCollectionDialog()
             } else {
-                super.onBackPressed()
+                super.onBackPressedSupport()
             }
 
         }
@@ -619,6 +577,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             positiveButton(text = "确定", click = object : DialogCallback {
                 @SuppressLint("CheckResult")
                 override fun invoke(p1: MaterialDialog) {
+                    mViewModel.postCollection()
                     mViewModel.insertCollection().compose(bindToLifecycle())
                             .subscribe({
                                 niceToast("加入成功")
@@ -664,7 +623,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     // 接收电池信息和时间更新的广播
     private var mReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-//            val logger = getLogger()
             val level = intent.getIntExtra("level", 0)
             val bookVH =
                     mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
@@ -675,8 +633,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 mViewModel.adapter.notifyDataSetChanged()
             }// 监听分钟的变化
 
-//            logger.addSplit("接收电池信息和时间更新的广播")
-//            logger.dumpToLog()
         }
     }
 }

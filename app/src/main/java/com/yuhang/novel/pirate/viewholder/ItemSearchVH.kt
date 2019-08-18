@@ -10,6 +10,7 @@ import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemSearchBinding
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
+import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookSearchDataResult
 
 class ItemSearchVH(parent:ViewGroup):BaseViewHolder<BookSearchDataResult, ItemSearchBinding>(parent, R.layout.item_search) {
@@ -32,6 +33,6 @@ class ItemSearchVH(parent:ViewGroup):BaseViewHolder<BookSearchDataResult, ItemSe
                         .error(drawable)
         getGlide().load(niceCoverPic(obj.Img))
                 .apply(placeholder)
-                .into(mBinding.converIv)
+                .into(niceGlideInto(mBinding.converIv))
     }
 }

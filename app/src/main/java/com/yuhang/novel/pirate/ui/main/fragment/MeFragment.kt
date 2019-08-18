@@ -7,25 +7,41 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat.recreate
 import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
-import com.netease.nim.demo.koltinapplication.repository.network.NetURL
 import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxAppTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
+import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.extension.niceToast
+import com.yuhang.novel.pirate.repository.network.NetURL
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
+import com.yuhang.novel.pirate.service.UsersService
+import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
 import com.yuhang.novel.pirate.ui.book.activity.ReadHistoryActivity
+import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
+import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
+import com.yuhang.novel.pirate.utils.RestartAPPTool
+import com.yuhang.novel.pirate.utils.ThemeHelper
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.io.File
@@ -38,6 +54,8 @@ import java.io.File
 class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
 
+    private val mUsersService: UsersService by lazy { UsersServiceImpl() }
+
     /**
      * 第一次加载
      */
@@ -46,15 +64,59 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     var binding: DialogVersionUpdateBinding? = null
 
     var dialog: AlertDialog? = null
+
+
+    companion object {
+        fun newInstance(): MeFragment {
+            return MeFragment()
+        }
+    }
+
     override fun onLayoutId(): Int {
         return R.layout.fragment_me
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 
     override fun initView() {
         super.initView()
 //        FileDownloader.setup(mActivity)
+        EventBus.getDefault().register(this)
         onClick()
+        initUserInfoView()
         checkVersionWithPermissionCheck()
+    }
+
+    /**
+     * 初始化用户信息
+     */
+    @SuppressLint("CheckResult")
+    private fun initUserInfoView() {
+        mViewModel.getUserInfo()
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it == null) {
+                    onClick()
+                    mBinding.btnLogin.text = "立即登陆"
+                    mBinding.btnLogin.textSize = 24f
+                } else {
+                    mBinding.btnLogin.text = "随友:${it?.username}"
+                    mBinding.btnLogin.textSize = 18f
+                    mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                    //登陆界面
+                    mBinding.btnLogin.setOnClickListener { }
+                    //登陆
+                    mBinding.avatarCiv.setOnClickListener { }
+                }
+
+            }, {
+                onClick()
+                mBinding.btnLogin.text = "立即登陆"
+                mBinding.btnLogin.textSize = 24f
+            })
     }
 
     private fun onClick() {
@@ -73,7 +135,38 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             isInitView = true
             checkVersionWithPermissionCheck()
         }
+        //设置
+        mBinding.settingsCl.setOnClickListener { SettingsActivity.start(mActivity!!) }
+
+        mBinding.modelCl.setOnClickListener { resetModel() }
     }
+
+    /**
+     * 日间/夜间模式
+     */
+    private fun resetModel() {
+        val model = PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE)
+        if (model == ThemeHelper.DARK_MODE) {
+            PreferenceUtil.commitString("themePref", ThemeHelper.LIGHT_MODE)
+            ThemeHelper.applyTheme(ThemeHelper.LIGHT_MODE)
+
+        } else {
+            PreferenceUtil.commitString("themePref", ThemeHelper.DARK_MODE)
+            ThemeHelper.applyTheme(ThemeHelper.DARK_MODE)
+        }
+        val newIntent =  Intent(mActivity, MainActivity::class.java);
+//        newIntent.putExtra(Constant.NIGHT_MODEL, "2")
+        startActivity(newIntent);
+        mActivity?.finish()
+        mActivity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        Handler().postDelayed({
+//            mActivity?.runOnUiThread {
+//                RestartAPPTool.restartAPP(mActivity)
+//            }
+//        }, 200)
+
+    }
+
 
     /**
      * 分享Dialog
@@ -136,7 +229,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                         isInitView = false
                     }
 
-                    mBinding.versionNameTv.text = "当前已是最新版本"
+                    mBinding.versionNameTv.text = ""
                 }
             }, {
                 niceToast("检测版本失败")
@@ -152,7 +245,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
         val builder = AlertDialog.Builder(mActivity!!)
         builder.setTitle("检测到新版本")
-        builder.setMessage(getMessage(result))
+        builder.setMessage(mViewModel.getMessage(result))
         //点击对话框以外的区域是否让对话框消失
         builder.setCancelable(true)
         builder.setNegativeButton("更新") { p0, p1 -> showVersionUpdateProgress(result) }
@@ -206,36 +299,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         })
     }
 
-    private fun getMessage(result: VersionResult): String {
-        return StringBuilder()
-            .append("\n\r")
-            .append("建议在WLAN环境下进行升级")
-            .append("\n\r\n\r")
-            .append("版本: ${result.newVersion}")
-            .append("\n\r\n\r")
-            .append("大小: ${result.targetSize}")
-            .append("\n\r\n\r")
-            .append("更新说明:")
-            .append("\n\r")
-            .append(
-                "1.小伙伴们有更新啦~~~攻城狮们正努力优化体验。。。。。\n" +
-                        "2.修复已知Bug~~~"
-            )
-            .append("\n\r")
-            .toString()
-    }
-
-
-//    override fun onProgress(progressInfo: ProgressInfo?) {
-//        binding?.progressTv?.text = "${progressInfo?.speed}%"
-//        binding?.progressHorizontal?.progress = progressInfo?.speed?.toInt()!!
-//    }
-//
-//    override fun onError(id: Long, e: Exception?) {
-//        dialog?.dismiss()
-//        niceToast("更新失败")
-//    }
-
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -243,5 +306,43 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
+    /**
+     * 弹出同步收藏数据
+     */
+    @SuppressLint("CheckResult")
+    private fun showUpdateCollectDialog() {
+        showProgressbar(message = "正在同步收藏数据,请耐心等待..")
+        mUsersService.updateCollectionToLocal()
+            .flatMap { mUsersService.updateChapterListToLocal(it) }
+            .flatMap { mUsersService.updateBookInfoToLocal(it) }
+            .flatMap { mUsersService.updateContentToLocal(it) }
+            .compose(bindToLifecycle())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
 
+            }, {
+                closeProgressbar()
+            }, {
+                closeProgressbar()
+            })
+    }
+
+
+    /**
+     * 登陆/注册成功回调
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(userResult: UserResult) {
+        initUserInfoView()
+        showUpdateCollectDialog()
+    }
+
+    /**
+     * 退出登陆回调
+     */
+    @Subscribe
+    fun onEvent(obj: LogoutEvent) {
+        initUserInfoView()
+    }
 }

@@ -13,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 104
+        versionName "1.0.4"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -193,4 +193,10 @@ dependencies {
     //基础工具库
     implementation "com.github.tamsiree.RxTool:RxKit:2.3.9"
     implementation 'com.lzy.net:okgo:3.0.4'
+
+    //Fragment库
+    implementation 'me.yokeyword:fragmentationx:1.0.1'
+
+    //夜间模式切换
+//    implementation 'com.bilibili:magicasakura:0.1.9-beta3@aar'
 }

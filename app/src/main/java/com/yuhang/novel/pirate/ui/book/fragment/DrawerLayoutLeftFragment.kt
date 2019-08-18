@@ -97,7 +97,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
             .compose(bindToLifecycle())
             .subscribe({ bookInfo ->
                 mBinding.itemDrawerHeader.athorTv.text = bookInfo?.author
-                mBinding.itemDrawerHeader.titleTv.text = bookInfo?.name
+                mBinding.itemDrawerHeader.titleTv.text = bookInfo?.bookName
                 mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(bookInfo?.lastTime)
 
                 mBinding.itemDrawerHeader.converIv.let {

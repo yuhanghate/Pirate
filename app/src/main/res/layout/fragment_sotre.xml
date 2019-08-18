@@ -6,15 +6,16 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f4f4f4"
+        android:background="@color/window_background"
         android:orientation="vertical">
 
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white">
+            android:background="@color/actionbar_color"
+            app:titleTextColor="?attr/colorOnPrimary"
+            android:layout_height="?attr/actionBarSize">
 
 
             <RelativeLayout
@@ -56,7 +57,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#f4f4f4" />
+            android:background="@color/divider" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -97,7 +98,7 @@
                 android:id="@+id/filter_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
+                android:background="@color/window_background"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -109,7 +110,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="15dp"
                     android:text="频道"
-                    android:textColor="#ff333333"
+                    android:textColor="@color/primary_text"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -130,7 +131,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="#ECF3FF"
+                            android:background="@color/item_select_color"
                             android:gravity="center"
                             android:paddingStart="20dp"
                             android:paddingTop="10dp"
@@ -138,7 +139,7 @@
                             android:paddingBottom="10dp"
                             android:tag="man"
                             android:text="男生"
-                            android:textColor="#ff666666"
+                            android:textColor="@color/text_black"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -166,7 +167,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:background="#F8F8F8"
+                            android:background="@color/item_color"
                             android:gravity="center"
                             android:paddingStart="20dp"
                             android:paddingTop="10dp"
@@ -174,7 +175,7 @@
                             android:paddingBottom="10dp"
                             android:tag="lady"
                             android:text="女生"
-                            android:textColor="#ff666666"
+                            android:textColor="@color/primary_text"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -197,7 +198,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="30dp"
                     android:text="搜索类型"
-                    android:textColor="#ff333333"
+                    android:textColor="@color/primary_text"
                     android:textSize="16sp" />
 
                 <HorizontalScrollView
@@ -228,7 +229,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#ECF3FF"
+                                android:background="@color/item_select_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -236,7 +237,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="hot"
                                 android:text="最热"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/text_black"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -263,7 +264,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#F8F8F8"
+                                android:background="@color/item_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -271,7 +272,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="commend"
                                 android:text="推荐"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/primary_text"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -300,7 +301,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#F8F8F8"
+                                android:background="@color/item_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -308,7 +309,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="over"
                                 android:text="完结"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/primary_text"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -337,7 +338,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#F8F8F8"
+                                android:background="@color/item_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -345,7 +346,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="collect"
                                 android:text="收藏"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/primary_text"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -371,7 +372,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#F8F8F8"
+                                android:background="@color/item_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -379,7 +380,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="new"
                                 android:text="新书"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/primary_text"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -408,7 +409,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:background="#F8F8F8"
+                                android:background="@color/item_color"
                                 android:gravity="center"
                                 android:paddingStart="20dp"
                                 android:paddingTop="10dp"
@@ -416,7 +417,7 @@
                                 android:paddingBottom="10dp"
                                 android:tag="vote"
                                 android:text="评分"
-                                android:textColor="#ff666666"
+                                android:textColor="@color/primary_text"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -440,7 +441,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="30dp"
                     android:text="时间"
-                    android:textColor="#ff333333"
+                    android:textColor="@color/primary_text"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -465,7 +466,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:background="#ECF3FF"
+                            android:background="@color/item_select_color"
                             android:gravity="center"
                             android:paddingStart="20dp"
                             android:paddingTop="10dp"
@@ -473,7 +474,7 @@
                             android:paddingBottom="10dp"
                             android:tag="week"
                             android:text="周榜"
-                            android:textColor="#ff666666"
+                            android:textColor="@color/text_black"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -501,7 +502,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:background="#F8F8F8"
+                            android:background="@color/item_color"
                             android:gravity="center"
                             android:paddingStart="20dp"
                             android:paddingTop="10dp"
@@ -509,7 +510,7 @@
                             android:paddingBottom="10dp"
                             android:tag="month"
                             android:text="月榜"
-                            android:textColor="#ff666666"
+                            android:textColor="@color/primary_text"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -538,8 +539,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:background="#F8F8F8"
-
+                            android:background="@color/item_color"
                             android:gravity="center"
                             android:paddingStart="20dp"
                             android:paddingTop="10dp"
@@ -547,7 +547,7 @@
                             android:paddingBottom="10dp"
                             android:tag="total"
                             android:text="总榜"
-                            android:textColor="#ff666666"
+                            android:textColor="@color/primary_text"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -567,6 +567,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:visibility="invisible"
                     android:layout_marginTop="50dp"
                     android:background="#EEEEEE" />
 
@@ -585,7 +586,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:text="重置"
-                        android:textColor="#999999"
+                        android:textColor="@color/secondary_text"
                         android:textSize="16sp" />
 
                     <TextView

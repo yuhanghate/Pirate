@@ -7,7 +7,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f4f4f4"
+        android:background="@color/window_background"
         android:orientation="vertical">
 
 
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
+            app:floatingSearch_backgroundColor="@color/item_color"
             app:floatingSearch_close_search_on_keyboard_dismiss="false"
             app:floatingSearch_dimBackground="false"
             app:floatingSearch_dismissOnOutsideTouch="true"

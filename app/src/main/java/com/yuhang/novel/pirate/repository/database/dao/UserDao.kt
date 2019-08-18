@@ -39,4 +39,10 @@ interface UserDao {
      */
     @Query("select * from userentity where username = :username order by username limit 1")
     fun queryUser(username:String):UserEntity?
+
+    /**
+     * 清空用户数据
+     */
+    @Query("delete from userentity")
+    fun clear()
 }

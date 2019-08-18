@@ -2,13 +2,13 @@ package com.yuhang.novel.pirate.ui.main.viewmodel
 
 import com.vondear.rxtool.RxDeviceTool
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
+import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MeViewModel:BaseViewModel() {
+class MeViewModel : BaseViewModel() {
 
     /**
      * 检测版本
@@ -19,7 +19,29 @@ class MeViewModel:BaseViewModel() {
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun download() {
+    /**
+     * 获取用户信息
+     */
+    fun getUserInfo(): Flowable<UserEntity?> {
+        return Flowable.just("")
+            .map { mDataRepository.getLastUser() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
 
+    fun getMessage(result: VersionResult): String {
+        return StringBuilder()
+            .append("\n\r")
+            .append("建议在WLAN环境下进行升级")
+            .append("\n\r\n\r")
+            .append("版本: ${result.newVersion}")
+            .append("\n\r\n\r")
+            .append("大小: ${result.targetSize}")
+            .append("\n\r\n\r")
+            .append("更新说明:")
+            .append("\n\r")
+            .append(result.updateLog)
+            .append("\n\r")
+            .toString()
     }
 }

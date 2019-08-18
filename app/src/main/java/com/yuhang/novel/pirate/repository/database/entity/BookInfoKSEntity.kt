@@ -26,7 +26,7 @@ class BookInfoKSEntity{
     /**
      * 小说名称
      */
-    var name: String = ""
+    var bookName: String = ""
 
     /**
      * 作者
@@ -36,7 +36,7 @@ class BookInfoKSEntity{
     /**
      * 简介
      */
-    var desc: String = ""
+    var description: String = ""
 
     /**
      * 最后更新时间

@@ -29,6 +29,7 @@
                 android:theme="@style/AppIntroTheme"/>
         <activity android:name=".ui.webview.activity.WebViewActivity"/>
         <activity android:name=".ui.main.activity.MainActivity"
+                  android:configChanges="orientation|screenSize|uiMode"
             />
         <activity android:name=".ui.book.activity.ReadBookActivity"/>
         <activity android:name=".ui.search.activity.SearchActivity"/>
@@ -41,6 +42,8 @@
                 android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize"/>
         <activity android:name=".ui.user.activity.RegisterActivity"
                   android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize"/>
+        <activity android:name=".ui.settings.activity.SettingsActivity" />
+        <activity android:name=".ui.settings.activity.DisclaimerActivity" />
     </application>
 
 </manifest>

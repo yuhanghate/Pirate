@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.base
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.CheckResult
@@ -12,8 +13,9 @@ import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import me.yokeyword.fragmentation.SupportActivity
 
-open class RxActivity: AppCompatActivity(), LifecycleProvider<ActivityEvent> {
+open class RxActivity: SupportActivity(), LifecycleProvider<ActivityEvent> {
 
     private val lifecycleSubject = BehaviorSubject.create<ActivityEvent>()
 

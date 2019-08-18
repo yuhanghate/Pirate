@@ -61,7 +61,7 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
 
-        mViewModel.queryReadHistoryList(PAGE_NUM)
+        mViewModel.getReadHistoryList(PAGE_NUM)
                 .compose(bindToLifecycle())
                 .subscribe({
                     val list = it.filterNotNull().map { it }.toList()
@@ -84,11 +84,11 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
     override fun onRefresh(refreshLayout: RefreshLayout) {
         PAGE_NUM = 0
 
-        mViewModel.queryReadHistoryList(PAGE_NUM)
+        mViewModel.getReadHistoryList(PAGE_NUM)
                 .compose(bindToLifecycle())
                 .subscribe({
                     mBinding.refreshLayout.finishRefresh()
-                    val list = it.filterNotNull().map { it }.toList()
+                    val list = it.map { it }.toList()
                     mViewModel.adapter.setRefersh(list)
                     if (list.size < 20) {
                         mBinding.refreshLayout.finishLoadMoreWithNoMoreData()

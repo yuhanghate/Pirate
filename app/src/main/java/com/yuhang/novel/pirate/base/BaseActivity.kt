@@ -3,8 +3,6 @@ package com.yuhang.novel.pirate.base
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.ProgressBar
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -15,8 +13,10 @@ import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
 import cn.bingoogolapple.swipebacklayout.R
 import com.hunter.library.debug.TimingLogger
 import com.orhanobut.logger.Logger
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
+import com.yuhang.novel.pirate.utils.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
 
@@ -27,13 +27,15 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     lateinit var mProgressbar: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.navigationBarColor = ContextCompat.getColor(this, android.R.color.white)
+        window.navigationBarColor = ContextCompat.getColor(this, com.yuhang.novel.pirate.R.color.navigation_bar_color)
+        ThemeHelper.applyTheme(PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE))
         super.onCreate(savedInstanceState)
         Logger.i(" oncreate ->${this}")
         initLayoutInflater()
         initViewModel()
         initStatusTool()
         initView()
+
     }
 
     override fun onAttachedToWindow() {
@@ -79,8 +81,6 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     }
 
 
-
-
     /**
      * 获取ViewModel类型
      */
@@ -123,7 +123,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 打开进度等待条
      */
-    fun showProgressbar(message:String = "加载中") {
+    fun showProgressbar(message: String = "加载中") {
         if (!::mProgressbar.isInitialized) {
             mProgressbar = ProgressDialog(this)
         }
@@ -154,16 +154,16 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      */
     fun replaceFragment(id: Int, fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-                .replace(id, fragment)
-                .commitNow()
+            .replace(id, fragment)
+            .commitNow()
     }
 
     /**
      * 添加所有fragment
      */
     fun addFragmentList(
-            id: Int,
-            fragmentList: List<Fragment>, showIndex: Int
+        id: Int,
+        fragmentList: List<Fragment>, showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         fragmentList.forEach { beginTransaction.add(id, it) }
@@ -182,8 +182,8 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 显示Fragment
      */
     fun showFragment(
-            fragmentList: List<Fragment>,
-            showIndex: Int
+        fragmentList: List<Fragment>,
+        showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         (0 until fragmentList.size).forEachIndexed { index, i ->
@@ -229,15 +229,17 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     open fun initRefreshLayout() {
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressedSupport() {
         BGAKeyboardUtil.closeKeyboard(this)
         finish()
         this.overridePendingTransition(R.anim.bga_sbl_activity_backward_enter, R.anim.bga_sbl_activity_backward_exit)
+//        super.onBackPressedSupport()
 
     }
+
 
     /**************************** 子类调用 end **************************/
 
 
-    fun getLogger() = TimingLogger(this::class.java.simpleName,"")
+    fun getLogger() = TimingLogger(this::class.java.simpleName, "")
 }

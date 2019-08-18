@@ -1,12 +1,17 @@
 package com.yuhang.novel.pirate.ui.main.activity
 
 import android.annotation.SuppressLint
+import android.os.Bundle
+import android.os.PersistableBundle
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
+import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
-import com.yuhang.novel.pirate.extension.findNavController
+import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
+import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
+import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import io.reactivex.Flowable
 import org.greenrobot.eventbus.Subscribe
@@ -14,7 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
-
+    //    lateinit var navController: NavController
     override fun onLayoutId(): Int {
         return R.layout.activity_main2
     }
@@ -23,10 +28,16 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         return android.R.color.white
 
     }
+//
+//    override fun onSupportNavigateUp(): Boolean {
+//        return findNavController(R.id.nav_host_fragment).navigateUp()
+//    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.nav_host_fragment).navigateUp()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        onCreateEventbus(this)
     }
+
 
     override fun onDestroy() {
         onDestryEventbus(this)
@@ -37,42 +48,52 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     override fun initView() {
         super.initView()
 
-        onCreateEventbus(this)
+
         initUpdateChapterList()
 
 
-        val nearby = mBinding.bottomBar.getTabWithId(R.id.tab_main)
+        loadMultipleRootFragment(
+            R.id.nav_host_fragment,
+            0,
+            MainFragment.newInstance(),
+            StoreFragment.newInstance(),
+            MeFragment.newInstance()
+        )
+
+//        val nearby = mBinding.bottomBar.getTabWithId(R.id.tab_main)
 //        nearby.setBadgeCount(5)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+//        navController = findNavController(R.id.nav_host_fragment)
         mBinding.bottomBar.setOnTabSelectListener {
 
             when (it) {
                 R.id.tab_main -> {
-                    navController.navigate(R.id.mainFragment)
+                    showHideFragment(findFragment(MainFragment::class.java))
                 }
                 R.id.tab_store -> {
-                    navController.navigate(R.id.storeFragment)
+                    showHideFragment(findFragment(StoreFragment::class.java))
                 }
                 R.id.tab_me -> {
-                    navController.navigate(R.id.meFragment)
+                    showHideFragment(findFragment(MeFragment::class.java))
+                }
+            }
+        }
+//
+        mBinding.bottomBar.setOnTabReselectListener {
+            when (it) {
+                R.id.tab_main -> {
+                    showHideFragment(findFragment(MainFragment::class.java))
+                }
+                R.id.tab_store -> {
+                    showHideFragment(findFragment(StoreFragment::class.java))
+                }
+                R.id.tab_me -> {
+                    showHideFragment(findFragment(MeFragment::class.java))
                 }
             }
         }
 
-        mBinding.bottomBar.setOnTabReselectListener {
-            when (it) {
-                R.id.tab_main -> {
-                    navController.navigate(R.id.mainFragment)
-                }
-                R.id.tab_store -> {
-                    navController.navigate(R.id.storeFragment)
-                }
-                R.id.tab_me -> {
-                    navController.navigate(R.id.meFragment)
-                }
-            }
-        }
+//        loadRootFragment(R.id.nav_host_fragment, MainFragment.newInstance())
     }
 
 
@@ -82,14 +103,14 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
         Flowable.interval(3, 60 * 10, TimeUnit.SECONDS)
-                .compose(bindToLifecycle())
-                .subscribe({ mViewModel.updateChapterToDB() }, {
-                    Logger.i("")
-                })
+            .compose(bindToLifecycle())
+            .subscribe({ mViewModel.updateChapterToDB() }, {
+                Logger.i("")
+            })
     }
 
 
-    override fun onBackPressed() {
+    override fun onBackPressedSupport() {
         moveTaskToBack(false)
     }
 
@@ -101,5 +122,14 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mViewModel.updateChapterToDB()
     }
 
+    /**
+     * 退出登陆
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(obj: LogoutEvent) {
+//        navController.navigate(R.id.mainFragment)
+
+        mBinding.bottomBar.selectTabAtPosition(0)
+    }
 
 }

@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface BookInfoKSDao {
@@ -44,8 +45,24 @@ interface BookInfoKSDao {
     fun queryCollectionAll(): List<BookInfoKSEntity?>
 
     /**
+     * 查询所有收藏书本信息
+     */
+    @Query("select * from bookinfoksentity as info where  info.bookid in (:bookids) order by info.stickTime desc")
+    fun queryCollectionAll(bookids: Array<Int>):List<BookInfoKSEntity?>
+
+
+    /**
      * 查询阅读记录的书本信息
      */
     @Query("select * from bookinfoksentity as info where info.bookid in (select h.bookid from bookreadhistoryentity as h group by h.bookid order by h.lastReadTime desc limit 20 offset :pageNum)")
     fun queryReadHistoryList(pageNum:Int):List<BookInfoKSEntity?>
+
+    /**
+     * 获取最后更新时间
+     */
+    @Query("select max(lastTime) from bookinfoksentity")
+    fun queryLastTime():Long
+
+    @Query("delete from bookinfoksentity")
+    fun clear()
 }

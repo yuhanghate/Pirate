@@ -13,6 +13,6 @@
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:background="#f4f4f4" />
+            android:background="@color/list_divider_color" />
     </LinearLayout>
 </layout>

@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.navigation.navOptions
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.R
@@ -51,6 +52,12 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
      */
     private var PAGE_NUM = 1
 
+    companion object{
+        fun newInstance():StoreFragment {
+            return StoreFragment()
+        }
+    }
+
     override fun onLayoutId(): Int {
         return R.layout.fragment_sotre
     }
@@ -65,14 +72,12 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 popExit = R.anim.slide_out_right
             }
         }
-        Log.i("StoreFragment", "${this.hashCode()}")
 
         initRefreshLayout()
         initRecyclerView()
-
-//        netServiceData()
         initAnimation()
         onClick()
+        loadLocalRankingList()
     }
 
     private fun onClick() {
@@ -150,7 +155,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         super.initRefreshLayout()
         mBinding.loading.showContent()
         mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
-        mBinding.refreshLayout.autoRefresh()
+//        mBinding.refreshLayout.autoRefresh()
+
     }
 
     override fun initRecyclerView() {
@@ -168,21 +174,6 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mBinding.recyclerview.adapter = mViewModel.adapter
     }
 
-    /**
-     * 获取服务器数据
-     */
-    @SuppressLint("CheckResult")
-    private fun netServiceData() {
-        mBinding.loading.showLoading()
-        mViewModel.getBookCategory()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.loading.showContent()
-//                    it.data?.let { mViewModel.adapter.setRefersh(it) }
-                }, {
-                    mBinding.loading.showError()
-                })
-    }
 
     /**
      * 动画初始化
@@ -236,8 +227,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         val imageView = item.getChildAt(1) as ImageView
 
         if (isClick) {
-            textview.setTextColor((Color.parseColor("#286EE2")))
-            textview.setBackgroundColor(Color.parseColor("#ECF3FF"))
+            textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.text_black))
+            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_select_color))
             imageView.visibility = View.VISIBLE
             val tag = textview.tag as String
 
@@ -248,8 +239,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 BookKSConstant.FILTER_DATE.contains(tag) -> mViewModel.date = tag
             }
         } else {
-            textview.setTextColor((Color.parseColor("#666666")))
-            textview.setBackgroundColor(Color.parseColor("#F8F8F8"))
+            textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.primary_text))
+            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_color))
             imageView.visibility = View.GONE
         }
     }
@@ -293,12 +284,32 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 .compose(bindToLifecycle())
                 .subscribe({
                     mViewModel.adapter.setRefersh(it.data.bookList)
-                    mBinding.loading.showContent()
                     mBinding.refreshLayout.finishRefresh()
                 }, {
                     //                    mBinding.loading.showError()
                     mBinding.refreshLayout.finishRefresh()
                 })
+    }
+
+    /**
+     * 第一次加载本地数据
+     */
+    @SuppressLint("CheckResult")
+    private fun loadLocalRankingList() {
+        mViewModel.getRankingListLocal()
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it.isEmpty()) {
+                    //如果本地没有数据,就从服务器加载
+                    mBinding.refreshLayout.autoRefresh()
+                } else {
+                    mViewModel.adapter.setRefersh(it.map { result -> result!! }.toList())
+                    mBinding.refreshLayout.finishRefresh()
+                }
+
+            },{
+                mBinding.refreshLayout.finishRefresh()
+            })
     }
 
     override fun onClickItemListener(view: View, position: Int) {

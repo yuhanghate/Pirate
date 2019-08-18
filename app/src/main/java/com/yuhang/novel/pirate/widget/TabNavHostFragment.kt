@@ -95,29 +95,31 @@ class TabNavHostFragment : NavHostFragment() {
                         && mBackStack.peekLast().toInt() == destId)
 
                 val isAdded: Boolean
-                if (initialNavigation) {
-                    isAdded = true
-                } else if (isSingleTopReplacement) {
-                    // Single Top means we only want one instance on the back stack
-                    if (mBackStack.size > 1) {
-                        // If the Fragment to be replaced is on the FragmentManager's
-                        // back stack, a simple replace() isn't enough so we
-                        // remove it from the back stack and put our replacement
-                        // on the back stack in its place
-                        mFragmentManager.popBackStack(
-                            generateMyBackStackName(mBackStack.size, mBackStack.peekLast()),
-                            FragmentManager.POP_BACK_STACK_INCLUSIVE
-                        )
-                        ft.addToBackStack(generateMyBackStackName(mBackStack.size, destId))
+                when {
+                    initialNavigation -> isAdded = true
+                    isSingleTopReplacement -> {
+                        // Single Top means we only want one instance on the back stack
+                        if (mBackStack.size > 1) {
+                            // If the Fragment to be replaced is on the FragmentManager's
+                            // back stack, a simple replace() isn't enough so we
+                            // remove it from the back stack and put our replacement
+                            // on the back stack in its place
+                            mFragmentManager.popBackStack(
+                                    generateMyBackStackName(mBackStack.size, mBackStack.peekLast()),
+                                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                            )
+                            ft.addToBackStack(generateMyBackStackName(mBackStack.size, destId))
+                            mIsPendingBackStackOperation = true
+                            mIsPendingBackStackOperationField.set(this, true)
+                        }
+                        isAdded = false
+                    }
+                    else -> {
+                        ft.addToBackStack(generateMyBackStackName(mBackStack.size + 1, destId))
                         mIsPendingBackStackOperation = true
                         mIsPendingBackStackOperationField.set(this, true)
+                        isAdded = true
                     }
-                    isAdded = false
-                } else {
-                    ft.addToBackStack(generateMyBackStackName(mBackStack.size + 1, destId))
-                    mIsPendingBackStackOperation = true
-                    mIsPendingBackStackOperationField.set(this, true)
-                    isAdded = true
                 }
                 if (navigatorExtras is Extras) {
                     val extras = navigatorExtras as Extras?

@@ -13,7 +13,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.google.android.material.appbar.AppBarLayout
-import com.yuhang.novel.pirate.extension.niceToast
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -23,6 +22,7 @@ import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookLineBin
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
+import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -37,7 +37,7 @@ import kotlin.math.abs
  * 简介/目录/加入书架/立即阅读
  */
 class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
-        AppBarLayout.OnOffsetChangedListener {
+    AppBarLayout.OnOffsetChangedListener {
 
 
     companion object {
@@ -108,7 +108,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         }
         mBinding.addBookrackTv.setOnClickListener {
 
-//            showDialogCollection(mViewModel.isCollection)
+            //            showDialogCollection(mViewModel.isCollection)
             if (mViewModel.isCollection) {
                 removeCollection()
             } else {
@@ -123,7 +123,9 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun resetView(obj: BookDetailsDataResult) {
         Glide.with(this).load(niceCoverPic(obj.Img)).into(mBinding.includeToobarHeadOpen.coverIv)
-        Glide.with(this).load(niceCoverPic(obj.Img)).apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>)).into(mBinding.includeToobarHeadOpen.bgCoverIv)
+        Glide.with(this).load(niceCoverPic(obj.Img))
+            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
+            .into(mBinding.includeToobarHeadOpen.bgCoverIv)
 
         val details = mBinding.layoutBookDetails
         details.statusTv.setText("状态   ${obj.BookStatus}", null)
@@ -138,7 +140,13 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         mBinding.includeToolbarClose.titleCloseTv.text = obj.Name
 
         //目录点击
-        mBinding.layoutBookDetails.chapterListLl.setOnClickListener { ChapterListActivity.start(this, getBookid(), obj.LastChapterId) }
+        mBinding.layoutBookDetails.chapterListLl.setOnClickListener {
+            ChapterListActivity.start(
+                this,
+                getBookid(),
+                obj.LastChapterId
+            )
+        }
 
         //动态加载作者全部作品
         details.authorAllBookLl.removeAllViews()
@@ -154,9 +162,9 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
                     val drawable = getDrawable(R.drawable.ic_default_cover)
                     val placeholder =
-                            RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
-                                    .placeholder(drawable)
-                                    .error(drawable)
+                        RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
+                            .placeholder(drawable)
+                            .error(drawable)
                     Glide.with(this).load(niceCoverPic(book.Img)).apply(placeholder).into(itemBinding.coverIv)
 
                     //分隔线
@@ -210,14 +218,14 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         mBinding.loading.showLoading()
         mViewModel.getBookDetails(getBookid())
             .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.obj = it
-                    mBinding.loading.showContent()
-                    resetView(it)
-                }, {
-                    Logger.e(it.message!!)
-                    mBinding.loading.showError()
-                })
+            .subscribe({
+                mViewModel.obj = it
+                mBinding.loading.showContent()
+                resetView(it)
+            }, {
+                Logger.e(it.message!!)
+                mBinding.loading.showError()
+            })
     }
 
 
@@ -227,16 +235,17 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     @SuppressLint("CheckResult")
     private fun addCollection() {
         val bookid = mViewModel.obj?.Id ?: return
+        mViewModel.postCollection(bookid)
         mViewModel.insertCollection(bookid)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.isCollection = true
-                    mBinding.addBookrackTv.text = "移出书架"
-                    //插入或更新书箱信息
-                    mViewModel.insertBookInfoEntity()
-                    EventBus.getDefault().post(UpdateChapterEvent())
-                    niceToast("加入成功")
-                }, { niceToast("加入失败") })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.isCollection = true
+                mBinding.addBookrackTv.text = "移出书架"
+                //插入或更新书箱信息
+                mViewModel.insertBookInfoEntity()
+                EventBus.getDefault().post(UpdateChapterEvent())
+                niceToast("加入成功")
+            }, { niceToast("加入失败") })
     }
 
     /**
@@ -246,11 +255,11 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     private fun removeCollection() {
         val bookid = mViewModel.obj?.Id ?: return
         mViewModel.deleteCollection(bookid)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.isCollection = false
-                    mBinding.addBookrackTv.text = "加入书架"
-                    niceToast("移除成功")
-                }, { niceToast("加入失败") })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.isCollection = false
+                mBinding.addBookrackTv.text = "加入书架"
+                niceToast("移除成功")
+            }, { niceToast("加入失败") })
     }
 }

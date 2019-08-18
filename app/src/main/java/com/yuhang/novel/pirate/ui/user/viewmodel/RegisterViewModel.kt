@@ -2,13 +2,19 @@ package com.yuhang.novel.pirate.ui.user.viewmodel
 
 import android.widget.EditText
 import com.vondear.rxtool.RxRegTool
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.niceTipTop
+import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
+import com.yuhang.novel.pirate.utils.BeanPropertiesUtil
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
+import java.util.*
+import kotlin.concurrent.thread
 
 class RegisterViewModel : BaseViewModel() {
 
@@ -66,5 +72,34 @@ class RegisterViewModel : BaseViewModel() {
         }
 
         return true
+    }
+
+    /**
+     * 保存帐号信息
+     */
+    fun saveAccount(userResult: UserResult) {
+        thread {
+
+            val userDataResult = userResult.data
+            val user = mDataRepository.queryUser(userDataResult.username)
+
+            if (user == null) {
+                //插入帐号
+                val userEntity = UserEntity()
+                BeanPropertiesUtil.copyProperties(userDataResult, userEntity)
+                userEntity.uid = userDataResult.id
+                userEntity.lastTime = Date()
+
+
+                PirateApp.getInstance().setToken(userEntity.token)
+                mDataRepository.insert(userEntity)
+            } else {
+                //更新帐号
+                user.token = userDataResult.token
+                user.lastTime = Date()
+            }
+
+            EventBus.getDefault().postSticky(userResult)
+        }
     }
 }

@@ -1,6 +1,4 @@
-package com.netease.nim.demo.koltinapplication.repository.network
-
-import com.yuhang.novel.pirate.repository.network.NetType
+package com.yuhang.novel.pirate.repository.network
 
 object NetURL {
     //    var type = if (BuildConfig.APPServiceDebug) {
@@ -8,12 +6,12 @@ object NetURL {
 //    } else {
 //        NetType.MASTER
 //    }
-    var type = NetType.DEVELOP
+    var type = NetType.MASTER
 
 
     //后台API调用接口
-    private const val HOST_DEVELOP = "http://47.97.41.233:8088/"
-    private const val HOST_MASTER = "http://zhanxin.nbmankan.com/"
+    private const val HOST_DEVELOP = "http://192.168.1.154:8081/"
+    private const val HOST_MASTER = "http://47.97.41.233:8088/"
     private const val HOST_QA = "http://47.100.216.212:3000/mock/17/"
     private const val HOST_STAGE = "http://47.100.216.212:3000/mock/17/"
 

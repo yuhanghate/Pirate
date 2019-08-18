@@ -7,14 +7,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="@color/window_background"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+            android:background="@color/actionbar_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -84,7 +84,9 @@
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/head_cl"
                         android:layout_width="match_parent"
+                        android:background="@color/item_color"
                         android:layout_height="220dp">
 
                         <de.hdodenhof.circleimageview.CircleImageView
@@ -94,7 +96,7 @@
                             android:layout_marginTop="20dp"
                             android:elevation="6dp"
                             android:src="#cdcdcd"
-                            app:civ_border_color="@android:color/white"
+                            app:civ_border_color="@color/icons"
                             app:civ_border_width="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -102,6 +104,7 @@
 
 
                         <ImageView
+                            android:id="@+id/avatar_iv"
                             android:layout_width="56dp"
                             android:layout_height="56dp"
                             android:elevation="6dp"
@@ -128,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:text="立即登陆"
-                            android:textColor="#545454"
+                            android:textColor="@color/primary_text"
                             android:textSize="23sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +145,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="15dp"
-                        android:background="#f2f2f2" />
+                        android:background="@color/divider" />
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -227,6 +230,7 @@
                         android:id="@+id/bookrack_cl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:clickable="true"
                         android:focusable="true">
@@ -275,7 +279,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="15dp"
-                        android:background="#f2f2f2" />
+                        android:background="@color/divider" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/share_cl"
@@ -345,6 +349,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/model_cl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_material_item"

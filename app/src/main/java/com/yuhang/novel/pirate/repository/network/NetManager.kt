@@ -1,7 +1,6 @@
 package com.yuhang.novel.pirate.repository.network
 
 import com.google.gson.Gson
-import com.netease.nim.demo.koltinapplication.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,7 +31,7 @@ class NetManager {
 
     private val mNetApi: NetApi by lazy { createNetApi() }
 
-    private val mZhuiShuApi:KanShuNetApi by lazy { createKanZhuNetApi() }
+    private val mZhuiShuApi: KanShuNetApi by lazy { createKanZhuNetApi() }
 
     private val mGson: Gson by lazy { Gson() }
 
@@ -44,10 +43,13 @@ class NetManager {
 
     fun getNetApi() = mNetApi
 
-    fun  getKanShuApi() = mZhuiShuApi
+    fun getKanShuApi() = mZhuiShuApi
 
     private fun createNetApi(): NetApi {
-        return mRetrofit.create(NetApi::class.java)
+        return Retrofit.Builder().baseUrl(NetURL.HOST)
+                .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
+                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build().create(NetApi::class.java)
     }
 
     /**
@@ -55,9 +57,9 @@ class NetManager {
      */
     private fun createKanZhuNetApi(): KanShuNetApi {
         return Retrofit.Builder().baseUrl(NetURL.HOST_KANSHU)
-            .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
-            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build().create(KanShuNetApi::class.java)
+                .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
+                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build().create(KanShuNetApi::class.java)
     }
 
 
@@ -75,7 +77,7 @@ class NetManager {
                 .connectTimeout(1000 * 15, TimeUnit.MILLISECONDS)
                 .readTimeout(1000 * 15, TimeUnit.MILLISECONDS)
                 .writeTimeout(1000 * 15, TimeUnit.MILLISECONDS)
-            .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
+                .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
                 //日志拦截器
                 .addInterceptor(
                         HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))

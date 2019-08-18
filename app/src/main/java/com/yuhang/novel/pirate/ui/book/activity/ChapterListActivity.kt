@@ -64,7 +64,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
 //        )
 
         super.onCreate(savedInstanceState)
-        window.navigationBarColor = Color.parseColor("#F6EFDD")
+//        window.navigationBarColor = Color.parseColor("#F6EFDD")
     }
 
     override fun initView() {
@@ -79,7 +79,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
         mViewModel.queryBookInfo(getBookid())
                 .compose(bindToLifecycle())
                 .subscribe({
-                    mBinding.titleCloseTv.text = it?.name
+                    mBinding.titleCloseTv.text = it?.bookName
                 },{})
     }
 

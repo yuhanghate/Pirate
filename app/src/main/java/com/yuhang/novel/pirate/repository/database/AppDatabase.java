@@ -1,7 +1,6 @@
 package com.yuhang.novel.pirate.repository.database;
 
 import android.content.Context;
-
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -11,6 +10,7 @@ import com.yuhang.novel.pirate.repository.database.entity.*;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
 
 
 /**
@@ -20,9 +20,9 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
  *
  * @author yuhang
  */
-@Database(entities = {BookInfoKSEntity.class, AuthorBookKSEntity.class, BookCollectionKSEntity.class,
+@Database(entities = {BookInfoKSEntity.class, BookCollectionKSEntity.class,
         SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
-        BookReadHistoryEntity.class, UserEntity.class}, version = 5, exportSchema = false)
+        UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class}, version = 6, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -38,7 +38,8 @@ public abstract class AppDatabase
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
 //                            .allowMainThreadQueries()
-                            .addMigrations(Migration_3_4.instance(), Migration_4_5.instance(), Migration_5_6.instance())
+                            .addMigrations(Migration_3_4.instance(), Migration_4_5.instance(), Migration_5_6.instance(),
+                                    Migration_6_7.instance())
                             .build();
         }
         return INSTANCE;
@@ -52,10 +53,6 @@ public abstract class AppDatabase
      */
     public abstract BookInfoKSDao getBookInfoKSDao();
 
-    /**
-     * 查询作者相关的书籍
-     */
-    public abstract AuthorBookKSDao getAuthorBookKSDao();
 
     /**
      * 查询搜索记录列表
@@ -79,18 +76,20 @@ public abstract class AppDatabase
      */
     public abstract BookCollectionKSDao getBookCollectionKSDao();
 
-    /**
-     * 阅读历史记录
-     *
-     * @return
-     */
-    public abstract BookReadHistoryKSDao getBookReadHistoryKSDao();
 
     /**
      * 用户名
+     *
      * @return
      */
-    public abstract  UserDao getUserDao();
+    public abstract UserDao getUserDao();
 
+
+    /**
+     * 排行榜
+     *
+     * @return
+     */
+    public abstract RankingListDao getRankingListDao();
 
 }
