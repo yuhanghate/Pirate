@@ -55,7 +55,20 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
      * 初始化背景颜色
      */
     private fun initBackground() {
-        mBinding.root.setBackgroundColor(BookConstant.TEXT_PAGE_BACKGROUND)
+        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+    }
+
+    /**
+     * 改变背景颜色
+     */
+    fun resetBackground() {
+        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+        mViewModel.adapter.notifyDataSetChanged()
+        mBinding.recyclerView.scrollToPosition(mViewModel.adapter.chapterid)
+        mBinding.itemDrawerHeader.athorTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.itemDrawerHeader.titleTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.itemDrawerHeader.updateTimeTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.itemDrawerHeader.chapterListTv.setTextColor(BookConstant.getPageTextColor())
     }
 
     private fun onClick() {

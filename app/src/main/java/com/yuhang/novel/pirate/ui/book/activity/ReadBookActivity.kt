@@ -21,16 +21,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
-import com.yuhang.novel.pirate.extension.niceToast
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
+import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
@@ -51,7 +52,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         ReadBookTextView.OnClickCenterListener, ReadBookTextView.OnClickNextListener,
         ReadBookTextView.OnClickPreviousListener, OnClickChapterItemListener, OnRefreshLoadMoreListener,
         OnPageIndexListener {
-
 
 
     private var mTopInAnim: Animation? = null
@@ -99,7 +99,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         )
 
         super.onCreate(savedInstanceState)
-        window.navigationBarColor = Color.parseColor("#F6EFDD")
+        window.navigationBarColor = BookConstant.getPageBackground()
     }
 
 
@@ -131,6 +131,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initDrawerView()
         onClick()
         initBackground()
+        resetBackground(BookConstant.getPageColorIndex())
     }
 
     /**
@@ -151,6 +152,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mBinding.root.setBackgroundColor(BookConstant.TEXT_PAGE_BACKGROUND)
         mBinding.layoutTop.root.setBackgroundColor(BookConstant.TEXT_PAGE_BACKGROUND)
         mBinding.layoutButton.root.setBackgroundColor(BookConstant.TEXT_PAGE_BACKGROUND)
+        mBinding.layoutButton.colorLl.visibility = View.GONE
     }
 
     private fun initViewModel() {
@@ -189,12 +191,79 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             super.onBackPressed()
         }
         mBinding.layoutButton.chapterDirTv.setOnClickListener {
+            fragment?.resetBackground()
             toggleMenu()
             mBinding.drawerLayout.openDrawer(Gravity.START)
         }
 
         mBinding.loading.setOnClickListener { toggleMenu() }
         mBinding.layoutTop.refreshTv.setOnClickListener { netDataChatpterContent() }
+
+        mBinding.layoutButton.pageBg1.setOnClickListener {
+            resetBackground(0)
+            mViewModel.adapter.notifyDataSetChanged()
+        }
+        mBinding.layoutButton.pageBg2.setOnClickListener {
+            resetBackground(1)
+            mViewModel.adapter.notifyDataSetChanged()
+        }
+        mBinding.layoutButton.pageBg3.setOnClickListener {
+            resetBackground(2)
+            mViewModel.adapter.notifyDataSetChanged()
+        }
+        mBinding.layoutButton.pageBg4.setOnClickListener {
+            resetBackground(3)
+            mViewModel.adapter.notifyDataSetChanged()
+        }
+
+        mBinding.layoutButton.contentBackgroundTv.setOnClickListener {
+            mBinding.layoutButton.colorLl.visibility = View.VISIBLE
+        }
+
+
+    }
+
+    /**
+     * 重置背景颜色
+     */
+    private fun resetBackground(index : Int) {
+        BookConstant.setPageBackground(index)
+        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+        mBinding.layoutButton.root.setBackgroundColor(BookConstant.getPageBackground())
+
+        //底部栏字体颜色
+        mBinding.layoutButton.chapterDirTv.setBackgroundResource(BookConstant.getReadBookButton())
+        mBinding.layoutButton.contentBackgroundTv.setBackgroundResource(BookConstant.getReadBookButton())
+        mBinding.layoutButton.fontTv.setBackgroundResource(BookConstant.getReadBookButton())
+        mBinding.layoutButton.chapterProgressTv.setBackgroundResource(BookConstant.getReadBookButton())
+
+        //底部栏背景颜色
+        mBinding.layoutButton.chapterDirTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.layoutButton.contentBackgroundTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.layoutButton.fontTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.layoutButton.chapterProgressTv.setTextColor(BookConstant.getPageTextColor())
+
+        //navigateion状态栏颜色
+        window.navigationBarColor = BookConstant.getPageBackground()
+
+        //顶部栏颜色和字体颜色
+        mBinding.layoutTop.root.setBackgroundColor(BookConstant.getPageBackground())
+        mBinding.layoutTop.resouceTv.setTextColor(BookConstant.getPageTextColor())
+        mBinding.layoutTop.refreshTv.setTextColor(BookConstant.getPageTextColor())
+
+        //返回按钮颜色
+        if (BookConstant.getPageColorIndex() == 3) {
+            mBinding.layoutTop.backIv.setImageResource(R.drawable.btn_back_white)
+        } else {
+            mBinding.layoutTop.backIv.setImageResource(R.drawable.btn_back_black)
+        }
+
+        mBinding.footerV.setBackgroundColor(BookConstant.getPageBackground())
+
+
+
+//        mBinding.textPage.setPageTextColor(BookConstant.getPageTextColor())
+//        mBinding.textPage.build()
     }
 
     /**
@@ -214,6 +283,9 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 mBinding.layoutTop.root.visibility = View.INVISIBLE
                 mBinding.layoutButton.root.visibility = View.INVISIBLE
                 mBinding.bgShadow.visibility = View.INVISIBLE
+
+                //关闭时隐藏背景
+                mBinding.layoutButton.colorLl.visibility = View.GONE
             }, DURATION)
 
             toggleMenuSwitch = false

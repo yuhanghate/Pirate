@@ -1,6 +1,8 @@
 package com.yuhang.novel.pirate.constant
 
 import android.graphics.Color
+import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 
 object BookConstant {
 
@@ -35,5 +37,70 @@ object BookConstant {
      * 上一页加载触发数
      */
     const val LOAD_REFRESH_COUNT = 3
+
+    /**
+     * 阅读背景
+     */
+    fun getPageBackground(): Int {
+        return Color.parseColor(PreferenceUtil.getString("page_color", "#F6EFDD"))
+    }
+
+    /**
+     * 获取字体颜色
+     */
+    fun getPageTextColor(): Int {
+        return Color.parseColor(PreferenceUtil.getString("page_text_color", "#212121"))
+    }
+
+    /**
+     * 阅读页底部背景
+     */
+    fun getReadBookButton(): Int {
+        val list = arrayListOf<Int>(R.drawable.bg_read_book_button1, R.drawable.bg_read_book_button2,
+                R.drawable.bg_read_book_button3, R.drawable.bg_read_book_button4)
+        return list[PreferenceUtil.getInt("page_color_index", 1)]
+    }
+
+    /**
+     * 设置阅读背景
+     */
+    fun setPageBackground(position: Int) {
+        when (position) {
+            0 -> {
+                PreferenceUtil.commitString("page_color", "#ffffff")
+                PreferenceUtil.commitString("page_text_color", "#212121")
+                PreferenceUtil.commitInt("page_color_index", position)
+            }
+            1 -> {
+                PreferenceUtil.commitString("page_color", "#F6EFDD")
+                PreferenceUtil.commitString("page_text_color", "#212121")
+                PreferenceUtil.commitInt("page_color_index", position)
+            }
+            2 -> {
+                PreferenceUtil.commitString("page_color", "#FFC9F1CF")
+                PreferenceUtil.commitString("page_text_color", "#212121")
+                PreferenceUtil.commitInt("page_color_index", position)
+            }
+            3 -> {
+                PreferenceUtil.commitString("page_color", "#FF232533")
+                PreferenceUtil.commitString("page_text_color", "#DEFFFFFF")
+                PreferenceUtil.commitInt("page_color_index", position)
+            }
+        }
+    }
+
+    /**
+     * 当前选择的页面颜色
+     */
+    fun getPageColorIndex() :Int{
+        return PreferenceUtil.getInt("page_color_index", 1)
+    }
+
+    /**
+     * 获取可选择背影颜色
+     */
+    fun getPageColorArray(): List<String> {
+        return arrayListOf<String>("#ffffff", "#F6EFDD", "#FFC9F1CF", "#FF232533")
+    }
 
 }

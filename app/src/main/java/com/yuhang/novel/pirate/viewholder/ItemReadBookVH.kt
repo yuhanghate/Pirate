@@ -38,6 +38,7 @@ class ItemReadBookVH(parent: ViewGroup) :
             val margin = mContext.niceDp2px(20f)
             mBinding.contentTv.textSize = BookConstant.TEXT_PAGE_SIZE
             mBinding.contentTv.setTitle(txtPage.title)
+                    .setPageTextColor(BookConstant.getPageTextColor())
                     .setBattery(mBatteryLevel)
                     .setMargin(margin, margin, 0, 0)
                     .setCurPage(txtPage)

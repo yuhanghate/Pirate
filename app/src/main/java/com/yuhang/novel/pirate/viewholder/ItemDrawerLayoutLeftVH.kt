@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
+import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ItemDrawerlayoutLeftBinding
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 
@@ -14,13 +15,16 @@ class ItemDrawerLayoutLeftVH(parent:ViewGroup):BaseViewHolder<BookChapterKSEntit
 
         mBinding.chapterNameTv.text = obj.name
 
+        mBinding.root.setBackgroundResource(BookConstant.getReadBookButton())
+
+
         /**
          * 如果是最后一次点击的item
          */
         if (chapterid == obj.chapterId) {
             mBinding.chapterNameTv.setTextColor(ContextCompat.getColor(mContext,R.color.primary))
         } else {
-            mBinding.chapterNameTv.setTextColor(ContextCompat.getColor(mContext, R.color.primary_text))
+            mBinding.chapterNameTv.setTextColor(BookConstant.getPageTextColor())
         }
     }
 }

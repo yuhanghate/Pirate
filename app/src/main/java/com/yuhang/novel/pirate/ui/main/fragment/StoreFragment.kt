@@ -227,7 +227,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         val imageView = item.getChildAt(1) as ImageView
 
         if (isClick) {
-            textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.text_black))
+            textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.text_white_color))
             textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_select_color))
             imageView.visibility = View.VISIBLE
             val tag = textview.tag as String
@@ -240,7 +240,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
             }
         } else {
             textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.primary_text))
-            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_color))
+            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_unselect_color))
             imageView.visibility = View.GONE
         }
     }

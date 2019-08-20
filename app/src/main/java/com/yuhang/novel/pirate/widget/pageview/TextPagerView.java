@@ -1,15 +1,24 @@
 package com.yuhang.novel.pirate.widget.pageview;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import com.orhanobut.logger.Logger;
-import com.yuhang.novel.pirate.app.PirateApp;
-import com.yuhang.novel.pirate.utils.*;
+import com.yuhang.novel.pirate.utils.AppManagerUtils;
+import com.yuhang.novel.pirate.utils.IOUtils;
+import com.yuhang.novel.pirate.utils.ScreenUtils;
+import com.yuhang.novel.pirate.utils.StatusBarUtil;
+import com.yuhang.novel.pirate.utils.StringUtils;
 import com.yuhang.novel.pirate.widget.ReadBookTextView;
 
 import java.io.BufferedReader;
@@ -225,6 +234,7 @@ public class TextPagerView extends ReadBookTextView {
         mTipPaint.setTextSize(ScreenUtils.spToPx(DEFAULT_TIP_SIZE)); // Tip默认的字体大小
         mTipPaint.setAntiAlias(true);
         mTipPaint.setSubpixelText(true);
+
 
         // 绘制页面内容的画笔
         mTextPaint = new TextPaint();
@@ -652,6 +662,14 @@ public class TextPagerView extends ReadBookTextView {
      */
     public TextPagerView setTitle(String title) {
         mTitleText = title;
+        return this;
+    }
+
+    public TextPagerView setPageTextColor(int color) {
+        mTextColor = color;
+//        mTipPaint.setColor(color);
+//        mTextPaint.setColor(color);
+//        mTitlePaint.setColor(color);
         return this;
     }
 

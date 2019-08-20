@@ -11,8 +11,10 @@
     <color name="window_background">@color/md_white_1000</color>
     <color name="actionbar_color">@color/md_white_1000</color>
     <color name="item_color">@color/md_white_1000</color>
+    <color name="item_color_grey">@color/md_grey_200</color>
     <color name="image_tint">#000000</color>
-    <color name="item_select_color">@color/md_red_200</color>
+    <color name="item_select_color">@color/md_blue_200</color>
+    <color name="item_unselect_color">@color/md_grey_200</color>
     <color name="text_black">@color/md_black_1000</color>
     <color name="btn_blue_color">@color/md_blue_500</color>
     <color name="btn_white_color">@color/md_white_1000</color>
