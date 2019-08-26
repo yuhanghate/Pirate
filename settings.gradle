@@ -1,1 +1,1 @@
-include ':app', ':bottom-bar', ':empty-layout', ':fastscroll', ':search-view'
+include ':app', ':bottom-bar', ':empty-layout', ':fastscroll', ':search-view', ':bubbleseekbar'

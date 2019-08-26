@@ -57,7 +57,7 @@ fun DataRepository.niceBody(obj: Any): RequestBody {
 /**
  * 获取存放小说的目录id
  */
-fun DataRepository.niceDir(bookid: Int): Int {
+fun DataRepository.niceDir(bookid: Long): Int {
     if (bookid < 1000) {
         return 1
     }

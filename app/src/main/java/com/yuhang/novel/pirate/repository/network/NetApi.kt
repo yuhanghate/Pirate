@@ -54,7 +54,7 @@ interface NetApi {
      * 删除收藏
      */
     @DELETE("/api/m/book/collection/delete")
-    fun deleteCollectList(@Query("bookid") bookid: Int, @Query("resouceType") resouceType: String): Flowable<StatusResult>
+    fun deleteCollectList(@Query("bookid") bookid: Long, @Query("resouceType") resouceType: String): Flowable<StatusResult>
 
     /**
      * 最近浏览

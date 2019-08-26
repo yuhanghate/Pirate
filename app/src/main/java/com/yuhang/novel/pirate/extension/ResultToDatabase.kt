@@ -7,6 +7,8 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ContentData
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.RankingDataListResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -55,7 +57,7 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     return BookInfoKSEntity().apply {
         this.bookid = obj.id
         this.bookName = obj.name
-        this.lastTime = Date()
+        this.lastTime = System.currentTimeMillis()
         this.firstChapterId = obj.pid
         this.lastChapterId = obj.cid
         this.classifyId = -1
@@ -67,13 +69,15 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
  */
 fun BookDetailsDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     val obj = this
+//    val date = Date(obj.LastTime)
+    val date = Date.parse(obj.LastTime)
     return BookInfoKSEntity().apply {
         this.bookid = obj.Id
         this.cover = obj.Img
         this.bookName = obj.Name
         this.author = obj.Author
         this.description = obj.Desc
-        this.lastTime = Date(obj.LastTime)
+        this.lastTime = date
         this.firstChapterId = obj.FirstChapterId
         this.lastChapterName = obj.LastChapter
         this.lastChapterId = obj.LastChapterId
@@ -125,6 +129,7 @@ fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     val result = this
     return BookInfoKSEntity().apply {
         this.bookName = result.bookName
+        this.bookid = result.bookid.toLong()
         this.description = result.description
         this.author = result.author
         this.cover = result.cover

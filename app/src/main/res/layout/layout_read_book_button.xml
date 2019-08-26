@@ -64,66 +64,132 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/font_ll"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:visibility="gone"
+            android:paddingEnd="20dp"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A"
+                android:textColor="@color/secondary_text"
+                android:textSize="20sp" />
+
+            <com.xw.repo.BubbleSeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A"
+                android:textColor="@color/secondary_text"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chapter_progress_ll"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_height="wrap_content">
+
+            <com.xw.repo.BubbleSeekBar
+                android:id="@+id/chapter_progress_sb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="50dp" />
+
+            <TextView
+                android:id="@+id/chapter_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="15sp"
+                android:textColor="@color/secondary_text"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="65dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
 
             <TextView
                 android:id="@+id/chapter_dir_tv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1"
+                android:drawableTop="@drawable/ic_read_book_bottom_dir"
                 android:background="@drawable/bg_material_item_yellow"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="目录"
                 android:textColor="@color/primary_text"
-                android:textSize="17sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/content_background_tv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1"
+                android:drawableTop="@drawable/ic_read_book_bottom_background"
                 android:background="@drawable/bg_material_item_yellow"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="背景"
                 android:textColor="@color/primary_text"
-                android:textSize="17sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/font_tv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_material_item_yellow"
+                android:drawableTop="@drawable/ic_read_book_bottom_font"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="字体"
                 android:textColor="@color/primary_text"
-                android:textSize="17sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/chapter_progress_tv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1"
+                android:drawableTop="@drawable/ic_read_book_bottom_progress"
                 android:background="@drawable/bg_material_item_yellow"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="进度"
                 android:textColor="@color/primary_text"
-                android:textSize="17sp" />
+                android:textSize="13sp" />
 
         </LinearLayout>
     </LinearLayout>

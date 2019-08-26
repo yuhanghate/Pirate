@@ -1,11 +1,13 @@
 package com.yuhang.novel.pirate.ui.settings.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivitySettingsBinding
 import com.yuhang.novel.pirate.ui.settings.viewmodel.SettingsViewModel
 import com.yuhang.novel.pirate.utils.GlideCacheUtil
@@ -14,12 +16,12 @@ import kotlin.concurrent.thread
 /**
  * 设置
  */
-class SettingsActivity : BaseActivity<ActivitySettingsBinding, SettingsViewModel>() {
+class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, SettingsViewModel>() {
 
     companion object {
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, SettingsActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 

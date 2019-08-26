@@ -19,6 +19,7 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.viewmodel.DrawerlayoutLeftViewModel
 import com.yuhang.novel.pirate.utils.DateUtils
 import com.yuhang.novel.pirate.utils.StatusBarUtil
+import java.util.*
 
 /**
  * 阅读界面左滑出来的章节目录
@@ -27,7 +28,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     OnClickItemListener {
 
 
-    var bookid: Int? = null
+    var bookid: Long? = null
 
     var chapterid: Int? = null
 
@@ -111,7 +112,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
             .subscribe({ bookInfo ->
                 mBinding.itemDrawerHeader.athorTv.text = bookInfo?.author
                 mBinding.itemDrawerHeader.titleTv.text = bookInfo?.bookName
-                mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(bookInfo?.lastTime)
+                mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(Date(bookInfo?.lastTime!!) )
 
                 mBinding.itemDrawerHeader.converIv.let {
 

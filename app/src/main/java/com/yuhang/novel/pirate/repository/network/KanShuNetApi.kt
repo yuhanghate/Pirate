@@ -38,42 +38,42 @@ interface KanShuNetApi {
      * dirId = (bookId - 后三位) + 1
      * bookId: 书本id
      */
-    @GET("https://infos.xllxdg.com/BookFiles/Html/{dirId}/{bookId}/info.html")
+    @GET("https://infos.1122dh.com/BookFiles/Html/{dirId}/{bookId}/info.html")
     fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Int
+        ) bookId: Long
     ): Flowable<BookDetailsResult>
 
     /**
      * 书本章节目录
      */
-    @GET("https://infos.xllxdg.com/BookFiles/Html/{dirId}/{bookId}/index.html")
+    @GET("https://infos.1122dh.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Int
+        ) bookId: Long
     ): Flowable<String>
 
     /**
      * 获取章节内容
      */
-    @GET("https://content.xllxdg.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://content.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Int, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: Int
     ): Flowable<ContentResult>
 
     /**
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
      */
-    @GET("https://codeapibak.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://downbak.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun downloadChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Int, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: Int
     ): Flowable<ContentResult>
 
 

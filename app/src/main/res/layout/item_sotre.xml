@@ -13,6 +13,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:backgroundTint="@color/item_color"
         android:orientation="vertical"
+        app:cardElevation="12dp"
         app:cardCornerRadius="6dp">
 
 

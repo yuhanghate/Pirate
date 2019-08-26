@@ -34,22 +34,32 @@ class ItemReadBookVH(parent: ViewGroup) :
         mBinding.contentTv.onClickPreviousListener = getListener()
         mBinding.contentTv.onClickCenterListener = getListener()
 
-        obj.txtPage?.let { txtPage ->
-            val margin = mContext.niceDp2px(20f)
-            mBinding.contentTv.textSize = BookConstant.TEXT_PAGE_SIZE
-            mBinding.contentTv.setTitle(txtPage.title)
-                    .setPageTextColor(BookConstant.getPageTextColor())
-                    .setBattery(mBatteryLevel)
-                    .setMargin(margin, margin, 0, 0)
-                    .setCurPage(txtPage)
-                    .init()
+//        obj.txtPage?.let { txtPage ->
+//            val margin = mContext.niceDp2px(20f)
+//            mBinding.contentTv.textSize = BookConstant.getPageTextSize()
+//            mBinding.contentTv.setTitle(txtPage.title)
+//                    .setPageTextColor(BookConstant.getPageTextColor())
+//                    .setBattery(mBatteryLevel)
+//                    .setMargin(margin, margin, 0, 0)
+//                    .setCurPage(txtPage)
+//                    .setTextPageBean(obj.textPageBean)
+//                    .init()
+//
+//        }
 
-        }
+        val margin = mContext.niceDp2px(20f)
+        mBinding.contentTv.textSize = BookConstant.getPageTextSize()
+        mBinding.contentTv.setTitle(obj.textPageBean?.chapterName)
+                .setPageTextColor(BookConstant.getPageTextColor())
+                .setBattery(mBatteryLevel)
+                .setMargin(margin, margin, 0, 0)
+                .setTextPageBean(obj.textPageBean)
+                .init()
 
-        mBinding.contentTv.post {
-            //更新绘制
-            mBinding.contentTv.invalidate()
-        }
+//        mBinding.contentTv.post {
+//            //更新绘制
+//            mBinding.contentTv.invalidate()
+//        }
 
 
 

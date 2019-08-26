@@ -16,7 +16,7 @@ class BookInfoKSEntity{
     /**
      * 小说id
      */
-    var bookid: Int = 0
+    var bookid: Long = 0
 
     /**
      * 小说封面
@@ -41,7 +41,7 @@ class BookInfoKSEntity{
     /**
      * 最后更新时间
      */
-    var lastTime: Date = Date(System.currentTimeMillis())
+    var lastTime: Long = System.currentTimeMillis()
 
     /**
      * 上一章节id

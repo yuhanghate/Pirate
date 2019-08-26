@@ -15,7 +15,7 @@ class DrawerlayoutLeftViewModel: BaseViewModel() {
     /**
      * 从本地查询章节目录
      */
-    fun queryChapterList(bookid: Int): Flowable<List<BookChapterKSEntity>> {
+    fun queryChapterList(bookid: Long): Flowable<List<BookChapterKSEntity>> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryChapterObjList(it) }
                 .subscribeOn(Schedulers.io())
@@ -25,7 +25,7 @@ class DrawerlayoutLeftViewModel: BaseViewModel() {
     /**
      * 从本地查询书籍信息
      */
-    fun queryBookInfo(bookid: Int): Flowable<BookInfoKSEntity?> {
+    fun queryBookInfo(bookid: Long): Flowable<BookInfoKSEntity?> {
         return Flowable.just(bookid)
             .map { mDataRepository.queryBookInfo(it) }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

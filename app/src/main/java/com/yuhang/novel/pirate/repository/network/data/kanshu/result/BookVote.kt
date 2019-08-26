@@ -17,7 +17,7 @@ data class BookVote(
   /**
    * 小说id
    */
-  val bookId: Int = 0,
+  val bookId: Long = 0,
   val voterCount: Int = 0,
   val totalScore: Int = 0
 )

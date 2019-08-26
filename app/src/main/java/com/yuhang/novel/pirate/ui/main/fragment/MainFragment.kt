@@ -243,7 +243,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     it.filterNotNull().forEach { list.add(it) }
                     mViewModel.adapter.setRefersh(list)
 
-//                showNewUpdateLabel()
                 }, {
                     mBinding.loading.showContent()
                     mViewModel.adapter.setRefersh(arrayListOf())
@@ -274,7 +273,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: LogoutEvent) {
-//        netLocalData()
+        netLocalData()
+//        isLogin = true
     }
 
     /**
@@ -282,7 +282,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: LoginEvent) {
-        isLogin = true
+//        isLogin = true
+        netLocalData()
     }
 
 }

@@ -2,11 +2,11 @@ package com.yuhang.novel.pirate.ui.book.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
@@ -16,6 +16,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -23,6 +24,8 @@ import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
+import com.xw.repo.BubbleSeekBar
+import com.xw.repo.OnProgressChangedListenerAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -31,7 +34,6 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
-import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
@@ -73,10 +75,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         const val BOOK_ID = "book_id"
         const val DURATION: Long = 190
 
-        fun start(context: Context, bookid: Int) {
+        fun start(context: Activity, bookid: Long) {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOK_ID, bookid)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
 
     }
@@ -86,7 +88,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
 
-    private fun getBookid() = intent.getIntExtra(BOOK_ID, -1)
+    private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,9 +131,127 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initRecyclerView()
         netDataChatpterContent()
         initDrawerView()
-        onClick()
+        initFontSeekBar()
         initBackground()
         resetBackground(BookConstant.getPageColorIndex())
+        initChapterProgressSeekBar()
+        onClick()
+    }
+
+    /**
+     * 初始化章节进度条
+     */
+    @SuppressLint("CheckResult")
+    private fun initChapterProgressSeekBar() {
+
+        mBinding.layoutButton.seekBar
+        mViewModel.getChapterList()
+                .compose(bindToLifecycle())
+                .subscribe({
+                    mViewModel.chapterList = it
+                    val entity = it.filter { it.chapterId == mViewModel.chapterid }.map { it }.toList()
+                    mBinding.layoutButton.chapterProgressSb.configBuilder
+                            .min(1f)
+                            .max((it.size).toFloat())
+                            .progress(1f)
+                            .sectionCount(it.size - 1)
+                            .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
+                            .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
+                            .thumbColor(ContextCompat.getColor(this, R.color.secondary_text))
+//                                    .showSectionText()
+                            .sectionTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+//                                    .sectionTextSize(18)
+//                                    .showThumbText()
+//                                    .touchToSeek()
+//                                    .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+//                                    .thumbTextSize(18)
+//                                    .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
+//                                    .bubbleTextSize(18)
+//                                    .showSectionMark()
+//                                    .seekBySection()
+//                                    .autoAdjustSectionMark()
+//                                    .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                            .build()
+
+                    mBinding.layoutButton.chapterProgressSb.onProgressChangedListener = object : OnProgressChangedListenerAdapter() {
+                        override fun onProgressChanged(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
+                            super.onProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
+                            mBinding.layoutButton.chapterNameTv.text = mViewModel.chapterList[progress - 1].name
+                        }
+
+                        override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
+                            super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
+
+                            netDataChapterContentFromId(mViewModel.chapterList[progress - 1].chapterId)
+                        }
+                    }
+
+                }, {})
+    }
+
+    /**
+     * 初始化字体进度条
+     */
+    private fun initFontSeekBar() {
+        mBinding.layoutButton.seekBar
+                .configBuilder
+                .min(1f)
+                .max(7f)
+                .progress(4f)
+                .sectionCount(6)
+                .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
+                .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
+                .thumbColor(ContextCompat.getColor(this, R.color.secondary_text))
+                .showSectionText()
+                .sectionTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+                .sectionTextSize(18)
+                .showThumbText()
+                .touchToSeek()
+                .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+                .thumbTextSize(18)
+                .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
+                .bubbleTextSize(18)
+                .showSectionMark()
+                .seekBySection()
+                .autoAdjustSectionMark()
+                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                .build()
+
+        mBinding.layoutButton.seekBar.onProgressChangedListener = object : OnProgressChangedListenerAdapter() {
+            override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
+                super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
+                when (progress) {
+                    1 -> {
+                        BookConstant.setPageTextSize(15f)
+                        netDataChatpterContent()
+                    }
+                    2 -> {
+                        BookConstant.setPageTextSize(16f)
+                        netDataChatpterContent()
+                    }
+                    3 -> {
+                        BookConstant.setPageTextSize(17f)
+                        netDataChatpterContent()
+                    }
+                    4 -> {
+                        BookConstant.setPageTextSize(18f)
+                        netDataChatpterContent()
+                    }
+                    5 -> {
+                        BookConstant.setPageTextSize(19f)
+                        netDataChatpterContent()
+                    }
+                    6 -> {
+                        BookConstant.setPageTextSize(20f)
+                        netDataChatpterContent()
+                    }
+                    7 -> {
+                        BookConstant.setPageTextSize(21f)
+                        netDataChatpterContent()
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -218,15 +338,32 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         mBinding.layoutButton.contentBackgroundTv.setOnClickListener {
             mBinding.layoutButton.colorLl.visibility = View.VISIBLE
+            mBinding.layoutButton.fontLl.visibility = View.GONE
+            mBinding.layoutButton.chapterProgressLl.visibility = View.GONE
         }
 
+
+        //字体大小
+        mBinding.layoutButton.fontTv.setOnClickListener {
+            mBinding.layoutButton.fontLl.visibility = View.VISIBLE
+            mBinding.layoutButton.colorLl.visibility = View.GONE
+            mBinding.layoutButton.chapterProgressLl.visibility = View.GONE
+        }
+
+        //进度
+        mBinding.layoutButton.chapterProgressTv.setOnClickListener {
+            mBinding.layoutButton.chapterProgressLl.visibility = View.VISIBLE
+            mBinding.layoutButton.colorLl.visibility = View.GONE
+            mBinding.layoutButton.fontLl.visibility = View.GONE
+            mBinding.layoutButton.chapterProgressSb.setProgress(mViewModel.getChapterIndex().toFloat() + 1)
+        }
 
     }
 
     /**
      * 重置背景颜色
      */
-    private fun resetBackground(index : Int) {
+    private fun resetBackground(index: Int) {
         BookConstant.setPageBackground(index)
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.layoutButton.root.setBackgroundColor(BookConstant.getPageBackground())
@@ -249,7 +386,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //顶部栏颜色和字体颜色
         mBinding.layoutTop.root.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.layoutTop.resouceTv.setTextColor(BookConstant.getPageTextColor())
-        mBinding.layoutTop.refreshTv.setTextColor(BookConstant.getPageTextColor())
+//        mBinding.layoutTop.refreshTv.setTextColor(BookConstant.getPageTextColor())
 
         //返回按钮颜色
         if (BookConstant.getPageColorIndex() == 3) {
@@ -259,7 +396,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
 
         mBinding.footerV.setBackgroundColor(BookConstant.getPageBackground())
-
 
 
 //        mBinding.textPage.setPageTextColor(BookConstant.getPageTextColor())
@@ -286,6 +422,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
                 //关闭时隐藏背景
                 mBinding.layoutButton.colorLl.visibility = View.GONE
+                //关闭字体
+                mBinding.layoutButton.fontLl.visibility = View.GONE
+                //关闭进度
+                mBinding.layoutButton.chapterProgressLl.visibility = View.GONE
             }, DURATION)
 
             toggleMenuSwitch = false
@@ -614,7 +754,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         /**
          * 每次滑动页面都更新时间和角标
          */
-        mViewModel.updateLastOpenTimeAndPosition(obj.chapterId, obj.txtPage?.position!!)
+        mViewModel.updateLastOpenTimeAndPosition(obj.chapterId, obj.textPageBean?.currentPage!!)
 
 
         /**
@@ -645,7 +785,12 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         MaterialDialog(this).show {
             title(text = "提示")
             message(text = "是否添加到书架?")
-            negativeButton(text = "取消")
+            negativeButton(text = "取消", click = object :DialogCallback{
+                override fun invoke(p1: MaterialDialog) {
+                    mViewModel.isCollection = true
+                    this@ReadBookActivity.onBackPressedSupport()
+                }
+            })
             positiveButton(text = "确定", click = object : DialogCallback {
                 @SuppressLint("CheckResult")
                 override fun invoke(p1: MaterialDialog) {
@@ -696,13 +841,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private var mReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra("level", 0)
-            val bookVH =
-                    mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
+
             if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
+                val bookVH =
+                    mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
                 mViewModel.adapter.mBatteryLevel = level
                 bookVH?.mBinding?.contentTv?.updateBattery(level)
             } else if (intent.action == Intent.ACTION_TIME_TICK) {
-                mViewModel.adapter.notifyDataSetChanged()
+//                mViewModel.adapter.notifyDataSetChanged()
             }// 监听分钟的变化
 
         }

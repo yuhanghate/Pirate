@@ -1,6 +1,8 @@
 package com.yuhang.novel.pirate.base
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.annotation.LayoutRes
@@ -26,9 +28,22 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
 
     lateinit var mProgressbar: ProgressDialog
 
+    companion object {
+
+        /**
+         * 打开Activity,自定义动画
+         */
+        fun startIntent(activity: Activity, intent: Intent) {
+            activity.startActivity(intent)
+            activity.overridePendingTransition(com.yuhang.novel.pirate.R.anim.slide_in_right, com.yuhang.novel.pirate.R.anim.slide_in_left)
+
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         window.navigationBarColor = ContextCompat.getColor(this, com.yuhang.novel.pirate.R.color.navigation_bar_color)
         ThemeHelper.applyTheme(PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE))
+
         super.onCreate(savedInstanceState)
         Logger.i(" oncreate ->${this}")
         initLayoutInflater()
@@ -154,16 +169,16 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      */
     fun replaceFragment(id: Int, fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(id, fragment)
-            .commitNow()
+                .replace(id, fragment)
+                .commitNow()
     }
 
     /**
      * 添加所有fragment
      */
     fun addFragmentList(
-        id: Int,
-        fragmentList: List<Fragment>, showIndex: Int
+            id: Int,
+            fragmentList: List<Fragment>, showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         fragmentList.forEach { beginTransaction.add(id, it) }
@@ -182,8 +197,8 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 显示Fragment
      */
     fun showFragment(
-        fragmentList: List<Fragment>,
-        showIndex: Int
+            fragmentList: List<Fragment>,
+            showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         (0 until fragmentList.size).forEachIndexed { index, i ->

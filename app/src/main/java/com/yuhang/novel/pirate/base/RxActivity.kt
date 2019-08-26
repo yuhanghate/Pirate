@@ -14,6 +14,7 @@ import com.trello.rxlifecycle2.android.RxLifecycleAndroid
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import me.yokeyword.fragmentation.SupportActivity
+import me.yokeyword.fragmentation_swipeback.SwipeBackActivity
 
 open class RxActivity: SupportActivity(), LifecycleProvider<ActivityEvent> {
 

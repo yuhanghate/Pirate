@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.ui.settings.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.yuhang.novel.pirate.R
@@ -13,9 +14,9 @@ import com.yuhang.novel.pirate.ui.settings.viewmodel.DisclaimerViewModel
 class DisclaimerActivity :BaseActivity<ActivityDisclaimerBinding, DisclaimerViewModel>(){
 
     companion object{
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, DisclaimerActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 

@@ -21,25 +21,25 @@ interface BookContentKSDao {
      * 查找章节内容
      */
     @Query("select * from bookcontentksentity as c where c.chapterId = :chapterid and c.bookId = :bookid limit 1")
-    fun query(bookid: Int, chapterid: Int): BookContentKSEntity?
+    fun query(bookid: Long, chapterid: Int): BookContentKSEntity?
 
     /**
      * 查询章节内容
      */
     @Query("select * from bookcontentksentity as c where c.chapterId = :chapterid and c.bookId = :bookid limit 1")
-    fun queryObj(bookid: Int, chapterid: Int): BookContentKSEntity?
+    fun queryObj(bookid: Long, chapterid: Int): BookContentKSEntity?
 
     /**
      * 查询书箱章节所有的更新时间
      */
     @Query("select c.lastOpenTime from bookcontentksentity as c where c.bookId = :bookid order by c.lastOpenTime desc")
-    fun queryTimeList(bookid: Int): List<Long>
+    fun queryTimeList(bookid: Long): List<Long>
 
     /**
      * 更新时间+章节id
      */
     @Query("select * from bookcontentksentity as c where c.bookId=:bookid order by c.lastOpenTime desc")
-    fun queryTimeAndChapterid(bookid: Int): List<BookContentKSEntity?>
+    fun queryTimeAndChapterid(bookid: Long): List<BookContentKSEntity?>
 
 
     /**
@@ -52,7 +52,7 @@ interface BookContentKSDao {
      * 根据小说id查询最近阅读章节
      */
     @Query("select * from bookcontentksentity as c  where c.bookId = :bookid  order by c.lastOpenTime desc limit 1")
-    fun queryLastOpenChapter(bookid: Int): BookContentKSEntity?
+    fun queryLastOpenChapter(bookid: Long): BookContentKSEntity?
 
     /**
      * 是否显示更新
@@ -72,7 +72,7 @@ interface BookContentKSDao {
      * 删除指定的章节内容
      */
     @Query("delete from bookcontentksentity where bookId = :bookid and chapterId = :chapterid")
-    fun delete(bookid: Int, chapterid: Int)
+    fun delete(bookid: Long, chapterid: Int)
 
 
     @Query("delete from bookcontentksentity")

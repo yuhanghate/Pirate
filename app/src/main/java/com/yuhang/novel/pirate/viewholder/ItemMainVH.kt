@@ -11,9 +11,7 @@ import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
 import java.text.SimpleDateFormat
-import java.util.Date
 
 class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainBinding>(
     parent, com.yuhang.novel.pirate.R.layout.item_main
@@ -25,6 +23,7 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
         position: Int
     ) {
         super.onBindViewHolder(obj, position)
+
 
         /**
          * 加载原始数据

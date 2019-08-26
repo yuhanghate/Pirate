@@ -226,3 +226,7 @@
 -dontwarn  com.arlib.floatingsearchview.**
 -keep class com.arlib.floatingsearchview.** { *; }
 -keep interface com.arlib.floatingsearchview.** { *; }
+
+-dontwarn  com.xw.repo.**
+-keep class com.xw.repo.** { *; }
+-keep interface com.xw.repo.** { *; }

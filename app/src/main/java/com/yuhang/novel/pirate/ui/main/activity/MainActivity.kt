@@ -2,7 +2,7 @@ package com.yuhang.novel.pirate.ui.main.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.os.Handler
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
@@ -54,7 +54,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         loadMultipleRootFragment(
             R.id.nav_host_fragment,
-            0,
+            intent.getIntExtra("tab_index", 0),
             MainFragment.newInstance(),
             StoreFragment.newInstance(),
             MeFragment.newInstance()
@@ -63,37 +63,24 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 //        val nearby = mBinding.bottomBar.getTabWithId(R.id.tab_main)
 //        nearby.setBadgeCount(5)
 
-//        navController = findNavController(R.id.nav_host_fragment)
         mBinding.bottomBar.setOnTabSelectListener {
 
             when (it) {
-                R.id.tab_main -> {
-                    showHideFragment(findFragment(MainFragment::class.java))
-                }
-                R.id.tab_store -> {
-                    showHideFragment(findFragment(StoreFragment::class.java))
-                }
-                R.id.tab_me -> {
-                    showHideFragment(findFragment(MeFragment::class.java))
-                }
+                R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
+                R.id.tab_store -> showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
 //
         mBinding.bottomBar.setOnTabReselectListener {
             when (it) {
-                R.id.tab_main -> {
-                    showHideFragment(findFragment(MainFragment::class.java))
-                }
-                R.id.tab_store -> {
-                    showHideFragment(findFragment(StoreFragment::class.java))
-                }
-                R.id.tab_me -> {
-                    showHideFragment(findFragment(MeFragment::class.java))
-                }
+                R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
+                R.id.tab_store -> showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
 
-//        loadRootFragment(R.id.nav_host_fragment, MainFragment.newInstance())
+        mBinding.bottomBar.getTabAtPosition(intent.getIntExtra("tab_index", 0)).callOnClick()
     }
 
 
@@ -120,16 +107,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
         mViewModel.updateChapterToDB()
-    }
-
-    /**
-     * 退出登陆
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(obj: LogoutEvent) {
-//        navController.navigate(R.id.mainFragment)
-
-        mBinding.bottomBar.selectTabAtPosition(0)
     }
 
 }

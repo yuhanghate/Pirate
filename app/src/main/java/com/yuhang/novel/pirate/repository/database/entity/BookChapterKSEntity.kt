@@ -35,5 +35,5 @@ data class BookChapterKSEntity(
   /**
    * 书籍id
    */
-  val bookId: Int = 0
+  val bookId: Long = 0
 )

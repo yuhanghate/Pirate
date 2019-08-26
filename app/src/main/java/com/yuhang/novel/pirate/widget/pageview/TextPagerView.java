@@ -1,24 +1,13 @@
 package com.yuhang.novel.pirate.widget.pageview;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-
 import com.orhanobut.logger.Logger;
-import com.yuhang.novel.pirate.utils.AppManagerUtils;
-import com.yuhang.novel.pirate.utils.IOUtils;
-import com.yuhang.novel.pirate.utils.ScreenUtils;
-import com.yuhang.novel.pirate.utils.StatusBarUtil;
-import com.yuhang.novel.pirate.utils.StringUtils;
+import com.yuhang.novel.pirate.utils.*;
 import com.yuhang.novel.pirate.widget.ReadBookTextView;
 
 import java.io.BufferedReader;
@@ -76,6 +65,8 @@ public class TextPagerView extends ReadBookTextView {
 
     // 当前显示的页
     private TxtPage mCurPage;
+    //当前显示页
+    private TextPageBean mTextPageBean;
     // 上一章的页面列表缓存
 //    private List<TxtPage> mPrePageList;
     // 当前章节的页面列表
@@ -103,6 +94,8 @@ public class TextPagerView extends ReadBookTextView {
     private int mBatteryLevel = 100;
     //章节内容,流方式
     private BufferedReader mContent;
+    //章节标题
+    private String mTitle;
 
     private int left;
     private int top;
@@ -151,6 +144,7 @@ public class TextPagerView extends ReadBookTextView {
         this.top = top;
         this.right = right;
         this.bottom = bottom;
+
     }
 
 
@@ -188,10 +182,10 @@ public class TextPagerView extends ReadBookTextView {
      * 获取内容显示位置的大小
      */
     private void resetVisibleWidthAndHeight() {
-        int realHeight = StatusBarUtil.getRealHeight(getContext());
-        int navigationbar = StatusBarUtil.getNavigationBarSize(getContext()).y;
+//        int realHeight = StatusBarUtil.getRealHeight(getContext());
+//        int navigationbar = StatusBarUtil.getNavigationBarSize(getContext()).y;
         mVisibleWidth = mDisplayWidth - mMarginWidthStart - mMarginWidthEnd - getPaddingStart() - getPaddingEnd();
-        mVisibleHeight = realHeight - mMarginHeightTop - mMarginHeightButton - getPaddingTop() - getPaddingBottom() - navigationbar;
+        mVisibleHeight = mDisplayHeight - mMarginHeightTop - mMarginHeightButton - getPaddingTop() - getPaddingBottom();
     }
 
 
@@ -218,12 +212,12 @@ public class TextPagerView extends ReadBookTextView {
         mTextInterval = mTextPaint.getFontSpacing() / 2;
         mTitleInterval = mTitlePaint.getFontSpacing() / 2;
         // 段落间距(大小为字体的高度)
-        mTextPara = mTextPaint.getFontSpacing();
-        mTitlePara = mTitlePaint.getFontSpacing();
+        mTextPara = mTextPaint.getFontSpacing() + mTextInterval;
+        mTitlePara = mTitlePaint.getFontSpacing() + mTitleInterval;
 
         //小标题段落间距
-        mTipPare = mTipPaint.getFontSpacing();
         mTipInterval = mTipPaint.getFontSpacing() / 2;
+        mTipPare = mTipPaint.getFontSpacing() + mTipInterval;
     }
 
     private void initPaint() {
@@ -275,14 +269,102 @@ public class TextPagerView extends ReadBookTextView {
         }
 
 
-        if (mCurPage != null) {
+//        if (mCurPage != null) {
+//
+//            drawContent(canvas);
+//            drawBackground(canvas);
+//        }
 
-            drawContent(canvas);
-            drawBackground(canvas);
-
+        if (mTextPageBean != null) {
+            drawContent2(canvas);
+            drawBackground2(canvas);
         }
 
 
+    }
+
+    private void drawBackground2(Canvas canvas) {
+        int tipMarginHeight = ScreenUtils.dpToPx(3);
+        /****绘制背景****/
+
+        /*****初始化标题的参数********/
+        //需要注意的是:绘制text的y的起始点是text的基准线的位置，而不是从text的头部的位置
+//        if (mTextPageBean.getCurrentPage() != 0) {
+//            //第一页只显示大标题其他页面显示小标题
+//            float tipTop = mTipPare + mMarginHeightTop + getPaddingTop() + mTipPaint.getFontSpacing();
+//            canvas.drawText(mTextPageBean.getChapterName(), mMarginWidth, tipTop, mTipPaint);
+//        }
+
+
+        /******绘制页码********/
+        // 底部的字显示的位置Y
+//        float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
+//        float y = mDisplayHeight - mMarginHeightButton - getPaddingBottom();
+
+//        int status = StatusBarUtil.getStatusBarHeight(getContext());
+//        float navige = StatusBarUtil.getNavigationBarSize(getContext()).y;
+//        int realHeight = StatusBarUtil.getRealHeight(getContext());
+//        int status2 = StatusBarUtil.getHeight(getContext());
+//        int virtualBarHeight = StatusBarUtil.getVirtualBarHeight(getContext());
+
+//        y -= navige;
+//        y -= status;
+//
+//        y = mVisibleHeight + getPaddingTop() + tipMarginHeight;
+//
+//        y = bottom - navige - tipMarginHeight;
+
+        float y = mDisplayHeight - getPaddingBottom() - mMarginHeightButton - mTipPaint.getFontSpacing();
+
+//        int height = AppManagerUtils.getAppManager().currentActivity().getWindowManager().getDefaultDisplay().getHeight();
+//        Logger.i("mDisplayHeight=" + mDisplayHeight + " statusbar=" + status + " virtualBarHeight=" + virtualBarHeight + " navige=" + navige + " mVisibleHeight=" + mVisibleHeight + " bottom=" + bottom + " mMarginHeightButton" + mMarginHeightButton + " getPaddingBottom" + getPaddingBottom() + " tipMarginHeight=" + tipMarginHeight + " DisplayHeight=" + height + " y=" + y);
+        // 只有finish的时候采用页码
+        String percent = (mTextPageBean.getCurrentPage() + 1) + "/" + mTextPageBean.getMaxPage() + "页";
+        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ScreenUtils.dpToPx(10), y, mTipPaint);
+
+
+        /******绘制电池********/
+
+//        String time = StringUtils.dateConvert(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss") + ScreenUtils.dpToPx(5);
+        int visibleRight = ScreenUtils.dpToPx(25) + getPaddingStart() + mMarginWidthStart;
+        int visibleBottom = (int) y;
+
+        int outFrameWidth = (int) mTipPaint.measureText("xxx");
+        int outFrameHeight = (int) mTipPaint.getTextSize();
+
+        int polarHeight = ScreenUtils.dpToPx(6);
+        int polarWidth = ScreenUtils.dpToPx(2);
+        int border = 1;
+        int innerMargin = 1;
+
+        //电极的制作
+        int polarLeft = visibleRight - polarWidth;
+        int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
+        Rect polar = new Rect(polarLeft, polarTop, visibleRight,
+                polarTop + polarHeight - ScreenUtils.dpToPx(2));
+
+        mBatteryPaint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(polar, mBatteryPaint);
+
+        //外框的制作
+        int outFrameLeft = polarLeft - outFrameWidth;
+        int outFrameTop = visibleBottom - outFrameHeight;
+        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
+        Rect outFrame = new Rect(outFrameLeft, outFrameTop, polarLeft, outFrameBottom);
+
+        mBatteryPaint.setStyle(Paint.Style.STROKE);
+        mBatteryPaint.setStrokeWidth(border);
+        canvas.drawRect(outFrame, mBatteryPaint);
+
+        //内框的制作
+        float innerWidth = (outFrame.width() - innerMargin * 2 - border) * (mBatteryLevel / 100.0f);
+        RectF innerFrame = new RectF(outFrameLeft + border + innerMargin, outFrameTop + border + innerMargin,
+                outFrameLeft + border + innerMargin + innerWidth, outFrameBottom - border - innerMargin);
+
+        mBatteryPaint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(innerFrame, mBatteryPaint);
+        /******绘制当前电量********/
+        canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -307,7 +389,7 @@ public class TextPagerView extends ReadBookTextView {
 
         int status = StatusBarUtil.getStatusBarHeight(getContext());
         float navige = StatusBarUtil.getNavigationBarSize(getContext()).y;
-        int realHeight = StatusBarUtil.getRealHeight(getContext());
+//        int realHeight = StatusBarUtil.getRealHeight(getContext());
 //        int status2 = StatusBarUtil.getHeight(getContext());
         int virtualBarHeight = StatusBarUtil.getVirtualBarHeight(getContext());
 
@@ -318,13 +400,13 @@ public class TextPagerView extends ReadBookTextView {
 //
 //        y = bottom - navige - tipMarginHeight;
 
-        float y = mVisibleHeight + getPaddingTop() + mMarginHeightTop - mTipPaint.getFontSpacing();
+        float y = mDisplayHeight - getPaddingBottom() - mMarginHeightButton - mTipPaint.getFontSpacing();
 
         int height = AppManagerUtils.getAppManager().currentActivity().getWindowManager().getDefaultDisplay().getHeight();
-        Logger.i("mDisplayHeight=" + mDisplayHeight + " statusbar=" + status + " virtualBarHeight=" + virtualBarHeight + " realHeight=" + realHeight + " navige=" + navige + " mVisibleHeight=" + mVisibleHeight + " bottom=" + bottom + " mMarginHeightButton" + mMarginHeightButton + " getPaddingBottom" + getPaddingBottom() + " tipMarginHeight=" + tipMarginHeight + " DisplayHeight=" + height + " y=" + y);
+        Logger.i("mDisplayHeight=" + mDisplayHeight + " statusbar=" + status + " virtualBarHeight=" + virtualBarHeight + " navige=" + navige + " mVisibleHeight=" + mVisibleHeight + " bottom=" + bottom + " mMarginHeightButton" + mMarginHeightButton + " getPaddingBottom" + getPaddingBottom() + " tipMarginHeight=" + tipMarginHeight + " DisplayHeight=" + height + " y=" + y);
         // 只有finish的时候采用页码
         String percent = (mCurPage.position + 1) + "/" + mCurPage.pageSize + "页";
-        canvas.drawText(percent, mVisibleWidth + mMarginWidthStart + getPaddingStart() - mTipPaint.measureText(percent) - ScreenUtils.dpToPx(10), y, mTipPaint);
+        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ScreenUtils.dpToPx(10), y, mTipPaint);
 
 
         /******绘制电池********/
@@ -379,6 +461,32 @@ public class TextPagerView extends ReadBookTextView {
 //        canvas.drawText(time, x, yy, mTipPaint);
     }
 
+    public Canvas drawContent2(Canvas canvas) {
+        PageUtils.PageBean bean = new PageUtils.PageBean();
+        bean.titlePaint = mTitlePaint;
+        bean.tipPaint = mTipPaint;
+        bean.height = mDisplayHeight;
+        bean.width = mDisplayWidth;
+        bean.marginButtom = mMarginHeightButton;
+        bean.marginEnd = mMarginWidthEnd;
+        bean.marginStart = mMarginWidthStart;
+        bean.marginTop = mMarginHeightTop;
+        bean.padddingEnd = getPaddingEnd();
+        bean.padddingStart = getPaddingTop();
+        bean.paddingButtom = getPaddingBottom();
+        bean.paddingTop = getPaddingTop();
+        bean.textInterval = mTextInterval;
+        bean.tipInterval = mTipInterval;
+        bean.textPaint = mTextPaint;
+        bean.textPare = mTextPara;
+        bean.tipPare = mTipPare;
+        bean.titleInterval = mTitleInterval;
+        bean.titlePare = mTitlePara;
+        bean.title = mTitleText;
+        return PageUtils.drawContent(canvas, mTextPageBean, bean);
+    }
+
+
     /**
      * 绘制内容
      *
@@ -387,18 +495,16 @@ public class TextPagerView extends ReadBookTextView {
      */
     public Canvas drawContent(Canvas canvas) {
 
-//        Canvas canvas = new Canvas(mBitmap);
 
         /******绘制内容****/
 
 
-        //设置总距离
         float interval = mTextInterval + (int) mTextPaint.getFontSpacing();
         float para = mTextPara + (int) mTextPaint.getFontSpacing();
 
+        //标题距离
         float titleInterval = mTitleInterval + (int) mTitlePaint.getFontSpacing();
         float titlePara = mTitlePara + (int) mTitlePaint.getFontSpacing();
-//        para =  mTextInterval - mTextPara + (int) mTitlePaint.getTextSize();
         String str = null;
 
 
@@ -456,9 +562,37 @@ public class TextPagerView extends ReadBookTextView {
         }
 
 
-//        String percent = (mCurPage.position + 1) + "/" + mCurPage.pageSize + "页";
-//        canvas.drawText(percent, mVisibleWidth + mMarginWidthStart + getPaddingStart() - mTipPaint.measureText(percent) - ScreenUtils.dpToPx(10), top+mTipPaint.getFontSpacing(), mTipPaint);
         return canvas;
+    }
+
+    public List<TextPageBean> loadPages2(BufferedReader br) {
+        PageUtils.PageBean bean = new PageUtils.PageBean();
+        bean.titlePaint = mTitlePaint;
+        bean.tipPaint = mTipPaint;
+        bean.height = mDisplayHeight;
+        bean.width = mDisplayWidth;
+        bean.marginButtom = mMarginHeightButton;
+        bean.marginEnd = mMarginWidthEnd;
+        bean.marginStart = mMarginWidthStart;
+        bean.marginTop = mMarginHeightTop;
+        bean.padddingEnd = getPaddingEnd();
+        bean.padddingStart = getPaddingTop();
+        bean.paddingButtom = getPaddingBottom();
+        bean.paddingTop = getPaddingTop();
+        bean.textInterval = mTextInterval;
+        bean.tipInterval = mTipInterval;
+        bean.textPaint = mTextPaint;
+        bean.textPare = mTextPara;
+        bean.tipPare = mTipPare;
+        bean.titleInterval = mTitleInterval;
+        bean.titlePare = mTitlePara;
+        bean.title = mTitleText;
+        try {
+            return PageUtils.loadPages(br, bean);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -486,11 +620,38 @@ public class TextPagerView extends ReadBookTextView {
 
 
         //减去底部电池和页码
-        float tipHeightBottom = mTipPaint.getFontSpacing() + mTipPare;
+        float tipHeightBottom = mTipPaint.getFontSpacing();
         //减去小标题
         float tipHeightTop = mTipPare + mTipPaint.getFontSpacing();
 
         rHeight -= tipHeightBottom;
+
+        PageUtils.PageBean bean = new PageUtils.PageBean();
+        bean.titlePaint = mTitlePaint;
+        bean.tipPaint = mTipPaint;
+        bean.height = mDisplayHeight;
+        bean.width = mDisplayWidth;
+        bean.marginButtom = mMarginHeightButton;
+        bean.marginEnd = mMarginWidthEnd;
+        bean.marginStart = mMarginWidthStart;
+        bean.marginTop = mMarginHeightTop;
+        bean.padddingEnd = getPaddingEnd();
+        bean.padddingStart = getPaddingTop();
+        bean.paddingButtom = getPaddingBottom();
+        bean.paddingTop = getPaddingTop();
+        bean.textInterval = mTextInterval;
+        bean.tipInterval = mTipInterval;
+        bean.textPaint = mTextPaint;
+        bean.textPare = mTextPara;
+        bean.tipPare = mTipPare;
+        bean.titleInterval = mTitleInterval;
+        bean.titlePare = mTitlePara;
+        bean.title = mTitleText;
+//        try {
+//            List<TextPageBean> txtPages = PageUtils.loadPages(br, bean);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         try {
             while (showTitle || (paragraph = br.readLine()) != null) {
@@ -590,17 +751,17 @@ public class TextPagerView extends ReadBookTextView {
 
             }
 
-            if (lines.size() != 0) {
-                //创建Page
-                TxtPage page = new TxtPage();
-                page.position = pages.size();
-                page.title = StringUtils.convertCC(mTitleText, getContext());
-                page.lines = new ArrayList<>(lines);
-                page.titleLines = titleLinesCount;
-                pages.add(page);
-                //重置Lines
-                lines.clear();
-            }
+//            if (lines.size() != 0) {
+//                //创建Page
+//                TxtPage page = new TxtPage();
+//                page.position = pages.size();
+//                page.title = StringUtils.convertCC(mTitleText, getContext());
+//                page.lines = new ArrayList<>(lines);
+//                page.titleLines = titleLinesCount;
+//                pages.add(page);
+//                //重置Lines
+//                lines.clear();
+//            }
 
             /**
              * 记录当前章节所有页数
@@ -673,6 +834,7 @@ public class TextPagerView extends ReadBookTextView {
         return this;
     }
 
+
     /**
      * 设置内容
      *
@@ -711,6 +873,11 @@ public class TextPagerView extends ReadBookTextView {
         return this;
     }
 
+    public TextPagerView setTextPageBean(TextPageBean textPageBean) {
+        this.mTextPageBean = textPageBean;
+        return this;
+    }
+
 
     /**
      * 生成内容列表
@@ -722,6 +889,13 @@ public class TextPagerView extends ReadBookTextView {
         initPaint();
         setUpTextParams(getTextSize());
         return loadPages(mContent);
+    }
+
+    public List<TextPageBean> build2() {
+        initData();
+        initPaint();
+        setUpTextParams(getTextSize());
+        return loadPages2(mContent);
     }
 
     /**

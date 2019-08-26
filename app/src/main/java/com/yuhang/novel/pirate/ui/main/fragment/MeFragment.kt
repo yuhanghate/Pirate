@@ -21,6 +21,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
+import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
@@ -154,16 +155,11 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             PreferenceUtil.commitString("themePref", ThemeHelper.DARK_MODE)
             ThemeHelper.applyTheme(ThemeHelper.DARK_MODE)
         }
-        val newIntent =  Intent(mActivity, MainActivity::class.java);
-//        newIntent.putExtra(Constant.NIGHT_MODEL, "2")
-        startActivity(newIntent);
+        val newIntent =  Intent(mActivity, MainActivity::class.java)
+        newIntent.putExtra("tab_index", 2)
+        startActivity(newIntent)
         mActivity?.finish()
         mActivity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        Handler().postDelayed({
-//            mActivity?.runOnUiThread {
-//                RestartAPPTool.restartAPP(mActivity)
-//            }
-//        }, 200)
 
     }
 
@@ -320,12 +316,28 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
             }, {
                 closeProgressbar()
+                showUpdateCollectionDialog()
             }, {
                 closeProgressbar()
+                EventBus.getDefault().postSticky(LoginEvent())
             })
+    }
+
+    /**
+     * 显示同步失败Dialog
+     */
+    private fun showUpdateCollectionDialog() {
+        MaterialDialog(mActivity!!).show {
+            message(text = "同步收藏数据失败,是否重试")
+            negativeButton(text = "取消")
+            positiveButton(text = "同步", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+                    showUpdateCollectDialog()
+                }
+            })
+        }
     }
 
 

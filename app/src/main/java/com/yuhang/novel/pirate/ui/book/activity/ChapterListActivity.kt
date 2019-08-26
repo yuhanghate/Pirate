@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -30,11 +31,11 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     companion object {
         private const val BOOKID = "bookid"
         private const val CHAPTERID = "chapterid"
-        fun start(context: Context, bookid: Int, chapterid: Int) {
+        fun start(context: Activity, bookid: Long, chapterid: Int) {
             val intent = Intent(context, ChapterListActivity::class.java)
             intent.putExtra(BOOKID, bookid)
             intent.putExtra(CHAPTERID, chapterid)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 
@@ -45,7 +46,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     /**
      * 小说id
      */
-    private fun getBookid() = intent.getIntExtra(BOOKID, -1)
+    private fun getBookid() = intent.getLongExtra(BOOKID, -1)
 
     /**
      * 章节id

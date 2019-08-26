@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.user.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.orhanobut.logger.Logger
@@ -16,9 +17,9 @@ import com.yuhang.novel.pirate.utils.AppManagerUtils
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>() {
     val TAG: String = RegisterActivity::class.java.simpleName
     companion object {
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, RegisterActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 

@@ -29,7 +29,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 获取小说详情
      */
-    fun getBookDetails(bookid: Int): Flowable<BookDetailsDataResult> {
+    fun getBookDetails(bookid: Long): Flowable<BookDetailsDataResult> {
         return mDataRepository.getBookDetails(bookid)
             .filter { it.status == 1 }
             .map { it.data }
@@ -40,7 +40,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 增加收藏
      */
-    fun insertCollection(bookid: Int): Flowable<Boolean> {
+    fun insertCollection(bookid: Long): Flowable<Boolean> {
         return Flowable.just(bookid)
             .map {
                 mDataRepository.insertCollection(it)
@@ -55,7 +55,7 @@ class BookDetailsViewModel : BaseViewModel() {
      * 收藏到服务器
      */
     @SuppressLint("CheckResult")
-    fun postCollection(bookid: Int) {
+    fun postCollection(bookid: Long) {
         if (TextUtils.isEmpty(PirateApp.getInstance().getToken())|| obj == null) return
         Flowable.just(bookid)
 
@@ -107,7 +107,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 查询书箱
      */
-    fun queryCollection(bookid: Int): BookCollectionKSEntity? {
+    fun queryCollection(bookid: Long): BookCollectionKSEntity? {
         return mDataRepository.queryCollection(bookid)
 
     }
@@ -115,7 +115,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 删除收藏
      */
-    fun deleteCollection(bookid: Int): Flowable<Boolean> {
+    fun deleteCollection(bookid: Long): Flowable<Boolean> {
         return Flowable.just(bookid)
             .map {
                 mDataRepository.deleteCollection(it)
@@ -134,21 +134,21 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 删除本地对应的书籍章节
      */
-    fun deleteChapterList(bookid: Int) {
+    fun deleteChapterList(bookid: Long) {
         mDataRepository.deleteChapterList(bookid)
     }
 
     /**
      * 获取章节列表
      */
-    fun getChapterList(bookid: Int): Flowable<ChapterListResult> {
+    fun getChapterList(bookid: Long): Flowable<ChapterListResult> {
         return mDataRepository.getBookChapterList(bookid)
     }
 
     /**
      * 从服务器更新书籍章节到本地
      */
-    fun updateChapterToDB(bookid: Int): Flowable<List<BookChapterKSEntity>> {
+    fun updateChapterToDB(bookid: Long): Flowable<List<BookChapterKSEntity>> {
         return getChapterList(bookid)
             .filter { it.status == 1 }
             .map {

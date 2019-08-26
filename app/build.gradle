@@ -13,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 106
-        versionName "1.0.6"
+        versionCode 108
+        versionName "1.0.8"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -196,6 +196,13 @@ dependencies {
 
     //Fragment库
     implementation 'me.yokeyword:fragmentationx:1.0.1'
+    implementation 'me.yokeyword:fragmentationx-swipeback:1.0.1'
+
+    //进度条
+    implementation project(path: ':bubbleseekbar')
+
+
+//    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
 
     //夜间模式切换
 //    implementation 'com.bilibili:magicasakura:0.1.9-beta3@aar'

@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.search.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -25,9 +26,9 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
 
 
     companion object {
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, SearchActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 

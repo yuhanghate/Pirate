@@ -24,19 +24,19 @@ interface BookInfoKSDao {
      * 查询书本信息
      */
     @Query("select * from bookinfoksentity as b where b.bookid = :bookid order by b.id, b.stickTime desc limit 1")
-    fun query(bookid: Int): BookInfoKSEntity?
+    fun query(bookid: Long): BookInfoKSEntity?
 
     /**
      * 删除小说对应书本信息
      */
     @Query("delete from bookinfoksentity where bookid = :bookid")
-    fun delete(bookid: Int)
+    fun delete(bookid: Long)
 
     /**
      * 更新置顶时间戳
      */
     @Query("update bookinfoksentity set stickTime = :stickTime where bookid = :bookid")
-    fun update(stickTime: Long, bookid: Int)
+    fun update(stickTime: Long, bookid: Long)
 
     /**
      * 查询所有收藏的书本信息
@@ -48,7 +48,7 @@ interface BookInfoKSDao {
      * 查询所有收藏书本信息
      */
     @Query("select * from bookinfoksentity as info where  info.bookid in (:bookids) order by info.stickTime desc")
-    fun queryCollectionAll(bookids: Array<Int>):List<BookInfoKSEntity?>
+    fun queryCollectionAll(vararg bookids: Long):List<BookInfoKSEntity?>
 
 
     /**

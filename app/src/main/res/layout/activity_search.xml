@@ -31,7 +31,6 @@
             app:floatingSearch_dimBackground="false"
             app:floatingSearch_dismissOnOutsideTouch="true"
             app:floatingSearch_leftActionMode="showHome"
-            app:floatingSearch_menu="@menu/menu_search_view"
             app:floatingSearch_searchBarMarginLeft="15dp"
             app:floatingSearch_searchBarMarginRight="15dp"
             app:floatingSearch_searchBarMarginTop="5dp"

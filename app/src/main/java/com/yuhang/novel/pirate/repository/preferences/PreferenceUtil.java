@@ -56,6 +56,16 @@ public class PreferenceUtil {
         mEditor.putLong(key, value);
         mEditor.apply();
     }
+
+    public static void commitFloat(String key, float value) {
+        mEditor = mSharedPreferences.edit();
+        mEditor.putFloat(key, value);
+        mEditor.apply();
+    }
+
+    public static float getFloat(String key, float failValue) {
+        return mSharedPreferences.getFloat(key, failValue);
+    }
     
     public static long getLong(String key, long failValue) {
         return mSharedPreferences.getLong(key, failValue);

@@ -103,4 +103,18 @@ object BookConstant {
         return arrayListOf<String>("#ffffff", "#F6EFDD", "#FFC9F1CF", "#FF232533")
     }
 
+    /**
+     * 设置界面字体大小
+     */
+    fun setPageTextSize(size : Float) {
+        PreferenceUtil.commitFloat("page_text_size", size)
+    }
+
+    /**
+     * 获取字体大小
+     */
+    fun getPageTextSize() :Float{
+        return PreferenceUtil.getFloat("page_text_size", 18f)
+    }
+
 }

@@ -26,7 +26,7 @@ class RankingListEntity {
     /**
      * 小说id
      */
-    var bookdid: Int = -1
+    var bookdid: Long = -1
 
     /**
      * 封面

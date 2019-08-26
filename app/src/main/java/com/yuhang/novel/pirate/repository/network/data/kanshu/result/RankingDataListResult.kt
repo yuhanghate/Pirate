@@ -23,7 +23,7 @@ data class RankingDataListResult(
     val Author: String,
     val CName: String,
     val Desc: String,
-    val Id: Int,
+    val Id: Long,
     val Img: String,
     val Name: String,
     val Score: Double

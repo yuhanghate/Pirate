@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.user.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.yuhang.novel.pirate.R
@@ -21,9 +22,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     private val mUsersService: UsersService by lazy { UsersServiceImpl() }
 
     companion object {
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, LoginActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 
@@ -60,7 +61,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                         val userResult = it
                         mUsersService.updateUsersToLocal(userResult = userResult).subscribe({
                             EventBus.getDefault().postSticky(userResult)
-                            EventBus.getDefault().post(LoginEvent())
+//                            EventBus.getDefault().post(LoginEvent())
                         }, {})
                         onBackPressed()
                     } else {

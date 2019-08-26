@@ -16,8 +16,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
+            android:layout_height="0.5dp"
+            android:background="#8a8a8a" />
 
         <RelativeLayout
             android:layout_width="match_parent"

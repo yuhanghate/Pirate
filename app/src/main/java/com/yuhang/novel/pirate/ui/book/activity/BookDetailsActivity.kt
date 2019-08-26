@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -31,6 +32,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+
 
 /**
  * 小说详情页
@@ -42,11 +46,11 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     companion object {
         const val BOOK_ID = "book_id"
-        fun start(context: Context, bookid: Int) {
+        fun start(context: Activity, bookid: Long) {
             val intent = Intent(context, BookDetailsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(BOOK_ID, bookid)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 
@@ -54,7 +58,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         return R.layout.activity_book_details
     }
 
-    private fun getBookid() = intent.getIntExtra(BOOK_ID, -1)
+    private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
 
     @SuppressLint("CheckResult")
     override fun initView() {

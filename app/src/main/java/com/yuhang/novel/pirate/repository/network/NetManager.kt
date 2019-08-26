@@ -74,9 +74,9 @@ class NetManager {
         return OkHttpClient().newBuilder()
                 //增加Header头
                 .addInterceptor(TokenInterceptor())
-                .connectTimeout(1000 * 15, TimeUnit.MILLISECONDS)
-                .readTimeout(1000 * 15, TimeUnit.MILLISECONDS)
-                .writeTimeout(1000 * 15, TimeUnit.MILLISECONDS)
+                .connectTimeout( 15, TimeUnit.SECONDS)
+                .readTimeout( 15, TimeUnit.SECONDS)
+                .writeTimeout( 15, TimeUnit.SECONDS)
                 .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
                 //日志拦截器
                 .addInterceptor(

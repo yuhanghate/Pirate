@@ -15,7 +15,7 @@ data class BookCollectionKSEntity(
   /**
    * 小说id
    */
-  val bookid: Int = 0,
+  val bookid: Long = 0,
 
   /**
    * 收藏时间

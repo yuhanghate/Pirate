@@ -9,6 +9,7 @@ import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemReadHistoryBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
+import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
@@ -32,5 +33,6 @@ class ItemReadHistoryVH(parent:ViewGroup):BaseViewHolder<BookInfoKSEntity, ItemR
         getGlide().load("https://imgapi.jiaston.com/BookFiles/BookImages/${obj.cover}")
                 .apply(placeholder)
                 .into(niceGlideInto(mBinding.coverIv))
+
     }
 }

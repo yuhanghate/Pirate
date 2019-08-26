@@ -1,27 +1,31 @@
 package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityReadHistoryBinding
+import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadHistoryViewModel
 
 /**
  * 最近浏览记录
  */
-class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, ReadHistoryViewModel>(), OnRefreshLoadMoreListener {
+class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, ReadHistoryViewModel>(), OnRefreshLoadMoreListener, OnClickItemListener {
+
 
 
     companion object {
         private var PAGE_NUM = 0
-        fun start(context: Context) {
+        fun start(context: Activity) {
             val intent = Intent(context, ReadHistoryActivity::class.java)
-            context.startActivity(intent)
+            startIntent(context, intent)
         }
     }
 
@@ -97,5 +101,12 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
                 }, {
                     mBinding.refreshLayout.finishRefresh()
                 })
+    }
+
+    /**
+     * Item点击事件
+     */
+    override fun onClickItemListener(view: View, position: Int) {
+        BookDetailsActivity.start(this, mViewModel.adapter.getObj(position).bookid)
     }
 }
