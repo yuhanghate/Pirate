@@ -7,6 +7,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemMainBinding
+import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
@@ -41,7 +42,7 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
             RequestOptions().transforms(CenterCrop(), RoundedCorners(mContext.niceDp2px(3f)))
                 .placeholder(drawable)
                 .error(drawable)
-        getGlide().load("https://imgapi.jiaston.com/BookFiles/BookImages/${obj.cover}")
+        getGlide().load(niceCoverPic(obj.cover))
             .apply(placeholder)
             .into(niceGlideInto(mBinding.imageIv))
 

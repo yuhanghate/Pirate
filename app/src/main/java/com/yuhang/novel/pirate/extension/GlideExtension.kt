@@ -6,9 +6,11 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.app.PirateApp
+import java.net.URLEncoder
 
 fun BaseViewHolder<*, *>.niceAvatarUrl(avatar:String):String {
     var avatar = PirateApp.getInstance().getImgServer() + avatar
@@ -28,7 +30,10 @@ fun Any.niceCoverPic(conver: String):String {
         return conver
     }
 
-    return "https://imgapi.jiaston.com/BookFiles/BookImages/$conver"
+//    val url = "https://imgapi.jiaston.com/BookFiles/BookImages/$conver"
+    val url = "https://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(conver, "utf-8")}"
+    Logger.t("cover").i("$url")
+    return url
 }
 
 fun Any.niceGlideInto(view: ImageView):CustomTarget<Drawable> {

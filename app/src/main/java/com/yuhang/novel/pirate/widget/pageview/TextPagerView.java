@@ -115,7 +115,7 @@ public class TextPagerView extends ReadBookTextView {
 
     public TextPagerView(Context context) {
         super(context);
-
+        setWillNotDraw(false);
 //        init();
 //        setUpTextParams(getTextSize());
     }
@@ -793,8 +793,8 @@ public class TextPagerView extends ReadBookTextView {
      * @param level
      */
     public void updateBattery(int level) {
-        //电量2%变量进行刷新,防止频繁刷新页面
-        if (Math.abs(level - mBatteryLevel) > 2) {
+        //电量1%变量进行刷新,防止频繁刷新页面
+        if (Math.abs(level - mBatteryLevel) >= 1) {
             mBatteryLevel = level;
             invalidate();
         }

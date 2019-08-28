@@ -9,23 +9,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.FragmentDrawerlayoutLeftBinding
+import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.viewmodel.DrawerlayoutLeftViewModel
 import com.yuhang.novel.pirate.utils.DateUtils
-import com.yuhang.novel.pirate.utils.StatusBarUtil
 import java.util.*
 
 /**
  * 阅读界面左滑出来的章节目录
  */
 class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, DrawerlayoutLeftViewModel>(),
-    OnClickItemListener {
+        OnClickItemListener {
 
 
     var bookid: Long? = null
@@ -50,6 +50,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
         initRecyclerView()
         onClick()
         initBackground()
+        initLastChapterItem()
     }
 
     /**
@@ -57,6 +58,21 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
      */
     private fun initBackground() {
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+    }
+
+
+    /**
+     * 第一次打开,item移动到内容对应的章节
+     */
+    @SuppressLint("CheckResult")
+    fun initLastChapterItem() {
+        bookid ?: return
+        mViewModel.queryLastChapter(bookid= bookid!!)
+                .subscribe({
+                    it?.chapterId?.let { id ->
+                        setCurrentReadItem(id)
+                    }
+                }, {})
     }
 
     /**
@@ -79,7 +95,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
                 sortStatus = false
                 mBinding.recyclerView.scrollToPosition(mViewModel.adapter.itemCount - 15)
                 mBinding.recyclerView.smoothScrollToPosition(mViewModel.adapter.itemCount - 1)
-                val animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_sort_top)
+                val animation = AnimationUtils.loadAnimation(activity!!, R.anim.rotate_sort_top)
                 animation.interpolator = AccelerateInterpolator()
                 animation.fillAfter = true
                 mBinding.itemDrawerHeader.sortIv.startAnimation(animation)
@@ -108,26 +124,26 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     private fun initHeaderView() {
         bookid ?: return
         mViewModel.queryBookInfo(bookid!!)
-            .compose(bindToLifecycle())
-            .subscribe({ bookInfo ->
-                mBinding.itemDrawerHeader.athorTv.text = bookInfo?.author
-                mBinding.itemDrawerHeader.titleTv.text = bookInfo?.bookName
-                mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(Date(bookInfo?.lastTime!!) )
+                .compose(bindToLifecycle())
+                .subscribe({ bookInfo ->
+                    mBinding.itemDrawerHeader.athorTv.text = bookInfo?.author
+                    mBinding.itemDrawerHeader.titleTv.text = bookInfo?.bookName
+                    mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(Date(bookInfo?.lastTime!!))
 
-                mBinding.itemDrawerHeader.converIv.let {
+                    mBinding.itemDrawerHeader.converIv.let {
 
-                    val drawable = ContextCompat.getDrawable(mActivity!!, R.drawable.ic_default_img)
-                    val placeholder =
-                        RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
-                            .placeholder(drawable)
-                            .error(drawable)
-                    Glide.with(this).load("https://imgapi.jiaston.com/BookFiles/BookImages/${bookInfo?.cover}")
-                        .apply(placeholder)
-                        .into(mBinding.itemDrawerHeader.converIv)
-                }
-            }, {})
+                        val drawable = ContextCompat.getDrawable(mActivity!!, R.drawable.ic_default_img)
+                        val placeholder =
+                                RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
+                                        .placeholder(drawable)
+                                        .error(drawable)
+                        Glide.with(this).load(niceCoverPic(bookInfo?.cover))
+                                .apply(placeholder)
+                                .into(mBinding.itemDrawerHeader.converIv)
+                    }
+                }, {})
 
-        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getStatusBarHeight(activity))
+//        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getStatusBarHeight(activity))
     }
 
     override fun initRecyclerView() {
@@ -135,15 +151,15 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
         mViewModel.adapter.setListener(this)
         mViewModel.adapter
-            .setRecyclerView(mBinding.recyclerView, false)
+                .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
         bookid?.let {
             mViewModel.queryChapterList(it)
-                .compose(bindToLifecycle())
-                .subscribe({ list ->
-                    mViewModel.adapter.setRefersh(list)
-                }, {})
+                    .compose(bindToLifecycle())
+                    .subscribe({ list ->
+                        mViewModel.adapter.setRefersh(list)
+                    }, {})
         }
     }
 

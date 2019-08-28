@@ -3,10 +3,7 @@ package com.yuhang.novel.pirate.repository.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
-import io.reactivex.Flowable
-import java.util.*
 
 @Dao
 interface BookContentKSDao {
@@ -45,8 +42,8 @@ interface BookContentKSDao {
     /**
      * 更新最后一次打开的时间和内容角标
      */
-    @Query("update bookcontentksentity set lastOpenTime = :lastOpenTime, lastContentPosition = :lastContentPosition where chapterId = :chapterid")
-    fun updateLastOpenContent(chapterid: Int, lastOpenTime: Date, lastContentPosition: Int)
+    @Query("update bookcontentksentity set lastOpenTime = :lastOpenTime, lastContentPosition = :lastContentPosition where chapterId = :chapterid and bookId = :bookid")
+    fun updateLastOpenContent(bookid: Long, chapterid: Int, lastOpenTime: Long, lastContentPosition: Int)
 
     /**
      * 根据小说id查询最近阅读章节
@@ -65,8 +62,8 @@ interface BookContentKSDao {
     /**
      * 最后打开时间
      */
-    @Query("select max(lastOpenTime) from bookcontentksentity ")
-    fun queryLastTime():Long
+    @Query("select max(lastOpenTime) from bookcontentksentity where bookId = :bookid ")
+    fun queryLastTime(bookid: Long): Long
 
     /**
      * 删除指定的章节内容

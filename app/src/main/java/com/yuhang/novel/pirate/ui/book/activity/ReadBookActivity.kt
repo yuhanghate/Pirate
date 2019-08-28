@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
@@ -34,6 +35,7 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
+import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
@@ -44,6 +46,8 @@ import com.yuhang.novel.pirate.widget.ReadBookTextView
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
+import java.util.*
+import kotlin.math.abs
 
 
 /**
@@ -87,6 +91,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         return R.layout.activity_read_book
     }
 
+    override fun initStatusTool() {
+        super.initStatusTool()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            window?.decorView?.rootView?.setPadding(
+//                    0, -StatusBarUtil.getStatusBarHeight(this)*2, 0, 0
+//            )
+//        }
+    }
 
     private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
 
@@ -95,10 +107,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //去除标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         //去除状态栏
-        window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         super.onCreate(savedInstanceState)
         window.navigationBarColor = BookConstant.getPageBackground()
@@ -112,10 +121,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
     override fun onPause() {
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver)
-            mReceiver = null
-        }
+        unregisterReceiver(mReceiver)
 
 
         keepScreenOnWithPermissionCheck(false)
@@ -136,6 +142,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         resetBackground(BookConstant.getPageColorIndex())
         initChapterProgressSeekBar()
         onClick()
+
     }
 
     /**
@@ -314,6 +321,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             fragment?.resetBackground()
             toggleMenu()
             mBinding.drawerLayout.openDrawer(Gravity.START)
+            fragment?.setCurrentReadItem(mViewModel.chapterid)
         }
 
         mBinding.loading.setOnClickListener { toggleMenu() }
@@ -576,7 +584,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(position))
         //加载最后一页
         if (position >= mViewModel.adapter.getList().size - 2 && !mViewModel.isLoadAdapter(obj.nid)) {
-            val logger = getLogger()
             mViewModel.getContentFromChapterid(obj.nid)
                     .compose(bindUntilEvent(ActivityEvent.PAUSE))
                     .subscribe({
@@ -679,6 +686,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mBinding.drawerLayout.closeDrawers()
         mViewModel.chapterid = chapterid
         netDataChapterContentFromId(chapterid)
+//        fragment?.setCurrentReadItem(chapterid)
     }
 
     /**
@@ -838,19 +846,18 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
     // 接收电池信息和时间更新的广播
-    private var mReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
+    private var mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra("level", 0)
-
-            if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
+            Logger.t("level").i(level.toString())
+            if (intent.action == Intent.ACTION_BATTERY_CHANGED && abs(level - ReadBookAdapter.mBatteryLevel) >= 1) {
                 val bookVH =
                     mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
-                mViewModel.adapter.mBatteryLevel = level
-                bookVH?.mBinding?.contentTv?.updateBattery(level)
-            } else if (intent.action == Intent.ACTION_TIME_TICK) {
-//                mViewModel.adapter.notifyDataSetChanged()
-            }// 监听分钟的变化
-
+                ReadBookAdapter.mBatteryLevel = level
+//                runOnUiThread { bookVH?.mBinding?.contentTv?.updateBattery(level) }
+                mViewModel.adapter.notifyDataSetChanged()
+                Logger.t("level").i("notifyDataSetChanged")
+            }
         }
     }
 }

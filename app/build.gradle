@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'hunter-debug'
 
 apply plugin: 'kotlin-android'
 
@@ -7,14 +6,16 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
 
+apply plugin: 'walle'
+
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 108
-        versionName "1.0.8"
+        versionCode 109
+        versionName "1.0.9"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -22,14 +23,28 @@ android {
 
         ndk {
             //设置支持的so库架构
-            abiFilters "armeabi-v7a",  "arm64-v8a", "x86"
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86"
         }
     }
+
+
+
+    signingConfigs {
+        release {
+            keyAlias 'suibiankankan'
+            keyPassword '123456'
+            storeFile file('./suibiankankan.jks')
+            storePassword '123456'
+        }
+    }
+
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled = true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -37,9 +52,6 @@ android {
         enabled = true
     }
 
-    debugHunterExt {
-        runVariant = 'DEBUG'  //'DEBUG', 'RELEASE', 'ALWAYS', 'NEVER', The 'ALWAYS' is default value
-    }
 
     androidExtensions {
         experimental = true
@@ -57,9 +69,18 @@ android {
     }
 }
 
+walle {
+    // 指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels");
+    // 定制渠道包的APK的文件名称
+    apkFileNameFormat = '${appName}-${packageName}-${channel}-${buildType}-v${versionName}-${buildTime}.apk';
+    // 渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -68,11 +89,11 @@ dependencies {
     //官方兼容包
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha03'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.9.0'
@@ -96,7 +117,7 @@ dependencies {
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.3.1"
 
     //Material Dialogs
-    implementation 'com.afollestad.material-dialogs:core:2.6.0'
+    implementation 'com.afollestad.material-dialogs:core:3.1.0'
     implementation 'com.afollestad.material-dialogs:lifecycle:2.6.0'
 
     //图片缩放库
@@ -175,9 +196,6 @@ dependencies {
     //更新标签
     implementation 'com.github.linger1216:labelview:v1.1.2'
 
-    //方法耗时
-    implementation 'com.quinn.hunter:hunter-debug-library:0.9.6'
-
 
 //    implementation 'com.github.markzhai:blockcanary-android:1.5.0'
 
@@ -201,6 +219,8 @@ dependencies {
     //进度条
     implementation project(path: ':bubbleseekbar')
 
+    //打包
+    implementation 'com.meituan.android.walle:library:1.1.6'
 
 //    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
 

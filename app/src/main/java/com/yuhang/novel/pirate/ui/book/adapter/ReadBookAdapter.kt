@@ -14,10 +14,7 @@ import com.yuhang.novel.pirate.viewholder.ItemReadBookVH
 
 class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
 
-    /**
-     * 电池电量
-     */
-    var mBatteryLevel = 100
+
 
     companion object {
         /**
@@ -29,6 +26,11 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
          * 完结
          */
         const val TYPE_FINISH = 1
+
+        /**
+         * 电池电量
+         */
+        var mBatteryLevel = 100
     }
 
     override fun onCreateViewHolder(
@@ -78,7 +80,7 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
         holder.lastClickItemPosition = lastClickItemPosition
         //绑定View
         when (holder) {
-            is ItemReadBookVH -> holder.setBatteryLevel(mBatteryLevel).setListener(mListener).onBindViewHolder(
+            is ItemReadBookVH -> holder.setListener(mListener).onBindViewHolder(
                 getObj(position), position
             )
             is ItemReadBookFinishVH -> holder.setListener(mListener).onBindViewHolder(getObj(position - 1), position)

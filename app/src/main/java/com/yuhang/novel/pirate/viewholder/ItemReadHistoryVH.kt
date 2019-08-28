@@ -7,6 +7,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemReadHistoryBinding
+import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnClickItemListener
@@ -30,7 +31,7 @@ class ItemReadHistoryVH(parent:ViewGroup):BaseViewHolder<BookInfoKSEntity, ItemR
                 RequestOptions().transforms(CenterCrop(), RoundedCorners(mContext.niceDp2px(3f)))
                         .placeholder(drawable)
                         .error(drawable)
-        getGlide().load("https://imgapi.jiaston.com/BookFiles/BookImages/${obj.cover}")
+        getGlide().load(niceCoverPic(obj.cover))
                 .apply(placeholder)
                 .into(niceGlideInto(mBinding.coverIv))
 

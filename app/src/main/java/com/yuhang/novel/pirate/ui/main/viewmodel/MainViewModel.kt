@@ -35,7 +35,7 @@ class MainViewModel : BaseViewModel() {
                     return@map list.map {
                         if (it == null) return@map it
 
-                        it.isShowLabel = isShowNewLabel()
+                        it.isShowLabel = isShowNewLabel(it.bookid)
                         return@map it
                     }.toList()
                 }
@@ -211,8 +211,8 @@ class MainViewModel : BaseViewModel() {
      * true:更新
      * false:不更新
      */
-    private fun isShowNewLabel(): Boolean {
-        return mDataRepository.isShowUpdateLable()
+    private fun isShowNewLabel(bookid: Long): Boolean {
+        return mDataRepository.isShowUpdateLable(bookid = bookid)
 
     }
 }

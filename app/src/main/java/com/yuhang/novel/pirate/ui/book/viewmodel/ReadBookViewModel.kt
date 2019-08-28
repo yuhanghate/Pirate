@@ -154,7 +154,7 @@ class ReadBookViewModel : BaseViewModel() {
     @SuppressLint("SimpleDateFormat")
     fun updateLastOpenTimeAndPosition(chapterid: Int, lastContentPosition: Int) {
         thread {
-            mDataRepository.updateLastOpenContent(chapterid, lastContentPosition)
+            mDataRepository.updateLastOpenContent(bookid, chapterid, lastContentPosition)
         }
 
     }

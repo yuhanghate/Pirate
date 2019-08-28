@@ -45,6 +45,10 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     private var mBackgroundInTransparent: Animation? = null
     private var mBackgroundOutTransparent: Animation? = null
 
+    val genderList by lazy { arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl) }
+    val typeList by lazy { arrayListOf<ConstraintLayout>(mBinding.typeHotCl, mBinding.typeCommendCl, mBinding.typeOverCl, mBinding.typeCollectCl, mBinding.typeNewCl, mBinding.typeVoteCl) }
+    val dateList by lazy { arrayListOf<ConstraintLayout>(mBinding.dateWeekCl, mBinding.dateMonthCl, mBinding.dateTotalCl) }
+
     val DURATION: Long = 190
 
     /**
@@ -76,17 +80,25 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         initRefreshLayout()
         initRecyclerView()
         initAnimation()
+        initFilterView()
         onClick()
         loadLocalRankingList()
+    }
+
+    /**
+     * 初始化删选
+     */
+    private fun initFilterView() {
+        setClickItem(mBinding.genderManCl, genderList)
+        setClickItem(mBinding.typeHotCl, typeList)
+        setClickItem(mBinding.dateWeekCl, dateList)
     }
 
     private fun onClick() {
         mBinding.filterIv.setOnClickListener { setFileterView() }
         mBinding.filterV.setOnClickListener { setFileterView() }
         mBinding.filterLl.visibility = View.GONE
-        val genderList = arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl)
-        val typeList = arrayListOf<ConstraintLayout>(mBinding.typeHotCl, mBinding.typeCommendCl, mBinding.typeOverCl, mBinding.typeCollectCl, mBinding.typeNewCl, mBinding.typeVoteCl)
-        val dateList = arrayListOf<ConstraintLayout>(mBinding.dateWeekCl, mBinding.dateMonthCl, mBinding.dateTotalCl)
+
 
         mBinding.genderManCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
         mBinding.genderLadyCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
@@ -109,6 +121,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
             setFileterView()
             Handler().postDelayed({
                 mBinding.refreshLayout.autoRefresh()
+                initFilterView()
             }, DURATION * 3)
         }
         mBinding.btnCommit.setOnClickListener {

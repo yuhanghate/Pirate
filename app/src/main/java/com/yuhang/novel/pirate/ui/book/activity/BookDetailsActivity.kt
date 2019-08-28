@@ -6,7 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -60,6 +63,15 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
 
+    @SuppressLint("ObsoleteSdkInt")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//设置透明状态栏
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);//设置透明导航栏
+//        }
+    }
+
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
@@ -71,9 +83,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        //点击立即阅读,返回就刷新一次
+    override fun onResume() {
+        super.onResume()
         initCollectionStatus()
     }
 
@@ -224,6 +235,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             .compose(bindToLifecycle())
             .subscribe({
                 mViewModel.obj = it
+                //点击立即阅读,返回就刷新一次
+                initCollectionStatus()
                 mBinding.loading.showContent()
                 resetView(it)
             }, {

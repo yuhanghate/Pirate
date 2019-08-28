@@ -3,8 +3,11 @@ package com.yuhang.novel.pirate.base
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.TimingLogger
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -13,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
 import cn.bingoogolapple.swipebacklayout.R
-import com.hunter.library.debug.TimingLogger
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil
@@ -80,14 +82,13 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      */
     open fun initStatusTool() {
 
-//        StatusBarUtil.setTranslucentDiff(this)
         StatusBarUtil.setColor(this, ContextCompat.getColor(this, onStatusColor()), DEFAULT_STATUS_BAR_ALPHA)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 //            window?.decorView?.rootView?.setPadding(
 //                    0, -StatusBarUtil.getStatusBarHeight(this), 0, 0
 //            )
-//        }
+        }
     }
 
     override fun onDestroy() {
@@ -107,7 +108,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 沉浸式颜色
      */
     open fun onStatusColor(): Int {
-        return android.R.color.white
+        return com.yuhang.novel.pirate.R.color.actionbar_color
     }
 
 

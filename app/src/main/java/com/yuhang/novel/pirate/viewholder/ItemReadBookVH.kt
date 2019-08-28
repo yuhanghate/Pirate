@@ -8,6 +8,7 @@ import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceSp2px
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
+import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 
 
@@ -17,12 +18,12 @@ class ItemReadBookVH(parent: ViewGroup) :
     /**
      * 电池电量
      */
-    var mBatteryLevel = 100
+//    var mBatteryLevel = 100
 
-    fun setBatteryLevel(level:Int): ItemReadBookVH {
-        mBatteryLevel = level
-        return this
-    }
+//    fun setBatteryLevel(level:Int): ItemReadBookVH {
+//        mBatteryLevel = level
+//        return this
+//    }
 
 
 
@@ -51,7 +52,7 @@ class ItemReadBookVH(parent: ViewGroup) :
         mBinding.contentTv.textSize = BookConstant.getPageTextSize()
         mBinding.contentTv.setTitle(obj.textPageBean?.chapterName)
                 .setPageTextColor(BookConstant.getPageTextColor())
-                .setBattery(mBatteryLevel)
+                .setBattery(ReadBookAdapter.mBatteryLevel)
                 .setMargin(margin, margin, 0, 0)
                 .setTextPageBean(obj.textPageBean)
                 .init()

@@ -277,10 +277,10 @@ class DataRepository(val context: Context) {
     /**
      * 更新最后一次打开的时间和内容角标
      */
-    fun updateLastOpenContent(chapterid: Int, lastContentPosition: Int) {
-        getDatabase().bookContentKSDao.updateLastOpenContent(
+    fun updateLastOpenContent(bookid: Long, chapterid: Int, lastContentPosition: Int) {
+        getDatabase().bookContentKSDao.updateLastOpenContent(bookid,
             chapterid,
-            Date(),
+            System.currentTimeMillis(),
             lastContentPosition
         )
     }
@@ -302,9 +302,9 @@ class DataRepository(val context: Context) {
     /**
      * 是否显示更新标签
      */
-    fun isShowUpdateLable(): Boolean {
-        val queryLastTime = getDatabase().bookContentKSDao.queryLastTime()
-        val queryLastTime1 = getDatabase().bookInfoKSDao.queryLastTime()
+    fun isShowUpdateLable(bookid: Long): Boolean {
+        val queryLastTime = getDatabase().bookContentKSDao.queryLastTime(bookid)
+        val queryLastTime1 = getDatabase().bookInfoKSDao.queryLastTime(bookid)
         return queryLastTime < queryLastTime1 && queryLastTime != 0.toLong()
     }
 
@@ -412,17 +412,17 @@ class DataRepository(val context: Context) {
      * 查询所有收藏书本信息
      */
     fun queryCollectionAll(bookids: Array<Long>): List<BookInfoKSEntity?> {
-        val list = arrayListOf<BookInfoKSEntity?>()
-        bookids.forEach {
-            val infoKSEntity = getDatabase().bookInfoKSDao.query(it)
-            if (infoKSEntity != null) {
-                list.add(infoKSEntity)
-            }
-        }
+//        val list = arrayListOf<BookInfoKSEntity?>()
+//        bookids.forEach {
+//            val infoKSEntity = getDatabase().bookInfoKSDao.query(it)
+//            if (infoKSEntity != null) {
+//                list.add(infoKSEntity)
+//            }
+//        }
         val queryCollectionAll = getDatabase().bookInfoKSDao.queryCollectionAll()
-        val collectionAll = getDatabase().bookInfoKSDao.queryCollectionAll(*bookids.toLongArray())
+//        val collectionAll = getDatabase().bookInfoKSDao.queryCollectionAll(*bookids.toLongArray())
 
-        return list
+        return queryCollectionAll
     }
 
     /**
