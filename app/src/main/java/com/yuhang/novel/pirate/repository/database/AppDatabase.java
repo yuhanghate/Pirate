@@ -22,7 +22,7 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
  */
 @Database(entities = {BookInfoKSEntity.class, BookCollectionKSEntity.class,
         SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
-        UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class}, version = 7, exportSchema = false)
+        UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class}, version = 8, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {

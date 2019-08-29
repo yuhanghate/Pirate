@@ -364,7 +364,12 @@ public class TextPagerView extends ReadBookTextView {
         mBatteryPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(innerFrame, mBatteryPaint);
         /******绘制当前电量********/
-        canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+//        canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+
+        /******绘制当前时间********/
+        //底部的字显示的位置Y
+        String time = StringUtils.dateConvert(System.currentTimeMillis(), "HH:mm");
+        canvas.drawText(time, polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -455,10 +460,10 @@ public class TextPagerView extends ReadBookTextView {
 
         /******绘制当前时间********/
         //底部的字显示的位置Y
-//        float yy = mVisibleHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
-//        String time = StringUtils.dateConvert(System.currentTimeMillis(), "yyyy-MM-dd'T'HH:mm:ss");
-//        float x = outFrameLeft - mTipPaint.measureText(time) - ScreenUtils.dpToPx(4);
-//        canvas.drawText(time, x, yy, mTipPaint);
+        float yy = mVisibleHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
+        String time = StringUtils.dateConvert(System.currentTimeMillis(), "HH:mm:ss");
+        float x = outFrameLeft - mTipPaint.measureText(time) - ScreenUtils.dpToPx(4);
+        canvas.drawText(time, x, yy, mTipPaint);
     }
 
     public Canvas drawContent2(Canvas canvas) {

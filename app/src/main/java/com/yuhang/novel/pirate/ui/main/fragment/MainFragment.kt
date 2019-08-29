@@ -204,7 +204,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
+        obj.isShowLabel = false
         ReadBookActivity.start(mActivity!!, obj.bookid)
+
+        //延迟1秒刷新.体验更好
+        Handler().postDelayed({mViewModel.adapter.notifyDataSetChanged()}, 1000)
+
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {

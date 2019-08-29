@@ -854,9 +854,12 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 val bookVH =
                     mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
                 ReadBookAdapter.mBatteryLevel = level
-//                runOnUiThread { bookVH?.mBinding?.contentTv?.updateBattery(level) }
                 mViewModel.adapter.notifyDataSetChanged()
                 Logger.t("level").i("notifyDataSetChanged")
+            }else if(Intent.ACTION_TIME_TICK == intent.action){
+                //每一分钟更新时间
+                Logger.t("level").i("一分钟更新")
+                mViewModel.adapter.notifyDataSetChanged()
             }
         }
     }

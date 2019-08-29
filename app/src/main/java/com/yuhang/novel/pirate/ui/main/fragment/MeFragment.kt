@@ -212,7 +212,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             .subscribe({
                 mActivity?.closeProgressbar()
                 if (it.update == "Yes") {
-                    mBinding.versionNameTv.text = "更新"
+                    mBinding.versionNameTv.text = "可升级"
 
                     if (isInitView) {
                         showVersionUpdateDialog(it)
@@ -228,7 +228,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     mBinding.versionNameTv.text = ""
                 }
             }, {
-                niceToast("检测版本失败")
+//                niceToast("检测版本失败")
             })
     }
 

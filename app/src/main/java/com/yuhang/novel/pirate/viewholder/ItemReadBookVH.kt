@@ -15,38 +15,14 @@ import com.yuhang.novel.pirate.utils.StatusBarUtil
 class ItemReadBookVH(parent: ViewGroup) :
         BaseViewHolder<BookContentKSEntity, ItemReadBookBinding>(parent, com.yuhang.novel.pirate.R.layout.item_read_book) {
 
-    /**
-     * 电池电量
-     */
-//    var mBatteryLevel = 100
-
-//    fun setBatteryLevel(level:Int): ItemReadBookVH {
-//        mBatteryLevel = level
-//        return this
-//    }
-
-
 
     override fun onBindViewHolder(obj: BookContentKSEntity, position: Int) {
         super.onBindViewHolder(obj, position)
-//        mBinding.contentTv.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0)
         mBinding.contentTv.position = position
         mBinding.contentTv.onClickNextListener = getListener()
         mBinding.contentTv.onClickPreviousListener = getListener()
         mBinding.contentTv.onClickCenterListener = getListener()
 
-//        obj.txtPage?.let { txtPage ->
-//            val margin = mContext.niceDp2px(20f)
-//            mBinding.contentTv.textSize = BookConstant.getPageTextSize()
-//            mBinding.contentTv.setTitle(txtPage.title)
-//                    .setPageTextColor(BookConstant.getPageTextColor())
-//                    .setBattery(mBatteryLevel)
-//                    .setMargin(margin, margin, 0, 0)
-//                    .setCurPage(txtPage)
-//                    .setTextPageBean(obj.textPageBean)
-//                    .init()
-//
-//        }
 
         val margin = mContext.niceDp2px(20f)
         mBinding.contentTv.textSize = BookConstant.getPageTextSize()
@@ -57,14 +33,5 @@ class ItemReadBookVH(parent: ViewGroup) :
                 .setTextPageBean(obj.textPageBean)
                 .init()
 
-//        mBinding.contentTv.post {
-//            //更新绘制
-//            mBinding.contentTv.invalidate()
-//        }
-
-
-
-        //回调当前索引
-//        getListener<OnPageIndexListener>()?.onPageIndexListener(position, obj.chapterId, obj.pid, obj.nid)
     }
 }
