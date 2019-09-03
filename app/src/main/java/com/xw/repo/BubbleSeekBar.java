@@ -1,18 +1,36 @@
 package com.xw.repo;
 
-import android.animation.*;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
-import android.view.*;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -24,7 +42,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.math.BigDecimal;
 
-import static com.xw.repo.BubbleSeekBar.TextPosition.*;
+import static com.xw.repo.BubbleSeekBar.TextPosition.BELOW_SECTION_MARK;
+import static com.xw.repo.BubbleSeekBar.TextPosition.BOTTOM_SIDES;
+import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
 import static com.xw.repo.BubbleUtils.dp2px;
 import static com.xw.repo.BubbleUtils.sp2px;
 
@@ -122,30 +142,30 @@ public class BubbleSeekBar extends View {
     public BubbleSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BubbleSeekBar, defStyleAttr, 0);
-        mMin = a.getFloat(R.styleable.BubbleSeekBar_bsb_min, 0.0f);
-        mMax = a.getFloat(R.styleable.BubbleSeekBar_bsb_max, 100.0f);
-        mProgress = a.getFloat(R.styleable.BubbleSeekBar_bsb_progress, mMin);
-        isFloatType = a.getBoolean(R.styleable.BubbleSeekBar_bsb_is_float_type, false);
-        mTrackSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_track_size, dp2px(2));
-        mSecondTrackSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_second_track_size,
+        TypedArray a = context.obtainStyledAttributes(attrs, com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar, defStyleAttr, 0);
+        mMin = a.getFloat(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_min, 0.0f);
+        mMax = a.getFloat(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_max, 100.0f);
+        mProgress = a.getFloat(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_progress, mMin);
+        isFloatType = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_is_float_type, false);
+        mTrackSize = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_track_size, dp2px(2));
+        mSecondTrackSize = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_second_track_size,
                 mTrackSize + dp2px(2));
-        mThumbRadius = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_radius,
+        mThumbRadius = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_thumb_radius,
                 mSecondTrackSize + dp2px(2));
-        mThumbRadiusOnDragging = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_radius_on_dragging,
+        mThumbRadiusOnDragging = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_thumb_radius_on_dragging,
                 mSecondTrackSize * 2);
-        mSectionCount = a.getInteger(R.styleable.BubbleSeekBar_bsb_section_count, 10);
-        mTrackColor = a.getColor(R.styleable.BubbleSeekBar_bsb_track_color,
+        mSectionCount = a.getInteger(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_section_count, 10);
+        mTrackColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_track_color,
                 ContextCompat.getColor(context, R.color.primary));
-        mSecondTrackColor = a.getColor(R.styleable.BubbleSeekBar_bsb_second_track_color,
+        mSecondTrackColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_second_track_color,
                 ContextCompat.getColor(context, R.color.accent));
-        mThumbColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_color, mSecondTrackColor);
-        isShowSectionText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_section_text, false);
-        mSectionTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_section_text_size, sp2px(14));
-        mSectionTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_section_text_color, mTrackColor);
-        isSeekStepSection = a.getBoolean(R.styleable.BubbleSeekBar_bsb_seek_step_section, false);
-        isSeekBySection = a.getBoolean(R.styleable.BubbleSeekBar_bsb_seek_by_section, false);
-        int pos = a.getInteger(R.styleable.BubbleSeekBar_bsb_section_text_position, NONE);
+        mThumbColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_thumb_color, mSecondTrackColor);
+        isShowSectionText = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_show_section_text, false);
+        mSectionTextSize = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_section_text_size, sp2px(14));
+        mSectionTextColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_section_text_color, mTrackColor);
+        isSeekStepSection = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_seek_step_section, false);
+        isSeekBySection = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_seek_by_section, false);
+        int pos = a.getInteger(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_section_text_position, NONE);
         if (pos == 0) {
             mSectionTextPosition = TextPosition.SIDES;
         } else if (pos == 1) {
@@ -155,25 +175,25 @@ public class BubbleSeekBar extends View {
         } else {
             mSectionTextPosition = NONE;
         }
-        mSectionTextInterval = a.getInteger(R.styleable.BubbleSeekBar_bsb_section_text_interval, 1);
-        isShowThumbText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_thumb_text, false);
-        mThumbTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_text_size, sp2px(14));
-        mThumbTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_text_color, mSecondTrackColor);
-        mBubbleColor = a.getColor(R.styleable.BubbleSeekBar_bsb_bubble_color, mSecondTrackColor);
-        mBubbleTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_bubble_text_size, sp2px(14));
-        mBubbleTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_bubble_text_color, Color.WHITE);
-        isShowSectionMark = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_section_mark, false);
-        isAutoAdjustSectionMark = a.getBoolean(R.styleable.BubbleSeekBar_bsb_auto_adjust_section_mark, false);
-        isShowProgressInFloat = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_progress_in_float, false);
-        int duration = a.getInteger(R.styleable.BubbleSeekBar_bsb_anim_duration, -1);
+        mSectionTextInterval = a.getInteger(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_section_text_interval, 1);
+        isShowThumbText = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_show_thumb_text, false);
+        mThumbTextSize = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_thumb_text_size, sp2px(14));
+        mThumbTextColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_thumb_text_color, mSecondTrackColor);
+        mBubbleColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_bubble_color, mSecondTrackColor);
+        mBubbleTextSize = a.getDimensionPixelSize(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_bubble_text_size, sp2px(14));
+        mBubbleTextColor = a.getColor(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_bubble_text_color, Color.WHITE);
+        isShowSectionMark = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_show_section_mark, false);
+        isAutoAdjustSectionMark = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_auto_adjust_section_mark, false);
+        isShowProgressInFloat = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_show_progress_in_float, false);
+        int duration = a.getInteger(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_anim_duration, -1);
         mAnimDuration = duration < 0 ? 200 : duration;
-        isTouchToSeek = a.getBoolean(R.styleable.BubbleSeekBar_bsb_touch_to_seek, false);
-        isAlwaysShowBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_always_show_bubble, false);
-        duration = a.getInteger(R.styleable.BubbleSeekBar_bsb_always_show_bubble_delay, 0);
+        isTouchToSeek = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_touch_to_seek, false);
+        isAlwaysShowBubble = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_always_show_bubble, false);
+        duration = a.getInteger(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_always_show_bubble_delay, 0);
         mAlwaysShowBubbleDelay = duration < 0 ? 0 : duration;
-        isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
-        isRtl = a.getBoolean(R.styleable.BubbleSeekBar_bsb_rtl, false);
-        setEnabled(a.getBoolean(R.styleable.BubbleSeekBar_android_enabled, isEnabled()));
+        isHideBubble = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
+        isRtl = a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_bsb_rtl, false);
+        setEnabled(a.getBoolean(com.xw.repo.bubbleseekbar.R.styleable.BubbleSeekBar_android_enabled, isEnabled()));
         a.recycle();
 
         mPaint = new Paint();
@@ -192,7 +212,7 @@ public class BubbleSeekBar extends View {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
         // init BubbleView
-        mBubbleView = new BubbleView(context, mBubbleRadius, mBubbleColor, mBubbleTextSize, mBubbleTextColor);
+        mBubbleView = new BubbleView(context);
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
 
@@ -298,7 +318,7 @@ public class BubbleSeekBar extends View {
      * Calculate radius of bubble according to the Min and the Max
      */
     private void calculateRadiusOfBubble() {
-        mPaint.setTextSize(mBubbleTextSize);
+        mPaint.setTextSize(mBubbleTextSize + dp2px(2));
 
         // 计算滑到两端气泡里文字需要显示的宽度，比较取最大值为气泡的半径
         String text;
@@ -1191,6 +1211,24 @@ public class BubbleSeekBar extends View {
         }
     }
 
+
+    public void setPercentage() {
+        if (mBubbleView != null) {
+            mBubbleView.setPercentage();
+            mBubbleView.setMaxText(String.valueOf((int) getMax()));
+        }
+    }
+
+    public void setBubbleProgressText(String progressText) {
+        if (!TextUtils.isEmpty(progressText)) {
+            mBubbleView.setProgressText(progressText);
+            if (mBubbleView != null) {
+                mBubbleView.invalidate();
+            }
+        }
+
+    }
+
     public void setCustomSectionTextArray(@NonNull CustomSectionTextArray customSectionTextArray) {
         mSectionTextArray = customSectionTextArray.onCustomize(mSectionCount, mSectionTextArray);
         for (int i = 0; i <= mSectionCount; i++) {
@@ -1205,7 +1243,7 @@ public class BubbleSeekBar extends View {
     }
     /////// Api ends ///////////////////////////////////////////////////////////////////////////////
 
-    public void config(BubbleConfigBuilder builder) {
+    void config(BubbleConfigBuilder builder) {
         mMin = builder.min;
         mMax = builder.max;
         mProgress = builder.progress;
@@ -1325,10 +1363,168 @@ public class BubbleSeekBar extends View {
         super.onRestoreInstanceState(state);
     }
 
+    /**
+     * Listen to progress onChanged, onActionUp, onFinally
+     */
+    public interface OnProgressChangedListener {
 
+        void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser);
 
+        void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
 
+        void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser);
+    }
 
+    /**
+     * Listener adapter
+     * <br/>
+     * usage like {@link AnimatorListenerAdapter}
+     */
+    public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
 
+        @Override
+        public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+        }
 
+        @Override
+        public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+        }
+
+        @Override
+        public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+        }
+    }
+
+    /**
+     * Customize the section texts under the track according to your demands by
+     * call {@link #setCustomSectionTextArray(CustomSectionTextArray)}.
+     */
+    public interface CustomSectionTextArray {
+        /**
+         * <p>
+         * Customization goes here.
+         * </p>
+         * For example:
+         * <pre> public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+         *     array.clear();
+         *
+         *     array.put(0, "worst");
+         *     array.put(4, "bad");
+         *     array.put(6, "ok");
+         *     array.put(8, "good");
+         *     array.put(9, "great");
+         *     array.put(10, "excellent");
+         * }</pre>
+         *
+         * @param sectionCount The section count of the {@code BubbleSeekBar}.
+         * @param array        The section texts array which had been initialized already. Customize
+         *                     the section text by changing one element's value of the SparseArray.
+         *                     The index key ∈[0, sectionCount].
+         * @return The customized section texts array. Can not be {@code null}.
+         */
+        @NonNull
+        SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array);
+    }
+
+    /***********************************************************************************************
+     **************************************  custom bubble view  ***********************************
+     **********************************************************************************************/
+    private class BubbleView extends View {
+
+        private Paint mBubblePaint;
+        private Path mBubblePath;
+        private RectF mBubbleRectF;
+        private Rect mRect;
+        private String mProgressText = "";
+        private String maxText = "";
+
+        private boolean isPercentage = false;
+
+        BubbleView(Context context) {
+            this(context, null);
+        }
+
+        BubbleView(Context context, AttributeSet attrs) {
+            this(context, attrs, 0);
+        }
+
+        BubbleView(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+
+            mBubblePaint = new Paint();
+            mBubblePaint.setAntiAlias(true);
+            mBubblePaint.setTextAlign(Paint.Align.CENTER);
+
+            mBubblePath = new Path();
+            mBubbleRectF = new RectF();
+            mRect = new Rect();
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+            setMeasuredDimension(3 * mBubbleRadius, 3 * mBubbleRadius);
+
+            mBubbleRectF.set(getMeasuredWidth() / 2f - mBubbleRadius, 0,
+                    getMeasuredWidth() / 2f + mBubbleRadius, 2 * mBubbleRadius);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+
+            mBubblePath.reset();
+            float x0 = getMeasuredWidth() / 2f;
+            float y0 = getMeasuredHeight() - mBubbleRadius / 3f;
+            mBubblePath.moveTo(x0, y0);
+            float x1 = (float) (getMeasuredWidth() / 2f - Math.sqrt(3) / 2f * mBubbleRadius);
+            float y1 = 3 / 2f * mBubbleRadius;
+            mBubblePath.quadTo(
+                    x1 - dp2px(2), y1 - dp2px(2),
+                    x1, y1
+            );
+            mBubblePath.arcTo(mBubbleRectF, 150, 240);
+
+            float x2 = (float) (getMeasuredWidth() / 2f + Math.sqrt(3) / 2f * mBubbleRadius);
+            mBubblePath.quadTo(
+                    x2 + dp2px(2), y1 - dp2px(2),
+                    x0, y0
+            );
+            mBubblePath.close();
+
+            mBubblePaint.setColor(mBubbleColor);
+            canvas.drawPath(mBubblePath, mBubblePaint);
+
+            mBubblePaint.setTextSize(mBubbleTextSize);
+            mBubblePaint.setColor(mBubbleTextColor);
+            mBubblePaint.getTextBounds(mProgressText, 0, mProgressText.length(), mRect);
+            Paint.FontMetrics fm = mBubblePaint.getFontMetrics();
+            float baseline = mBubbleRadius + (fm.descent - fm.ascent) / 2f - fm.descent;
+            canvas.drawText(mProgressText, getMeasuredWidth() / 2f, baseline, mBubblePaint);
+        }
+
+        void setProgressText(String progressText) {
+            if (progressText != null && !mProgressText.equals(progressText)) {
+                if (isPercentage) {
+                    mProgressText = progressText + "/" + maxText;
+                } else {
+                    mProgressText = progressText;
+                }
+
+                invalidate();
+            }
+        }
+
+        void setMaxText(String max) {
+            maxText = max;
+        }
+
+        /**
+         * 是否显示百分比: 15/1000
+         */
+        void setPercentage() {
+            isPercentage = true;
+        }
+    }
 }

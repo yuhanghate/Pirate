@@ -39,6 +39,15 @@ class SearchViewModel : BaseViewModel() {
     }
 
     /**
+     * 根据关键字模糊匹配
+     */
+    fun queryListHisotry(keyword: String):Flowable<List<SearchResult?>> {
+        return Flowable.just(keyword)
+                .map { mDataRepository.queryListHisotry(it).map { obj -> obj?.niceSearchResult() }.toList() }
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }
+
+    /**
      * 插入搜索历史
      */
     fun insertSearchHistory(keyword: String) {

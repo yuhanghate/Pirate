@@ -8,6 +8,18 @@
             android:name="android.permission.DEVICE_POWER"
             tools:ignore="ProtectedPermissions"/>
 
+    <!-- 必须的权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 推荐的权限 -->
+    <!-- 添加如下权限，以便使用更多的第三方SDK和更精准的统计数据 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
             android:name=".app.PirateApp"
             android:allowBackup="true"
@@ -44,6 +56,7 @@
                   android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize"/>
         <activity android:name=".ui.settings.activity.SettingsActivity" />
         <activity android:name=".ui.settings.activity.DisclaimerActivity" />
+        <activity android:name=".ui.settings.activity.TestBarActivity" />
     </application>
 
 </manifest>

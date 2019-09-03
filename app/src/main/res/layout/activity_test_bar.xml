@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.xw.repo.BubbleSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:layout_gravity="center_vertical"
+        app:bsb_bubble_color="@color/md_red_400"
+        app:bsb_bubble_text_color="@color/md_red_700"
+        app:bsb_max="1000"
+        app:bsb_min="1"
+        app:bsb_progress="0"
+        app:bsb_second_track_color="@color/md_red_400"
+        app:bsb_section_count="5"
+        app:bsb_section_text_position="bottom_sides"
+        app:bsb_show_progress_in_float="true"
+        app:bsb_show_section_mark="true"
+        app:bsb_show_section_text="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_track_color="@color/md_grey_500"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="test"
+        android:layout_height="wrap_content" />
+</LinearLayout>

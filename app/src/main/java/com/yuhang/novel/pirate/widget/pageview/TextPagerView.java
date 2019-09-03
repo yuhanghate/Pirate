@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import com.orhanobut.logger.Logger;
+import com.yuhang.novel.pirate.constant.ConfigConstant;
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil;
 import com.yuhang.novel.pirate.utils.*;
 import com.yuhang.novel.pirate.widget.ReadBookTextView;
 
@@ -363,13 +365,19 @@ public class TextPagerView extends ReadBookTextView {
 
         mBatteryPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(innerFrame, mBatteryPaint);
-        /******绘制当前电量********/
-//        canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
 
-        /******绘制当前时间********/
-        //底部的字显示的位置Y
-        String time = StringUtils.dateConvert(System.currentTimeMillis(), "HH:mm");
-        canvas.drawText(time, polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+        //显示时间
+        if (PreferenceUtil.getInt(ConfigConstant.INSTANCE.getPAGE_TIME(), ConfigConstant.INSTANCE.getPAGE_TIME_SHOW()) == ConfigConstant.INSTANCE.getPAGE_TIME_SHOW()) {
+            /******绘制当前时间********/
+            //底部的字显示的位置Y
+            String time = StringUtils.dateConvert(System.currentTimeMillis(), "HH:mm");
+            canvas.drawText(time, polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+        } else {
+            /******绘制当前电量********/
+            canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+
+        }
+
     }
 
     private void drawBackground(Canvas canvas) {

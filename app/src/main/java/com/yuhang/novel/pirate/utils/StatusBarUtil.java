@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  */
 public class StatusBarUtil {
 
-  public static final int DEFAULT_STATUS_BAR_ALPHA = 1;
+  public static final int DEFAULT_STATUS_BAR_ALPHA = 50;
 
   /**
    * 设置状态栏颜色

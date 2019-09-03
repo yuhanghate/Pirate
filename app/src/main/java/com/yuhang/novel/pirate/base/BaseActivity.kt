@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TimingLogger
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -15,11 +14,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
-import cn.bingoogolapple.swipebacklayout.R
 import com.orhanobut.logger.Logger
+import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil
-import com.yuhang.novel.pirate.utils.StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
@@ -37,16 +35,17 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
          */
         fun startIntent(activity: Activity, intent: Intent) {
             activity.startActivity(intent)
-            activity.overridePendingTransition(com.yuhang.novel.pirate.R.anim.slide_in_right, com.yuhang.novel.pirate.R.anim.slide_in_left)
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_in_left)
 
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.navigationBarColor = ContextCompat.getColor(this, com.yuhang.novel.pirate.R.color.navigation_bar_color)
+
         ThemeHelper.applyTheme(PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE))
 
         super.onCreate(savedInstanceState)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
         initLayoutInflater()
         initViewModel()
@@ -82,9 +81,10 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      */
     open fun initStatusTool() {
 
-        StatusBarUtil.setColor(this, ContextCompat.getColor(this, onStatusColor()), DEFAULT_STATUS_BAR_ALPHA)
+        StatusBarUtil.setTranslucent(this)
+//        StatusBarUtil.setColor(this, ContextCompat.getColor(this, onStatusColor()), 90)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 //            window?.decorView?.rootView?.setPadding(
 //                    0, -StatusBarUtil.getStatusBarHeight(this), 0, 0
 //            )
@@ -108,7 +108,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 沉浸式颜色
      */
     open fun onStatusColor(): Int {
-        return com.yuhang.novel.pirate.R.color.actionbar_color
+        return R.color.actionbar_color2
     }
 
 

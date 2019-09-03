@@ -32,7 +32,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                app:fastscroll__handleColor="#bfbfbf"
+                app:fastscroll__handleColor="@color/md_blue_grey_200"
                 android:layout_alignParentEnd="true"/>
         </RelativeLayout>
 

@@ -7,9 +7,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat.recreate
 import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
@@ -18,6 +16,7 @@ import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxAppTool
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
@@ -36,7 +35,6 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
-import com.yuhang.novel.pirate.utils.RestartAPPTool
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -96,6 +94,14 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUserInfoView() {
+
+        //初始化模式
+        if (PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE) == ThemeHelper.DARK_MODE) {
+            mBinding.subjectModeIv.setImageResource(R.drawable.ic_sun)
+        } else {
+            mBinding.subjectModeIv.setImageResource(R.drawable.ic_moon)
+        }
+
         mViewModel.getUserInfo()
             .compose(bindToLifecycle())
             .subscribe({
@@ -126,7 +132,13 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         //意见反馈
         mBinding.feedbackCl.setOnClickListener { sendEmail() }
         //最新浏览
-        mBinding.historyCl.setOnClickListener { ReadHistoryActivity.start(mActivity!!) }
+        mBinding.historyCl.setOnClickListener {
+            if (PirateApp.getInstance().getToken().isEmpty()) {
+                showHistoryDialog()
+            } else {
+                ReadHistoryActivity.start(mActivity!!)
+            }
+        }
         //登陆界面
         mBinding.btnLogin.setOnClickListener { LoginActivity.start(mActivity!!) }
         //登陆
@@ -155,7 +167,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             PreferenceUtil.commitString("themePref", ThemeHelper.DARK_MODE)
             ThemeHelper.applyTheme(ThemeHelper.DARK_MODE)
         }
-        val newIntent =  Intent(mActivity, MainActivity::class.java)
+        val newIntent = Intent(mActivity, MainActivity::class.java)
         newIntent.putExtra("tab_index", 2)
         startActivity(newIntent)
         mActivity?.finish()
@@ -228,7 +240,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     mBinding.versionNameTv.text = ""
                 }
             }, {
-//                niceToast("检测版本失败")
             })
     }
 
@@ -338,6 +349,23 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 }
             })
         }
+    }
+
+    /**
+     * 最近浏览界面需要登陆才可以查看.提示框
+     */
+    private fun showHistoryDialog() {
+        MaterialDialog(mActivity!!).show {
+            title(text = "提示")
+            message(text = "登陆以后可以查看浏览记录")
+            negativeButton(text = "取消")
+            positiveButton(text = "登陆", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+                    LoginActivity.start(mActivity!!)
+                }
+            })
+        }
+
     }
 
 

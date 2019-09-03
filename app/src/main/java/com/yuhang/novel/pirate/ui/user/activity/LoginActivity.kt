@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityLoginBinding
@@ -50,8 +51,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     private fun netLogin() {
         val username = mBinding.mobileEt.text.toString()
         val password = mBinding.passwordEt.text.toString()
-        showProgressbar("登陆中...")
+
         if (mViewModel.checkParams(mBinding.mobileEt, mBinding.passwordEt)) {
+            showProgressbar("登陆中...")
             mViewModel.login(username, password)
                 .compose(bindToLifecycle())
                 .subscribe({
@@ -59,6 +61,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                     if (it.code == 200) {
                         //保存到本地
                         val userResult = it
+                        //当用户使用自有账号登录时，可以这样统计：
+                        MobclickAgent.onProfileSignIn(userResult.data.id)
                         mUsersService.updateUsersToLocal(userResult = userResult).subscribe({
                             EventBus.getDefault().postSticky(userResult)
 //                            EventBus.getDefault().post(LoginEvent())

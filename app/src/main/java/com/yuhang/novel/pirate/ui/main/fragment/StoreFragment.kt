@@ -242,7 +242,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         if (isClick) {
             textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.text_white_color))
             textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_select_color))
-            imageView.visibility = View.VISIBLE
+            imageView.visibility = View.GONE
             val tag = textview.tag as String
 
             //设置标签

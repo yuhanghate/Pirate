@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.orhanobut.logger.Logger
+import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityRegisterBinding
@@ -57,6 +58,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 .compose(bindToLifecycle())
                 .subscribe({
                     if (it.code == 200) {
+                        MobclickAgent.onProfileSignIn(it.data.id)
                         mViewModel.saveAccount(it)
                         AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
                         onBackPressed()

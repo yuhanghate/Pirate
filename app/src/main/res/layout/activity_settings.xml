@@ -3,9 +3,10 @@
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/window_background"
+        android:background="@color/window_background_gray"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -43,12 +44,230 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <LinearLayout
+                    android:id="@+id/page_type_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_material_item"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_page_type" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:text="翻页方式"
+                        android:textColor="@color/primary_text"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/page_type_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="左右翻页"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:id="@+id/page_type_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_item_buttom" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <com.github.aakira.expandablelayout.ExpandableLinearLayout
+                    android:id="@+id/page_type_ell"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:ael_duration="200"
+                    app:ael_expanded="false">
+
+                    <LinearLayout
+                        android:id="@+id/page_vertical_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="20dp">
+
+                        <RadioButton
+                            android:id="@+id/page_vertical_rb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:buttonTint="@color/md_blue_grey_500"
+                            android:checked="true"
+                            android:clickable="false"
+                            android:drawablePadding="10dp"
+                            android:text="上下翻页"
+                            android:textColor="@color/primary_text"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/page_horizontal_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="20dp">
+
+                        <RadioButton
+                            android:id="@+id/page_horizontal_rb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:buttonTint="@color/md_blue_grey_500"
+                            android:clickable="false"
+                            android:drawablePadding="10dp"
+                            android:text="左右翻页"
+                            android:textColor="@color/primary_text"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+                </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/page_time_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_material_item"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_page_time" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="15dp"
+                        android:text="阅读界面"
+                        android:textColor="@color/primary_text"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/page_time_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="显示时间"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:id="@+id/page_time_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_item_buttom" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.github.aakira.expandablelayout.ExpandableLinearLayout
+                    android:id="@+id/page_time_ell"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:ael_duration="200"
+                    app:ael_expanded="false">
+
+                    <LinearLayout
+                        android:id="@+id/page_time_show_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="20dp">
+
+                        <RadioButton
+                            android:id="@+id/page_time_show_rb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:buttonTint="@color/md_blue_grey_500"
+                            android:checked="true"
+                            android:clickable="false"
+                            android:drawablePadding="10dp"
+                            android:text="显示时间"
+                            android:textColor="@color/primary_text"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/page_time_hide_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="20dp">
+
+                        <RadioButton
+                            android:id="@+id/page_time_hide_rb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:buttonTint="@color/md_blue_grey_500"
+                            android:clickable="false"
+                            android:drawablePadding="10dp"
+                            android:text="显示电池百分比"
+                            android:textColor="@color/primary_text"
+                            android:textSize="14sp" />
+
+
+                    </LinearLayout>
+                </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -72,7 +291,8 @@
                             android:layout_weight="1"
                             android:paddingStart="15dp"
                             android:text="免责申明"
-                            android:textColor="@color/primary_text" />
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -80,17 +300,12 @@
                             android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@color/list_divider_color" />
 
                     <LinearLayout
                         android:id="@+id/btn_clear"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
                         android:background="@drawable/bg_material_item"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -108,18 +323,19 @@
                             android:layout_weight="1"
                             android:paddingStart="15dp"
                             android:text="清除缓存"
-                            android:textColor="@color/primary_text" />
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/size_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp"
-                            android:text="0MB"
-                            android:gravity="center"
+                            android:drawableEnd="@drawable/ic_item_right"
                             android:drawablePadding="8dp"
-                            android:drawableEnd="@drawable/ic_item_right" />
+                            android:gravity="center"
+                            android:text="0MB"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -138,6 +354,14 @@
                     android:text="退出登陆"
                     android:textColor="#ffffffff"
                     android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btn_bar"
+                    android:layout_width="wrap_content"
+                    android:text="Bar"
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

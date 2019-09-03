@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.settings.viewmodel
 
 import android.text.TextUtils
+import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
@@ -31,6 +32,8 @@ class SettingsViewModel : BaseViewModel() {
             mDataRepository.clearUsers()
             PreferenceUtil.commitString("token", "")
             PirateApp.getInstance().setToken("")
+            //登出
+            MobclickAgent.onProfileSignOff()
             mActivity?.runOnUiThread {
                 mActivity?.onBackPressed()
                 EventBus.getDefault().postSticky(LogoutEvent())

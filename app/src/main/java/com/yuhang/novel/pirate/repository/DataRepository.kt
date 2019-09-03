@@ -198,6 +198,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 根据关键字匹配模糊匹配取5个
+     */
+    fun queryListHisotry(keyword: String):List<SearchHistoryKSEntity?> {
+        return mDatabase.searchHistoryKSDao.queryList(keyword)
+    }
+
+    /**
      * 收藏书籍
      */
     fun insertCollection(bookid: Long) {
@@ -485,7 +492,7 @@ class DataRepository(val context: Context) {
      * 最近浏览
      */
     fun getReadHistoryList(pageNum: Int): Flowable<ReadHistoryResult> {
-        return getNetApi().getReadHistoryList(pageNum = pageNum, pageSize = 50)
+        return getNetApi().getReadHistoryList(pageNum = pageNum, pageSize = 100)
     }
 
     /**

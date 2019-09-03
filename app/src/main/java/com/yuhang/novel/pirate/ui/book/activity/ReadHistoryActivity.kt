@@ -68,12 +68,12 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
         mViewModel.getReadHistoryList(PAGE_NUM)
                 .compose(bindToLifecycle())
                 .subscribe({
-                    val list = it.filterNotNull().map { it }.toList()
+                    val list = it.map { it }.toList()
                     if (list.isEmpty()) {
                         mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                     } else {
                         mViewModel.adapter.loadMore(list)
-
+                        mBinding.refreshLayout.finishLoadMore()
                     }
 
                 }, {
@@ -94,7 +94,7 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
                     mBinding.refreshLayout.finishRefresh()
                     val list = it.map { it }.toList()
                     mViewModel.adapter.setRefersh(list)
-                    if (list.size < 20) {
+                    if (list.size < 100) {
                         mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                     }
 

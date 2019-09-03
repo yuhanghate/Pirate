@@ -2,15 +2,14 @@ package com.yuhang.novel.pirate.ui.search.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.os.Handler
 import android.view.View
-import androidx.core.content.ContextCompat
+import android.view.animation.AnimationUtils
 import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
-import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivitySearchBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
@@ -23,9 +22,13 @@ import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
 class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(), FloatingSearchView.OnQueryChangeListener,
         FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener, OnClickItemListener {
 
-
+    /**
+     * 键盘输入间隔
+     */
+    private var inputKeywordTime: Long = 0
 
     companion object {
+        const val DURATION: Long = 190
         fun start(context: Activity) {
             val intent = Intent(context, SearchActivity::class.java)
             startIntent(context, intent)
@@ -38,7 +41,6 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
 
     override fun initView() {
         super.initView()
-
         initFloatingSearch()
         initRecyclerView()
     }
@@ -68,6 +70,21 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     }
 
     /**
+     * 根据关键字模糊匹配本地
+     */
+    private fun queryKeywordSearch(keyword: String?) {
+        keyword ?: return
+        mViewModel.queryListHisotry(keyword)
+                .compose(bindToLifecycle())
+                .subscribe({
+                    mBinding.floatingSearchView.swapSuggestions(it)
+                    mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+                }, {
+                    mBinding.floatingSearchView.swapSuggestions(arrayListOf())
+                })
+    }
+
+    /**
      * 关键字搜索
      */
     @SuppressLint("CheckResult")
@@ -93,8 +110,15 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         if (oldQuery != "" && newQuery == "") {
             mBinding.floatingSearchView.clearSuggestions()
         } else {
-            mBinding.floatingSearchView.showProgress()
-            netServiceSearch(newQuery)
+
+            //搜索间隔大于700毫秒 并且 不是删除动作
+            if (System.currentTimeMillis() - inputKeywordTime > 700 && !oldQuery?.startsWith(newQuery!!)!!) {
+                inputKeywordTime = System.currentTimeMillis()
+                mBinding.floatingSearchView.showProgress()
+                netServiceSearch(newQuery)
+                queryKeywordSearch(newQuery)
+            }
+
         }
     }
 
@@ -136,6 +160,10 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
                     mBinding.floatingSearchView.swapSuggestions(arrayListOf())
                 })
 
+        mBinding.bgShadow.visibility = View.VISIBLE
+        mBinding.bgShadow.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_transparent))
+
+
     }
 
     /**
@@ -144,6 +172,11 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     override fun onFocusCleared() {
         mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+        mBinding.bgShadow.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_transparent))
+        Handler().postDelayed({
+            mBinding.bgShadow.visibility = View.INVISIBLE
+
+        }, DURATION)
     }
 
     /**

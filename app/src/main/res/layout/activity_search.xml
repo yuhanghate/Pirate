@@ -15,11 +15,20 @@
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:paddingBottom="20dp"
             android:clipToPadding="false"
             android:paddingTop="100dp" />
+
+        <View
+            android:id="@+id/bg_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#4D000000"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
 
         <com.arlib.floatingsearchview.FloatingSearchView
             android:id="@+id/floating_search_view"
@@ -31,11 +40,11 @@
             app:floatingSearch_dimBackground="false"
             app:floatingSearch_dismissOnOutsideTouch="true"
             app:floatingSearch_leftActionMode="showHome"
-            app:floatingSearch_searchBarMarginLeft="15dp"
-            app:floatingSearch_searchBarMarginRight="15dp"
+            app:floatingSearch_searchBarMarginLeft="8dp"
+            app:floatingSearch_searchBarMarginRight="8dp"
             app:floatingSearch_searchBarMarginTop="5dp"
             app:floatingSearch_searchHint="Search..."
             app:floatingSearch_showSearchKey="true"
-            app:floatingSearch_suggestionsListAnimDuration="250" />
+            app:floatingSearch_suggestionsListAnimDuration="200" />
     </RelativeLayout>
 </layout>

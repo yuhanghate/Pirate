@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.Intent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityDisclaimerBinding
 import com.yuhang.novel.pirate.ui.settings.viewmodel.DisclaimerViewModel
 
 /**
  * 免责申明
  */
-class DisclaimerActivity :BaseActivity<ActivityDisclaimerBinding, DisclaimerViewModel>(){
+class DisclaimerActivity :BaseSwipeBackActivity<ActivityDisclaimerBinding, DisclaimerViewModel>(){
 
     companion object{
         fun start(context: Activity) {

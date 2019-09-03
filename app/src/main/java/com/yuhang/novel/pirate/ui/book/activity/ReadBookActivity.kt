@@ -26,27 +26,26 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.xw.repo.BubbleSeekBar
-import com.xw.repo.OnProgressChangedListenerAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.BookConstant
+import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.utils.StatusBarUtil
-import com.yuhang.novel.pirate.viewholder.ItemReadBookVH
 import com.yuhang.novel.pirate.widget.OnScrollListener
 import com.yuhang.novel.pirate.widget.ReadBookTextView
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
-import java.util.*
 import kotlin.math.abs
 
 
@@ -92,12 +91,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
     override fun initStatusTool() {
-        super.initStatusTool()
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            window?.decorView?.rootView?.setPadding(
-//                    0, -StatusBarUtil.getStatusBarHeight(this)*2, 0, 0
-//            )
-//        }
+        StatusBarUtil.setColor(this, onStatusColor(), 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    }
+
+    override fun onStatusColor(): Int {
+        return BookConstant.getPageBackground()
     }
 
     private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
@@ -107,7 +108,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //去除标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         //去除状态栏
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         super.onCreate(savedInstanceState)
         window.navigationBarColor = BookConstant.getPageBackground()
@@ -156,7 +157,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 .compose(bindToLifecycle())
                 .subscribe({
                     mViewModel.chapterList = it
-                    val entity = it.filter { it.chapterId == mViewModel.chapterid }.map { it }.toList()
+//                    val entity = it.filter { it.chapterId == mViewModel.chapterid }.map { it }.toList()
                     mBinding.layoutButton.chapterProgressSb.configBuilder
                             .min(1f)
                             .max((it.size).toFloat())
@@ -164,26 +165,18 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                             .sectionCount(it.size - 1)
                             .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
                             .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
-                            .thumbColor(ContextCompat.getColor(this, R.color.secondary_text))
-//                                    .showSectionText()
-                            .sectionTextColor(ContextCompat.getColor(this, R.color.secondary_text))
-//                                    .sectionTextSize(18)
-//                                    .showThumbText()
-//                                    .touchToSeek()
-//                                    .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
-//                                    .thumbTextSize(18)
-//                                    .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
-//                                    .bubbleTextSize(18)
-//                                    .showSectionMark()
-//                                    .seekBySection()
-//                                    .autoAdjustSectionMark()
-//                                    .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                            .showSectionText()
+                            .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
+                            .bubbleTextSize(18)
                             .build()
 
-                    mBinding.layoutButton.chapterProgressSb.onProgressChangedListener = object : OnProgressChangedListenerAdapter() {
+//                    mBinding.layoutButton.chapterProgressSb.setPercentage()
+
+                    mBinding.layoutButton.chapterProgressSb.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
                         override fun onProgressChanged(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
                             super.onProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
                             mBinding.layoutButton.chapterNameTv.text = mViewModel.chapterList[progress - 1].name
+//                            bubbleSeekBar?.setBubbleProgressText("$progress/${bubbleSeekBar.max}")
                         }
 
                         override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
@@ -204,7 +197,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 .configBuilder
                 .min(1f)
                 .max(7f)
-                .progress(4f)
+                .progress(BookConstant.getFontProgress())
                 .sectionCount(6)
                 .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
                 .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
@@ -217,14 +210,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
                 .thumbTextSize(18)
                 .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
-                .bubbleTextSize(18)
+                .bubbleTextSize(22)
                 .showSectionMark()
                 .seekBySection()
                 .autoAdjustSectionMark()
                 .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                 .build()
 
-        mBinding.layoutButton.seekBar.onProgressChangedListener = object : OnProgressChangedListenerAdapter() {
+        mBinding.layoutButton.seekBar.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
             override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
                 super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
                 when (progress) {
@@ -406,8 +399,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mBinding.footerV.setBackgroundColor(BookConstant.getPageBackground())
 
 
-//        mBinding.textPage.setPageTextColor(BookConstant.getPageTextColor())
-//        mBinding.textPage.build()
     }
 
     /**
@@ -449,8 +440,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             toggleMenuSwitch = true
         }
 
-//        logger.addSplit("toggleMenu")
-//        logger.dumpToLog()
     }
 
 
@@ -593,13 +582,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                         mViewModel.updateReadHistory()
 
                         mViewModel.adapter.loadMore(list)
-//                    logger.addSplit("onClickNextListener->success")
-//                    logger.dumpToLog()
-//                        onPageIndexListener(position + 1)
                     }, {
                         Logger.i(it.message!!)
-//                    logger.addSplit("onClickNextListener->error")
-//                    logger.dumpToLog()
                     })
         }
 
@@ -793,7 +777,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         MaterialDialog(this).show {
             title(text = "提示")
             message(text = "是否添加到书架?")
-            negativeButton(text = "取消", click = object :DialogCallback{
+            negativeButton(text = "取消", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.isCollection = true
                     this@ReadBookActivity.onBackPressedSupport()
@@ -850,14 +834,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra("level", 0)
             Logger.t("level").i(level.toString())
-            if (intent.action == Intent.ACTION_BATTERY_CHANGED && abs(level - ReadBookAdapter.mBatteryLevel) >= 1) {
-                val bookVH =
-                    mBinding.recyclerView.findViewHolderForAdapterPosition(mViewModel.currentPosition) as? ItemReadBookVH
+            if (intent.action == Intent.ACTION_BATTERY_CHANGED && level > 0 && abs(level - ReadBookAdapter.mBatteryLevel) >= 1) {
+                //显示电池百分比
                 ReadBookAdapter.mBatteryLevel = level
                 mViewModel.adapter.notifyDataSetChanged()
                 Logger.t("level").i("notifyDataSetChanged")
-            }else if(Intent.ACTION_TIME_TICK == intent.action){
-                //每一分钟更新时间
+            } else if (Intent.ACTION_TIME_TICK == intent.action
+                    && PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW) == ConfigConstant.PAGE_TIME_SHOW) {
+                //每一分钟更新时间 && 显示时间
                 Logger.t("level").i("一分钟更新")
                 mViewModel.adapter.notifyDataSetChanged()
             }

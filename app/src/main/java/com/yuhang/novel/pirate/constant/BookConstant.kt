@@ -92,7 +92,7 @@ object BookConstant {
     /**
      * 当前选择的页面颜色
      */
-    fun getPageColorIndex() :Int{
+    fun getPageColorIndex(): Int {
         return PreferenceUtil.getInt("page_color_index", 1)
     }
 
@@ -106,15 +106,31 @@ object BookConstant {
     /**
      * 设置界面字体大小
      */
-    fun setPageTextSize(size : Float) {
+    fun setPageTextSize(size: Float) {
         PreferenceUtil.commitFloat("page_text_size", size)
     }
 
     /**
      * 获取字体大小
      */
-    fun getPageTextSize() :Float{
+    fun getPageTextSize(): Float {
         return PreferenceUtil.getFloat("page_text_size", 18f)
+    }
+
+    /**
+     * 根据字体大小获取进度
+     */
+    fun getFontProgress(): Float {
+        return when (getPageTextSize()) {
+            15f -> 1f
+            16f -> 2f
+            17f -> 3f
+            18f -> 4f
+            19f -> 5f
+            20f -> 6f
+            21f -> 7f
+            else -> 4f
+        }
     }
 
 }

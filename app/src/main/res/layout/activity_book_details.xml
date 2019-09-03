@@ -5,8 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/window_background"
-        android:fitsSystemWindows="true">
+        android:background="@color/window_background">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
@@ -30,19 +29,41 @@
 
 
                 <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="wrap_content"
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin">
 
-                    <include
-                        android:id="@+id/include_toolbar_open"
-                        layout="@layout/layout_toolbar_book_details_open" />
 
-                    <include
-                        android:id="@+id/include_toolbar_close"
-                        layout="@layout/layout_toolbar_book_details_close" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <View
+                            android:id="@+id/status_bar_v"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:background="@color/window_background" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <include
+                                android:id="@+id/include_toolbar_open"
+                                layout="@layout/layout_toolbar_book_details_open" />
+                            <include
+                                android:id="@+id/include_toolbar_close"
+                                layout="@layout/layout_toolbar_book_details_close" />
+
+
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -54,11 +75,11 @@
             android:id="@+id/loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:llLoadingResId="@layout/layout_book_details_loadding"
-            app:llErrorResId="@layout/layout_book_details_error"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:llErrorImage="@drawable/ic_page_error"
-            app:llErrorText="加载失败">
+            app:llErrorResId="@layout/layout_book_details_error"
+            app:llErrorText="加载失败"
+            app:llLoadingResId="@layout/layout_book_details_loadding">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -85,12 +106,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent">
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:visibility="invisible"
-                android:background="@color/list_divider_color" />
+                android:background="@color/book_details_tab_line"
+                android:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -109,9 +133,9 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="加入书架"
-                    android:textStyle="bold"
                     android:textColor="@color/secondary_text"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/open_read_book_tv"
@@ -131,6 +155,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:visibility="gone"
                 android:background="@color/list_divider_color" />
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

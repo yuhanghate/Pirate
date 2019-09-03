@@ -239,6 +239,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     private fun netLocalData() {
         mViewModel.getBookInfoListLocal()
+                .compose(bindToLifecycle())
                 .subscribe({
                     mBinding.loading.showContent()
                     mBinding.refreshLayout.finishRefresh()

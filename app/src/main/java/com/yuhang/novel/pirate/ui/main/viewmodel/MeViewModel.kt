@@ -31,17 +31,17 @@ class MeViewModel : BaseViewModel() {
 
     fun getMessage(result: VersionResult): String {
         return StringBuilder()
-            .append("\n\r")
+            .append("\n")
             .append("建议在WLAN环境下进行升级")
-            .append("\n\r\n\r")
+            .append("\n\n")
             .append("版本: ${result.newVersion}")
-            .append("\n\r\n\r")
+            .append("\n\n")
             .append("大小: ${result.targetSize}")
-            .append("\n\r\n\r")
+            .append("\n\n")
             .append("更新说明:")
-            .append("\n\r")
+            .append("\n")
             .append(result.updateLog)
-            .append("\n\r")
+            .append("\n")
             .toString()
     }
 }

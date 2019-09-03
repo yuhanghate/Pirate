@@ -6,18 +6,20 @@ import android.app.Application
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
-import androidx.appcompat.app.AppCompatDelegate
+import com.meituan.android.walle.WalleChannelReader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.scwang.smartrefresh.header.MaterialHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.umeng.analytics.MobclickAgent
+import com.umeng.commonsdk.UMConfigure
 import com.yuhang.novel.pirate.BuildConfig
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
-import com.yuhang.novel.pirate.utils.ThemeHelper
 import me.yokeyword.fragmentation.Fragmentation
 import kotlin.concurrent.thread
 
@@ -47,7 +49,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
 
-
     override fun onCreate() {
         mInstance = this
         super.onCreate()
@@ -63,37 +64,87 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initRefreshLayout()
         initLog()
         initToken()
+        initYouMent()
+        initFragmentManger()
+        initStrictModel()
+    }
 
+    /**
+     * 严格模式
+     */
+    private fun initStrictModel() {
+        // 分别为MainThread和VM设置Strict Mode
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectAll()   // or .detectAll() for all detectable problems
+                    .penaltyLog()
+                    .build()
+            )
 
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build()
+            )
 
+        }
+    }
+
+    /**
+     * Fragment初始化
+     */
+    private fun initFragmentManger() {
         Fragmentation.builder()
             // show stack view. Mode: BUBBLE, SHAKE, NONE
             .stackViewMode(Fragmentation.NONE)
             .debug(BuildConfig.DEBUG)
-        .install()
+            .install()
+    }
 
-        // 分别为MainThread和VM设置Strict Mode
-//        if (BuildConfig.DEBUG) {
-//            StrictMode.setThreadPolicy(
-//                StrictMode.ThreadPolicy.Builder()
-//                    .detectDiskReads()
-//                    .detectDiskWrites()
-//                    .detectAll()   // or .detectAll() for all detectable problems
-//                    .penaltyLog()
-//                    .build()
-//            )
-//
-//            StrictMode.setVmPolicy(
-//                StrictMode.VmPolicy.Builder()
-//                    .detectLeakedSqlLiteObjects()
-//                    .detectLeakedClosableObjects()
-//                    .penaltyLog()
-//                    .penaltyDeath()
-//                    .build()
-//            )
-//
-//        }
+    /**
+     * 友盟统计初始化
+     */
+    private fun initYouMent() {
 
+        /**
+         * 设置组件化的Log开关
+         * 参数: boolean 默认为false，如需查看LOG设置为true
+         */
+        if (BuildConfig.DEBUG) {
+            UMConfigure.setLogEnabled(true)
+        }
+
+        /**
+         * 设置日志加密
+         * 参数：boolean 默认为false（不加密）
+         */
+        UMConfigure.setEncryptEnabled(true)
+
+
+        //获取渠道
+        val channel = WalleChannelReader.getChannelInfo(this)?.channel ?: "debug"
+        /**
+         * 初始化common库
+         * 参数1:上下文，不能为空
+         * 参数2:【友盟+】 AppKey
+         * 参数3:【友盟+】 Channel
+         * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
+         * 参数5:Push推送业务的secret
+         */
+        UMConfigure.init(this, ConfigConstant.YOUMENT_KEY, channel, UMConfigure.DEVICE_TYPE_PHONE, null)
+
+
+        // 选用LEGACY_AUTO页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL)
+
+        // 支持在子进程中统计自定义事件
+        UMConfigure.setProcessEvent(true)
     }
 
 

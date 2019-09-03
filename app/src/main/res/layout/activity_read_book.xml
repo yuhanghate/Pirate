@@ -104,7 +104,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="300dp"
+            android:layout_width="340dp"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="@+id/footer_v"
             android:layout_gravity="start"

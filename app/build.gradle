@@ -14,8 +14,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 112
-        versionName "1.1.2"
+        versionCode 117
+        versionName "1.1.7"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -226,12 +226,18 @@ dependencies {
 
     //进度条
     implementation project(path: ':bubbleseekbar')
+    implementation project(path: ':expandable-layout')
 
-    //打包 使用命令批量打包
-//    implementation 'com.meituan.android.walle:library:1.1.6'
+    //美团渠道包
+    implementation 'com.meituan.android.walle:library:1.1.6'
 
 //    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
 
     //夜间模式切换
 //    implementation 'com.bilibili:magicasakura:0.1.9-beta3@aar'
+
+    //友盟统计
+    implementation  'com.umeng.umsdk:common:2.1.0'
+    implementation  'com.umeng.umsdk:utdid:1.1.5.3'
+    implementation 'com.umeng.umsdk:analytics:8.1.3'
 }

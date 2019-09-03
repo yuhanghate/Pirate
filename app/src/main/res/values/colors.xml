@@ -10,6 +10,7 @@
     <color name="divider">#f4f4f4</color>
     <color name="window_background">@color/md_white_1000</color>
     <color name="actionbar_color">@color/md_white_1000</color>
+    <color name="actionbar_color2">#1A000000</color>
     <color name="item_color">@color/md_white_1000</color>
     <color name="item_color_grey">@color/md_grey_200</color>
     <color name="image_tint">#000000</color>
@@ -22,6 +23,9 @@
     <color name="text_white_color">#ffffff</color>
     <color name="btn_close_color">@color/md_black_1000</color>
     <color name="navigation_bar_color">@color/md_white_1000</color>
+    <color name="window_background_gray">@color/md_grey_50</color>
+    <color name="btn_gray_color">@color/md_grey_50</color>
+    <color name="book_details_tab_line">#f4f4f4</color>
 
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>

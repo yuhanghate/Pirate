@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--values-colors.xml-->
 <resources>
-    <color name="primary">@color/md_red_200</color>
-    <color name="primary_dark">@color/md_red_200</color>
+    <color name="primary">@color/md_blue_grey_500</color>
+    <color name="primary_dark">@color/md_blue_grey_500</color>
     <color name="primary_light">@color/md_grey_300</color>
     <color name="accent">#9E9E9E</color>
     <color name="primary_text">#DEFFFFFF</color>
@@ -10,6 +10,7 @@
     <color name="divider">@color/md_grey_900</color>
     <color name="window_background">@color/md_black_1000</color>
     <color name="actionbar_color">@color/md_grey_900</color>
+    <color name="actionbar_color2">#1A000000</color>
     <color name="item_color">@color/md_grey_900</color>
     <color name="item_color_grey">@color/md_grey_900</color>
     <color name="image_tint">#DE000000</color>
@@ -22,6 +23,9 @@
     <color name="text_white_color">#C7FFFFFF</color>
     <color name="btn_close_color">@color/icons</color>
     <color name="navigation_bar_color">@color/md_black_1000</color>
+    <color name="window_background_gray">@color/md_black_1000</color>
+    <color name="btn_gray_color">@color/md_grey_900</color>
+    <color name="book_details_tab_line">@color/md_grey_700</color>
 
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>

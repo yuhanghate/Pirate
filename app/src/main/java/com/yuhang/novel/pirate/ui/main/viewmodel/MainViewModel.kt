@@ -14,7 +14,6 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterList
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlin.concurrent.thread
 
@@ -53,13 +52,17 @@ class MainViewModel : BaseViewModel() {
                     val user = mDataRepository.getLastUser()
                     if (user != null) {
                         return@flatMap mDataRepository.getCollectionList(1)
-                                .map { it.data.list.map { it.bookid.toLong() }.toList() }
+                                .map {
+                                    it.data.list.map {
+                                        //从服务器获取收藏列表并插入本地
+                                        mDataRepository.insertCollection(it.bookid.toLong())
+                                        it.bookid.toLong()
+                                    }.toList()
+                                }
                     } else {
                         return@flatMap queryCollectionAll().map {
                             it.map {
                                 val bookid = it?.bookid!!
-                                //从服务器获取收藏列表并插入本地
-                                mDataRepository.insertCollection(bookid)
                                 bookid
                             }.toList()
                         }
@@ -146,7 +149,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 从服务器更新书籍章节到本地
      */
-    fun updateChapterToDB(): Disposable {
+    fun updateChapterToDB(): Flowable<List<BookChapterKSEntity>> {
         Logger.i("updateChapterToDB ====> ")
         return queryCollectionAll()
                 .flatMap { Flowable.fromArray(*it.toTypedArray()) }
@@ -162,14 +165,6 @@ class MainViewModel : BaseViewModel() {
                     insertChapterList(list)
                     return@map list
                 }
-                .compose(mActivity?.bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    Logger.i("")
-                }, {
-                    it.message?.let { Logger.e(it) }
-                })
     }
 
     /**

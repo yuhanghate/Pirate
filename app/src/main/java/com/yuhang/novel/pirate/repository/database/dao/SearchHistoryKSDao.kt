@@ -7,7 +7,7 @@ import io.reactivex.Flowable
 @Dao
 interface SearchHistoryKSDao {
 
-  @Query("select * from searchhistoryksentity as s order by s.updateTime desc limit 10")
+  @Query("select * from searchhistoryksentity as s order by s.updateTime desc limit 5")
   fun query():List<SearchHistoryKSEntity?>
 
   @Insert
@@ -21,6 +21,12 @@ interface SearchHistoryKSDao {
    */
   @Query("select * from searchhistoryksentity as s where s.keyword = :keyword order by s.updateTime limit 1")
   fun query(keyword:String):SearchHistoryKSEntity?
+
+  /**
+   * 匹配模糊匹配取5个
+   */
+  @Query("select * from searchhistoryksentity as s where s.keyword LIKE '%' || :keyword || '%'  order by s.updateTime desc limit 5")
+  fun queryList(keyword:String):List<SearchHistoryKSEntity?>
 
   @Delete
   fun delete(obj:SearchHistoryKSEntity)
