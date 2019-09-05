@@ -2,12 +2,11 @@ package com.yuhang.novel.pirate.ui.user.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import com.orhanobut.logger.Logger
-import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityRegisterBinding
 import com.yuhang.novel.pirate.ui.user.viewmodel.RegisterViewModel
 import com.yuhang.novel.pirate.utils.AppManagerUtils
@@ -17,6 +16,7 @@ import com.yuhang.novel.pirate.utils.AppManagerUtils
  */
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>() {
     val TAG: String = RegisterActivity::class.java.simpleName
+
     companion object {
         fun start(context: Activity) {
             val intent = Intent(context, RegisterActivity::class.java)
@@ -35,7 +35,10 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     private fun onClick() {
         mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnCommit.setOnClickListener { netRegister() }
+        mBinding.btnCommit.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_REGISTER, "点击注册")
+            netRegister()
+        }
     }
 
     /**
@@ -58,7 +61,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 .compose(bindToLifecycle())
                 .subscribe({
                     if (it.code == 200) {
-                        MobclickAgent.onProfileSignIn(it.data.id)
+//                        MobclickAgent.onProfileSignIn(it.data.id)
                         mViewModel.saveAccount(it)
                         AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
                         onBackPressed()
@@ -69,5 +72,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 })
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("注册页")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("注册页")
     }
 }

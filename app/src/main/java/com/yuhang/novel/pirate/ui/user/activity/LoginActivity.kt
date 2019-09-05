@@ -2,13 +2,11 @@ package com.yuhang.novel.pirate.ui.user.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityLoginBinding
-import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
@@ -40,7 +38,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
     private fun onClick() {
         mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnCommit.setOnClickListener { netLogin() }
+        mBinding.btnCommit.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_LOGIN, "点击登陆")
+            netLogin()
+        }
         mBinding.btnRegister.setOnClickListener { RegisterActivity.start(this) }
     }
 
@@ -62,7 +63,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                         //保存到本地
                         val userResult = it
                         //当用户使用自有账号登录时，可以这样统计：
-                        MobclickAgent.onProfileSignIn(userResult.data.id)
+//                        MobclickAgent.onProfileSignIn(userResult.data.id)
                         mUsersService.updateUsersToLocal(userResult = userResult).subscribe({
                             EventBus.getDefault().postSticky(userResult)
 //                            EventBus.getDefault().post(LoginEvent())
@@ -78,5 +79,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                 })
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("登陆页")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("登陆页")
     }
 }

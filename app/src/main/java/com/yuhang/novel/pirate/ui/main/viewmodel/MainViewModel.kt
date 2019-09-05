@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.ui.main.viewmodel
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import com.orhanobut.logger.Logger
+import com.vondear.rxtool.RxDeviceTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
@@ -11,6 +12,7 @@ import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -209,5 +211,31 @@ class MainViewModel : BaseViewModel() {
     private fun isShowNewLabel(bookid: Long): Boolean {
         return mDataRepository.isShowUpdateLable(bookid = bookid)
 
+    }
+
+
+    /**
+     * 检测版本
+     */
+    fun checkVersion(): Flowable<VersionResult> {
+        return mDataRepository.checkVersion(RxDeviceTool.getAppVersionName(mActivity))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getMessage(result: VersionResult): String {
+        return StringBuilder()
+            .append("\n")
+            .append("建议在WLAN环境下进行升级")
+            .append("\n\n")
+            .append("版本: ${result.newVersion}")
+            .append("\n\n")
+            .append("大小: ${result.targetSize}")
+            .append("\n\n")
+            .append("更新说明:")
+            .append("\n")
+            .append(result.updateLog)
+            .append("\n")
+            .toString()
     }
 }

@@ -141,7 +141,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
 
         // 选用LEGACY_AUTO页面采集模式
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL)
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
 
         // 支持在子进程中统计自定义事件
         UMConfigure.setProcessEvent(true)

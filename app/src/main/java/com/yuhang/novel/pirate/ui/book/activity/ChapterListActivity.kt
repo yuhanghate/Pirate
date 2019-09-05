@@ -5,13 +5,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
+import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityChapterListBinding
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
@@ -54,25 +57,22 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-//        //去除标题栏
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        //去除状态栏
-//        window.setFlags(
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN
-//        )
-
-        super.onCreate(savedInstanceState)
-//        window.navigationBarColor = Color.parseColor("#F6EFDD")
-    }
-
     override fun initView() {
         super.initView()
         onClick()
         initBookInfo()
         initRecyclerView()
+        initBackgroud()
+    }
+
+    private fun initBackgroud() {
+        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+        mBinding.toolbar.setBackgroundColor(BookConstant.getPageBackground())
+        if (BookConstant.getPageColorIndex() == 3) {
+            mBinding.backCloseIv.setImageResource(R.drawable.btn_back_white)
+        } else {
+            mBinding.backCloseIv.setImageResource(R.drawable.btn_back_black)
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -118,5 +118,15 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     override fun onClickItemListener(view: View, position: Int) {
 //        val chapterKSEntity = mViewModel.adapter.getObj(position)
         ReadBookActivity.start(this, getBookid())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("单独的章节列表页")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("单独的章节列表页")
     }
 }

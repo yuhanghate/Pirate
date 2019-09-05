@@ -1,9 +1,7 @@
 package com.yuhang.novel.pirate.ui.main.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -12,20 +10,20 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.navOptions
-import com.yuhang.novel.pirate.base.BaseFragment
-import com.yuhang.novel.pirate.R
-import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
-import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookKSConstant
+import com.yuhang.novel.pirate.constant.UMConstant
+import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
-import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
+import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
 
@@ -34,8 +32,7 @@ import com.yuhang.novel.pirate.widget.DoubleClickListener
  * 书架
  */
 class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRefreshLoadMoreListener,
-        OnClickItemListener {
-
+    OnClickItemListener {
 
 
     private var mTopInAnim: Animation? = null
@@ -46,8 +43,23 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     private var mBackgroundOutTransparent: Animation? = null
 
     val genderList by lazy { arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl) }
-    val typeList by lazy { arrayListOf<ConstraintLayout>(mBinding.typeHotCl, mBinding.typeCommendCl, mBinding.typeOverCl, mBinding.typeCollectCl, mBinding.typeNewCl, mBinding.typeVoteCl) }
-    val dateList by lazy { arrayListOf<ConstraintLayout>(mBinding.dateWeekCl, mBinding.dateMonthCl, mBinding.dateTotalCl) }
+    val typeList by lazy {
+        arrayListOf<ConstraintLayout>(
+            mBinding.typeHotCl,
+            mBinding.typeCommendCl,
+            mBinding.typeOverCl,
+            mBinding.typeCollectCl,
+            mBinding.typeNewCl,
+            mBinding.typeVoteCl
+        )
+    }
+    val dateList by lazy {
+        arrayListOf<ConstraintLayout>(
+            mBinding.dateWeekCl,
+            mBinding.dateMonthCl,
+            mBinding.dateTotalCl
+        )
+    }
 
     val DURATION: Long = 190
 
@@ -56,14 +68,24 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
      */
     private var PAGE_NUM = 1
 
-    companion object{
-        fun newInstance():StoreFragment {
+    companion object {
+        fun newInstance(): StoreFragment {
             return StoreFragment()
         }
     }
 
     override fun onLayoutId(): Int {
         return R.layout.fragment_sotre
+    }
+
+    override fun onSupportVisible() {
+        super.onSupportVisible()
+        mViewModel.onPageStart("我的页面")
+    }
+
+    override fun onSupportInvisible() {
+        super.onSupportInvisible()
+        mViewModel.onPageEnd("我的页面")
     }
 
     override fun initView() {
@@ -177,9 +199,9 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mViewModel.adapter.setListener(this)
         mViewModel.adapter.initData(arrayListOf())
         val decoration = HorizontalDividerItemDecoration.Builder(mActivity)
-                .size(niceDp2px(20f))
-                .color(android.R.color.white)
-                .build()
+            .size(niceDp2px(20f))
+            .color(android.R.color.white)
+            .build()
         val layoutManager = LinearLayoutManager(mActivity)
         layoutManager.orientation = RecyclerView.VERTICAL
         mBinding.recyclerview.layoutManager = layoutManager
@@ -265,23 +287,23 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
         mViewModel.getRankingList(PAGE_NUM)
-                .compose(bindToLifecycle())
-                .subscribe({
+            .compose(bindToLifecycle())
+            .subscribe({
 
-                    mBinding.loading.showContent()
+                mBinding.loading.showContent()
 
 
-                    if (!it.data.isHasNext) {
-                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-                    } else {
-                        mBinding.refreshLayout.finishLoadMore()
-                        mViewModel.adapter.loadMore(it.data.bookList)
-                    }
+                if (!it.data.isHasNext) {
+                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                } else {
+                    mBinding.refreshLayout.finishLoadMore()
+                    mViewModel.adapter.loadMore(it.data.bookList)
+                }
 
-                }, {
-                    //                    mBinding.loading.showError()
-                    mBinding.refreshLayout.finishRefresh()
-                })
+            }, {
+                //                    mBinding.loading.showError()
+                mBinding.refreshLayout.finishRefresh()
+            })
     }
 
     /**
@@ -294,14 +316,14 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mBinding.loading.showContent()
         mBinding.refreshLayout.finishLoadMore()
         mViewModel.getRankingList(PAGE_NUM)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.adapter.setRefersh(it.data.bookList)
-                    mBinding.refreshLayout.finishRefresh()
-                }, {
-                    //                    mBinding.loading.showError()
-                    mBinding.refreshLayout.finishRefresh()
-                })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.adapter.setRefersh(it.data.bookList)
+                mBinding.refreshLayout.finishRefresh()
+            }, {
+                //                    mBinding.loading.showError()
+                mBinding.refreshLayout.finishRefresh()
+            })
     }
 
     /**
@@ -320,12 +342,23 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                     mBinding.refreshLayout.finishRefresh()
                 }
 
-            },{
+            }, {
                 mBinding.refreshLayout.finishRefresh()
             })
     }
 
     override fun onClickItemListener(view: View, position: Int) {
-        BookDetailsActivity.start(mActivity!!, mViewModel.adapter.getObj(position).Id)
+        val obj = mViewModel.adapter.getObj(position)
+        mViewModel.onUMEvent(
+            mActivity!!,
+            UMConstant.TYPE_STORE_CLICK_ITEM,
+            hashMapOf(
+                "action" to "书城 -> 点击书城列表",
+                "bookName" to obj.Name,
+                "bookId" to obj.Id.toString(),
+                "author" to obj.Author
+            )
+        )
+        BookDetailsActivity.start(mActivity!!, obj.Id)
     }
 }

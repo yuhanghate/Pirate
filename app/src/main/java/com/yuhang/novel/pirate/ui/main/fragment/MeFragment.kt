@@ -18,6 +18,7 @@ import com.vondear.rxtool.RxAppTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
 import com.yuhang.novel.pirate.eventbus.LoginEvent
@@ -80,6 +81,16 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         super.onDestroyView()
     }
 
+    override fun onSupportVisible() {
+        super.onSupportVisible()
+        mViewModel.onPageStart("我的页面")
+    }
+
+    override fun onSupportInvisible() {
+        super.onSupportInvisible()
+        mViewModel.onPageEnd("我的页面")
+    }
+
     override fun initView() {
         super.initView()
 //        FileDownloader.setup(mActivity)
@@ -128,11 +139,18 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
     private fun onClick() {
         //分享
-        mBinding.shareCl.setOnClickListener { showShareDialog() }
+        mBinding.shareCl.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_APP_SHARE, "我的 -> 分享应用")
+            showShareDialog()
+        }
         //意见反馈
-        mBinding.feedbackCl.setOnClickListener { sendEmail() }
+        mBinding.feedbackCl.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 分享应用")
+            sendEmail()
+        }
         //最新浏览
         mBinding.historyCl.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_HISTORY, "我的 -> 最近浏览")
             if (PirateApp.getInstance().getToken().isEmpty()) {
                 showHistoryDialog()
             } else {
@@ -140,18 +158,27 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             }
         }
         //登陆界面
-        mBinding.btnLogin.setOnClickListener { LoginActivity.start(mActivity!!) }
+        mBinding.btnLogin.setOnClickListener {
+            LoginActivity.start(mActivity!!)
+        }
         //登陆
         mBinding.avatarCiv.setOnClickListener { LoginActivity.start(mActivity!!) }
         //检测版本更新
         mBinding.checkVersionCl.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_VERSION_CHECK, "我的 -> 检测升级")
             isInitView = true
             checkVersionWithPermissionCheck()
         }
         //设置
-        mBinding.settingsCl.setOnClickListener { SettingsActivity.start(mActivity!!) }
+        mBinding.settingsCl.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_SETTINGS, "我的 -> 设置")
+            SettingsActivity.start(mActivity!!)
+        }
 
-        mBinding.modelCl.setOnClickListener { resetModel() }
+        mBinding.modelCl.setOnClickListener {
+
+            resetModel()
+        }
     }
 
     /**
@@ -162,8 +189,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         if (model == ThemeHelper.DARK_MODE) {
             PreferenceUtil.commitString("themePref", ThemeHelper.LIGHT_MODE)
             ThemeHelper.applyTheme(ThemeHelper.LIGHT_MODE)
-
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_MODEL, "夜间模式")
         } else {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_MODEL, "日间模式")
             PreferenceUtil.commitString("themePref", ThemeHelper.DARK_MODE)
             ThemeHelper.applyTheme(ThemeHelper.DARK_MODE)
         }
@@ -182,14 +210,19 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun showShareDialog() {
         MaterialDialog(mActivity!!).show {
             title(text = "温馨提示")
-            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看看APP看免费百万本小说。下载地址 https://fir.im/a9u7")
-            negativeButton(text = "取消")
+            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+            negativeButton(text = "取消",click = object : DialogCallback{
+                override fun invoke(p1: MaterialDialog) {
+                    mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_NO, "分享应用 -> 点击取消")
+                }
+            })
             positiveButton(text = "分享", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
+                    mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_YES, "分享应用 -> 点击取消")
                     //获取剪贴板管理器：
                     val cm = mActivity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
                     // 创建普通字符型ClipData
-                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看看APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
                     niceToast("复制成功,可以分享给朋友了")
@@ -206,7 +239,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         data.data = Uri.parse("mailto:yh714610354@gmail.com")
         data.putExtra(
             Intent.EXTRA_SUBJECT,
-            "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看看]"
+            "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
         )
         data.putExtra(Intent.EXTRA_TEXT, "")
         startActivity(data)
@@ -249,14 +282,20 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
      */
     private fun showVersionUpdateDialog(result: VersionResult) {
 
-// 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
+        // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
         val builder = AlertDialog.Builder(mActivity!!)
         builder.setTitle("检测到新版本")
         builder.setMessage(mViewModel.getMessage(result))
         //点击对话框以外的区域是否让对话框消失
         builder.setCancelable(true)
-        builder.setNegativeButton("更新") { p0, p1 -> showVersionUpdateProgress(result) }
-        builder.setPositiveButton("取消") { p0, p1 -> }
+        builder.setNegativeButton("更新") { p0, p1 ->
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_VERSION_UPDATE_YES, "版本更新 -> 点击更新")
+            showVersionUpdateProgress(result)
+
+        }
+        builder.setPositiveButton("取消") { p0, p1 ->
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_VERSION_UPDATE_NO, "分享应用 -> 点击取消")
+        }
         builder.show()
     }
 
@@ -318,7 +357,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun showUpdateCollectDialog() {
-        showProgressbar(message = "正在同步收藏数据,请耐心等待..")
+        showProgressbar(message = "正在同步大量数据,请耐心等待..")
         mUsersService.updateCollectionToLocal()
             .flatMap { mUsersService.updateChapterListToLocal(it) }
             .flatMap { mUsersService.updateBookInfoToLocal(it) }

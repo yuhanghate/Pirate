@@ -34,4 +34,14 @@ class DisclaimerActivity :BaseSwipeBackActivity<ActivityDisclaimerBinding, Discl
 
         mBinding.btnBack.setOnClickListener { onBackPressed() }
     }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("免责申明")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("免责申明")
+    }
 }

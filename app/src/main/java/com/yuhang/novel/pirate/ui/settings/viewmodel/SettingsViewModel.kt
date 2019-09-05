@@ -33,7 +33,7 @@ class SettingsViewModel : BaseViewModel() {
             PreferenceUtil.commitString("token", "")
             PirateApp.getInstance().setToken("")
             //登出
-            MobclickAgent.onProfileSignOff()
+//            MobclickAgent.onProfileSignOff()
             mActivity?.runOnUiThread {
                 mActivity?.onBackPressed()
                 EventBus.getDefault().postSticky(LogoutEvent())

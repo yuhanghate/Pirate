@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
+import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -19,6 +20,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityBookDetailsBinding
 import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookItemBinding
 import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookLineBinding
@@ -29,6 +31,7 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import com.yuhang.novel.pirate.utils.StatusBarUtil
+import com.yuhang.novel.pirate.utils.SystemUtil
 import jp.wasabeef.glide.transformations.BlurTransformation
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -42,7 +45,7 @@ import kotlin.math.abs
  * 简介/目录/加入书架/立即阅读
  */
 class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
-        AppBarLayout.OnOffsetChangedListener {
+    AppBarLayout.OnOffsetChangedListener {
 
     /**
      * 标题行为
@@ -93,7 +96,13 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     }
 
     private fun initToolbarHeight() {
-        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(this))
+//        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(this))
+//
+//        mBinding.tabNavigationBar.setPadding(0, 0, 0, StatusBarUtil.getNavigationBarSize(this).y * 3 - StatusBarUtil.getStatusBarHeight(this))
+//        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+//        layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
+//        layoutParams.height = StatusBarUtil.getRealHeight(this) - mBinding.appBar.height
+//        mBinding.tabNavigationBar.layoutParams = layoutParams
 
         mBinding.statusBarV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
     }
@@ -102,10 +111,40 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         StatusBarUtil.setTranslucentForCoordinatorLayout(this, StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA)
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            var height = 0
+            val resourceId = applicationContext.resources.getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                height = applicationContext.resources.getDimensionPixelSize(resourceId);
+            }
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            if (SystemUtil.getDeviceBrand() == "Meizu") {
+                layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
+            } else {
+                layoutParams.height =
+                    StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(this)
+            }
+
+            mBinding.tabNavigationBar.layoutParams = layoutParams
+
+//            mBinding.statusBarV.layoutParams.height = height
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("我的页面")
+    }
 
     override fun onResume() {
         super.onResume()
         initCollectionStatus()
+        mViewModel.onPageStart("书箱详情页")
     }
 
     /**
@@ -138,15 +177,17 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         mBinding.includeToolbarClose.backCloseIv.setOnClickListener { onBackPressed() }
         mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressed() }
         mBinding.openReadBookTv.setOnClickListener {
-
+            mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_READ, "立即阅读")
             ReadBookActivity.start(this, getBookid())
         }
         mBinding.addBookrackTv.setOnClickListener {
 
             //            showDialogCollection(mViewModel.isCollection)
             if (mViewModel.isCollection) {
+                mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "移出书架")
                 removeCollection()
             } else {
+                mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "加入书架")
                 addCollection()
             }
         }
@@ -159,8 +200,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     private fun resetView(obj: BookDetailsDataResult) {
         Glide.with(this).load(niceCoverPic(obj.Img)).into(mBinding.includeToobarHeadOpen.coverIv)
         Glide.with(this).load(niceCoverPic(obj.Img))
-                .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
-                .into(mBinding.includeToobarHeadOpen.bgCoverIv)
+            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
+            .into(mBinding.includeToobarHeadOpen.bgCoverIv)
 
         val details = mBinding.layoutBookDetails
         details.statusTv.setText("状态   ${obj.BookStatus}", null)
@@ -176,10 +217,20 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
         //目录点击
         mBinding.layoutBookDetails.chapterListLl.setOnClickListener {
+            val bookName = mViewModel.obj?.Name ?: ""
+            mViewModel.onUMEvent(
+                this,
+                UMConstant.TYPE_DETAILS_CLICK_DIR_CHANPTER,
+                hashMapOf(
+                    "action" to "书箱详情 -> 点击单独章节目录",
+                    "bookName" to bookName,
+                    "bookId" to getBookid().toString()
+                )
+            )
             ChapterListActivity.start(
-                    this,
-                    getBookid(),
-                    obj.LastChapterId
+                this,
+                getBookid(),
+                obj.LastChapterId
             )
         }
 
@@ -197,9 +248,9 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
                     val drawable = getDrawable(R.drawable.ic_default_cover)
                     val placeholder =
-                            RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
-                                    .placeholder(drawable)
-                                    .error(drawable)
+                        RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
+                            .placeholder(drawable)
+                            .error(drawable)
                     Glide.with(this).load(niceCoverPic(book.Img)).apply(placeholder).into(itemBinding.coverIv)
 
                     //分隔线
@@ -207,6 +258,16 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
                     //点击跳转作者相关详情
                     itemBinding.itemLl.setOnClickListener {
+                        mViewModel.onUMEvent(
+                            this,
+                            UMConstant.TYPE_DETAILS_CLICK_AUTHOR_OTHER_BOOK,
+                            hashMapOf(
+                                "action" to "书箱详情 -> 点击作者其他作品",
+                                "bookId" to book.Id.toString(),
+                                "bookName" to book.Name,
+                                "author" to book.Author
+                            )
+                        )
                         BookDetailsActivity.start(this, book.Id)
                     }
 
@@ -234,7 +295,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         val alpha4 = (scrollRange - offset) / scrollRange
         Logger.i("offset = $offset scrollRange = $scrollRange  alpha4 = $alpha4")
 
-        if (scrollRange - offset == 0f  ) {
+        if (scrollRange - offset == 0f) {
 
             //滑入标题动画
             animationEvent = TitleEvent.ENTER_START
@@ -262,7 +323,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             animationOut.fillAfter = true
             mBinding.includeToolbarClose.titleCloseTv.startAnimation(animationOut)
             Handler().postDelayed({
-//                mBinding.includeToolbarClose.titleCloseTv.visibility = View.INVISIBLE
+                //                mBinding.includeToolbarClose.titleCloseTv.visibility = View.INVISIBLE
                 animationEvent = TitleEvent.EXIT_END
             }, 600)
         } else if (animationEvent == TitleEvent.DEFAULT || animationEvent == TitleEvent.EXIT_END) {
@@ -294,19 +355,19 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     private fun netServiceData() {
         mBinding.loading.showLoading()
         mViewModel.getBookDetails(getBookid())
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.obj = it
-                    //点击立即阅读,返回就刷新一次
-                    initCollectionStatus()
-                    //插入或更新书箱信息
-                    mViewModel.insertBookInfoEntity()
-                    mBinding.loading.showContent()
-                    resetView(it)
-                }, {
-                    Logger.e(it.message!!)
-                    mBinding.loading.showError()
-                })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.obj = it
+                //点击立即阅读,返回就刷新一次
+                initCollectionStatus()
+                //插入或更新书箱信息
+                mViewModel.insertBookInfoEntity()
+                mBinding.loading.showContent()
+                resetView(it)
+            }, {
+                Logger.e(it.message!!)
+                mBinding.loading.showError()
+            })
     }
 
 
@@ -318,14 +379,14 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         val bookid = mViewModel.obj?.Id ?: return
         mViewModel.postCollection(bookid)
         mViewModel.insertCollection(bookid)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.isCollection = true
-                    mBinding.addBookrackTv.text = "移出书架"
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.isCollection = true
+                mBinding.addBookrackTv.text = "移出书架"
 
-                    EventBus.getDefault().post(UpdateChapterEvent())
-                    niceToast("加入成功")
-                }, { niceToast("加入失败") })
+                EventBus.getDefault().post(UpdateChapterEvent())
+                niceToast("加入成功")
+            }, { niceToast("加入失败") })
     }
 
     /**
@@ -335,11 +396,11 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     private fun removeCollection() {
         val bookid = mViewModel.obj?.Id ?: return
         mViewModel.deleteCollection(bookid)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.isCollection = false
-                    mBinding.addBookrackTv.text = "加入书架"
-                    niceToast("移除成功")
-                }, { niceToast("加入失败") })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.isCollection = false
+                mBinding.addBookrackTv.text = "加入书架"
+                niceToast("移除成功")
+            }, { niceToast("加入失败") })
     }
 }

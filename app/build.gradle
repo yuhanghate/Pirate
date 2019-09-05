@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
 
-//apply plugin: 'walle'
+apply plugin: 'walle'
 
 android {
     compileSdkVersion 29
@@ -14,8 +14,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 117
-        versionName "1.1.7"
+        versionCode 122
+        versionName "1.2.2"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -77,14 +77,14 @@ android {
     }
 }
 
-//walle {
-//    // 指定渠道包的输出路径
-//    apkOutputFolder = new File("${project.buildDir}/outputs/channels");
-//    // 定制渠道包的APK的文件名称
-//    apkFileNameFormat = '${appName}-${packageName}-${channel}-${buildType}-v${versionName}-${buildTime}.apk';
-//    // 渠道配置文件
-//    channelFile = new File("${project.getProjectDir()}/channel")
-//}
+walle {
+    // 指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels");
+    // 定制渠道包的APK的文件名称
+    apkFileNameFormat = '${appName}-${channel}-${buildType}-v${versionName}.apk';
+    // 渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

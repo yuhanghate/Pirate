@@ -49,6 +49,11 @@ class ReadBookViewModel : BaseViewModel() {
     var bookid: Long = -1
 
     /**
+     * 小说名称
+     */
+    var bookName :String = ""
+
+    /**
      * 当前章节id
      */
     var chapterid = -1
@@ -103,7 +108,14 @@ class ReadBookViewModel : BaseViewModel() {
                     //从本地获取第一章节内容
                     return@flatMap Flowable.just(contentKSEntity)
                 }
-            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            }
+            .map {
+
+                val bookInfo = mDataRepository.queryBookInfo(it.bookId)
+                bookInfo?.bookName?.let {name ->  bookName = name }
+                return@map it
+            }
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
 

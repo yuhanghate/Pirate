@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.ui.main.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -8,6 +9,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.DialogCallback
@@ -18,6 +20,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
 import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
@@ -27,6 +30,7 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
@@ -35,6 +39,8 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 
 
 /**
@@ -42,7 +48,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 @SuppressLint("CheckResult")
 class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefreshLoadMoreListener,
-        OnClickItemMoreListener, OnClickItemLongListener, OnClickItemListener, PopupMenu.OnMenuItemClickListener {
+    OnClickItemMoreListener, OnClickItemLongListener, OnClickItemListener, PopupMenu.OnMenuItemClickListener {
 
     var isLogin = false
 
@@ -61,6 +67,16 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         super.onStart()
         //加入书架/标签都要用到.每次返回刷新
         netLocalData()
+    }
+
+    override fun onSupportVisible() {
+        super.onSupportVisible()
+        mViewModel.onPageStart("我的页面")
+    }
+
+    override fun onSupportInvisible() {
+        super.onSupportInvisible()
+        mViewModel.onPageEnd("我的页面")
     }
 
     override fun onDestroyView() {
@@ -104,11 +120,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun initRecyclerView() {
         super.initRecyclerView()
         mViewModel.adapter
-                .setDecorationMargin(20f)
-                .setListener(this)
-                .setlayoutManager(null)
-                .setDecorationColor(ContextCompat.getColor(mActivity!!, R.color.list_divider_color))
-                .setRecyclerView(mBinding.recyclerView)
+            .setDecorationMargin(20f)
+            .setListener(this)
+            .setlayoutManager(null)
+            .setDecorationColor(ContextCompat.getColor(mActivity!!, R.color.list_divider_color))
+            .setRecyclerView(mBinding.recyclerView)
     }
 
 
@@ -118,11 +134,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     private fun onClick() {
         mBinding.mainBtn.setOnClickListener {
             findNavController().navigate(
-                    R.id.storeFragment, null, getNavOptions()
+                R.id.storeFragment, null, getNavOptions()
             )
         }
         mBinding.btnMore.setOnClickListener { showPopupMenu(mBinding.btnMore, R.menu.menu_main, itemListener = this) }
-        mBinding.btnSearch.setOnClickListener { SearchActivity.start(mActivity!!) }
+        mBinding.btnSearch.setOnClickListener {
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
+            SearchActivity.start(mActivity!!)
+        }
     }
 
     /**
@@ -136,24 +155,30 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * Item长按事件
      */
     override fun onClickItemLongListener(
-            view: View,
-            position: Int
+        view: View,
+        position: Int
     ) {
         val bookInfoKSEntity = mViewModel.adapter.getObj(position)
         val myItems = listOf("书籍详情", "目录书摘", "删除", "置顶")
         MaterialDialog(activity!!).show {
             listItems(items = myItems, selection = { dialog, index, text ->
                 when (text) {
-                    "书籍详情" -> BookDetailsActivity.start(mActivity!!, bookid = bookInfoKSEntity.bookid)
+                    "书籍详情" -> {
+                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS, "主页 -> 书箱详情")
+                        BookDetailsActivity.start(mActivity!!, bookid = bookInfoKSEntity.bookid)
+                    }
                     "目录书摘" -> {
+                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER, "主页 -> 目录书箱")
                         ChapterListActivity.start(mActivity!!, bookInfoKSEntity.bookid, bookInfoKSEntity.lastChapterId)
                     }
                     "删除" -> {
+                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DELETE, "主页 -> 从书架删除收藏")
                         mViewModel.deleteCollection(bookid = bookInfoKSEntity.bookid)
                         mViewModel.adapter.getList().remove(bookInfoKSEntity)
                         mViewModel.adapter.notifyDataSetChanged()
                     }
                     "置顶" -> {
+                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 书架置顶")
                         mViewModel.updateStickTime(bookInfoKSEntity.bookid)
                         netLocalData()
                     }
@@ -183,14 +208,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     private fun showShareDialog() {
         MaterialDialog(mActivity!!).show {
             title(text = "温馨提示")
-            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看看APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
             negativeButton(text = "取消")
             positiveButton(text = "分享", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     //获取剪贴板管理器：
                     val cm = mActivity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
                     // 创建普通字符型ClipData
-                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看看APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
                     niceToast("复制成功,可以分享给朋友了")
@@ -208,7 +233,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         ReadBookActivity.start(mActivity!!, obj.bookid)
 
         //延迟1秒刷新.体验更好
-        Handler().postDelayed({mViewModel.adapter.notifyDataSetChanged()}, 1000)
+        Handler().postDelayed({ mViewModel.adapter.notifyDataSetChanged() }, 1000)
 
     }
 
@@ -239,21 +264,21 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     private fun netLocalData() {
         mViewModel.getBookInfoListLocal()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.loading.showContent()
-                    mBinding.refreshLayout.finishRefresh()
-                    mBinding.refreshLayout.setEnableLoadMore(false)
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.loading.showContent()
+                mBinding.refreshLayout.finishRefresh()
+                mBinding.refreshLayout.setEnableLoadMore(false)
 
-                    val list = arrayListOf<BookInfoKSEntity>()
-                    it.filterNotNull().forEach { list.add(it) }
-                    mViewModel.adapter.setRefersh(list)
+                val list = arrayListOf<BookInfoKSEntity>()
+                it.filterNotNull().forEach { list.add(it) }
+                mViewModel.adapter.setRefersh(list)
 
-                }, {
-                    mBinding.loading.showContent()
-                    mViewModel.adapter.setRefersh(arrayListOf())
-                    mBinding.refreshLayout.finishRefresh(false)
-                })
+            }, {
+                mBinding.loading.showContent()
+                mViewModel.adapter.setRefersh(arrayListOf())
+                mBinding.refreshLayout.finishRefresh(false)
+            })
     }
 
     /**
@@ -263,18 +288,18 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     private fun netServiceData() {
         val list = arrayListOf<BookInfoKSEntity>()
         mViewModel.getBookDetailsList()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    it?.let { list.add(it) }
-                }, {
-                    mBinding.loading.showContent()
-                    mViewModel.adapter.setRefersh(list)
-                    mBinding.refreshLayout.finishRefresh(false)
-                }, {
+            .compose(bindToLifecycle())
+            .subscribe({
+                it?.let { list.add(it) }
+            }, {
+                mBinding.loading.showContent()
+                mViewModel.adapter.setRefersh(list)
+                mBinding.refreshLayout.finishRefresh(false)
+            }, {
 
-                    netLocalData()
-                    PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
-                })
+                netLocalData()
+                PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
+            })
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -291,5 +316,9 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 //        isLogin = true
         netLocalData()
     }
+
+
+
+
 
 }

@@ -109,4 +109,14 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
     override fun onClickItemListener(view: View, position: Int) {
         BookDetailsActivity.start(this, mViewModel.adapter.getObj(position).bookid)
     }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("最近浏览")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("最近浏览")
+    }
 }

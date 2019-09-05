@@ -11,4 +11,5 @@ class WebViewActivity:AppCompatActivity() {
         setContentView(R.layout.activity_webview)
         findViewById<WebView>(R.id.webview).loadUrl("file:///android_asset/openapp.html")
     }
+
 }

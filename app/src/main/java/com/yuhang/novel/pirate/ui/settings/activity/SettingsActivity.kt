@@ -12,6 +12,7 @@ import com.github.aakira.expandablelayout.Utils
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.ConfigConstant
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySettingsBinding
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.settings.viewmodel.SettingsViewModel
@@ -23,7 +24,8 @@ import kotlin.concurrent.thread
  */
 class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, SettingsViewModel>() {
 
-    private val mInterpolator: Interpolator = Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
+    private val mInterpolator: Interpolator =
+        Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
 
     private val mPageTypeList by lazy { arrayListOf(mBinding.pageVerticalRb, mBinding.pageHorizontalRb) }
     private val mPageTimeList by lazy { arrayListOf(mBinding.pageTimeShowRb, mBinding.pageTimeHideRb) }
@@ -53,9 +55,14 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
      * 显示默认标题
      */
     private fun initRadioButtonTitle() {
-        mBinding.pageTypeTv.text = mPageTypeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)]
-        mBinding.pageTimeTv.text = mPageTimeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW)]
-        resetRadioButton(mPageTypeList, PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL))
+        mBinding.pageTypeTv.text =
+            mPageTypeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)]
+        mBinding.pageTimeTv.text =
+            mPageTimeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW)]
+        resetRadioButton(
+            mPageTypeList,
+            PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)
+        )
         resetRadioButton(mPageTimeList, PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW))
     }
 
@@ -88,10 +95,18 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         mBinding.pageTypeEll.setInterpolator(mInterpolator)
         mBinding.pageTimeEll.setInterpolator(mInterpolator)
         mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnLogout.setOnClickListener { mViewModel.logout() }
-        mBinding.btnDisclaimer.setOnClickListener { DisclaimerActivity.start(this) }
-        mBinding.btnClear.setOnClickListener { clear() }
-        mBinding.btnBar.setOnClickListener { TestBarActivity.start(this) }
+        mBinding.btnLogout.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLICK_LOGOUT, "设置 -> 退出登陆")
+            mViewModel.logout()
+        }
+        mBinding.btnDisclaimer.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_DISCLAIMER, "设置 -> 免责声明")
+            DisclaimerActivity.start(this)
+        }
+        mBinding.btnClear.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLEAN_CACHE, "设置 -> 清除缓存")
+            clear()
+        }
         mBinding.pageTypeLl.setOnClickListener {
             expandedItemRightView(mBinding.pageTypeIv, mBinding.pageTypeEll.isExpanded)
             mBinding.pageTypeEll.toggle()
@@ -104,11 +119,13 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         //翻页方式
         mBinding.pageVerticalLl.setOnClickListener {
 
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_PAGE_MODEL, "上下翻页")
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_VERTICAL)
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)
             mBinding.pageTypeTv.text = mPageTypeTitle[ConfigConstant.PAGE_TYPE_VERTICAL]
         }
         mBinding.pageHorizontalLl.setOnClickListener {
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_PAGE_MODEL, "左右翻页")
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_HORIZONTAL)
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
             mBinding.pageTypeTv.text = mPageTypeTitle[ConfigConstant.PAGE_TYPE_HORIZONTAL]
@@ -116,11 +133,21 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
 
         //阅读界面显示
         mBinding.pageTimeShowLl.setOnClickListener {
+            mViewModel.onUMEvent(
+                this,
+                UMConstant.TYPE_SETTINGS_READ_MODEL,
+                mPageTimeTitle[ConfigConstant.PAGE_TIME_SHOW]
+            )
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW)
             resetRadioButton(mPageTimeList, ConfigConstant.PAGE_TIME_SHOW)
             mBinding.pageTimeTv.text = mPageTimeTitle[ConfigConstant.PAGE_TIME_SHOW]
         }
         mBinding.pageTimeHideLl.setOnClickListener {
+            mViewModel.onUMEvent(
+                this,
+                UMConstant.TYPE_SETTINGS_READ_MODEL,
+                mPageTimeTitle[ConfigConstant.PAGE_TIME_HIDE]
+            )
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_HIDE)
             resetRadioButton(mPageTimeList, ConfigConstant.PAGE_TIME_HIDE)
             mBinding.pageTimeTv.text = mPageTimeTitle[ConfigConstant.PAGE_TIME_HIDE]
@@ -162,6 +189,16 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
             radioButton.isChecked = index == position
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("设置页")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("设置页")
     }
 
 }

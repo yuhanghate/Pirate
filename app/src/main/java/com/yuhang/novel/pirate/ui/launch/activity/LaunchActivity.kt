@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.core.content.ContextCompat
+import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.utils.StatusBarUtil
@@ -51,5 +52,15 @@ class LaunchActivity : AppCompatActivity() {
                     finish()
                 }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onPageStart("启动页")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPageEnd("启动页")
     }
 }

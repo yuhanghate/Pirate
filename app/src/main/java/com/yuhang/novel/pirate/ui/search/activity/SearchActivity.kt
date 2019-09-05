@@ -10,6 +10,7 @@ import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
+import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySearchBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
@@ -19,8 +20,9 @@ import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
 /**
  * 搜索书籍
  */
-class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(), FloatingSearchView.OnQueryChangeListener,
-        FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener, OnClickItemListener {
+class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(),
+    FloatingSearchView.OnQueryChangeListener,
+    FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener, OnClickItemListener {
 
     /**
      * 键盘输入间隔
@@ -53,8 +55,8 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
 
         mViewModel.adapter.setListener(this)
         mViewModel.adapter.setDecorationSize(niceDp2px(15f))
-                .setDecorationColor(android.R.color.transparent)
-                .setRecyclerView(mBinding.recyclerview)
+            .setDecorationColor(android.R.color.transparent)
+            .setRecyclerView(mBinding.recyclerview)
     }
 
     /**
@@ -75,13 +77,13 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     private fun queryKeywordSearch(keyword: String?) {
         keyword ?: return
         mViewModel.queryListHisotry(keyword)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.floatingSearchView.swapSuggestions(it)
-                    mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
-                }, {
-                    mBinding.floatingSearchView.swapSuggestions(arrayListOf())
-                })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.floatingSearchView.swapSuggestions(it)
+                mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+            }, {
+                mBinding.floatingSearchView.swapSuggestions(arrayListOf())
+            })
     }
 
     /**
@@ -94,13 +96,13 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         mViewModel.lastKeyword = keyword
 
         mViewModel.searchBook(keyword)
-                .filter { it.status == 1 }
-                .subscribe({
-                    mViewModel.adapter.setRefersh(it.data)
-                    mBinding.floatingSearchView.hideProgress()
-                }, {
-                    mBinding.floatingSearchView.hideProgress()
-                })
+            .filter { it.status == 1 }
+            .subscribe({
+                mViewModel.adapter.setRefersh(it.data)
+                mBinding.floatingSearchView.hideProgress()
+            }, {
+                mBinding.floatingSearchView.hideProgress()
+            })
     }
 
     /**
@@ -139,6 +141,14 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     override fun onSearchAction(currentQuery: String?) {
         currentQuery?.let {
+            mViewModel.onUMEvent(
+                this,
+                UMConstant.TYPE_SEARCH_CLICK_UM_SEARCH_CLICK_SEARCHBTN,
+                hashMapOf("action" to "搜索 -> 搜索按钮", "keyword" to currentQuery)
+            )
+        }
+
+        currentQuery?.let {
             mViewModel.insertSearchHistory(currentQuery)
             netServiceSearch(currentQuery)
         }
@@ -152,13 +162,13 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     @SuppressLint("CheckResult")
     override fun onFocus() {
         mViewModel.getSearchHistory()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.floatingSearchView.swapSuggestions(it)
-                    mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
-                }, {
-                    mBinding.floatingSearchView.swapSuggestions(arrayListOf())
-                })
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.floatingSearchView.swapSuggestions(it)
+                mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+            }, {
+                mBinding.floatingSearchView.swapSuggestions(arrayListOf())
+            })
 
         mBinding.bgShadow.visibility = View.VISIBLE
         mBinding.bgShadow.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_transparent))
@@ -185,6 +195,28 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
         mViewModel.insertSearchHistory(obj.Name)
+        mViewModel.onUMEvent(
+            this,
+            UMConstant.TYPE_SEARCH_ITEM_CLICK,
+            hashMapOf(
+                "action" to "搜索 -> 点击搜索结果页",
+                "bookName" to obj.Name,
+                "author" to obj.Author,
+                "bookType" to obj.CName,
+                "bookStatus" to obj.BookStatus,
+                "bookDesc" to obj.Desc
+            )
+        )
         BookDetailsActivity.start(this, obj.Id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onPageStart("搜索页")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPageEnd("搜索页")
     }
 }
