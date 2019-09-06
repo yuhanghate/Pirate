@@ -28,6 +28,19 @@ open class BaseViewModel : ViewModel() {
         MobclickAgent.onPageStart(pageName)
     }
 
+    /**
+     * 友盟统计页面路径
+     */
+    fun onResume(context: Context) {
+        MobclickAgent.onResume(context)
+    }
+
+    /**
+     * 友盟统计页面路径
+     */
+    fun onPause(context: Context) {
+        MobclickAgent.onPause(context)
+    }
 
     /**
      * 友盟统计页面路径

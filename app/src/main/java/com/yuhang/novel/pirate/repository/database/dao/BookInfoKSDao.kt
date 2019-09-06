@@ -41,7 +41,7 @@ interface BookInfoKSDao {
     /**
      * 查询所有收藏的书本信息
      */
-    @Query("select * from bookinfoksentity as info where info.bookid in (select c.bookid from bookcollectionksentity as c group by c.bookid order by c.time desc) order by info.stickTime desc")
+    @Query("select * from bookinfoksentity as info where info.bookid in (select c.bookid from bookcollectionksentity as c group by c.bookid order by c.time desc) group by info.bookid order by info.stickTime desc")
     fun queryCollectionAll(): List<BookInfoKSEntity?>
 
     /**

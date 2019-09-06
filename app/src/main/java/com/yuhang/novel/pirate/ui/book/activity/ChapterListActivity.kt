@@ -123,10 +123,12 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     override fun onPause() {
         super.onPause()
         mViewModel.onPageEnd("单独的章节列表页")
+        mViewModel.onPause(this)
     }
 
     override fun onResume() {
         super.onResume()
         mViewModel.onPageStart("单独的章节列表页")
+        mViewModel.onResume(this)
     }
 }

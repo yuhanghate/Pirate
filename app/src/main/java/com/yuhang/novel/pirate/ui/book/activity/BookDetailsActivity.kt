@@ -138,13 +138,18 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     override fun onPause() {
         super.onPause()
-        mViewModel.onPageEnd("我的页面")
+        mViewModel.onPageEnd("书箱详情页")
+        mViewModel.onPause(this)
+
     }
 
     override fun onResume() {
+
         super.onResume()
         initCollectionStatus()
         mViewModel.onPageStart("书箱详情页")
+        mViewModel.onResume(this)
+
     }
 
     /**

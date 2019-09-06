@@ -108,16 +108,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mViewModel.updateChapterToDB().compose(bindToLifecycle()).subscribeOn(Schedulers.io()).subscribe({}, {})
     }
 
-    override fun onResume() {
-        super.onResume()
-        mViewModel.onPageStart("主页Activity")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mViewModel.onPageEnd("主页Activity")
-
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -162,6 +152,17 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             mViewModel.onUMEvent(this, UMConstant.TYPE_VERSION_UPDATE_NO, "分享应用 -> 点击取消")
         }
         builder.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.onPause(this)
+
     }
 
 }

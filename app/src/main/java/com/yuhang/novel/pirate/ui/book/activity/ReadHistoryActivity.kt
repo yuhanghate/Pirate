@@ -113,10 +113,13 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
     override fun onPause() {
         super.onPause()
         mViewModel.onPageEnd("最近浏览")
+        mViewModel.onPause(this)
     }
 
     override fun onResume() {
+
         super.onResume()
         mViewModel.onPageStart("最近浏览")
+        mViewModel.onResume(this)
     }
 }

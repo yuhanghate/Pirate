@@ -84,10 +84,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     override fun onResume() {
         super.onResume()
         mViewModel.onPageStart("登陆页")
+        mViewModel.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         mViewModel.onPageEnd("登陆页")
+        mViewModel.onPause(this)
     }
 }

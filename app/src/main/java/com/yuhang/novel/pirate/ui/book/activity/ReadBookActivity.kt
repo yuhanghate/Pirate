@@ -124,12 +124,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
 
     override fun onPause() {
-
         unregisterReceiver(mReceiver)
-        mViewModel.onPageEnd("阅读内容页")
-
         keepScreenOnWithPermissionCheck(false)
         super.onPause()
+        mViewModel.onPageEnd("阅读内容页")
+        mViewModel.onPause(this)
     }
 
 
@@ -151,10 +150,13 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     }
 
+
     override fun onResume() {
+
         super.onResume()
-        mViewModel.onPageStart("阅读内容页")
         initBattery()
+        mViewModel.onPageStart("阅读内容页")
+        mViewModel.onResume(this)
     }
 
     /**
@@ -851,7 +853,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
             wakeLock = pm.newWakeLock(
                 PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
-                MainActivity::class.java.simpleName
+                ReadBookActivity::class.java.simpleName
             )
             wakeLock?.acquire(10 * 60 * 1000L /*10 minutes*/)
         } else {

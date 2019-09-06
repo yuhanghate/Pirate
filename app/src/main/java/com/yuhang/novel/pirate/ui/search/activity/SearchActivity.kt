@@ -203,20 +203,23 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
                 "bookName" to obj.Name,
                 "author" to obj.Author,
                 "bookType" to obj.CName,
-                "bookStatus" to obj.BookStatus,
-                "bookDesc" to obj.Desc
+                "bookStatus" to obj.BookStatus
             )
         )
         BookDetailsActivity.start(this, obj.Id)
     }
 
     override fun onResume() {
+
         super.onResume()
         mViewModel.onPageStart("搜索页")
+        mViewModel.onResume(this)
     }
 
     override fun onPause() {
+
         super.onPause()
         mViewModel.onPageEnd("搜索页")
+        mViewModel.onPause(this)
     }
 }

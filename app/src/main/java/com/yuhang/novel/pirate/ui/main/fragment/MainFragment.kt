@@ -1,6 +1,5 @@
 package com.yuhang.novel.pirate.ui.main.fragment
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -9,7 +8,6 @@ import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.DialogCallback
@@ -30,7 +28,6 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
@@ -39,8 +36,6 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
 
 
 /**
@@ -71,13 +66,24 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
     override fun onSupportVisible() {
         super.onSupportVisible()
-        mViewModel.onPageStart("我的页面")
+        mViewModel.onPageStart("主页页面")
     }
 
     override fun onSupportInvisible() {
         super.onSupportInvisible()
-        mViewModel.onPageEnd("我的页面")
+        mViewModel.onPageEnd("主页页面")
     }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+    }
+
 
     override fun onDestroyView() {
         onDestryEventbus(this)
@@ -168,7 +174,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                         BookDetailsActivity.start(mActivity!!, bookid = bookInfoKSEntity.bookid)
                     }
                     "目录书摘" -> {
-                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER, "主页 -> 目录书箱")
+                        mViewModel.onUMEvent(
+                            mActivity!!,
+                            UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,
+                            "主页 -> 目录书箱"
+                        )
                         ChapterListActivity.start(mActivity!!, bookInfoKSEntity.bookid, bookInfoKSEntity.lastChapterId)
                     }
                     "删除" -> {
@@ -272,6 +282,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
                 val list = arrayListOf<BookInfoKSEntity>()
                 it.filterNotNull().forEach { list.add(it) }
+                mViewModel.adapter.getList().clear()
                 mViewModel.adapter.setRefersh(list)
 
             }, {
@@ -290,7 +301,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         mViewModel.getBookDetailsList()
             .compose(bindToLifecycle())
             .subscribe({
-                it?.let { list.add(it) }
+                it?.let { bookindo ->
+                    list.forEach {
+                        if (it.bookid == bookindo.bookid) {
+                            return@subscribe
+                        }
+                    }
+                    list.add(it)
+                }
             }, {
                 mBinding.loading.showContent()
                 mViewModel.adapter.setRefersh(list)
@@ -316,9 +334,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 //        isLogin = true
         netLocalData()
     }
-
-
-
 
 
 }

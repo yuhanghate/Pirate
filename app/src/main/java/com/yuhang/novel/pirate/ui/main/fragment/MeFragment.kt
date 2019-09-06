@@ -96,6 +96,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         mViewModel.onPageEnd("我的页面")
     }
 
+
+
+
     override fun initView() {
         super.initView()
 //        FileDownloader.setup(mActivity)
