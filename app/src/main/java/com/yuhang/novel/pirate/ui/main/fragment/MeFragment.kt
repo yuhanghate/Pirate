@@ -6,11 +6,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
@@ -36,6 +40,7 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
+import com.yuhang.novel.pirate.utils.ImageUtils
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -114,27 +119,27 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
 
         mViewModel.getUserInfo()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it == null) {
+                .compose(bindToLifecycle())
+                .subscribe({
+                    if (it == null) {
+                        onClick()
+                        mBinding.btnLogin.text = "立即登陆"
+                        mBinding.btnLogin.textSize = 24f
+                    } else {
+                        mBinding.btnLogin.text = "随友:${it?.username}"
+                        mBinding.btnLogin.textSize = 18f
+                        mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                        //登陆界面
+                        mBinding.btnLogin.setOnClickListener { }
+                        //登陆
+                        mBinding.avatarCiv.setOnClickListener { }
+                    }
+
+                }, {
                     onClick()
                     mBinding.btnLogin.text = "立即登陆"
                     mBinding.btnLogin.textSize = 24f
-                } else {
-                    mBinding.btnLogin.text = "随友:${it?.username}"
-                    mBinding.btnLogin.textSize = 18f
-                    mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
-                    //登陆界面
-                    mBinding.btnLogin.setOnClickListener { }
-                    //登陆
-                    mBinding.avatarCiv.setOnClickListener { }
-                }
-
-            }, {
-                onClick()
-                mBinding.btnLogin.text = "立即登陆"
-                mBinding.btnLogin.textSize = 24f
-            })
+                })
     }
 
     private fun onClick() {
@@ -176,8 +181,13 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
 
         mBinding.modelCl.setOnClickListener {
-
             resetModel()
+        }
+
+        //微信公众号
+        mBinding.wechatCl.setOnClickListener {
+
+            showWechatDialog()
         }
     }
 
@@ -203,6 +213,38 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
     }
 
+    /**
+     * 分享Dialog
+     */
+    private fun showWechatDialog() {
+        MaterialDialog(mActivity!!).show {
+            customView(viewRes = R.layout.dialog_wechat_group)
+//            title(text = "温馨提示")
+//            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+            negativeButton(text = "取消", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+                }
+            })
+            positiveButton(text = "保存", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+
+                    val dView = p1.getCustomView()
+                    dView.setDrawingCacheEnabled(true)
+                    dView.buildDrawingCache();
+                    val bitmap = Bitmap.createBitmap (dView.getDrawingCache());
+
+
+//                    val res = getResources();
+//                    val bmp = BitmapFactory.decodeResource(res, R.drawable.ic_wechat_qrcode)
+                    ImageUtils.saveImageToGallery(mActivity!!, bitmap)
+
+                    ImageUtils.getWechatApi(mActivity!!)
+                    niceToast("保存成功,可以分享给朋友了")
+                }
+            })
+        }
+    }
+
 
     /**
      * 分享Dialog
@@ -211,7 +253,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         MaterialDialog(mActivity!!).show {
             title(text = "温馨提示")
             message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
-            negativeButton(text = "取消",click = object : DialogCallback{
+            negativeButton(text = "取消", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_NO, "分享应用 -> 点击取消")
                 }
@@ -225,6 +267,12 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     val mClipData = ClipData.newPlainText("Label", "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
+
+                    val textIntent = Intent(Intent.ACTION_SEND)
+                    textIntent.type = "text/plain"
+                    textIntent.putExtra(Intent.EXTRA_TEXT, "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+                    startActivity(Intent.createChooser(textIntent, "温馨提示"))
+
                     niceToast("复制成功,可以分享给朋友了")
                 }
             })
@@ -238,8 +286,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         val data = Intent(Intent.ACTION_SENDTO);
         data.data = Uri.parse("mailto:yh714610354@gmail.com")
         data.putExtra(
-            Intent.EXTRA_SUBJECT,
-            "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
+                Intent.EXTRA_SUBJECT,
+                "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
         )
         data.putExtra(Intent.EXTRA_TEXT, "")
         startActivity(data)
@@ -253,27 +301,27 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     fun checkVersion() {
 //        mActivity?.showProgressbar()
         mViewModel.checkVersion()
-            .compose(bindToLifecycle())
-            .subscribe({
-                mActivity?.closeProgressbar()
-                if (it.update == "Yes") {
-                    mBinding.versionNameTv.text = "可升级"
+                .compose(bindToLifecycle())
+                .subscribe({
+                    mActivity?.closeProgressbar()
+                    if (it.update == "Yes") {
+                        mBinding.versionNameTv.text = "可升级"
 
-                    if (isInitView) {
-                        showVersionUpdateDialog(it)
-                        isInitView = false
+                        if (isInitView) {
+                            showVersionUpdateDialog(it)
+                            isInitView = false
+                        }
+
+                    } else {
+                        if (isInitView) {
+                            niceToast("当前已是最新版本")
+                            isInitView = false
+                        }
+
+                        mBinding.versionNameTv.text = ""
                     }
-
-                } else {
-                    if (isInitView) {
-                        niceToast("当前已是最新版本")
-                        isInitView = false
-                    }
-
-                    mBinding.versionNameTv.text = ""
-                }
-            }, {
-            })
+                }, {
+                })
     }
 
 
@@ -317,7 +365,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk = DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
         OkGo.get<File>(url).execute(object :
-            com.lzy.okgo.callback.FileCallback(DownloadUtil.PATH_CHALLENGE_VIDEO, MD5Util.md5Encode(url) + ".apk") {
+                com.lzy.okgo.callback.FileCallback(DownloadUtil.PATH_CHALLENGE_VIDEO, MD5Util.md5Encode(url) + ".apk") {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()
                 RxAppTool.installApp(mActivity, outputApk)
@@ -359,20 +407,20 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun showUpdateCollectDialog() {
         showProgressbar(message = "正在同步大量数据,请耐心等待..")
         mUsersService.updateCollectionToLocal()
-            .flatMap { mUsersService.updateChapterListToLocal(it) }
-            .flatMap { mUsersService.updateBookInfoToLocal(it) }
-            .flatMap { mUsersService.updateContentToLocal(it) }
-            .compose(bindToLifecycle())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-            }, {
-                closeProgressbar()
-                showUpdateCollectionDialog()
-            }, {
-                closeProgressbar()
-                EventBus.getDefault().postSticky(LoginEvent())
-            })
+                .flatMap { mUsersService.updateChapterListToLocal(it) }
+                .flatMap { mUsersService.updateBookInfoToLocal(it) }
+                .flatMap { mUsersService.updateContentToLocal(it) }
+                .compose(bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                }, {
+                    closeProgressbar()
+                    showUpdateCollectionDialog()
+                }, {
+                    closeProgressbar()
+                    EventBus.getDefault().postSticky(LoginEvent())
+                })
     }
 
     /**
