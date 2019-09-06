@@ -118,17 +118,20 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     override fun onStart() {
         keepScreenOnWithPermissionCheck(true)
-        initBattery()
+
         super.onStart()
     }
 
+
     override fun onPause() {
+
         unregisterReceiver(mReceiver)
         mViewModel.onPageEnd("阅读内容页")
 
         keepScreenOnWithPermissionCheck(false)
         super.onPause()
     }
+
 
 
     override fun initView() {
@@ -151,6 +154,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     override fun onResume() {
         super.onResume()
         mViewModel.onPageStart("阅读内容页")
+        initBattery()
     }
 
     /**
