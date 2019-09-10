@@ -16,6 +16,7 @@ import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
+import com.yuhang.novel.pirate.utils.SystemUtil
 
 /**
  * 搜索书籍
@@ -80,7 +81,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
             .compose(bindToLifecycle())
             .subscribe({
                 mBinding.floatingSearchView.swapSuggestions(it)
-                mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+//                mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
             }, {
                 mBinding.floatingSearchView.swapSuggestions(arrayListOf())
             })
@@ -109,17 +110,28 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      * 输入栏内容变化回调
      */
     override fun onSearchTextChanged(oldQuery: String?, newQuery: String?) {
-        if (oldQuery != "" && newQuery == "") {
-            mBinding.floatingSearchView.clearSuggestions()
-        } else {
 
-            //搜索间隔大于700毫秒 并且 不是删除动作
-            if (System.currentTimeMillis() - inputKeywordTime > 700 && !oldQuery?.startsWith(newQuery!!)!!) {
-                inputKeywordTime = System.currentTimeMillis()
-                mBinding.floatingSearchView.showProgress()
-                netServiceSearch(newQuery)
-                queryKeywordSearch(newQuery)
+
+        if (SystemUtil.getDeviceBrand() == "Meizu") {
+            //兼容魅族手机
+            newQuery?.let {
+                mViewModel.lastKeyword = newQuery
             }
+        } else {
+            //其他手机型号
+            if (oldQuery != "" && newQuery == "") {
+                mBinding.floatingSearchView.clearSuggestions()
+            } else {
+
+                // 搜索间隔大于700毫秒 并且 不是删除动作
+                if (System.currentTimeMillis() - inputKeywordTime > 700 && !oldQuery?.startsWith(newQuery!!)!!) {
+                    inputKeywordTime = System.currentTimeMillis()
+//                    mBinding.floatingSearchView.showProgress()
+//                    netServiceSearch(newQuery)
+                    queryKeywordSearch(newQuery)
+                }
+            }
+
 
         }
     }
@@ -140,6 +152,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      * 键盘点击搜索回调
      */
     override fun onSearchAction(currentQuery: String?) {
+
         currentQuery?.let {
             mViewModel.onUMEvent(
                 this,
@@ -149,6 +162,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         }
 
         currentQuery?.let {
+            mBinding.floatingSearchView.showProgress()
             mViewModel.insertSearchHistory(currentQuery)
             netServiceSearch(currentQuery)
         }

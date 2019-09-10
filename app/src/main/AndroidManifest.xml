@@ -3,10 +3,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.yuhang.novel.pirate">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission
-            android:name="android.permission.DEVICE_POWER"
-            tools:ignore="ProtectedPermissions"/>
 
     <!-- 必须的权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

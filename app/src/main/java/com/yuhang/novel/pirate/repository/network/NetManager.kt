@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.repository.network
 import com.google.gson.Gson
 import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -10,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
@@ -47,9 +49,11 @@ class NetManager {
 
     private fun createNetApi(): NetApi {
         return Retrofit.Builder().baseUrl(NetURL.HOST)
-                .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
-                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build().create(NetApi::class.java)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(mGson))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+            .create(NetApi::class.java)
     }
 
     /**
@@ -57,32 +61,38 @@ class NetManager {
      */
     private fun createKanZhuNetApi(): KanShuNetApi {
         return Retrofit.Builder().baseUrl(NetURL.HOST_KANSHU)
-                .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
-                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build().create(KanShuNetApi::class.java)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(mGson))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+            .create(KanShuNetApi::class.java)
     }
 
 
     private fun createRetrofit2(): Retrofit {
         return Retrofit.Builder().baseUrl(NetURL.HOST)
-                .addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create(mGson))
-                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(mGson))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
     }
 
     private fun createOkhttp(): OkHttpClient {
         return OkHttpClient().newBuilder()
-                //增加Header头
-                .addInterceptor(TokenInterceptor())
-                .connectTimeout(60 * 5, TimeUnit.SECONDS)
-                .readTimeout(60 * 5, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
-                //日志拦截器
-                .addInterceptor(
-                        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .protocols(Collections.singletonList(Protocol.HTTP_1_1))
+            .dns(HttpDns())
+            //增加Header头
+            .addInterceptor(TokenInterceptor())
+            .connectTimeout(60 * 5, TimeUnit.SECONDS)
+            .readTimeout(60 * 5, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
+            //日志拦截器
+            .addInterceptor(
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            )
 //
-                .build()
+            .build()
     }
 
     private fun getHostnameVerifier(): HostnameVerifier {

@@ -109,15 +109,15 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
      */
     @SuppressLint("CheckResult")
     override fun onClickChapterItemListener(view: View, chapterid: Int) {
-        ReadBookActivity.start(this, getBookid())
+        ReadBookActivity.start(this, getBookid(), chapterid)
     }
 
     /**
      * Item点击事件
      */
     override fun onClickItemListener(view: View, position: Int) {
-//        val chapterKSEntity = mViewModel.adapter.getObj(position)
-        ReadBookActivity.start(this, getBookid())
+        val chapterKSEntity = mViewModel.adapter.getObj(position)
+        ReadBookActivity.start(this, getBookid(), chapterKSEntity.chapterId)
     }
 
     override fun onPause() {

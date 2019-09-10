@@ -1,8 +1,11 @@
 package com.yuhang.novel.pirate.base
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.util.TimingLogger
@@ -21,6 +24,7 @@ import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
+
 
 abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivity() {
     lateinit var mBinding: D
@@ -42,9 +46,15 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        ThemeHelper.applyTheme(PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE))
 
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
+            //26版本部分机型会出现Only fullscreen activities can request orientation 异常
+            // 进行兼容性解决处理.google官方bug
+            fixOrientation()
+        }
+        ThemeHelper.applyTheme(PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE))
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
         initLayoutInflater()
@@ -54,10 +64,49 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
 
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
+    /**
+     * 设置横竖屏
+     */
+    private fun fixOrientation(): Boolean {
+        try {
+            val field = Activity::class.java.getDeclaredField("mActivityInfo");
+            field.isAccessible = true
+            val o = field.get(this) as ActivityInfo
+            o.screenOrientation = -1
+            field.setAccessible(false)
+            return true;
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
+
+
+    @SuppressLint("PrivateApi")
+    private fun isTranslucentOrFloating(): Boolean {
+        var isTranslucentOrFloating = false
+        try {
+            val styleableRes =
+                Class.forName("com.android.internal.R\$styleable").getField("Window").get(null) as IntArray
+            val ta = obtainStyledAttributes(styleableRes)
+            val m = ActivityInfo::class.java.getMethod("isTranslucentOrFloating", TypedArray::class.java)
+            m.isAccessible = true
+            isTranslucentOrFloating = m.invoke(null, ta) as Boolean
+            m.isAccessible = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return isTranslucentOrFloating
+    }
+
+    override fun setRequestedOrientation(requestedOrientation: Int) {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
+            return
+        }
+        super.setRequestedOrientation(requestedOrientation);
+    }
+
 
     /**
      * 初始化ViewModel
@@ -170,16 +219,16 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      */
     fun replaceFragment(id: Int, fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-                .replace(id, fragment)
-                .commitNow()
+            .replace(id, fragment)
+            .commitNow()
     }
 
     /**
      * 添加所有fragment
      */
     fun addFragmentList(
-            id: Int,
-            fragmentList: List<Fragment>, showIndex: Int
+        id: Int,
+        fragmentList: List<Fragment>, showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         fragmentList.forEach { beginTransaction.add(id, it) }
@@ -198,8 +247,8 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 显示Fragment
      */
     fun showFragment(
-            fragmentList: List<Fragment>,
-            showIndex: Int
+        fragmentList: List<Fragment>,
+        showIndex: Int
     ) {
         val beginTransaction = supportFragmentManager.beginTransaction()
         (0 until fragmentList.size).forEachIndexed { index, i ->

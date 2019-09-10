@@ -40,20 +40,16 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
-import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.widget.OnScrollListener
 import com.yuhang.novel.pirate.widget.ReadBookTextView
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
 import kotlin.math.abs
 
 
 /**
  * 书籍阅读
  */
-@RuntimePermissions
 class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel>(),
     ReadBookTextView.OnClickCenterListener, ReadBookTextView.OnClickNextListener,
     ReadBookTextView.OnClickPreviousListener, OnClickChapterItemListener, OnRefreshLoadMoreListener,
@@ -67,7 +63,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private var mBackgroundInTransparent: Animation? = null
     private var mBackgroundOutTransparent: Animation? = null
 
-    private var wakeLock: PowerManager.WakeLock? = null
 
     private var toggleMenuSwitch = false
 
@@ -77,6 +72,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     companion object {
         val TAG = ReadBookActivity::class.java.simpleName
         const val BOOK_ID = "book_id"
+        const val CHAPTERID = "chapter_id"
+
         const val DURATION: Long = 190
 
         fun start(context: Activity, bookid: Long) {
@@ -85,7 +82,17 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             startIntent(context, intent)
         }
 
+        /**
+         * 转转指定章节
+         */
+        fun start(context: Activity, bookid: Long, chapterid: Int) {
+            val intent = Intent(context, ReadBookActivity::class.java)
+            intent.putExtra(BOOK_ID, bookid)
+            intent.putExtra(CHAPTERID, chapterid)
+            startIntent(context, intent)
+        }
     }
+
 
     override fun onLayoutId(): Int {
         return R.layout.activity_read_book
@@ -104,6 +111,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
 
+    private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //去除标题栏
@@ -116,19 +124,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
 
-    override fun onStart() {
-        keepScreenOnWithPermissionCheck(true)
-
-        super.onStart()
-    }
-
 
     override fun onPause() {
         unregisterReceiver(mReceiver)
-        keepScreenOnWithPermissionCheck(false)
+//        keepScreenOnWithPermissionCheck(false)
         super.onPause()
         mViewModel.onPageEnd("阅读内容页")
         mViewModel.onPause(this)
+        mBinding.root.keepScreenOn = false
     }
 
 
@@ -139,7 +142,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initContentViewHeight()
         initRefreshLayout()
         initRecyclerView()
-        netDataChatpterContent()
+
         initDrawerView()
         initFontSeekBar()
         initBackground()
@@ -147,14 +150,25 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initChapterProgressSeekBar()
         onClick()
 
+        if (getChapterid() > 0) {
+            //打开指定章节
+            mViewModel.chapterid = getChapterid().toInt()
+            netDataChapterContentFromId(getChapterid().toInt())
+        } else {
+            //打开最近章节
+            netDataChatpterContent()
+        }
+
 
     }
 
 
+    @SuppressLint("NoDelegateOnResumeDetector")
     override fun onResume() {
-
         super.onResume()
         initBattery()
+        mBinding.root.keepScreenOn = true
+//        keepScreenOnWithPermissionCheck(true)
         mViewModel.onPageStart("阅读内容页")
         mViewModel.onResume(this)
     }
@@ -844,33 +858,33 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
     }
 
-    /**
-     * 锁定屏幕不灰屏
-     */
-    @NeedsPermission(Manifest.permission.WAKE_LOCK)
-    fun keepScreenOn(on: Boolean) {
-        if (on) {
-            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-            wakeLock = pm.newWakeLock(
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
-                ReadBookActivity::class.java.simpleName
-            )
-            wakeLock?.acquire(10 * 60 * 1000L /*10 minutes*/)
-        } else {
-            if (wakeLock != null) {
-                wakeLock?.release()
-                wakeLock = null
-            }
-        }
-    }
+//    /**
+//     * 锁定屏幕不灰屏
+//     */
+//    @NeedsPermission(Manifest.permission.WAKE_LOCK)
+//    fun keepScreenOn(on: Boolean) {
+//        if (on) {
+//            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+//            wakeLock = pm.newWakeLock(
+//                PowerManager.PARTIAL_WAKE_LOCK or PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+//                ReadBookActivity::class.java.simpleName
+//            )
+//            wakeLock?.acquire(10 * 60 * 1000L /*10 minutes*/)
+//        } else {
+//            if (wakeLock != null) {
+//                wakeLock?.release()
+//                wakeLock = null
+//            }
+//        }
+//    }
 
-    /**
-     * 权限申请
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        onRequestPermissionsResult(requestCode, grantResults)
-    }
+//    /**
+//     * 权限申请
+//     */
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        onRequestPermissionsResult(requestCode, grantResults)
+//    }
 
     // 接收电池信息和时间更新的广播
     private var mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
