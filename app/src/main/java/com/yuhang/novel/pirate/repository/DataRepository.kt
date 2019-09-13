@@ -68,7 +68,8 @@ class DataRepository(val context: Context) {
      */
     fun getBookChapterList(bookid: Long): Flowable<ChapterListResult> {
         //返回的格式第二条数据是空的,单独进行处理
-        return getKSNetApi().getBookChapterList(dirId = niceDir(bookid), bookId = bookid).map { it.replace("},]}}", "}]}}") }
+        return getKSNetApi().getBookChapterList(dirId = niceDir(bookid), bookId = bookid)
+            .map { it.replace("},]}}", "}]}}") }
             .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
 
@@ -200,7 +201,7 @@ class DataRepository(val context: Context) {
     /**
      * 根据关键字匹配模糊匹配取5个
      */
-    fun queryListHisotry(keyword: String):List<SearchHistoryKSEntity?> {
+    fun queryListHisotry(keyword: String): List<SearchHistoryKSEntity?> {
         return mDatabase.searchHistoryKSDao.queryList(keyword)
     }
 
@@ -214,7 +215,7 @@ class DataRepository(val context: Context) {
             mDatabase.bookCollectionKSDao.insert(
                 BookCollectionKSEntity(
                     bookid = bookid,
-                    time = System.currentTimeMillis() / 1000
+                    time = System.currentTimeMillis()
                 )
             )
         }
@@ -247,23 +248,16 @@ class DataRepository(val context: Context) {
      * 更新收藏时间
      */
     fun updateCollectionTime(bookid: Long) {
-        mDatabase.bookCollectionKSDao.updateTime(bookid, System.currentTimeMillis() / 1000)
+        mDatabase.bookCollectionKSDao.updateTime(bookid, System.currentTimeMillis())
     }
 
     /**
      * 更新置顶时间戳
      */
     fun updateBookInfoStickTime(bookid: Long) {
-        mDatabase.bookInfoKSDao.update(System.currentTimeMillis() / 1000, bookid)
+        mDatabase.bookInfoKSDao.update(System.currentTimeMillis(), bookid)
         val query = mDatabase.bookInfoKSDao.query(bookid)
         Logger.i("")
-    }
-
-    /**
-     * 查询所有收藏的书箱信息
-     */
-    fun queryBookInfoAll(): List<BookInfoKSEntity?> {
-        return mDatabase.bookInfoKSDao.queryCollectionAll()
     }
 
 
@@ -285,7 +279,8 @@ class DataRepository(val context: Context) {
      * 更新最后一次打开的时间和内容角标
      */
     fun updateLastOpenContent(bookid: Long, chapterid: Int, lastContentPosition: Int) {
-        getDatabase().bookContentKSDao.updateLastOpenContent(bookid,
+        getDatabase().bookContentKSDao.updateLastOpenContent(
+            bookid,
             chapterid,
             System.currentTimeMillis(),
             lastContentPosition
@@ -296,6 +291,7 @@ class DataRepository(val context: Context) {
      * 根据小说id查询最近阅读章节
      */
     fun queryLastOpenChapter(bookid: Long): BookContentKSEntity? {
+//        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
         return getDatabase().bookContentKSDao.queryLastOpenChapter(bookid)
     }
 
@@ -315,19 +311,19 @@ class DataRepository(val context: Context) {
         return queryLastTime < queryLastTime1 && queryLastTime != 0.toLong()
     }
 
-    /**
-     * 查询书箱章节所有的更新时间
-     */
-    fun queryTimeList(bookid: Long): List<Long> {
-        return getDatabase().bookContentKSDao.queryTimeList(bookid)
-    }
+//    /**
+//     * 查询书箱章节所有的更新时间
+//     */
+//    fun queryTimeList(bookid: Long): List<Long> {
+//        return getDatabase().bookContentKSDao.queryTimeList(bookid)
+//    }
 
-    /**
-     * 更新时间+章节id
-     */
-    fun queryTimeAndChapterid(bookid: Long): List<BookContentKSEntity?> {
-        return getDatabase().bookContentKSDao.queryTimeAndChapterid(bookid)
-    }
+//    /**
+//     * 更新时间+章节id
+//     */
+//    fun queryTimeAndChapterid(bookid: Long): List<BookContentKSEntity?> {
+//        return getDatabase().bookContentKSDao.queryTimeAndChapterid(bookid)
+//    }
 
     /**
      * 登陆
@@ -418,18 +414,8 @@ class DataRepository(val context: Context) {
     /**
      * 查询所有收藏书本信息
      */
-    fun queryCollectionAll(bookids: Array<Long>): List<BookInfoKSEntity?> {
-//        val list = arrayListOf<BookInfoKSEntity?>()
-//        bookids.forEach {
-//            val infoKSEntity = getDatabase().bookInfoKSDao.query(it)
-//            if (infoKSEntity != null) {
-//                list.add(infoKSEntity)
-//            }
-//        }
-        val queryCollectionAll = getDatabase().bookInfoKSDao.queryCollectionAll()
-//        val collectionAll = getDatabase().bookInfoKSDao.queryCollectionAll(*bookids.toLongArray())
-
-        return queryCollectionAll
+    fun queryBookInfoCollectionAll(): List<BookInfoKSEntity?> {
+        return getDatabase().bookInfoKSDao.queryCollectionAll()
     }
 
     /**
@@ -471,6 +457,7 @@ class DataRepository(val context: Context) {
      * 清空帐号
      */
     fun clearUsers() {
+        getDatabase().bookReadHistoryDao.clear()
         getDatabase().userDao.clear()
         getDatabase().bookCollectionKSDao.clear()
         getDatabase().bookInfoKSDao.clear()
@@ -496,6 +483,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 获取收藏列表的阅读记录
+     */
+    fun getReadHistoryCollectionsList(pageNum: Int): Flowable<ReadHistoryResult> {
+        return getNetApi().getReadHistoryCollectionsList(pageNum = pageNum, pageSize = 100)
+    }
+
+    /**
      * 更新阅读记录
      */
     fun updateReadHistory(
@@ -516,5 +510,34 @@ class DataRepository(val context: Context) {
             "resouceType" to resouceType, "content" to content
         )
         return getNetApi().updateReadHistory(niceBody(map))
+    }
+
+    /**
+     * 更新最后一次阅读记录到本地
+     */
+    fun updateLocalREadHistory(bookid: Long, chapterid: Int, lastReadTime:Long = System.currentTimeMillis()) {
+
+//        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
+//        queryAll.forEach {
+//            Logger.t("read_history").i("isChapter = ${it.chapterid == chapterid}  chapterid = ${it.chapterid} time=${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(it.lastReadTime*1000))}")
+//        }
+        val entity = getDatabase().bookReadHistoryDao.queryBookReadHistoryEntity(bookid, chapterid)
+        if (entity == null) {
+            getDatabase().bookReadHistoryDao.insert(BookReadHistoryEntity().apply {
+                this.bookid = bookid.toInt()
+                this.chapterid = chapterid
+                this.lastReadTime = lastReadTime
+            })
+        } else {
+            entity.lastReadTime = lastReadTime
+            getDatabase().bookReadHistoryDao.update(entity)
+        }
+    }
+
+    /**
+     * 获取最近阅读记录
+     */
+    fun queryBookReadHistoryEntity(bookid: Long):BookReadHistoryEntity? {
+        return getDatabase().bookReadHistoryDao.queryLastChanpterEntity(bookid)
     }
 }

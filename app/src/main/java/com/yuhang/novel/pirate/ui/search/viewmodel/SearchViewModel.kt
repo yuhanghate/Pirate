@@ -59,7 +59,7 @@ class SearchViewModel : BaseViewModel() {
             mDataRepository.insertSearchHistory(
                 SearchHistoryKSEntity(
                     keyword = keyword,
-                    updateTime = System.currentTimeMillis() / 1000
+                    updateTime = System.currentTimeMillis()
                 )
             )
         }

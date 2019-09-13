@@ -3,12 +3,14 @@ package com.yuhang.novel.pirate.utils;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.orhanobut.logger.Logger;
 import com.yuhang.novel.pirate.app.PirateApp;
 import com.yuhang.novel.pirate.widget.pageview.TextPageBean;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -150,13 +152,16 @@ public class PageUtils {
 
         //获取第一页对象
         TextPageBean titlePage = getTitlePage(titleLines, contentLines, bean);
-
+//        Logger.t("空白").i("第一页 contentLines="+contentLines.size());
         pages.add(titlePage);
         //循环获取除一第页以外的页数. 第一页标题大小跟其他页面不一样,另外计算
         while (contentLines.size() > 0) {
+//            Logger.t("空白").i("其他页 contentLines="+contentLines.size());
             TextPageBean normalPage = getNormalPage(tipTitleLines, contentLines, bean);
             pages.add(normalPage);
         }
+
+
 
         //计算章节所需要的所有页面.每页需要需求第几页
         int maxPage = pages.size();
@@ -385,27 +390,40 @@ public class PageUtils {
      * @param content
      * @param bean
      * @return
-     * @throws IOException
      */
-    private static List<String> getContentLines(String content, PageBean bean) throws IOException {
+    private static List<String> getContentLines(String content, PageBean bean) {
         List<String> lines = new ArrayList<>();
         float[] measuredWidth = {0};
 
+//        Logger.t("空白").i(" content="+content);
         //读取一行
         while (content.length() > 0) {
 
+            StringBuilder sb = new StringBuilder();
             //一行显示的字数
             int count = bean.textPaint.breakText(content,
                     true, bean.getShowWidth(), measuredWidth);
+            sb.append("size=").append(bean.textPaint.getTextSize()).append("count=").append(count).append("bean.getShowWidth()").append(bean.getShowWidth()).append("measuredWidth=").append(Arrays.toString(measuredWidth));
+//            Logger.t("空白").i("textPaint size="+bean.textPaint.getTextSize()+" count="+count+" bean.getShowWidth()="+bean.getShowWidth()+" measuredWidth="+ Arrays.toString(measuredWidth) +" content="+content);
             String subTitle = content.substring(0, count);
+//            Logger.t("空白").i("subTitle="+subTitle);
+            sb.append("subTitle=")
+                    .append(subTitle);
             //过滤无效字符
             if (subTitle.equals("\n") || subTitle.equals("\n\r") || subTitle.equals("\r\n") || subTitle.trim().equals("")) {
+                sb.append("过滤无效字符");
+//                Logger.t("空白").i("过滤无效字符");
+                Logger.t("空白").i(sb.toString());
                 return lines;
             }
 
+            Logger.t("空白").i(sb.toString());
+
             lines.add(subTitle);
 
+
             content = content.replace(subTitle, "");
+//            Logger.t("空白").i("content="+content);
         }
 
         return lines;

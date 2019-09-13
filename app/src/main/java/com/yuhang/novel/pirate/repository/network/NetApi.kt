@@ -67,4 +67,10 @@ interface NetApi {
      */
     @POST("/api/m/book/read/history/update")
     fun updateReadHistory(@Body body: RequestBody):Flowable<StatusResult>
+
+    /**
+     * 获取收藏列表的阅读记录
+     */
+    @GET("/api/m/book/read/collection/history/list")
+    fun getReadHistoryCollectionsList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<ReadHistoryResult>
 }

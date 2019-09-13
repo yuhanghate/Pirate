@@ -30,7 +30,8 @@ class MainViewModel : BaseViewModel() {
         return Flowable.just("")
                 .flatMap { getCollectionId() }
                 .map {
-                    mDataRepository.queryCollectionAll(it.toTypedArray())
+                    val all = mDataRepository.getDatabase().bookInfoKSDao.queryAll()
+                    mDataRepository.queryBookInfoCollectionAll()
                 }
                 .map { list ->
                     return@map list.map {

@@ -7,7 +7,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import cc.shinichi.library.tool.text.MD5Util
@@ -97,8 +96,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     }
 
 
-
-
     override fun initView() {
         super.initView()
 //        FileDownloader.setup(mActivity)
@@ -122,27 +119,27 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
 
         mViewModel.getUserInfo()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    if (it == null) {
-                        onClick()
-                        mBinding.btnLogin.text = "立即登陆"
-                        mBinding.btnLogin.textSize = 24f
-                    } else {
-                        mBinding.btnLogin.text = "随友:${it?.username}"
-                        mBinding.btnLogin.textSize = 18f
-                        mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
-                        //登陆界面
-                        mBinding.btnLogin.setOnClickListener { }
-                        //登陆
-                        mBinding.avatarCiv.setOnClickListener { }
-                    }
-
-                }, {
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it == null) {
                     onClick()
                     mBinding.btnLogin.text = "立即登陆"
                     mBinding.btnLogin.textSize = 24f
-                })
+                } else {
+                    mBinding.btnLogin.text = "随友:${it?.username}"
+                    mBinding.btnLogin.textSize = 18f
+                    mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                    //登陆界面
+                    mBinding.btnLogin.setOnClickListener { }
+                    //登陆
+                    mBinding.avatarCiv.setOnClickListener { }
+                }
+
+            }, {
+                onClick()
+                mBinding.btnLogin.text = "立即登陆"
+                mBinding.btnLogin.textSize = 24f
+            })
     }
 
     private fun onClick() {
@@ -192,7 +189,35 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
             showWechatDialog()
         }
+
+        //发起添加QQ群
+        mBinding.qqCl.setOnClickListener { joinQQGroup("mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9") }
+
     }
+
+    /****************
+     *
+     * 发起添加群流程。群号：随便看书交流群(764214448) 的 key 为： mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9
+     * 调用 joinQQGroup(mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9) 即可发起手Q客户端申请加群 随便看书交流群(764214448)
+     *
+     * @param key 由官网生成的key
+     * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
+     ******************/
+    fun joinQQGroup(key: String): Boolean {
+        val intent = Intent();
+        intent.data =
+            Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key);
+        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        return try {
+            startActivity(intent)
+            true;
+        } catch (e: Exception) {
+            // 未安装手Q或安装的版本不支持
+            niceToast("未安装手机QQ或安装的版本不支持")
+            false
+        }
+    }
+
 
     /**
      * 日间/夜间模式
@@ -234,7 +259,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     val dView = p1.getCustomView()
                     dView.setDrawingCacheEnabled(true)
                     dView.buildDrawingCache();
-                    val bitmap = Bitmap.createBitmap (dView.getDrawingCache());
+                    val bitmap = Bitmap.createBitmap(dView.getDrawingCache());
 
 
 //                    val res = getResources();
@@ -289,8 +314,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         val data = Intent(Intent.ACTION_SENDTO);
         data.data = Uri.parse("mailto:yh714610354@gmail.com")
         data.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
+            Intent.EXTRA_SUBJECT,
+            "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
         )
         data.putExtra(Intent.EXTRA_TEXT, "")
         startActivity(data)
@@ -304,27 +329,27 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     fun checkVersion() {
 //        mActivity?.showProgressbar()
         mViewModel.checkVersion()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mActivity?.closeProgressbar()
-                    if (it.update == "Yes") {
-                        mBinding.versionNameTv.text = "可升级"
+            .compose(bindToLifecycle())
+            .subscribe({
+                mActivity?.closeProgressbar()
+                if (it.update == "Yes") {
+                    mBinding.versionNameTv.text = "可升级"
 
-                        if (isInitView) {
-                            showVersionUpdateDialog(it)
-                            isInitView = false
-                        }
-
-                    } else {
-                        if (isInitView) {
-                            niceToast("当前已是最新版本")
-                            isInitView = false
-                        }
-
-                        mBinding.versionNameTv.text = ""
+                    if (isInitView) {
+                        showVersionUpdateDialog(it)
+                        isInitView = false
                     }
-                }, {
-                })
+
+                } else {
+                    if (isInitView) {
+                        niceToast("当前已是最新版本")
+                        isInitView = false
+                    }
+
+                    mBinding.versionNameTv.text = ""
+                }
+            }, {
+            })
     }
 
 
@@ -368,7 +393,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk = DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
         OkGo.get<File>(url).execute(object :
-                com.lzy.okgo.callback.FileCallback(DownloadUtil.PATH_CHALLENGE_VIDEO, MD5Util.md5Encode(url) + ".apk") {
+            com.lzy.okgo.callback.FileCallback(DownloadUtil.PATH_CHALLENGE_VIDEO, MD5Util.md5Encode(url) + ".apk") {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()
                 RxAppTool.installApp(mActivity, outputApk)
@@ -409,21 +434,25 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     @SuppressLint("CheckResult")
     private fun showUpdateCollectDialog() {
         showProgressbar(message = "正在同步大量数据,请耐心等待..")
+
+        //从服务器下载收藏
         mUsersService.updateCollectionToLocal()
-                .flatMap { mUsersService.updateChapterListToLocal(it) }
-                .flatMap { mUsersService.updateBookInfoToLocal(it) }
-                .flatMap { mUsersService.updateContentToLocal(it) }
-                .compose(bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                }, {
-                    closeProgressbar()
-                    showUpdateCollectionDialog()
-                }, {
-                    closeProgressbar()
-                    EventBus.getDefault().postSticky(LoginEvent())
-                })
+            .flatMap { mUsersService.updateChapterListToLocal(it) }
+            .flatMap { mUsersService.updateBookInfoToLocal(it) }
+            .flatMap { mUsersService.updateReadHistoryToLocal(it) }
+            .flatMap { mUsersService.updateContentToLocal(it) }
+            .compose(bindToLifecycle())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+            }, {
+                closeProgressbar()
+                showUpdateCollectionDialog()
+            }, {
+                closeProgressbar()
+                EventBus.getDefault().postSticky(LoginEvent())
+            })
+
     }
 
     /**

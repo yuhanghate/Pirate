@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.pirate.result
 
+import java.util.*
+
 /**
  * bookName : 凡人修仙传仙界篇
  * bookid : 30594
@@ -13,5 +15,8 @@ data class ReadHistoryDataResult(
     val bookid: String = "",
     val cover: String = "",
     val resouceType: String = "",
-    val description: String = ""
+    val description: String = "",
+    val chapterid: String = "",
+    val chapterName: String = "",
+    val createTime:Long = System.currentTimeMillis()
 )

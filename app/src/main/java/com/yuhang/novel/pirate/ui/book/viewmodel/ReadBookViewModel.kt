@@ -22,6 +22,7 @@ import com.yuhang.novel.pirate.extension.niceBookContentKSEntity
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.widget.pageview.TextPagerView
 import io.reactivex.Flowable
@@ -51,7 +52,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 小说名称
      */
-    var bookName :String = ""
+    var bookName: String = ""
 
     /**
      * 当前章节id
@@ -112,7 +113,7 @@ class ReadBookViewModel : BaseViewModel() {
             .map {
 
                 val bookInfo = mDataRepository.queryBookInfo(it.bookId)
-                bookInfo?.bookName?.let {name ->  bookName = name }
+                bookInfo?.bookName?.let { name -> bookName = name }
                 return@map it
             }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -127,36 +128,54 @@ class ReadBookViewModel : BaseViewModel() {
 
         return Flowable.just("")
             .flatMap {
+//                mDataRepository.getDatabase().bookReadHistoryDao.queryAll()
+//                    .forEach {
+//                        Logger.t("read_history").i(
+//                            "bookid = ${it.bookid} chanpterid = ${it.chapterid}  time = ${SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss").format(
+//                                Date(it.lastReadTime)
+//                            )}"
+//                        )
+//                    }
+                //最后一次阅读的小说信息
                 val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookid)
-                if (lastOpenChapter == null) {
-                    val firstChapterid = mDataRepository.queryFirstChapterid(bookid)
-                    val contentKSEntity = mDataRepository.queryBookContent(bookid, firstChapterid)
-                    if (contentKSEntity == null) {
-                        //从服务器获取章节内容
-                        return@flatMap mDataRepository.getChapterContent(bookid, firstChapterid)
-                            .filter { it.status == 1 }
-                            .map {
-                                it.data.niceBookContentKSEntity().apply {
-                                    this.lastOpenTime = 0
-                                }
-                            }.map {
-                                //第一次从服务器获取的数据放入数据库保存
-                                mDataRepository.insertBookContent(it)
-                                return@map it
-                            }
-                    } else {
-                        //从本地获取第一章节内容
-                        return@flatMap Flowable.just(contentKSEntity)
-                    }
+                Logger.t("read_history").i(lastOpenChapter.toString())
+                //最后一次阅读章节(当第一次登陆的时候没有小说内容信息)
+                val queryBookReadHistoryEntity = mDataRepository.queryBookReadHistoryEntity(bookid)
+                if (lastOpenChapter == null && queryBookReadHistoryEntity != null) {
+                    //帐号登陆完以后第一次打开
+                    return@flatMap getContentFromChapterid(queryBookReadHistoryEntity.chapterid)
                 } else {
-                    if (lastOpenChapter.nid == -1) {
-                        //每次最后一次都重新加载
-                        return@flatMap getContentFromChapterid(lastOpenChapter.chapterId)
-                    } else {
-                        //从本地获取最近一次打开的章节内容
-                        return@flatMap Flowable.just(lastOpenChapter)
-                    }
+                    //非第一次登陆走之前逻辑
+                    if (lastOpenChapter == null) {
 
+                        val firstChapterid = mDataRepository.queryFirstChapterid(bookid)
+                        val contentKSEntity = mDataRepository.queryBookContent(bookid, firstChapterid)
+                        if (contentKSEntity == null) {
+                            //从服务器获取章节内容
+                            return@flatMap mDataRepository.getChapterContent(bookid, firstChapterid)
+                                .filter { it.status == 1 }
+                                .map {
+                                    it.data.niceBookContentKSEntity().apply {
+                                        this.lastOpenTime = 0
+                                    }
+                                }.map {
+                                    //第一次从服务器获取的数据放入数据库保存
+                                    mDataRepository.insertBookContent(it)
+                                    return@map it
+                                }
+                        } else {
+                            //从本地获取第一章节内容
+                            return@flatMap Flowable.just(contentKSEntity)
+                        }
+                    } else {
+                        if (lastOpenChapter.nid == -1) {
+                            //每次最后一次都重新加载
+                            return@flatMap getContentFromChapterid(lastOpenChapter.chapterId)
+                        } else {
+                            //从本地获取最近一次打开的章节内容
+                            return@flatMap Flowable.just(lastOpenChapter)
+                        }
+                    }
                 }
 
 
@@ -171,6 +190,7 @@ class ReadBookViewModel : BaseViewModel() {
     @SuppressLint("SimpleDateFormat")
     fun updateLastOpenTimeAndPosition(chapterid: Int, lastContentPosition: Int) {
         thread {
+            mDataRepository.updateLocalREadHistory(bookid, chapterid)
             mDataRepository.updateLastOpenContent(bookid, chapterid, lastContentPosition)
         }
 
@@ -219,6 +239,7 @@ class ReadBookViewModel : BaseViewModel() {
         val margin = mActivity?.niceDp2px(20f) ?: return emptyList()
         pagerView.textSize = BookConstant.getPageTextSize()
         postUM()
+//        Logger.t("空白").i("getTxtPageList")
         return pagerView
             .setTitle(obj.chapterName)
             .setMargin(margin, margin, 0, 0)
@@ -331,10 +352,11 @@ class ReadBookViewModel : BaseViewModel() {
      * 更新阅读记录
      */
     @SuppressLint("CheckResult")
-    fun updateReadHistory() {
-        Flowable.just("")
+    fun updateReadHistory(chapterid: Int, chapterName:String):Flowable<StatusResult> {
+        return Flowable.just("")
             .map { mDataRepository.queryBookInfo(bookid) }
             .flatMap {
+
                 mDataRepository.updateReadHistory(
                     bookName = it.bookName,
                     bookid = it.bookid.toString(),
@@ -349,7 +371,7 @@ class ReadBookViewModel : BaseViewModel() {
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, {})
+
     }
 
     @SuppressLint("CheckResult")

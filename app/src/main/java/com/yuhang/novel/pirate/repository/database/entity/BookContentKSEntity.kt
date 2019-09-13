@@ -65,4 +65,10 @@ class BookContentKSEntity {
 
     @Ignore
     var textPageBean: TextPageBean? = null
+
+    override fun toString(): String {
+        return "BookContentKSEntity(id=$id, hasContent=$hasContent, chapterDirName='$chapterDirName', chapterName='$chapterName', nid=$nid, pid=$pid, bookId=$bookId, content='$content', chapterId=$chapterId, lastOpenTime=$lastOpenTime, lastContentPosition=$lastContentPosition, txtPage=$txtPage, textPageBean=$textPageBean)"
+    }
+
+
 }

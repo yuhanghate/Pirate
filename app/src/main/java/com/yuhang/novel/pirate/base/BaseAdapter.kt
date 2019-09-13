@@ -4,6 +4,7 @@ import android.view.SoundEffectConstants
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import com.yuhang.novel.pirate.R
@@ -142,8 +143,8 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
 
         }
 
-        if (layoutManager is WrapContentLinearLayoutManager) {
-            (layoutManager as WrapContentLinearLayoutManager).orientation = RecyclerView.VERTICAL
+        if (layoutManager is LinearLayoutManager) {
+            (layoutManager as LinearLayoutManager).orientation = RecyclerView.VERTICAL
         }
 
 

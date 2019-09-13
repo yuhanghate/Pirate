@@ -6,6 +6,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -153,6 +154,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
         mViewModel.adapter.setListener(this)
         mViewModel.adapter
+            .setlayoutManager(LinearLayoutManager(mActivity))
                 .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 

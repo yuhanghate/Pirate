@@ -20,6 +20,11 @@ interface UsersService {
     fun updateChapterListToLocal(bookid: Long): Flowable<Long>
 
     /**
+     * 更新最后阅读章节到本地
+     */
+    fun updateReadHistoryToLocal(bookid: Long):Flowable<Long>
+
+    /**
      * 更新小说详情到本地
      */
     fun updateBookInfoToLocal(bookid: Long): Flowable<Long>

@@ -53,11 +53,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="20dp"
-                        android:visibility="gone"
                         android:background="@drawable/bg_material_40dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/btn_more" />
+                        android:src="@drawable/btn_more"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -81,12 +81,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/window_background"
-                    tools:listitem="@layout/item_main" />
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/window_background"
+                        tools:listitem="@layout/item_main" />
+
+                    <TextView
+                        android:id="@+id/btn_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="30dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_material_item_pink"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="去搜索书"
+                        android:textColor="#ffffffff"
+                        android:textSize="17sp" />
+                </FrameLayout>
+
             </ezy.ui.layout.LoadingLayout>
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

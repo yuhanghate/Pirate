@@ -93,4 +93,10 @@ public abstract class AppDatabase
      */
     public abstract RankingListDao getRankingListDao();
 
+    /**
+     * 最近阅读章节记录
+     * @return
+     */
+    public abstract BookReadHistoryDao getBookReadHistoryDao();
+
 }

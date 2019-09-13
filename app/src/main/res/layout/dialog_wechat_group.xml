@@ -26,7 +26,7 @@
         android:gravity="center"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:text="扫描二维码或保存图片到本地\n进入随便看书微信群"
+        android:text="扫描二维码或保存图片到本地 \n进入随便看书微信群"
         android:textColor="@color/secondary_text"
         android:textSize="14sp" />
 

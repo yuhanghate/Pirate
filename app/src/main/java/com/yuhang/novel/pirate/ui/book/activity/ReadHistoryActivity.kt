@@ -2,13 +2,12 @@ package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
-import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityReadHistoryBinding
 import com.yuhang.novel.pirate.listener.OnClickItemListener
@@ -17,8 +16,8 @@ import com.yuhang.novel.pirate.ui.book.viewmodel.ReadHistoryViewModel
 /**
  * 最近浏览记录
  */
-class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, ReadHistoryViewModel>(), OnRefreshLoadMoreListener, OnClickItemListener {
-
+class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, ReadHistoryViewModel>(),
+    OnRefreshLoadMoreListener, OnClickItemListener {
 
 
     companion object {
@@ -54,8 +53,9 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
     override fun initRecyclerView() {
         super.initRecyclerView()
         mViewModel.adapter.setListener(this)
-                .setDecorationMargin(20f)
-                .setRecyclerView(mBinding.recyclerview)
+            .setDecorationMargin(20f)
+            .setlayoutManager(LinearLayoutManager(this))
+            .setRecyclerView(mBinding.recyclerview)
     }
 
     /**
@@ -66,19 +66,19 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
         PAGE_NUM++
 
         mViewModel.getReadHistoryList(PAGE_NUM)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    val list = it.map { it }.toList()
-                    if (list.isEmpty()) {
-                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-                    } else {
-                        mViewModel.adapter.loadMore(list)
-                        mBinding.refreshLayout.finishLoadMore()
-                    }
-
-                }, {
+            .compose(bindToLifecycle())
+            .subscribe({
+                val list = it.map { it }.toList()
+                if (list.isEmpty()) {
+                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                } else {
+                    mViewModel.adapter.loadMore(list)
                     mBinding.refreshLayout.finishLoadMore()
-                })
+                }
+
+            }, {
+                mBinding.refreshLayout.finishLoadMore()
+            })
     }
 
     /**
@@ -89,18 +89,18 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
         PAGE_NUM = 0
 
         mViewModel.getReadHistoryList(PAGE_NUM)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.refreshLayout.finishRefresh()
-                    val list = it.map { it }.toList()
-                    mViewModel.adapter.setRefersh(list)
-                    if (list.size < 100) {
-                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-                    }
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.refreshLayout.finishRefresh()
+                val list = it.map { it }.toList()
+                mViewModel.adapter.setRefersh(list)
+                if (list.size < 100) {
+                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                }
 
-                }, {
-                    mBinding.refreshLayout.finishRefresh()
-                })
+            }, {
+                mBinding.refreshLayout.finishRefresh()
+            })
     }
 
     /**
@@ -112,14 +112,12 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
 
     override fun onPause() {
         super.onPause()
-        mViewModel.onPageEnd("最近浏览")
         mViewModel.onPause(this)
     }
 
     override fun onResume() {
 
         super.onResume()
-        mViewModel.onPageStart("最近浏览")
         mViewModel.onResume(this)
     }
 }

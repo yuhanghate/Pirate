@@ -25,5 +25,5 @@ class BookReadHistoryEntity {
     /**
      * 更新最新的阅读时间
      */
-    var lastReadTime = System.currentTimeMillis() / 1000
+    var lastReadTime = System.currentTimeMillis()
 }

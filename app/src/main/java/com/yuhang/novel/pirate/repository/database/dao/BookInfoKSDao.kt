@@ -65,4 +65,7 @@ interface BookInfoKSDao {
 
     @Query("delete from bookinfoksentity")
     fun clear()
+
+    @Query("select * from bookinfoksentity")
+    fun queryAll():List<BookInfoKSEntity>
 }

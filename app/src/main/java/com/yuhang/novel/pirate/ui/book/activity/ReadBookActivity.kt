@@ -129,7 +129,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         unregisterReceiver(mReceiver)
 //        keepScreenOnWithPermissionCheck(false)
         super.onPause()
-        mViewModel.onPageEnd("阅读内容页")
+//        mViewModel.onPageEnd("阅读内容页")
         mViewModel.onPause(this)
         mBinding.root.keepScreenOn = false
     }
@@ -150,16 +150,22 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initChapterProgressSeekBar()
         onClick()
 
-        if (getChapterid() > 0) {
-            //打开指定章节
-            mViewModel.chapterid = getChapterid().toInt()
-            netDataChapterContentFromId(getChapterid().toInt())
-        } else {
-            //打开最近章节
-            netDataChatpterContent()
+
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            //当Activity尺寸计算好以后,进行加载.因为需要动态根据尺寸分页
+            if (getChapterid() > 0) {
+                //打开指定章节
+                mViewModel.chapterid = getChapterid()
+                netDataChapterContentFromId(getChapterid())
+            } else {
+                //打开最近章节
+                netDataChatpterContent()
+            }
         }
-
-
     }
 
 
@@ -169,7 +175,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initBattery()
         mBinding.root.keepScreenOn = true
 //        keepScreenOnWithPermissionCheck(true)
-        mViewModel.onPageStart("阅读内容页")
         mViewModel.onResume(this)
     }
 
@@ -566,18 +571,21 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .subscribe({
                 mBinding.loading.showContent()
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory()
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.setRefersh(list)
                 mBinding.recyclerView.scrollToPosition(it.lastContentPosition)
                 onPageIndexListener(it.lastContentPosition)
                 mViewModel.preloadedChapterContent(it.pid)
                 mViewModel.preloadedChapterContent(it.nid)
+
+//                Logger.t("空白").i("page content = ${it.content} size = ${list.size} 页  ")
             }, {
 
                 if (!mBinding.loading.isError) {
                     mBinding.loading.showError()
                 }
+                Logger.t("空白").i("网络加载异常")
             }, {})
     }
 
@@ -592,7 +600,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .subscribe({
 
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory()
+                mViewModel.updateReadHistory(it.chapterId,it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.setRefersh(list)
                 moveToPosition(0)
@@ -630,7 +638,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                     mBinding.loading.showContent()
 
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory()
+                    mViewModel.updateReadHistory(it.chapterId,it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                     mViewModel.adapter.loadMore(list)
                 }, {
@@ -638,7 +646,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 })
         }
 
-        onPageIndexListener(mViewModel.getLastVisiblePosition(mBinding.recyclerView))
+        //刷新有延迟
+        Handler().postDelayed({
+            onPageIndexListener(mViewModel.getLastVisiblePosition(mBinding.recyclerView))
+        }, 200)
+
     }
 
     /**
@@ -666,7 +678,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 .subscribe({
                     mBinding.loading.showContent()
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory()
+                    mViewModel.updateReadHistory(it.chapterId,it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                     //上一页如果不指定角标,默认会刷新返回第一页
                     mViewModel.adapter.getList().addAll(0, list)
@@ -738,7 +750,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .subscribe({
                 mBinding.loading.showContent()
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory()
+                mViewModel.updateReadHistory(it.chapterId,it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.getList().addAll(0, list)
                 mViewModel.adapter.notifyItemRangeInserted(0, list.size)
@@ -766,7 +778,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 mBinding.loading.showContent()
 
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory()
+                mViewModel.updateReadHistory(it.chapterId,it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.loadMore(list)
 

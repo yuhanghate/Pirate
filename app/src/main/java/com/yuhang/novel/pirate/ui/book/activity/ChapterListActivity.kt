@@ -11,6 +11,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -90,6 +91,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
 
         mViewModel.adapter.setListener(this)
         mViewModel.adapter
+            .setlayoutManager(LinearLayoutManager(this))
                 .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
@@ -122,13 +124,11 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
 
     override fun onPause() {
         super.onPause()
-        mViewModel.onPageEnd("单独的章节列表页")
         mViewModel.onPause(this)
     }
 
     override fun onResume() {
         super.onResume()
-        mViewModel.onPageStart("单独的章节列表页")
         mViewModel.onResume(this)
     }
 }

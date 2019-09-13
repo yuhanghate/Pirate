@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.yuhang.novel.pirate.R
@@ -46,6 +47,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         super.initView()
         initFloatingSearch()
         initRecyclerView()
+
     }
 
     /**
@@ -56,6 +58,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
 
         mViewModel.adapter.setListener(this)
         mViewModel.adapter.setDecorationSize(niceDp2px(15f))
+            .setlayoutManager(LinearLayoutManager(this))
             .setDecorationColor(android.R.color.transparent)
             .setRecyclerView(mBinding.recyclerview)
     }
@@ -226,14 +229,12 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     override fun onResume() {
 
         super.onResume()
-        mViewModel.onPageStart("搜索页")
         mViewModel.onResume(this)
     }
 
     override fun onPause() {
 
         super.onPause()
-        mViewModel.onPageEnd("搜索页")
         mViewModel.onPause(this)
     }
 }

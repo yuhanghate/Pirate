@@ -24,6 +24,7 @@ import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityBookDetailsBinding
 import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookItemBinding
 import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookLineBinding
+import com.yuhang.novel.pirate.eventbus.RemoveCollectionEvent
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
@@ -138,7 +139,6 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     override fun onPause() {
         super.onPause()
-        mViewModel.onPageEnd("书箱详情页")
         mViewModel.onPause(this)
 
     }
@@ -147,7 +147,6 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
         super.onResume()
         initCollectionStatus()
-        mViewModel.onPageStart("书箱详情页")
         mViewModel.onResume(this)
 
     }
@@ -405,6 +404,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             .subscribe({
                 mViewModel.isCollection = false
                 mBinding.addBookrackTv.text = "加入书架"
+                EventBus.getDefault().post(RemoveCollectionEvent())
                 niceToast("移除成功")
             }, { niceToast("加入失败") })
     }

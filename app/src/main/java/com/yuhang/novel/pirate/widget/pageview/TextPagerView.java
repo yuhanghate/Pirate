@@ -603,6 +603,7 @@ public class TextPagerView extends ReadBookTextView {
         try {
             return PageUtils.loadPages(br, bean);
         } catch (IOException e) {
+            Logger.t("空白").i("page exception : "+e.getMessage());
             e.printStackTrace();
         }
         return null;

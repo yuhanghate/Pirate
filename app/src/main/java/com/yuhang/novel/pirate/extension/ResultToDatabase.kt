@@ -5,10 +5,9 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetails
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListDataResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ContentDataResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.RankingDataListResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.CollectionDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -119,7 +118,7 @@ fun RankingDataListResult.niceRankingListEntity(): RankingListEntity {
  */
 fun RankingListEntity.niceRankingDataListResult(): RankingDataListResult {
     return RankingDataListResult(Author = this.author, Name = this.bookName, Id = this.bookdid, CName = this.chapterName,
-        Img = this.cover, Desc = this.desc, Score = this.score)
+            Img = this.cover, Desc = this.desc, Score = this.score)
 }
 
 /**
@@ -133,5 +132,15 @@ fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.description = result.description
         this.author = result.author
         this.cover = result.cover
+        this.lastChapterId = result.chapterid.toInt()
+        this.lastChapterName = result.chapterName
     }
+}
+
+/**
+ * 书籍详情转在线收藏对象
+ */
+fun BookInfoKSEntity.niceCollectionDataResult(): CollectionDataResult {
+    return CollectionDataResult(author = this.author, bookName = this.bookName,
+            bookid = this.bookid.toString(), cover = this.cover, resouceType = "KS")
 }

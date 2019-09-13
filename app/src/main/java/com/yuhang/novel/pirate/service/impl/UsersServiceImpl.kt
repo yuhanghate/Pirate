@@ -3,7 +3,6 @@ package com.yuhang.novel.pirate.service.impl
 import android.annotation.SuppressLint
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
-import com.yuhang.novel.pirate.extension.niceBookContentKSEntity
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
@@ -17,44 +16,44 @@ class UsersServiceImpl : UsersService {
 
     override fun updateContentToLocal(bookid: Long): Flowable<Long> {
         return Flowable.just(bookid)
-                .map { mDataRepository.queryFirstChapterid(it) }
-                .flatMap { mDataRepository.getChapterContent(bookid, it) }
-                .map { mDataRepository.insertBookContent(it.data.niceBookContentKSEntity()) }
-                .map { bookid }
+//                .map { mDataRepository.queryFirstChapterid(it) }
+//                .flatMap { mDataRepository.getChapterContent(bookid, it) }
+//                .map { mDataRepository.insertBookContent(it.data.niceBookContentKSEntity()) }
+            .map { bookid }
     }
 
     val mDataRepository by lazy { PirateApp.getInstance().getDataRepository() }
 
     override fun updateCollectionToLocal(): Flowable<Long> {
         return mDataRepository.getCollectionList(1)
-                .map {
-                    mDataRepository.clearBookInfo()
-                    return@map it
-                }
-                .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
-                .map {
-                    mDataRepository.insertCollection(it.bookid.toLong())
-                    it.bookid.toLong()
-                }
+            .map {
+                mDataRepository.clearBookInfo()
+                return@map it
+            }
+            .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
+            .map {
+                mDataRepository.insertCollection(it.bookid.toLong())
+                it.bookid.toLong()
+            }
     }
 
 
     override fun updateChapterListToLocal(bookid: Long): Flowable<Long> {
         return mDataRepository.getBookChapterList(bookid)
-                .map {
-                    mDataRepository.insertChapterList(it.data.niceBookChapterKSEntity())
-                    bookid
-                }
+            .map {
+                mDataRepository.insertChapterList(it.data.niceBookChapterKSEntity())
+                bookid
+            }
     }
 
     @SuppressLint("CheckResult")
     override fun updateBookInfoToLocal(bookid: Long): Flowable<Long> {
 
         return mDataRepository.getBookDetails(bookid)
-                .map {
-                    mDataRepository.insertBookInfo(it.data.niceBookInfoKSEntity())
-                    bookid
-                }
+            .map {
+                mDataRepository.insertBookInfo(it.data.niceBookInfoKSEntity())
+                bookid
+            }
 
 //        //获取收藏列表
 //        mDataRepository.getCollectionList(1)
@@ -83,28 +82,42 @@ class UsersServiceImpl : UsersService {
 
     override fun updateUsersToLocal(userResult: UserResult): Flowable<Unit> {
         return Flowable.just(userResult)
-                .map {
-                    val userDataResult = userResult.data
-                    val user = mDataRepository.queryUser(userDataResult.username)
+            .map {
+                val userDataResult = userResult.data
+                val user = mDataRepository.queryUser(userDataResult.username)
 
-                    //登陆帐号清除之前所有记录
-                    mDataRepository.clearUsers()
-                    if (user == null) {
-                        //插入帐号
-                        val userEntity = UserEntity()
-                        BeanPropertiesUtil.copyProperties(userDataResult, userEntity)
-                        userEntity.uid = userDataResult.id
-                        userEntity.lastTime = Date()
+                //登陆帐号清除之前所有记录
+                mDataRepository.clearUsers()
+                if (user == null) {
+                    //插入帐号
+                    val userEntity = UserEntity()
+                    BeanPropertiesUtil.copyProperties(userDataResult, userEntity)
+                    userEntity.uid = userDataResult.id
+                    userEntity.lastTime = Date()
 
 
-                        PirateApp.getInstance().setToken(userEntity.token)
-                        mDataRepository.insert(userEntity)
-                    } else {
-                        //更新帐号
-                        user.token = userDataResult.token
-                        user.lastTime = Date()
-                    }
-                }.subscribeOn(Schedulers.io())
+                    PirateApp.getInstance().setToken(userEntity.token)
+                    mDataRepository.insert(userEntity)
+                } else {
+                    //更新帐号
+                    user.token = userDataResult.token
+                    user.lastTime = Date()
+                }
+            }.subscribeOn(Schedulers.io())
 
+    }
+
+    override fun updateReadHistoryToLocal(bookid: Long): Flowable<Long> {
+        return mDataRepository.getReadHistoryCollectionsList(0)
+            .map {
+                it.data.list.forEachIndexed { index, result ->
+                    mDataRepository.updateLocalREadHistory(
+                        result.bookid.toLong(),
+                        result.chapterid.toInt(),
+                        result.createTime
+                    )
+                }
+                return@map bookid
+            }
     }
 }

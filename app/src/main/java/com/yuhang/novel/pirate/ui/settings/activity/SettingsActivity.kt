@@ -193,14 +193,12 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
 
     override fun onResume() {
         super.onResume()
-        mViewModel.onPageStart("设置页")
         mViewModel.onResume(this)
 
     }
 
     override fun onPause() {
         super.onPause()
-        mViewModel.onPageEnd("设置页")
         mViewModel.onPause(this)
     }
 
