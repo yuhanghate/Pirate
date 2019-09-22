@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Handler
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
 import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.yuhang.novel.pirate.R
@@ -24,7 +26,9 @@ import com.yuhang.novel.pirate.utils.SystemUtil
  */
 class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(),
     FloatingSearchView.OnQueryChangeListener,
-    FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener, OnClickItemListener {
+    FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener,
+        OnClickItemListener, FloatingSearchView.OnMenuItemClickListener {
+
 
     /**
      * 键盘输入间隔
@@ -73,6 +77,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         mBinding.floatingSearchView.setOnSearchListener(this)
         mBinding.floatingSearchView.setOnFocusChangeListener(this)
         mBinding.floatingSearchView.setOnHomeActionClickListener { onBackPressed() }
+        mBinding.floatingSearchView.setOnMenuItemClickListener(this)
     }
 
     /**
@@ -115,6 +120,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     override fun onSearchTextChanged(oldQuery: String?, newQuery: String?) {
 
 
+        newQuery?.let { mViewModel.searchKeyword = it }
         if (SystemUtil.getDeviceBrand() == "Meizu") {
             //兼容魅族手机
             newQuery?.let {
@@ -198,7 +204,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      * 显示最一次搜索内容
      */
     override fun onFocusCleared() {
-        mBinding.floatingSearchView.setSearchText(mViewModel.lastKeyword)
+        mBinding.floatingSearchView.setSearchText(mViewModel.searchKeyword)
         mBinding.bgShadow.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_transparent))
         Handler().postDelayed({
             mBinding.bgShadow.visibility = View.INVISIBLE
@@ -224,6 +230,28 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
             )
         )
         BookDetailsActivity.start(this, obj.Id)
+    }
+
+    /**
+     * 搜索更多
+     */
+    override fun onActionMenuItemSelected(item: MenuItem?) {
+
+        when (item?.itemId) {
+            //清空记录
+            R.id.action_tag -> showClearHistory()
+        }
+    }
+
+    /**
+     * 显示清空记录窗
+     */
+    private fun showClearHistory() {
+        MaterialDialog(this).show {
+            message(text =  "确认删除全部历史记录?")
+            positiveButton { mViewModel.clearSearchHistory() }
+            negativeButton { it.dismiss() }
+        }
     }
 
     override fun onResume() {

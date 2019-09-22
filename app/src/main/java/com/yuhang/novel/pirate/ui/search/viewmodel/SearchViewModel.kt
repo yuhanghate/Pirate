@@ -18,6 +18,11 @@ class SearchViewModel : BaseViewModel() {
      */
     var lastKeyword = ""
 
+    /**
+     * 每次输入的内容
+     */
+    var searchKeyword = ""
+
     val adapter by lazy { SearchAdapter() }
 
     /**
@@ -63,5 +68,13 @@ class SearchViewModel : BaseViewModel() {
                 )
             )
         }
+    }
+
+    /**
+     * 清空搜索记录
+     */
+    fun clearSearchHistory() {
+        thread { mDataRepository.clearSearchHistory() }
+
     }
 }

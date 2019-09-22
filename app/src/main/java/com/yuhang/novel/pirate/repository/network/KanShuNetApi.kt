@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.repository.network
 
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import io.reactivex.Flowable
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -18,6 +19,7 @@ interface KanShuNetApi {
 
     //章节 -> 内容 https://content.xllxdg.com/BookFiles/Html/37/36007/1902544.html
     //缓存书 -> 每个章节进行下载缓存 https://codeapibak.jiaston.com/BookFiles/Html/37/36007/2610933.html
+    //缓存书 -> https://downbak.1122dh.com/BookFiles/Html/7/6493/3170867.html
 
     /**
      * 看书站内搜索
@@ -75,6 +77,19 @@ interface KanShuNetApi {
             "bookId"
         ) bookId: Long, @Path("chapterId") chapterId: Int
     ): Flowable<ContentResult>
+
+    /**
+     * 下载章节内容
+     * 不知道为什么要区分,可能这个域名是CDN
+     */
+    @GET("https://downbak.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    fun downloadNovel(
+        @Path("dirId") dirId: Int, @Path(
+            "bookId"
+        ) bookId: Long, @Path("chapterId") chapterId: Int
+    ): Call<ContentResult>
+
+
 
 
     /**

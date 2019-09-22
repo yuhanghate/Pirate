@@ -7,6 +7,11 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 object BookConstant {
 
     /**
+     * 使用音量键翻页
+     */
+    const val VOLUME_STATUS = "VOLUME_STATUS"
+
+    /**
      * 文字转换
      * 简体 > 繁体
      *
@@ -132,5 +137,6 @@ object BookConstant {
             else -> 4f
         }
     }
+
 
 }

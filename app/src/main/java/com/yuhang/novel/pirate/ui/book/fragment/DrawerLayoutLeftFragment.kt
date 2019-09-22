@@ -93,11 +93,14 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
     private fun onClick() {
         mBinding.itemDrawerHeader.sortIv.setOnClickListener {
+            if (mViewModel.adapter.getList().size == 0) {
+                return@setOnClickListener
+            }
 
             if (sortStatus) {
                 sortStatus = false
                 mBinding.recyclerView.scrollToPosition(mViewModel.adapter.itemCount - 15)
-                mBinding.recyclerView.smoothScrollToPosition(mViewModel.adapter.itemCount - 1)
+                mBinding.recyclerView.smoothScrollToPosition(mViewModel.adapter.getList().size - 1)
                 val animation = AnimationUtils.loadAnimation(activity!!, R.anim.rotate_sort_top)
                 animation.interpolator = AccelerateInterpolator()
                 animation.fillAfter = true
@@ -106,8 +109,12 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
             } else {
                 sortStatus = true
-                mBinding.recyclerView.scrollToPosition(15)
-                mBinding.recyclerView.smoothScrollToPosition(0)
+                if (mViewModel.adapter.getList().size > 15) {
+                    mBinding.recyclerView.scrollToPosition(15)
+                    mBinding.recyclerView.smoothScrollToPosition(0)
+                } else {
+                    mBinding.recyclerView.smoothScrollToPosition(0)
+                }
 
                 val animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_sort_button)
                 animation.interpolator = AccelerateInterpolator()

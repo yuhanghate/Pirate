@@ -150,7 +150,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
         //意见反馈
         mBinding.feedbackCl.setOnClickListener {
-            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 分享应用")
+            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 意见反馈")
             sendEmail()
         }
         //最新浏览
@@ -318,7 +318,12 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
         )
         data.putExtra(Intent.EXTRA_TEXT, "")
-        startActivity(data)
+        try {
+            startActivity(data)
+        } catch (e: Exception) {
+            niceToast("未安装邮箱或安装的版本不支持")
+        }
+
     }
 
     /**

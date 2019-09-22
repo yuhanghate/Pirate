@@ -3,18 +3,22 @@ package com.yuhang.novel.pirate.ui.main.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
+import com.afollestad.materialdialogs.DialogCallback
+import com.afollestad.materialdialogs.MaterialDialog
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
-import com.yuhang.novel.pirate.ui.main.fragment.onRequestPermissionsResult
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
+import com.yuhang.novel.pirate.ui.settings.activity.PrivacyActivity
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
@@ -33,7 +37,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onCreateEventbus(this)
-        checkVersionWithPermissionCheck()
+
     }
 
 
@@ -79,6 +83,9 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         }
 
         mBinding.bottomBar.getTabAtPosition(intent.getIntExtra("tab_index", 0)).callOnClick()
+
+        checkVersionWithPermissionCheck()
+
     }
 
 
@@ -123,13 +130,13 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     fun checkVersion() {
 //        mActivity?.showProgressbar()
         mViewModel.checkVersion()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.constraint) {
-                    showVersionUpdateDialog(it)
-                }
-            }, {
-            })
+                .compose(bindToLifecycle())
+                .subscribe({
+                    if (it.constraint) {
+                        showVersionUpdateDialog(it)
+                    }
+                }, {
+                })
     }
 
 
@@ -154,9 +161,13 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         builder.show()
     }
 
+    @SuppressLint("NoDelegateOnResumeDetector")
     override fun onResume() {
         super.onResume()
         mViewModel.onResume(this)
+
+
+
     }
 
     override fun onPause() {
@@ -164,5 +175,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mViewModel.onPause(this)
 
     }
+
+
 
 }

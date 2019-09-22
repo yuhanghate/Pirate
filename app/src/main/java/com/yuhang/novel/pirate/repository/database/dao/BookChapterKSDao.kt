@@ -33,6 +33,12 @@ interface BookChapterKSDao {
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId asc limit 1")
   fun queryFirstChapterid(bookid: Long):Int
 
+  /**
+   * 获取最后一章,章节ID
+   */
+  @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId desc limit 1")
+  fun queryLastChapterid(bookid: Long):Int
+
   @Query("delete from bookchapterksentity")
   fun clear()
 

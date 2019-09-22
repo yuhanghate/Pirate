@@ -30,4 +30,10 @@ interface SearchHistoryKSDao {
 
   @Delete
   fun delete(obj:SearchHistoryKSEntity)
+
+  /**
+   * 清空历史记录
+   */
+  @Query("delete from SearchHistoryKSEntity")
+  fun clear()
 }

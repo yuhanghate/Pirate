@@ -1,6 +1,8 @@
 package com.yuhang.novel.pirate.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
+import androidx.work.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.extension.niceBody
@@ -10,7 +12,11 @@ import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
+import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
 import io.reactivex.Flowable
+import retrofit2.Call
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -93,6 +99,13 @@ class DataRepository(val context: Context) {
         return getKSNetApi().downloadChapterContent(niceDir(bookid), bookid, chapterid)
     }
 
+    /**
+     * 下载章节内容
+     */
+    fun downloadNovel(bookid: Long, chapterid: Int): Call<ContentResult> {
+        return getKSNetApi().downloadNovel(niceDir(bookid), bookid, chapterid)
+    }
+
 
     /**
      * 查询数据库书籍章节
@@ -133,6 +146,8 @@ class DataRepository(val context: Context) {
      * 更新数据库书籍信息
      */
     fun updateBookInfo(obj: BookInfoKSEntity) {
+        //更新标签
+        updateLable(obj.bookid)
         mDatabase.bookInfoKSDao.update(obj)
     }
 
@@ -189,6 +204,13 @@ class DataRepository(val context: Context) {
      */
     fun deleteSearchHistory(obj: SearchHistoryKSEntity) {
         return mDatabase.searchHistoryKSDao.delete(obj)
+    }
+
+    /**
+     * 清空历史记录
+     */
+    fun clearSearchHistory() {
+        mDatabase.searchHistoryKSDao.clear()
     }
 
     /**
@@ -303,12 +325,47 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 更新标签数据
+     */
+    fun updateLable(bookid: Long) {
+        val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid)?:return
+        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
+
+        if (infoKSEntity.lastChapterId > lastChapterid) {
+            PreferenceUtil.commitBoolean(bookid.toString(), true)
+        }
+    }
+
+    /**
+     * 清理标签
+     */
+    fun clearLable(bookid: Long) {
+        PreferenceUtil.commitBoolean(bookid.toString(), false)
+    }
+
+    /**
      * 是否显示更新标签
      */
+    @SuppressLint("SimpleDateFormat")
     fun isShowUpdateLable(bookid: Long): Boolean {
-        val queryLastTime = getDatabase().bookContentKSDao.queryLastTime(bookid)
-        val queryLastTime1 = getDatabase().bookInfoKSDao.queryLastTime(bookid)
-        return queryLastTime < queryLastTime1 && queryLastTime != 0.toLong()
+//        val queryLastTime = getDatabase().bookContentKSDao.queryLastTime(bookid)
+//        val queryLastTime1 = getDatabase().bookInfoKSDao.queryLastTime(bookid)
+
+//        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        val content = format.format(Date(queryLastTime))
+//        val info = format.format(Date(queryLastTime))
+
+//        val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid)?:return false
+//        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
+
+
+//        getDatabase().bookChapterKSDao.queryFirstChapterid()
+//
+//        Logger.t("lable").i("content:$content  info:$info")
+//        return queryLastTime < queryLastTime1 && queryLastTime != 0.toLong()
+//        return infoKSEntity.lastChapterId > lastChapterid
+
+        return PreferenceUtil.getBoolean(bookid.toString(), false)
     }
 
 //    /**
@@ -515,7 +572,7 @@ class DataRepository(val context: Context) {
     /**
      * 更新最后一次阅读记录到本地
      */
-    fun updateLocalREadHistory(bookid: Long, chapterid: Int, lastReadTime:Long = System.currentTimeMillis()) {
+    fun updateLocalREadHistory(bookid: Long, chapterid: Int, lastReadTime: Long = System.currentTimeMillis()) {
 
 //        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
 //        queryAll.forEach {
@@ -537,7 +594,30 @@ class DataRepository(val context: Context) {
     /**
      * 获取最近阅读记录
      */
-    fun queryBookReadHistoryEntity(bookid: Long):BookReadHistoryEntity? {
+    fun queryBookReadHistoryEntity(bookid: Long): BookReadHistoryEntity? {
         return getDatabase().bookReadHistoryDao.queryLastChanpterEntity(bookid)
+    }
+
+    /**
+     * 开始下载任务
+     */
+    fun startWorker(bookid: Long, chapterid: List<Int>) {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
+            .build()
+
+        val data = Data.Builder().putLong(
+            NovelDownloadWorker.BOOKID,
+            bookid
+        ).putIntArray(NovelDownloadWorker.CHANPTER_ID, chapterid.toIntArray()).build()
+
+
+        val request = OneTimeWorkRequest.Builder(NovelDownloadWorker::class.java)
+            .setConstraints(constraints)
+            .setInputData(data)
+            .build()
+        val enqueue = WorkManager.getInstance().enqueue(request)
+        enqueue.state
     }
 }
