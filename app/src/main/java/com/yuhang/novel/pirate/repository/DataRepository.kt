@@ -16,7 +16,6 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
 import io.reactivex.Flowable
 import retrofit2.Call
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -75,16 +74,16 @@ class DataRepository(val context: Context) {
     fun getBookChapterList(bookid: Long): Flowable<ChapterListResult> {
         //返回的格式第二条数据是空的,单独进行处理
         return getKSNetApi().getBookChapterList(dirId = niceDir(bookid), bookId = bookid)
-            .map { it.replace("},]}}", "}]}}") }
-            .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
+                .map { it.replace("},]}}", "}]}}") }
+                .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
 
     /**
      * 获取章节内容
      */
     fun getChapterContent(
-        bookid: Long,
-        chapterid: Int
+            bookid: Long,
+            chapterid: Int
     ): Flowable<ContentResult> {
         return getKSNetApi().getChapterContent(niceDir(bookid), bookid, chapterid)
     }
@@ -93,8 +92,8 @@ class DataRepository(val context: Context) {
      * 下载章节内容
      */
     fun downloadChapterContent(
-        bookid: Long,
-        chapterid: Int
+            bookid: Long,
+            chapterid: Int
     ): Flowable<ContentResult> {
         return getKSNetApi().downloadChapterContent(niceDir(bookid), bookid, chapterid)
     }
@@ -147,7 +146,7 @@ class DataRepository(val context: Context) {
      */
     fun updateBookInfo(obj: BookInfoKSEntity) {
         //更新标签
-        updateLable(obj.bookid)
+        updateLable(obj.bookid, obj.lastChapterId)
         mDatabase.bookInfoKSDao.update(obj)
     }
 
@@ -235,10 +234,10 @@ class DataRepository(val context: Context) {
         val collectionKSEntity = mDatabase.bookCollectionKSDao.query(bookid)
         if (collectionKSEntity == null) {
             mDatabase.bookCollectionKSDao.insert(
-                BookCollectionKSEntity(
-                    bookid = bookid,
-                    time = System.currentTimeMillis()
-                )
+                    BookCollectionKSEntity(
+                            bookid = bookid,
+                            time = System.currentTimeMillis()
+                    )
             )
         }
 
@@ -302,10 +301,10 @@ class DataRepository(val context: Context) {
      */
     fun updateLastOpenContent(bookid: Long, chapterid: Int, lastContentPosition: Int) {
         getDatabase().bookContentKSDao.updateLastOpenContent(
-            bookid,
-            chapterid,
-            System.currentTimeMillis(),
-            lastContentPosition
+                bookid,
+                chapterid,
+                System.currentTimeMillis(),
+                lastContentPosition
         )
     }
 
@@ -327,11 +326,11 @@ class DataRepository(val context: Context) {
     /**
      * 更新标签数据
      */
-    fun updateLable(bookid: Long) {
-        val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid)?:return
-        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
+    fun updateLable(bookid: Long, chapterid: Int) {
+        val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid) ?: return
+//        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
 
-        if (infoKSEntity.lastChapterId > lastChapterid) {
+        if (chapterid > infoKSEntity.lastChapterId) {
             PreferenceUtil.commitBoolean(bookid.toString(), true)
         }
     }
@@ -402,18 +401,18 @@ class DataRepository(val context: Context) {
      * 添加收藏
      */
     fun addCollection(
-        bookName: String, bookid: String, author: String, cover: String,
-        description: String, bookStatus: String, classifyName: String, resouceType: String
+            bookName: String, bookid: String, author: String, cover: String,
+            description: String, bookStatus: String, classifyName: String, resouceType: String
     ): Flowable<StatusResult> {
         val map = hashMapOf<String, String>(
-            "bookName" to bookName,
-            "bookid" to bookid,
-            "author" to author,
-            "cover" to cover,
-            "description" to description,
-            "bookStatus" to bookStatus,
-            "classifyName" to classifyName,
-            "resouceType" to resouceType
+                "bookName" to bookName,
+                "bookid" to bookid,
+                "author" to author,
+                "cover" to cover,
+                "description" to description,
+                "bookStatus" to bookStatus,
+                "classifyName" to classifyName,
+                "resouceType" to resouceType
         )
 
         return getNetApi().addCollection(niceBody(map))
@@ -550,21 +549,21 @@ class DataRepository(val context: Context) {
      * 更新阅读记录
      */
     fun updateReadHistory(
-        bookName: String,
-        bookid: String,
-        chapterid: String,
-        chapterName: String,
-        author: String,
-        cover: String,
-        description: String,
-        resouceType: String,
-        content: String
+            bookName: String,
+            bookid: String,
+            chapterid: String,
+            chapterName: String,
+            author: String,
+            cover: String,
+            description: String,
+            resouceType: String,
+            content: String
     ): Flowable<StatusResult> {
 
         val map = hashMapOf<String, Any>(
-            "bookName" to bookName, "bookid" to bookid, "chapterid" to chapterid,
-            "chapterName" to chapterName, "author" to author, "cover" to cover, "description" to description,
-            "resouceType" to resouceType, "content" to content
+                "bookName" to bookName, "bookid" to bookid, "chapterid" to chapterid,
+                "chapterName" to chapterName, "author" to author, "cover" to cover, "description" to description,
+                "resouceType" to resouceType, "content" to content
         )
         return getNetApi().updateReadHistory(niceBody(map))
     }
@@ -603,21 +602,53 @@ class DataRepository(val context: Context) {
      */
     fun startWorker(bookid: Long, chapterid: List<Int>) {
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
-            .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
+                .build()
 
         val data = Data.Builder().putLong(
-            NovelDownloadWorker.BOOKID,
-            bookid
+                NovelDownloadWorker.BOOKID,
+                bookid
         ).putIntArray(NovelDownloadWorker.CHANPTER_ID, chapterid.toIntArray()).build()
 
 
         val request = OneTimeWorkRequest.Builder(NovelDownloadWorker::class.java)
-            .setConstraints(constraints)
-            .setInputData(data)
-            .build()
+                .setConstraints(constraints)
+                .setInputData(data)
+                .build()
         val enqueue = WorkManager.getInstance().enqueue(request)
         enqueue.state
+    }
+
+    /**
+     * 发送邮箱验证码
+     */
+    fun getMailCode(mail: String): Flowable<EmailCodeResult> {
+        return getNetApi().getMailCode(mail)
+    }
+
+    /**
+     * 检测用户邮箱是否存在
+     */
+    fun checkEmailEmpty(email: String): Flowable<StatusResult> {
+        return getNetApi().checkEmailEmpty(email)
+    }
+
+    /**
+     * 检测邮箱验证码
+     */
+    fun checkEmailCode(email: String, newCode: String, oldCode: String): Flowable<StatusResult> {
+        val map = hashMapOf<String, String>("email" to email, "newCode" to newCode,
+                "oldCode" to oldCode)
+        return getNetApi().checkEmailCode(niceBody(map))
+    }
+
+    /**
+     * 修改密码
+     */
+    fun updatePassword(email: String, username: String, password: String, againPassword: String): Flowable<UserResult> {
+        val map = hashMapOf<String, String>("email" to email, "username" to username,
+                "password" to password, "againPassword" to againPassword)
+        return getNetApi().updatePassword(niceBody(map))
     }
 }

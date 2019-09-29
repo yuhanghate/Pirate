@@ -775,6 +775,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         Logger.i("onLoadMore firstVisibleItemPosition=$firstVisibleItemPosition  lastVisibleItemPosition=$lastVisibleItemPosition")
 
 
+        if (mViewModel.adapter.getList().isEmpty()) return
+
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
 
         if (obj.nid == -1) {
@@ -801,7 +803,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      */
     override fun onPageIndexListener(position: Int) {
         //如果是最后一页.返回.因为是假数据
-        if (position == mViewModel.adapter.itemCount - 1 || position < 0) {
+        if (mViewModel.adapter.getList().isEmpty() || position == mViewModel.adapter.itemCount - 1 || position < 0) {
             return
         }
         val obj = mViewModel.adapter.getObj(position)

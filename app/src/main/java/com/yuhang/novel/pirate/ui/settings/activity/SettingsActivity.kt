@@ -101,6 +101,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         mBinding.pageTimeEll.setInterpolator(mInterpolator)
         mBinding.btnBack.setOnClickListener { onBackPressed() }
         mBinding.btnPrivacy.setOnClickListener { PrivacyActivity.start(this) }
+        mBinding.btnNoteLl.setOnClickListener { VersionNoteActivity.start(this) }
         mBinding.btnLogout.setOnClickListener {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLICK_LOGOUT, "设置 -> 退出登陆")
             mViewModel.logout()

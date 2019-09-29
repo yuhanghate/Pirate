@@ -102,7 +102,8 @@ class RegisterViewModel : BaseViewModel() {
                 user.lastTime = Date()
             }
 
-            EventBus.getDefault().postSticky(userResult)
+            mActivity?.runOnUiThread { EventBus.getDefault().postSticky(userResult) }
+
         }
     }
 

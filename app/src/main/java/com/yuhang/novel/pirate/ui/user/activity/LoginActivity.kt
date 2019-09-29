@@ -46,6 +46,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
             netLogin()
         }
         mBinding.btnRegister.setOnClickListener { RegisterActivity.start(this) }
+        mBinding.forgetTv.setOnClickListener { ForgetMailActivity.start(this) }
     }
 
     /**

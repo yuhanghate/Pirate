@@ -60,9 +60,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 mBinding.emailEt
             )
         ) {
+            showProgressbar()
             mViewModel.register(username, password, email)
                 .compose(bindToLifecycle())
                 .subscribe({result ->
+                    closeProgressbar()
                     if (result.code == 200) {
                         MobclickAgent.onProfileSignIn(result.data.id)
                         PirateApp.getInstance().setToken(result.data.token)
@@ -81,6 +83,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                     }
                     Logger.t(TAG).i(result.msg)
                 }, {
+                    closeProgressbar()
                     Logger.t(TAG).i(it.message!!)
                     niceToast("注册失败, 请检查网络")
                 })

@@ -73,4 +73,28 @@ interface NetApi {
      */
     @GET("/api/m/book/read/collection/history/list")
     fun getReadHistoryCollectionsList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<ReadHistoryResult>
+
+    /**
+     * 发送邮箱验证码
+     */
+    @GET("/api/m/email/code/send")
+    fun getMailCode(@Query("mail") mail:String):Flowable<EmailCodeResult>
+
+    /**
+     * 检测用户邮箱是否存在
+     */
+    @GET("/api/m/email/user/check")
+    fun checkEmailEmpty(@Query("email") email:String):Flowable<StatusResult>
+
+    /**
+     * 检测邮箱验证码
+     */
+    @POST("/api/m/email/code/check")
+    fun checkEmailCode(@Body body: RequestBody):Flowable<StatusResult>
+
+    /**
+     * 修改密码
+     */
+    @POST("/api/m/email/update/password")
+    fun updatePassword(@Body body: RequestBody):Flowable<UserResult>
 }

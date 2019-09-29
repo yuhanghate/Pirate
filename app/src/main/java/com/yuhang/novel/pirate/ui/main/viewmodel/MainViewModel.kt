@@ -163,9 +163,10 @@ class MainViewModel : BaseViewModel() {
                 }
                 .filter { it.status == 1 }
                 .map {
-                    mDataRepository.updateLable(it.data.id)
-                    deleteChapterList(it.data.id)
                     val list = it.data.niceBookChapterKSEntity()
+//                    mDataRepository.updateLable(it.data.id, list[list.lastIndex].chapterId)
+                    deleteChapterList(it.data.id)
+
                     insertChapterList(list)
                     return@map list
                 }

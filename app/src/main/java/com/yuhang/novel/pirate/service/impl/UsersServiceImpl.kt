@@ -9,6 +9,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.utils.BeanPropertiesUtil
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -103,7 +104,7 @@ class UsersServiceImpl : UsersService {
                     user.token = userDataResult.token
                     user.lastTime = Date()
                 }
-            }.subscribeOn(Schedulers.io())
+            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
     }
 

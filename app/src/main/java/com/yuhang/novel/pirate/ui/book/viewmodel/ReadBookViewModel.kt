@@ -229,7 +229,7 @@ class ReadBookViewModel : BaseViewModel() {
      * 最后一个列表角标
      */
     fun getLastItemPosition(): Int {
-        return adapter.getList().size - 1
+        return if(adapter.getList().isEmpty()) 0 else  adapter.getList().size - 1
     }
 
     /**

@@ -36,6 +36,7 @@ import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
 import com.yuhang.novel.pirate.ui.book.activity.ReadHistoryActivity
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
+import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
@@ -192,6 +193,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         //发起添加QQ群
         mBinding.qqCl.setOnClickListener { joinQQGroup("mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9") }
+
+        //帮助与问题
+        mBinding.problemCl.setOnClickListener { ProblemActivity.start(mActivity!!) }
 
     }
 

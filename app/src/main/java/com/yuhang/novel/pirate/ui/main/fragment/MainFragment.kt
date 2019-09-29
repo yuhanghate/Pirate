@@ -156,6 +156,9 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
             SearchActivity.start(mActivity!!)
         }
+
+        //重要提示
+        mBinding.btnPrompt.setOnClickListener { showTipdialog() }
     }
 
     /**
@@ -205,6 +208,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         }
     }
 
+
     /**
      * 右上角点击更多事件
      */
@@ -218,6 +222,24 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
         }
         return true
+    }
+
+    /**
+     * 重要提示
+     */
+    private fun showTipdialog() {
+        MaterialDialog(activity!!).show {
+            title(text = "提示")
+            message(text = "1.搜索不到小说可以查看 我的-帮助与问题\n\n" +
+                    "2.我们建议你注册帐号保证不丢失数据\n\n" +
+                    "3.强烈建议为了更好的体验更新最新版本\n\n" +
+                    "4.应用内不会出现广告请放心使用")
+            positiveButton(text = "确定", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+                    p1.dismiss()
+                }
+            })
+        }
     }
 
     /**

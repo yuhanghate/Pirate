@@ -51,12 +51,12 @@
                     android:id="@+id/page_type_ll"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:visibility="gone"
                     android:background="@drawable/bg_material_item"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="15dp"
-                    android:paddingEnd="20dp">
+                    android:paddingEnd="20dp"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -68,9 +68,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:lineSpacingMultiplier="1.1"
                         android:paddingStart="15dp"
                         android:text="翻页方式"
-                        android:lineSpacingMultiplier="1.1"
                         android:textColor="@color/primary_text"
                         android:textSize="16sp" />
 
@@ -102,8 +102,8 @@
                     android:id="@+id/page_type_ell"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     app:ael_duration="200"
                     app:ael_expanded="false">
 
@@ -163,10 +163,10 @@
                     android:id="@+id/page_time_ll"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="1dp"
                     android:background="@drawable/bg_material_item"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layout_marginTop="1dp"
                     android:paddingStart="15dp"
                     android:paddingEnd="20dp">
 
@@ -180,9 +180,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:lineSpacingMultiplier="1.1"
                         android:paddingStart="15dp"
                         android:text="阅读界面"
-                        android:lineSpacingMultiplier="1.1"
                         android:textColor="@color/primary_text"
                         android:textSize="16sp" />
 
@@ -282,8 +282,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="15dp"
-                        android:text="使用音量键翻页"
                         android:lineSpacingMultiplier="1.1"
+                        android:text="使用音量键翻页"
                         android:textColor="@color/primary_text"
                         android:textSize="16sp" />
 
@@ -310,9 +310,49 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/btn_clear"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="清除缓存"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/size_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableEnd="@drawable/ic_item_right"
+                            android:drawablePadding="8dp"
+                            android:gravity="center"
+                            android:text="0MB"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/btn_disclaimer"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
                         android:background="@drawable/bg_material_item"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -329,9 +369,42 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
                             android:paddingStart="15dp"
                             android:text="免责申明"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_item_right" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_note_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_disclaimer"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="功能介绍"
                             android:textColor="@color/primary_text"
                             android:textSize="16sp" />
 
@@ -363,9 +436,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
                             android:paddingStart="15dp"
                             android:text="隐私条款"
-                            android:lineSpacingMultiplier="1.1"
                             android:textColor="@color/primary_text"
                             android:textSize="16sp" />
 
@@ -375,45 +448,6 @@
                             android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
-
-                    <LinearLayout
-                        android:id="@+id/btn_clear"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_clear"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="15dp"
-                            android:text="清除缓存"
-                            android:lineSpacingMultiplier="1.1"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/size_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableEnd="@drawable/ic_item_right"
-                            android:drawablePadding="8dp"
-                            android:gravity="center"
-                            android:text="0MB"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/btn_version"
@@ -437,9 +471,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
                             android:paddingStart="15dp"
                             android:text="版本号"
-                            android:lineSpacingMultiplier="1.1"
                             android:textColor="@color/primary_text"
                             android:textSize="16sp" />
 
