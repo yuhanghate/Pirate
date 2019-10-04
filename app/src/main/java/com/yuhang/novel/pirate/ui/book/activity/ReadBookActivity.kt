@@ -12,7 +12,6 @@ import android.os.Handler
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,9 +48,9 @@ import kotlin.math.abs
  * 书籍阅读
  */
 class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel>(),
-        ReadBookTextView.OnClickCenterListener, ReadBookTextView.OnClickNextListener,
-        ReadBookTextView.OnClickPreviousListener, OnClickChapterItemListener, OnRefreshLoadMoreListener,
-        OnPageIndexListener {
+    ReadBookTextView.OnClickCenterListener, ReadBookTextView.OnClickNextListener,
+    ReadBookTextView.OnClickPreviousListener, OnClickChapterItemListener, OnRefreshLoadMoreListener,
+    OnPageIndexListener {
 
 
     private var mTopInAnim: Animation? = null
@@ -188,51 +187,51 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         mBinding.layoutButton.seekBar
         mViewModel.getChapterList()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mViewModel.chapterList = it
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.chapterList = it
 //                    val entity = it.filter { it.chapterId == mViewModel.chapterid }.map { it }.toList()
-                    mBinding.layoutButton.chapterProgressSb.configBuilder
-                            .min(1f)
-                            .max((it.size).toFloat())
-                            .progress(1f)
-                            .sectionCount(it.size - 1)
-                            .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
-                            .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
-                            .showSectionText()
-                            .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
-                            .bubbleTextSize(18)
-                            .build()
+                mBinding.layoutButton.chapterProgressSb.configBuilder
+                    .min(1f)
+                    .max((it.size).toFloat())
+                    .progress(1f)
+                    .sectionCount(it.size - 1)
+                    .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
+                    .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
+                    .showSectionText()
+                    .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
+                    .bubbleTextSize(18)
+                    .build()
 
 //                    mBinding.layoutButton.chapterProgressSb.setPercentage()
 
-                    mBinding.layoutButton.chapterProgressSb.onProgressChangedListener =
-                            object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
-                                override fun onProgressChanged(
-                                        bubbleSeekBar: BubbleSeekBar?,
-                                        progress: Int,
-                                        progressFloat: Float,
-                                        fromUser: Boolean
-                                ) {
-                                    super.onProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
-                                    if (mViewModel.chapterList.isNotEmpty()) {
-                                        mBinding.layoutButton.chapterNameTv.text = mViewModel.chapterList[progress - 1].name
-                                    }
-//                            bubbleSeekBar?.setBubbleProgressText("$progress/${bubbleSeekBar.max}")
-                                }
-
-                                override fun getProgressOnActionUp(
-                                        bubbleSeekBar: BubbleSeekBar?,
-                                        progress: Int,
-                                        progressFloat: Float
-                                ) {
-                                    super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
-
-                                    netDataChapterContentFromId(mViewModel.chapterList[progress - 1].chapterId)
-                                }
+                mBinding.layoutButton.chapterProgressSb.onProgressChangedListener =
+                    object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+                        override fun onProgressChanged(
+                            bubbleSeekBar: BubbleSeekBar?,
+                            progress: Int,
+                            progressFloat: Float,
+                            fromUser: Boolean
+                        ) {
+                            super.onProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
+                            if (mViewModel.chapterList.isNotEmpty()) {
+                                mBinding.layoutButton.chapterNameTv.text = mViewModel.chapterList[progress - 1].name
                             }
+//                            bubbleSeekBar?.setBubbleProgressText("$progress/${bubbleSeekBar.max}")
+                        }
 
-                }, {})
+                        override fun getProgressOnActionUp(
+                            bubbleSeekBar: BubbleSeekBar?,
+                            progress: Int,
+                            progressFloat: Float
+                        ) {
+                            super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
+
+                            netDataChapterContentFromId(mViewModel.chapterList[progress - 1].chapterId)
+                        }
+                    }
+
+            }, {})
     }
 
     /**
@@ -240,65 +239,85 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      */
     private fun initFontSeekBar() {
         mBinding.layoutButton.seekBar
-                .configBuilder
-                .min(1f)
-                .max(7f)
-                .progress(BookConstant.getFontProgress())
-                .sectionCount(6)
-                .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
-                .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
-                .thumbColor(ContextCompat.getColor(this, R.color.secondary_text))
-                .showSectionText()
-                .sectionTextColor(ContextCompat.getColor(this, R.color.secondary_text))
-                .sectionTextSize(18)
-                .showThumbText()
-                .touchToSeek()
-                .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
-                .thumbTextSize(18)
-                .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
-                .bubbleTextSize(22)
-                .showSectionMark()
-                .seekBySection()
-                .autoAdjustSectionMark()
-                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
-                .build()
+            .configBuilder
+            .min(1f)
+            .max(12f)
+            .progress(BookConstant.getFontProgress())
+            .sectionCount(11)
+            .trackColor(ContextCompat.getColor(this, R.color.md_grey_500))
+            .secondTrackColor(ContextCompat.getColor(this, R.color.icons))
+            .thumbColor(ContextCompat.getColor(this, R.color.secondary_text))
+            .showSectionText()
+            .sectionTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+            .sectionTextSize(18)
+            .showThumbText()
+            .touchToSeek()
+            .thumbTextColor(ContextCompat.getColor(this, R.color.secondary_text))
+            .thumbTextSize(18)
+            .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
+            .bubbleTextSize(22)
+            .showSectionMark()
+            .seekBySection()
+            .autoAdjustSectionMark()
+            .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+            .build()
 
         mBinding.layoutButton.seekBar.onProgressChangedListener =
-                object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
-                    override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
-                        super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
-                        when (progress) {
-                            1 -> {
-                                BookConstant.setPageTextSize(15f)
-                                netDataChatpterContent()
-                            }
-                            2 -> {
-                                BookConstant.setPageTextSize(16f)
-                                netDataChatpterContent()
-                            }
-                            3 -> {
-                                BookConstant.setPageTextSize(17f)
-                                netDataChatpterContent()
-                            }
-                            4 -> {
-                                BookConstant.setPageTextSize(18f)
-                                netDataChatpterContent()
-                            }
-                            5 -> {
-                                BookConstant.setPageTextSize(19f)
-                                netDataChatpterContent()
-                            }
-                            6 -> {
-                                BookConstant.setPageTextSize(20f)
-                                netDataChatpterContent()
-                            }
-                            7 -> {
-                                BookConstant.setPageTextSize(21f)
-                                netDataChatpterContent()
-                            }
+            object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+                override fun getProgressOnActionUp(bubbleSeekBar: BubbleSeekBar?, progress: Int, progressFloat: Float) {
+                    super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
+                    when (progress) {
+                        1 -> {
+                            BookConstant.setPageTextSize(15f)
+                            netDataChatpterContent()
+                        }
+                        2 -> {
+                            BookConstant.setPageTextSize(16f)
+                            netDataChatpterContent()
+                        }
+                        3 -> {
+                            BookConstant.setPageTextSize(17f)
+                            netDataChatpterContent()
+                        }
+                        4 -> {
+                            BookConstant.setPageTextSize(18f)
+                            netDataChatpterContent()
+                        }
+                        5 -> {
+                            BookConstant.setPageTextSize(19f)
+                            netDataChatpterContent()
+                        }
+                        6 -> {
+                            BookConstant.setPageTextSize(20f)
+                            netDataChatpterContent()
+                        }
+                        7 -> {
+                            BookConstant.setPageTextSize(21f)
+                            netDataChatpterContent()
+                        }
+                        8 -> {
+                            BookConstant.setPageTextSize(22f)
+                            netDataChatpterContent()
+                        }
+                        9 -> {
+                            BookConstant.setPageTextSize(23f)
+                            netDataChatpterContent()
+                        }
+                        10 -> {
+                            BookConstant.setPageTextSize(24f)
+                            netDataChatpterContent()
+                        }
+                        11 -> {
+                            BookConstant.setPageTextSize(25f)
+                            netDataChatpterContent()
+                        }
+                        12 -> {
+                            BookConstant.setPageTextSize(26f)
+                            netDataChatpterContent()
                         }
                     }
                 }
+            }
     }
 
     /**
@@ -369,14 +388,14 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mBinding.loading.setOnClickListener { toggleMenu() }
         mBinding.layoutTop.refreshTv.setOnClickListener {
             mViewModel.onUMEvent(
-                    this,
-                    UMConstant.TYPE_READ_CLICK_REFRESH,
-                    hashMapOf(
-                            "action" to "阅读页 -> 点击刷新",
-                            "bookid" to mViewModel.bookid.toString(),
-                            "bookName" to mViewModel.bookName,
-                            "chanpterName" to mViewModel.chapterName
-                    )
+                this,
+                UMConstant.TYPE_READ_CLICK_REFRESH,
+                hashMapOf(
+                    "action" to "阅读页 -> 点击刷新",
+                    "bookid" to mViewModel.bookid.toString(),
+                    "bookName" to mViewModel.bookName,
+                    "chanpterName" to mViewModel.chapterName
+                )
             )
             netDataChatpterContent()
         }
@@ -523,7 +542,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
             override fun onDrawerClosed(drawerView: View) {
                 mBinding.drawerLayout.setDrawerLockMode(
-                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START
+                    DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START
                 )
             }
 
@@ -576,26 +595,26 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         mBinding.loading.showLoading()
         mViewModel.isCollectionBook()
         mViewModel.getLastOpenContent()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.loading.showContent()
-                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.loading.showContent()
+                val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
-                    mViewModel.adapter.setRefersh(list)
-                    mBinding.recyclerView.scrollToPosition(it.lastContentPosition)
-                    onPageIndexListener(it.lastContentPosition)
-                    mViewModel.preloadedChapterContent(it.pid)
-                    mViewModel.preloadedChapterContent(it.nid)
+                mViewModel.adapter.setRefersh(list)
+                mBinding.recyclerView.scrollToPosition(it.lastContentPosition)
+                onPageIndexListener(it.lastContentPosition)
+                mViewModel.preloadedChapterContent(it.pid)
+                mViewModel.preloadedChapterContent(it.nid)
 
 //                Logger.t("空白").i("page content = ${it.content} size = ${list.size} 页  ")
-                }, {
+            }, {
 
-                    if (!mBinding.loading.isError) {
-                        mBinding.loading.showError()
-                    }
-                    Logger.t("空白").i("网络加载异常")
-                }, {})
+                if (!mBinding.loading.isError) {
+                    mBinding.loading.showError()
+                }
+                Logger.t("空白").i("网络加载异常")
+            }, {})
     }
 
     /**
@@ -605,25 +624,25 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private fun netDataChapterContentFromId(chapterid: Int) {
         mBinding.loading.showLoading()
         mViewModel.getContentFromChapterid(chapterid)
-                .compose(bindUntilEvent(ActivityEvent.PAUSE))
-                .subscribe({
+            .compose(bindUntilEvent(ActivityEvent.PAUSE))
+            .subscribe({
 
-                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+                val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
-                    mViewModel.adapter.setRefersh(list)
-                    moveToPosition(0)
-                    Handler().postDelayed({
-                        onPageIndexListener(0)
-                    }, 200)
+                mViewModel.adapter.setRefersh(list)
+                moveToPosition(0)
+                Handler().postDelayed({
+                    onPageIndexListener(0)
+                }, 200)
 
-                    mBinding.loading.showContent()
+                mBinding.loading.showContent()
 
-                }, {
-                    if (!mBinding.loading.isError) {
-                        mBinding.loading.showError()
-                    }
-                })
+            }, {
+                if (!mBinding.loading.isError) {
+                    mBinding.loading.showError()
+                }
+            })
     }
 
 
@@ -642,17 +661,18 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //加载最后一页
         if (position >= mViewModel.adapter.getList().size - 2 && !mViewModel.isLoadAdapter(obj.nid)) {
             mViewModel.getContentFromChapterid(obj.nid)
-                    .compose(bindUntilEvent(ActivityEvent.PAUSE))
-                    .subscribe({
-                        mBinding.loading.showContent()
+                .compose(bindUntilEvent(ActivityEvent.PAUSE))
+                .subscribe({
+                    mBinding.loading.showContent()
 
-                        val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                        mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle())
+                        .subscribe({}, {})
 
-                        mViewModel.adapter.loadMore(list)
-                    }, {
-                        Logger.i(it.message!!)
-                    })
+                    mViewModel.adapter.loadMore(list)
+                }, {
+                    Logger.i(it.message!!)
+                })
         }
 
         //刷新有延迟
@@ -683,20 +703,21 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         if (position == 1 || position == 0) {
             //加载上一页数据
             mViewModel.getContentFromChapterid(obj.pid)
-                    .compose(bindUntilEvent(ActivityEvent.PAUSE))
-                    .subscribe({
-                        mBinding.loading.showContent()
-                        val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                        mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+                .compose(bindUntilEvent(ActivityEvent.PAUSE))
+                .subscribe({
+                    mBinding.loading.showContent()
+                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle())
+                        .subscribe({}, {})
 
-                        //上一页如果不指定角标,默认会刷新返回第一页
-                        mViewModel.adapter.getList().addAll(0, list)
-                        mViewModel.adapter.notifyDataSetChanged()
-                        moveToPosition(list.size)
-                        Logger.i("onClickPreviousListener list=${list.size}  listitem=${mViewModel.getLastItemPosition()}")
+                    //上一页如果不指定角标,默认会刷新返回第一页
+                    mViewModel.adapter.getList().addAll(0, list)
+                    mViewModel.adapter.notifyDataSetChanged()
+                    moveToPosition(list.size)
+                    Logger.i("onClickPreviousListener list=${list.size}  listitem=${mViewModel.getLastItemPosition()}")
 
-                    }, {
-                    })
+                }, {
+                })
         }
 
         /**
@@ -751,20 +772,24 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     @SuppressLint("CheckResult")
     override fun onRefresh(firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) {
         Logger.i("readbook = onRefresh")
+        if (mViewModel.adapter.getList().isEmpty()) {
+            return
+        }
+
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
         if (obj.pid == -1) return
 
         mViewModel.getContentFromChapterid(obj.pid)
-                .compose(bindUntilEvent(ActivityEvent.PAUSE))
-                .subscribe({
-                    mBinding.loading.showContent()
-                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+            .compose(bindUntilEvent(ActivityEvent.PAUSE))
+            .subscribe({
+                mBinding.loading.showContent()
+                val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
-                    mViewModel.adapter.getList().addAll(0, list)
-                    mViewModel.adapter.notifyItemRangeInserted(0, list.size)
-                }, {
-                })
+                mViewModel.adapter.getList().addAll(0, list)
+                mViewModel.adapter.notifyItemRangeInserted(0, list.size)
+            }, {
+            })
     }
 
     /**
@@ -784,18 +809,18 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
         Logger.i("${this.javaClass.simpleName}  position = $lastVisibleItemPosition  itemCount=${mViewModel.adapter.getList().size}")
         mViewModel.getContentFromChapterid(obj.nid)
-                .compose(bindUntilEvent(ActivityEvent.PAUSE))
-                .subscribe({
-                    mBinding.loading.showContent()
+            .compose(bindUntilEvent(ActivityEvent.PAUSE))
+            .subscribe({
+                mBinding.loading.showContent()
 
-                    val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
+                val list = mViewModel.getTxtPageList(mBinding.textPage, it)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName).compose(bindToLifecycle()).subscribe({}, {})
 
-                    mViewModel.adapter.loadMore(list)
+                mViewModel.adapter.loadMore(list)
 
-                }, {
-                    Logger.i(it.message!!)
-                })
+            }, {
+                Logger.i(it.message!!)
+            })
     }
 
     /**
@@ -863,19 +888,19 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.postCollection()
                     mViewModel.insertCollection().compose(bindToLifecycle())
-                            .subscribe({
-                                mViewModel.onUMEvent(
-                                        this@ReadBookActivity,
-                                        UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE,
-                                        "确定添加书架"
-                                )
-                                niceToast("加入成功")
-                                mViewModel.isCollection = true
-                                EventBus.getDefault().post(UpdateChapterEvent())
-                                this@ReadBookActivity.onBackPressed()
+                        .subscribe({
+                            mViewModel.onUMEvent(
+                                this@ReadBookActivity,
+                                UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE,
+                                "确定添加书架"
+                            )
+                            niceToast("加入成功")
+                            mViewModel.isCollection = true
+                            EventBus.getDefault().post(UpdateChapterEvent())
+                            this@ReadBookActivity.onBackPressed()
 
-                            },
-                                    { niceToast("加入失败") })
+                        },
+                            { niceToast("加入失败") })
                 }
 
             })
@@ -889,7 +914,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 // 音量减小时应该执行的功能代码
                 if (PreferenceUtil.getBoolean(BookConstant.VOLUME_STATUS, false)) {
-                    onClickNextListener(mBinding.recyclerView.findViewHolderForLayoutPosition(mViewModel.currentPosition)?.itemView, mViewModel.currentPosition)
+                    onClickNextListener(
+                        mBinding.recyclerView.findViewHolderForLayoutPosition(mViewModel.currentPosition)?.itemView,
+                        mViewModel.currentPosition
+                    )
                     return true
                 }
             }
@@ -897,7 +925,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 // 音量增大时应该执行的功能代码
                 if (PreferenceUtil.getBoolean(BookConstant.VOLUME_STATUS, false)) {
-                    onClickPreviousListener(mBinding.recyclerView.findViewHolderForLayoutPosition(mViewModel.currentPosition)?.itemView, mViewModel.currentPosition)
+                    onClickPreviousListener(
+                        mBinding.recyclerView.findViewHolderForLayoutPosition(mViewModel.currentPosition)?.itemView,
+                        mViewModel.currentPosition
+                    )
                     return true
                 }
             }
@@ -916,10 +947,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 mViewModel.adapter.notifyDataSetChanged()
                 Logger.t("level").i("notifyDataSetChanged")
             } else if (Intent.ACTION_TIME_TICK == intent.action
-                    && PreferenceUtil.getInt(
-                            ConfigConstant.PAGE_TIME,
-                            ConfigConstant.PAGE_TIME_SHOW
-                    ) == ConfigConstant.PAGE_TIME_SHOW
+                && PreferenceUtil.getInt(
+                    ConfigConstant.PAGE_TIME,
+                    ConfigConstant.PAGE_TIME_SHOW
+                ) == ConfigConstant.PAGE_TIME_SHOW
             ) {
                 //每一分钟更新时间 && 显示时间
                 Logger.t("level").i("一分钟更新")

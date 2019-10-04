@@ -15,42 +15,43 @@ import com.yuhang.novel.pirate.ui.user.viewmodel.ForgetViewModel
 /**
  * 忘记密码
  */
-class ForgetActivity:BaseActivity<ActivityForgetBinding, ForgetViewModel>() {
+class ForgetActivity : BaseActivity<ActivityForgetBinding, ForgetViewModel>() {
 
-    companion object{
-        const val EMAIL= "email"
-        fun start(context: Activity, email:String) {
+    companion object {
+        const val EMAIL = "email"
+        fun start(context: Activity, email: String) {
             val intent = Intent(context, ForgetActivity::class.java)
             intent.putExtra(EMAIL, email)
             startIntent(context, intent)
         }
     }
+
     override fun onLayoutId(): Int {
         return R.layout.activity_forget
     }
 
     override fun initView() {
         super.initView()
-
+        mViewModel.email = intent.getStringExtra(EMAIL)!!
         onClick()
         initData()
     }
 
     @SuppressLint("CheckResult")
     private fun initData() {
-        mViewModel.email = intent.getStringExtra(EMAIL)!!
-        mViewModel.postMailCode(mViewModel.email)
-                .subscribe({
 
-                    it.data?.let { code -> mViewModel.code = code }
-                    mViewModel.sendMailCodeView(mBinding)
-                },{
-                    mBinding.btnCode.isEnabled = true
-                    mBinding.btnCode.setBackgroundResource(R.drawable.bg_material_item_blue_round)
-                    mBinding.btnCode.text = "获取验证码"
-                    mBinding.btnCode.setTextColor(ContextCompat.getColor(this, R.color.md_red_300))
-                    niceToast("获取验证码失败,请重试")
-                })
+        mViewModel.sendMailCodeView(mBinding)
+        mViewModel.postMailCode(mViewModel.email)
+            .compose(bindToLifecycle())
+            .subscribe({
+                it.data?.let { code -> mViewModel.code = code }
+            }, {
+                mBinding.btnCode.isEnabled = true
+                mBinding.btnCode.setBackgroundResource(R.drawable.bg_material_item_blue_round)
+                mBinding.btnCode.text = "获取验证码"
+                mBinding.btnCode.setTextColor(ContextCompat.getColor(this, R.color.md_red_300))
+                niceToast("获取验证码失败,请重试")
+            })
     }
 
     @SuppressLint("CheckResult")
@@ -58,24 +59,24 @@ class ForgetActivity:BaseActivity<ActivityForgetBinding, ForgetViewModel>() {
         mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
         mBinding.btnCode.setOnClickListener {
             RxKeyboardTool.showSoftInput(this, mBinding.codeEt)
-
+            initData()
         }
         mBinding.btnNext.setOnClickListener {
             if (mViewModel.checkParams(mBinding)) {
                 showProgressbar("请等待...")
                 mViewModel.checkEmailCode(mBinding)
-                        .compose(bindToLifecycle())
-                        .subscribe({
-                            closeProgressbar()
-                            if (it.code == 200) {
-                                UpdatePasswordActivity.start(this, mViewModel.email)
-                            } else {
-                                niceTipTop(mBinding.codeEt, it.msg)
-                            }
-                        },{
-                            closeProgressbar()
-                            niceToast("网络问题,请重试")
-                        })
+                    .compose(bindToLifecycle())
+                    .subscribe({
+                        closeProgressbar()
+                        if (it.code == 200) {
+                            UpdatePasswordActivity.start(this, mViewModel.email)
+                        } else {
+                            niceTipTop(mBinding.codeEt, it.msg)
+                        }
+                    }, {
+                        closeProgressbar()
+                        niceToast("网络问题,请重试")
+                    })
 
             }
         }

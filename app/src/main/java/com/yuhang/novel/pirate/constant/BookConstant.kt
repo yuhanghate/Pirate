@@ -134,6 +134,11 @@ object BookConstant {
             19f -> 5f
             20f -> 6f
             21f -> 7f
+            22f -> 8f
+            23f -> 9f
+            24f -> 10f
+            25f -> 11f
+            26f -> 12f
             else -> 4f
         }
     }

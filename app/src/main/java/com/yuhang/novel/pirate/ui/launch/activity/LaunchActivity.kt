@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.ui.launch.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -29,6 +30,7 @@ class LaunchActivity : AppCompatActivity() {
         const val MAX_TIME: Long = 0
     }
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         StatusBarUtil.setColor(this, ContextCompat.getColor(this, android.R.color.white),
                 StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
@@ -36,37 +38,49 @@ class LaunchActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-//        setContentView(R.layout.activity_launch)
+        setContentView(R.layout.activity_launch)
 
-        if (savedInstanceState == null) {
-            val inflater = AsyncLayoutInflater(this);
-            inflater.inflate(R.layout.activity_launch, null, callback)
-        } else {
-            val view = layoutInflater.inflate(R.layout.activity_launch, null)
-            callback.onInflateFinished(view, R.layout.activity_launch, null)
-        }
+//        if (savedInstanceState == null) {
+//            val inflater = AsyncLayoutInflater(this);
+//            inflater.inflate(R.layout.activity_launch, null, callback)
+//        } else {
+//            val view = layoutInflater.inflate(R.layout.activity_launch, null)
+//            callback.onInflateFinished(view, R.layout.activity_launch, null)
+//        }
 
 
-    }
-
-    val callback: AsyncLayoutInflater.OnInflateFinishedListener = AsyncLayoutInflater.OnInflateFinishedListener { view, resid, parent ->
-        // setup here
-
-        setContentView(view)
         Flowable.timer(MAX_TIME, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    //第一次安装弹出隐私条款
-                    if (!PreferenceUtil.getBoolean("privacy", false)) {
-                        Handler().postDelayed({ showPrivacyDialog() }, 1500)
-                    } else {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    }
-
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                //第一次安装弹出隐私条款
+                if (!PreferenceUtil.getBoolean("privacy", false)) {
+                    Handler().postDelayed({ showPrivacyDialog() }, 1500)
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
                 }
 
+            }
     }
+
+//    val callback: AsyncLayoutInflater.OnInflateFinishedListener = AsyncLayoutInflater.OnInflateFinishedListener { view, resid, parent ->
+//        // setup here
+//
+//        setContentView(view)
+//        Flowable.timer(MAX_TIME, TimeUnit.SECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe {
+//                    //第一次安装弹出隐私条款
+//                    if (!PreferenceUtil.getBoolean("privacy", false)) {
+//                        Handler().postDelayed({ showPrivacyDialog() }, 1500)
+//                    } else {
+//                        startActivity(Intent(this, MainActivity::class.java))
+//                        finish()
+//                    }
+//
+//                }
+//
+//    }
 
     override fun onResume() {
         super.onResume()

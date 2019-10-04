@@ -147,7 +147,7 @@ class RegisterViewModel : BaseViewModel() {
                         author = it.author, cover = it.cover, description = it.description,
                         bookStatus = it.bookStatus, classifyName = it.classifyName,
                         resouceType = "KS"
-                    )
+                    ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 } else {
                     return@flatMap Flowable.just(StatusResult(code = -1, msg = "本地收藏数据为空"))
                 }

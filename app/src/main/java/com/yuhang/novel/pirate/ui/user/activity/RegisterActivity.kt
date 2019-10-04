@@ -13,6 +13,7 @@ import com.yuhang.novel.pirate.databinding.ActivityRegisterBinding
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.user.viewmodel.RegisterViewModel
 import com.yuhang.novel.pirate.utils.AppManagerUtils
+import java.lang.NullPointerException
 
 /**
  * 注册

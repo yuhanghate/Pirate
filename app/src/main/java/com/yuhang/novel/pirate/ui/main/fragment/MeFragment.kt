@@ -442,7 +442,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun showUpdateCollectDialog() {
-        showProgressbar(message = "正在同步大量数据,请耐心等待..")
+        showProgressbar(message = "正在同步大量数据\n请不要切换出APP并耐心等待..")
 
         //从服务器下载收藏
         mUsersService.updateCollectionToLocal()

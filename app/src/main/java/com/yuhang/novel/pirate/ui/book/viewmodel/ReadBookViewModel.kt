@@ -238,7 +238,7 @@ class ReadBookViewModel : BaseViewModel() {
     fun getTxtPageList(pagerView: TextPagerView, obj: BookContentKSEntity): List<BookContentKSEntity> {
 
         //如果当前页章节重复了,就返回空数据
-        adapter.getList().filter { it.chapterId == obj.chapterId }.forEach { return arrayListOf() }
+//        adapter.getList().filter { it.chapterId == obj.chapterId }.forEach { return arrayListOf() }
 
         val margin = mActivity?.niceDp2px(20f) ?: return emptyList()
         pagerView.textSize = BookConstant.getPageTextSize()

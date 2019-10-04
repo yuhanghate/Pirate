@@ -66,6 +66,7 @@
             android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize" />
         <activity android:name=".ui.settings.activity.VersionNoteActivity" />
         <activity android:name=".ui.settings.activity.ProblemActivity"/>
+        <activity android:name=".ui.book.activity.BookResouceActivity" />
     </application>
 
 </manifest>
