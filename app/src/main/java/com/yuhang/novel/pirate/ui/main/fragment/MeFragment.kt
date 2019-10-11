@@ -449,7 +449,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             .flatMap { mUsersService.updateChapterListToLocal(it) }
             .flatMap { mUsersService.updateBookInfoToLocal(it) }
             .flatMap { mUsersService.updateReadHistoryToLocal(it) }
-            .flatMap { mUsersService.updateContentToLocal(it) }
+//            .flatMap { mUsersService.updateContentToLocal(it) }
             .compose(bindToLifecycle())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

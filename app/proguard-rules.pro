@@ -248,3 +248,6 @@
 -keep public class [com.yuhang.novel.pirate.R$*{
 public static final int *;
 }
+
+ -keep class com.gyf.immersionbar.* {*;}
+ -dontwarn com.gyf.immersionbar.**

@@ -546,6 +546,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 获取指定小说阅读记录
+     */
+    fun getReadHistoryCollectionsList(bookid: Long): Flowable<ReadHistoryBookResult> {
+        return getNetApi().getReadHistoryCollectionsList(bookid = bookid)
+    }
+
+    /**
      * 更新阅读记录
      */
     fun updateReadHistory(

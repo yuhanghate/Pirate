@@ -1,9 +1,11 @@
 package com.yuhang.novel.pirate.ui.book.viewmodel
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.umeng.analytics.MobclickAgent
@@ -18,6 +20,7 @@ import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_FONT
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_NAME
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_READ_TIME
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_READ_TIME_STAMP
+import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBookContentKSEntity
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
@@ -88,35 +91,35 @@ class ReadBookViewModel : BaseViewModel() {
     fun getContentFromChapterid(chapterid: Int): Flowable<BookContentKSEntity> {
 
         return Flowable.just(chapterid)
-                .flatMap {
-                    val contentKSEntity = mDataRepository.queryBookContent(bookid, chapterid)
+            .flatMap {
+                val contentKSEntity = mDataRepository.queryBookContent(bookid, chapterid)
 
-                    //如果本地没有数据或者没有下一页.进行网络获取.避免脏数据
-                    if (contentKSEntity == null || contentKSEntity.nid == -1) {
-                        //从服务器获取章节内容
-                        return@flatMap mDataRepository.getChapterContent(bookid, chapterid).filter { it.status == 1 }
-                                .map {
-                                    it.data.niceBookContentKSEntity().apply {
-                                        this.lastOpenTime = 0
-                                    }
-                                }
-                                .map {
-                                    //服务器获取的数据保存到数据库
-                                    mDataRepository.insertBookContent(it)
-                                    return@map it
-                                }
-                    } else {
-                        //从本地获取第一章节内容
-                        return@flatMap Flowable.just(contentKSEntity)
-                    }
+                //如果本地没有数据或者没有下一页.进行网络获取.避免脏数据
+                if (contentKSEntity == null || contentKSEntity.nid == -1) {
+                    //从服务器获取章节内容
+                    return@flatMap mDataRepository.getChapterContent(bookid, chapterid).filter { it.status == 1 }
+                        .map {
+                            it.data.niceBookContentKSEntity().apply {
+                                this.lastOpenTime = 0
+                            }
+                        }
+                        .map {
+                            //服务器获取的数据保存到数据库
+                            mDataRepository.insertBookContent(it)
+                            return@map it
+                        }
+                } else {
+                    //从本地获取第一章节内容
+                    return@flatMap Flowable.just(contentKSEntity)
                 }
-                .map {
+            }
+            .map {
 
-                    val bookInfo = mDataRepository.queryBookInfo(it.bookId)
-                    bookInfo?.bookName?.let { name -> bookName = name }
-                    return@map it
-                }
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                val bookInfo = mDataRepository.queryBookInfo(it.bookId)
+                bookInfo?.bookName?.let { name -> bookName = name }
+                return@map it
+            }
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
 
@@ -127,8 +130,8 @@ class ReadBookViewModel : BaseViewModel() {
 
 
         return Flowable.just("")
-                .flatMap {
-                    //                mDataRepository.getDatabase().bookReadHistoryDao.queryAll()
+            .flatMap {
+                //                mDataRepository.getDatabase().bookReadHistoryDao.queryAll()
 //                    .forEach {
 //                        Logger.t("read_history").i(
 //                            "bookid = ${it.bookid} chanpterid = ${it.chapterid}  time = ${SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss").format(
@@ -136,51 +139,51 @@ class ReadBookViewModel : BaseViewModel() {
 //                            )}"
 //                        )
 //                    }
-                    //最后一次阅读的小说信息
-                    val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookid)
-                    Logger.t("read_history").i(lastOpenChapter.toString())
-                    //最后一次阅读章节(当第一次登陆的时候没有小说内容信息)
-                    val queryBookReadHistoryEntity = mDataRepository.queryBookReadHistoryEntity(bookid)
-                    if (lastOpenChapter == null && queryBookReadHistoryEntity != null) {
-                        //帐号登陆完以后第一次打开
-                        return@flatMap getContentFromChapterid(queryBookReadHistoryEntity.chapterid)
-                    } else {
-                        //非第一次登陆走之前逻辑
-                        if (lastOpenChapter == null) {
+                //最后一次阅读的小说信息
+                val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookid)
+                Logger.t("read_history").i(lastOpenChapter.toString())
+                //最后一次阅读章节(当第一次登陆的时候没有小说内容信息)
+                val queryBookReadHistoryEntity = mDataRepository.queryBookReadHistoryEntity(bookid)
+                if (lastOpenChapter == null && queryBookReadHistoryEntity != null) {
+                    //帐号登陆完以后第一次打开
+                    return@flatMap getContentFromChapterid(queryBookReadHistoryEntity.chapterid)
+                } else {
+                    //非第一次登陆走之前逻辑
+                    if (lastOpenChapter == null) {
 
-                            val firstChapterid = mDataRepository.queryFirstChapterid(bookid)
-                            val contentKSEntity = mDataRepository.queryBookContent(bookid, firstChapterid)
-                            if (contentKSEntity == null) {
-                                //从服务器获取章节内容
-                                return@flatMap mDataRepository.getChapterContent(bookid, firstChapterid)
-                                        .filter { it.status == 1 }
-                                        .map {
-                                            it.data.niceBookContentKSEntity().apply {
-                                                this.lastOpenTime = 0
-                                            }
-                                        }.map {
-                                            //第一次从服务器获取的数据放入数据库保存
-                                            mDataRepository.insertBookContent(it)
-                                            return@map it
-                                        }
-                            } else {
-                                //从本地获取第一章节内容
-                                return@flatMap Flowable.just(contentKSEntity)
-                            }
+                        val firstChapterid = mDataRepository.queryFirstChapterid(bookid)
+                        val contentKSEntity = mDataRepository.queryBookContent(bookid, firstChapterid)
+                        if (contentKSEntity == null) {
+                            //从服务器获取章节内容
+                            return@flatMap mDataRepository.getChapterContent(bookid, firstChapterid)
+                                .filter { it.status == 1 }
+                                .map {
+                                    it.data.niceBookContentKSEntity().apply {
+                                        this.lastOpenTime = 0
+                                    }
+                                }.map {
+                                    //第一次从服务器获取的数据放入数据库保存
+                                    mDataRepository.insertBookContent(it)
+                                    return@map it
+                                }
                         } else {
-                            if (lastOpenChapter.nid == -1) {
-                                //每次最后一次都重新加载
-                                return@flatMap getContentFromChapterid(lastOpenChapter.chapterId)
-                            } else {
-                                //从本地获取最近一次打开的章节内容
-                                return@flatMap Flowable.just(lastOpenChapter)
-                            }
+                            //从本地获取第一章节内容
+                            return@flatMap Flowable.just(contentKSEntity)
+                        }
+                    } else {
+                        if (lastOpenChapter.nid == -1) {
+                            //每次最后一次都重新加载
+                            return@flatMap getContentFromChapterid(lastOpenChapter.chapterId)
+                        } else {
+                            //从本地获取最近一次打开的章节内容
+                            return@flatMap Flowable.just(lastOpenChapter)
                         }
                     }
-
-
                 }
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+
+            }
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
 
@@ -207,9 +210,9 @@ class ReadBookViewModel : BaseViewModel() {
             return
         }
         getContentFromChapterid(chapterid)
-                .compose(mActivity?.bindUntilEvent(ActivityEvent.PAUSE))
-                .subscribe({
-                }, {})
+            .compose(mActivity?.bindUntilEvent(ActivityEvent.PAUSE))
+            .subscribe({
+            }, {})
     }
 
     /**
@@ -229,7 +232,7 @@ class ReadBookViewModel : BaseViewModel() {
      * 最后一个列表角标
      */
     fun getLastItemPosition(): Int {
-        return if(adapter.getList().isEmpty()) 0 else  adapter.getList().size - 1
+        return if (adapter.getList().isEmpty()) 0 else adapter.getList().size - 1
     }
 
     /**
@@ -245,9 +248,10 @@ class ReadBookViewModel : BaseViewModel() {
         postUM()
 
 
+
         return pagerView
             .setTitle(obj.chapterName)
-            .setMargin(margin, margin, 0, 0)
+            .setMargin(margin, margin, ImmersionBar.getStatusBarHeight(mActivity!!), 0)
             .setTitle(obj.chapterName)
             .setContent(obj.content)
             .build2().map {
@@ -296,15 +300,15 @@ class ReadBookViewModel : BaseViewModel() {
     @SuppressLint("CheckResult")
     fun isCollectionBook() {
         Flowable.just("")
-                .map {
-                    mDataRepository.queryCollection(bookid) != null
-                }
-                .subscribeOn(Schedulers.io())
-                .compose(mActivity?.bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    isCollection = it
-                }, {})
+            .map {
+                mDataRepository.queryCollection(bookid) != null
+            }
+            .subscribeOn(Schedulers.io())
+            .compose(mActivity?.bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                isCollection = it
+            }, {})
 
 
     }
@@ -315,11 +319,11 @@ class ReadBookViewModel : BaseViewModel() {
     @SuppressLint("CheckResult")
     fun insertCollection(): Flowable<Boolean> {
         return Flowable.just(bookid)
-                .map {
-                    mDataRepository.insertCollection(it)
-                    return@map true
-                }
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .map {
+                mDataRepository.insertCollection(it)
+                return@map true
+            }
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
     }
 
@@ -330,27 +334,27 @@ class ReadBookViewModel : BaseViewModel() {
     fun postCollection() {
         if (TextUtils.isEmpty(PirateApp.getInstance().getToken())) return
         Flowable.just(bookid)
-                .map { mDataRepository.queryBookInfo(bookid) }
-                .compose(mActivity?.bindToLifecycle())
-                .flatMap {
-                    mDataRepository.addCollection(
-                            bookid = it.bookid.toString(),
-                            bookName = it.bookName,
-                            author = it.author,
-                            cover = it.cover,
-                            description = it.description,
-                            bookStatus = it.bookStatus,
-                            classifyName = it.classifyName,
-                            resouceType = "KS"
-                    )
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    Logger.i("")
-                }, {
-                    Logger.i("")
-                })
+            .map { mDataRepository.queryBookInfo(bookid) }
+            .compose(mActivity?.bindToLifecycle())
+            .flatMap {
+                mDataRepository.addCollection(
+                    bookid = it.bookid.toString(),
+                    bookName = it.bookName,
+                    author = it.author,
+                    cover = it.cover,
+                    description = it.description,
+                    bookStatus = it.bookStatus,
+                    classifyName = it.classifyName,
+                    resouceType = "KS"
+                )
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Logger.i("")
+            }, {
+                Logger.i("")
+            })
     }
 
     /**
@@ -359,32 +363,32 @@ class ReadBookViewModel : BaseViewModel() {
     @SuppressLint("CheckResult")
     fun updateReadHistory(chapterid: Int, chapterName: String): Flowable<StatusResult> {
         return Flowable.just("")
-                .map { mDataRepository.queryBookInfo(bookid) }
-                .flatMap {
+            .map { mDataRepository.queryBookInfo(bookid) }
+            .flatMap {
 
-                    mDataRepository.updateReadHistory(
-                            bookName = it.bookName,
-                            bookid = it.bookid.toString(),
-                            chapterid = chapterid.toString(),
-                            chapterName = chapterName,
-                            author = it.author,
-                            cover = it.cover,
-                            description = it.description,
-                            resouceType = "KS",
-                            content = mDataRepository.queryBookContent(bookid, chapterid)?.content!!
-                    )
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                mDataRepository.updateReadHistory(
+                    bookName = it.bookName,
+                    bookid = it.bookid.toString(),
+                    chapterid = chapterid.toString(),
+                    chapterName = chapterName,
+                    author = it.author,
+                    cover = it.cover,
+                    description = it.description,
+                    resouceType = "KS",
+                    content = mDataRepository.queryBookContent(bookid, chapterid)?.content!!
+                )
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 
     }
 
     @SuppressLint("CheckResult")
     fun getChapterList(): Flowable<List<BookChapterKSEntity>> {
         return Flowable.just("")
-                .map { mDataRepository.queryChapterObjList(bookid) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .map { mDataRepository.queryChapterObjList(bookid) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 
     }
 
@@ -426,6 +430,39 @@ class ReadBookViewModel : BaseViewModel() {
                 MobclickAgent.onEventObject(mActivity, UMConstant.TYPE_BOOK, book)
             }
         }
+    }
+
+
+    /**
+     * 加载章节列表
+     */
+    @SuppressLint("CheckResult")
+    fun initChapterList() {
+        mDataRepository.getBookChapterList(bookid)
+            .map {
+                val list = it.data.niceBookChapterKSEntity()
+                deleteChapterList(it.data.id)
+
+                insertChapterList(list)
+            }
+            .compose(mActivity?.bindToLifecycle())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({}, {})
+    }
+
+    /**
+     * 插入章节列表到本地
+     */
+    private fun insertChapterList(list: List<BookChapterKSEntity>) {
+        mDataRepository.insertChapterList(list)
+    }
+
+    /**
+     * 删除本地对应的书籍章节
+     */
+    private fun deleteChapterList(bookid: Long) {
+        mDataRepository.deleteChapterList(bookid)
     }
 
 }

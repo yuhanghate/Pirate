@@ -75,6 +75,12 @@ interface NetApi {
     fun getReadHistoryCollectionsList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<ReadHistoryResult>
 
     /**
+     * 获取指定小说的阅读记录
+     */
+    @GET("/api/m/book/read/history/book")
+    fun getReadHistoryCollectionsList(@Query("bookid") bookid: Long): Flowable<ReadHistoryBookResult>
+
+    /**
      * 发送邮箱验证码
      */
     @GET("/api/m/email/code/send")

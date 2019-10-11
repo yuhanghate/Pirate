@@ -37,7 +37,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onCreateEventbus(this)
-
     }
 
 

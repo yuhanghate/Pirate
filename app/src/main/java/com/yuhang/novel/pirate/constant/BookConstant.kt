@@ -7,6 +7,12 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 object BookConstant {
 
     /**
+     * 测量一行最多显示多少字
+     */
+    const val WIDTH_MEASURE =
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+    /**
      * 使用音量键翻页
      */
     const val VOLUME_STATUS = "VOLUME_STATUS"
@@ -61,8 +67,10 @@ object BookConstant {
      * 阅读页底部背景
      */
     fun getReadBookButton(): Int {
-        val list = arrayListOf<Int>(R.drawable.bg_read_book_button1, R.drawable.bg_read_book_button2,
-                R.drawable.bg_read_book_button3, R.drawable.bg_read_book_button4)
+        val list = arrayListOf<Int>(
+            R.drawable.bg_read_book_button1, R.drawable.bg_read_book_button2,
+            R.drawable.bg_read_book_button3, R.drawable.bg_read_book_button4
+        )
         return list[PreferenceUtil.getInt("page_color_index", 1)]
     }
 

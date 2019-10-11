@@ -109,15 +109,14 @@ class UsersServiceImpl : UsersService {
     }
 
     override fun updateReadHistoryToLocal(bookid: Long): Flowable<Long> {
-        return mDataRepository.getReadHistoryCollectionsList(0)
+        return mDataRepository.getReadHistoryCollectionsList(bookid)
             .map {
-                it.data.list.forEachIndexed { index, result ->
-                    mDataRepository.updateLocalREadHistory(
-                        result.bookid.toLong(),
-                        result.chapterid.toInt(),
-                        result.createTime
-                    )
-                }
+                val result = it.data?:return@map bookid
+                mDataRepository.updateLocalREadHistory(
+                    result.bookid.toLong(),
+                    result.chapterid.toInt(),
+                    result.createTime
+                )
                 return@map bookid
             }
     }

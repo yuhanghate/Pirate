@@ -9,6 +9,8 @@ import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -32,9 +34,15 @@ class LaunchActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
-        StatusBarUtil.setColor(this, ContextCompat.getColor(this, android.R.color.white),
-                StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
-        )
+//        StatusBarUtil.setColor(this, ContextCompat.getColor(this, android.R.color.white),
+//                StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
+//        )
+
+        ImmersionBar.with(this)
+            .transparentStatusBar()
+            .hideBar(BarHide.FLAG_HIDE_BAR)
+//            .fullScreen(false)
+            .init()
 
         super.onCreate(savedInstanceState)
 

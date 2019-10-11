@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.xw.repo.BubbleSeekBar
@@ -96,10 +99,24 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
     override fun initStatusTool() {
-        StatusBarUtil.setColor(this, onStatusColor(), 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
+        val color = PreferenceUtil.getString("page_color", "#F6EFDD")
+        ImmersionBar.with(this)
+            .transparentStatusBar()
+            .statusBarColor(color)
+            .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
+//            .fullScreen(false)
+            .statusBarColor(color)
+            .navigationBarColor(color)
+            .statusBarColorTransform(color)
+            .navigationBarColorTransform(color)
+            .init()
+
+
+//        mBinding.textPage.setPadding(0, ImmersionBar.getStatusBarHeight(this), 0, 0)
+//        StatusBarUtil.setColor(this, BookConstant.getPageBackground(), 0)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//        }
     }
 
     override fun onStatusColor(): Int {
@@ -111,14 +128,20 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //去除标题栏
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        //去除状态栏
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
+//        //去除标题栏
+//        requestWindowFeature(Window.FEATURE_NO_TITLE)
+//////        //去除状态栏
+//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+//
+//
+//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+//        getActionBar()?.hide()
         super.onCreate(savedInstanceState)
-        window.navigationBarColor = BookConstant.getPageBackground()
+//        window.navigationBarColor = BookConstant.getPageBackground()
+
     }
+
+
 
 
     override fun onPause() {
@@ -344,6 +367,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private fun initViewModel() {
         mViewModel.bookid = getBookid()
         mViewModel.clearLable()
+        mViewModel.initChapterList()
     }
 
 

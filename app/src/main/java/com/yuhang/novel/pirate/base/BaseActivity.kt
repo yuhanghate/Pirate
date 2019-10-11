@@ -17,6 +17,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -129,8 +131,14 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 设置沉浸式
      */
     open fun initStatusTool() {
+        ImmersionBar.with(this)
+            .transparentStatusBar()
+            .fitsSystemWindows(true)
+            .statusBarColor(onStatusColor())     //状态栏颜色，不写默认透明色
+            .navigationBarColor(R.color.navigation_bar_color) //导航栏颜色，不写默认黑色
+            .init()
 
-        StatusBarUtil.setTranslucent(this)
+//        StatusBarUtil.setTranslucent(this)
 //        StatusBarUtil.setColor(this, ContextCompat.getColor(this, onStatusColor()), 90)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR

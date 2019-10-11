@@ -30,7 +30,7 @@ class MainViewModel : BaseViewModel() {
         return Flowable.just("")
                 .flatMap { getCollectionId() }
                 .map {
-                    val all = mDataRepository.getDatabase().bookInfoKSDao.queryAll()
+//                    val all = mDataRepository.getDatabase().bookInfoKSDao.queryAll()
                     mDataRepository.queryBookInfoCollectionAll()
                 }
                 .map { list ->
@@ -164,7 +164,6 @@ class MainViewModel : BaseViewModel() {
                 .filter { it.status == 1 }
                 .map {
                     val list = it.data.niceBookChapterKSEntity()
-//                    mDataRepository.updateLable(it.data.id, list[list.lastIndex].chapterId)
                     deleteChapterList(it.data.id)
 
                     insertChapterList(list)

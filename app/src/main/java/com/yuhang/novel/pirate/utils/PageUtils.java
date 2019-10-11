@@ -2,9 +2,9 @@ package com.yuhang.novel.pirate.utils;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
 import com.orhanobut.logger.Logger;
 import com.yuhang.novel.pirate.app.PirateApp;
+import com.yuhang.novel.pirate.constant.BookConstant;
 import com.yuhang.novel.pirate.widget.pageview.TextPageBean;
 
 import java.io.BufferedReader;
@@ -51,9 +51,16 @@ public class PageUtils {
     private static float drawContent(Canvas canvas, List<String> list, PageBean bean, float top) {
         float start = bean.marginStart + bean.padddingStart;
 
+
+        float[] measuredWidth = {0};
+        bean.textPaint.breakText(BookConstant.WIDTH_MEASURE,
+                true, bean.getShowWidth(), measuredWidth);
+        float x = (bean.getShowWidth() - measuredWidth[0]) / 2 + start;
         for (String content : list) {
+
+
             //进行绘制
-            canvas.drawText(content, start, top, bean.textPaint);
+            canvas.drawText(content, x, top, bean.textPaint);
             //移动上边距离. 文字高度+行间距
             top += bean.textInterval + bean.getContentHeight();
         }
@@ -162,7 +169,6 @@ public class PageUtils {
         }
 
 
-
         //计算章节所需要的所有页面.每页需要需求第几页
         int maxPage = pages.size();
         for (TextPageBean pageBean : pages) {
@@ -220,7 +226,7 @@ public class PageUtils {
         //第一页的标题
         LinesBean titleLinesBean = getTitleLinesBean(titleLines, bean);
         //上下内边距+上下外边距+标题高度+电池显示高度
-        float height =  titleLinesBean.showHeight + bean.getBatteryHeight();
+        float height = titleLinesBean.showHeight + bean.getBatteryHeight();
 
         //第一页的内容
         LinesBean contentLinesBean = getContentLinesBean(contentLines, bean, bean.getShowHeight() - height);
@@ -571,6 +577,7 @@ public class PageUtils {
 
         /**
          * 获取显示的高度
+         *
          * @return
          */
         public float getShowHeight() {
