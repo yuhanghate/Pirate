@@ -760,8 +760,27 @@ class DataRepository(val context: Context) {
         return getKuaiDuApi().search(map).map { it.books.map { it.niceBookSearchDataResult() }.toList() }
     }
 
+    /**
+     * 快读详情
+     */
     fun getBookDetailsKd(bookid: String) :Flowable<BookDetailsDataResult>{
         val map = hashMapOf<String, String>("bookId" to bookid)
         return getKuaiDuApi().getBookDetails(map).map { it.niceBookDetailsDataResult() }
+    }
+
+    /**
+     * 作者所有作品
+     */
+    fun getAuthorBookAll(author: String) {
+        val map = hashMapOf<String, Any>("author" to author, "start" to 0, "limit" to 50)
+        getKuaiDuApi().getAuthorBookAll(map)
+    }
+
+    /**
+     * 章节目录
+     */
+    fun getChanpterList(bookid: String) :Flowable<com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListResult>{
+        val map = hashMapOf<String, String>("bookId" to bookid)
+        return getKuaiDuApi().getChanpterList(map)
     }
 }

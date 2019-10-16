@@ -1,6 +1,8 @@
 package com.yuhang.novel.pirate.repository.api
 
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookSearchDataResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookDetailsKdResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.SearchKdResult
 import io.reactivex.Flowable
 import org.intellij.lang.annotations.Flow
@@ -30,4 +32,16 @@ interface KuaiDuNetApi {
      */
     @GET("http://api.wgfgr.cn/book/{bookid}/recommend")
     fun getRecommendBook(@Path("bookid") bookid:String)
+
+    /**
+     * 作者所有作品
+     */
+    @GET("http://api.wgfgr.cn/book/accurate-search")
+    fun getAuthorBookAll(@QueryMap map: Map<String, Any>):Flowable<BookSearchDataResult>
+
+    /**
+     * 章节目录
+     */
+    @GET("http://api.wgfgr.cn/toc/mix")
+    fun getChanpterList(@QueryMap map:Map<String, String>):Flowable<ChapterListResult>
 }
