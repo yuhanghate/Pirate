@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingStart="15dp"
+                  android:paddingEnd="15dp"
+                  android:paddingTop="10dp"
+                  android:paddingBottom="10dp"
+                  android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_height="wrap_content">
+            <ImageView
+                    android:id="@+id/image_iv"
+                    android:layout_width="wrap_content"
+                    android:scaleType="centerInside"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="为你读诗"
+                    android:textColor="#ff333333"
+                    android:textSize="16sp"
+            />
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/url_tv"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="#ff999999"
+                android:textSize="12sp"
+                android:text="地址: www.thepoemforyou.com"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/hot_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="热度: 3434"
+                    android:textColor="#ff999999"
+                    android:textSize="12sp"
+            />
+
+            <TextView
+                    android:id="@+id/status_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="状态: 访问正常"
+                    android:textColor="#ff999999"
+                    android:textSize="12sp"
+            />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

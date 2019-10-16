@@ -1,4 +1,4 @@
-package com.yuhang.novel.pirate.repository.network
+package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import io.reactivex.Flowable

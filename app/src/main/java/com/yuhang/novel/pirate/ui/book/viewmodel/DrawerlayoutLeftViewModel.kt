@@ -16,7 +16,7 @@ class DrawerlayoutLeftViewModel : BaseViewModel() {
     /**
      * 从本地查询章节目录
      */
-    fun queryChapterList(bookid: Long): Flowable<List<BookChapterKSEntity>> {
+    fun queryChapterList(bookid: String): Flowable<List<BookChapterKSEntity>> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryChapterObjList(it) }
                 .subscribeOn(Schedulers.io())
@@ -26,7 +26,7 @@ class DrawerlayoutLeftViewModel : BaseViewModel() {
     /**
      * 从本地查询书籍信息
      */
-    fun queryBookInfo(bookid: Long): Flowable<BookInfoKSEntity?> {
+    fun queryBookInfo(bookid: String): Flowable<BookInfoKSEntity?> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryBookInfo(it) }
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -35,7 +35,7 @@ class DrawerlayoutLeftViewModel : BaseViewModel() {
     /**
      * 获取最后打开的章节
      */
-    fun queryLastChapter(bookid: Long): Flowable<BookContentKSEntity?> {
+    fun queryLastChapter(bookid: String): Flowable<BookContentKSEntity?> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryLastOpenChapter(it) }
                 .subscribeOn(Schedulers.io())

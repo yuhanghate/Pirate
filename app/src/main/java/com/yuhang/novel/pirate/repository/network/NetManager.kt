@@ -1,7 +1,14 @@
 package com.yuhang.novel.pirate.repository.network
 
 import com.google.gson.Gson
+import com.yuhang.novel.pirate.repository.api.KanShuNetApi
+import com.yuhang.novel.pirate.repository.api.KuaiDuNetApi
+import com.yuhang.novel.pirate.repository.api.NetApi
 import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
+import com.yuhang.novel.pirate.repository.network.rule.AnalyzeUrl
+import com.yuhang.novel.pirate.utils.EncodeConverter
+import com.yuhang.novel.pirate.utils.SSLSocketClient
+import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,23 +36,27 @@ class NetManager {
 
     private val mOkHttpClient: OkHttpClient by lazy { createOkhttp() }
 
-    private val mRetrofit: Retrofit by lazy { createRetrofit2() }
+//    private val mRetrofit: Retrofit by lazy { createRetrofit2() }
 
     private val mNetApi: NetApi by lazy { createNetApi() }
 
     private val mZhuiShuApi: KanShuNetApi by lazy { createKanZhuNetApi() }
 
+    private val mKuaiDuNetApi : KuaiDuNetApi by lazy { createKuaiDuNetApi() }
+
     private val mGson: Gson by lazy { Gson() }
 
     fun getGson() = mGson
 
-    fun getRetrofit() = mRetrofit
+//    fun getRetrofit() = mRetrofit
 
     fun getOkHttpClient() = mOkHttpClient
 
     fun getNetApi() = mNetApi
 
     fun getKanShuApi() = mZhuiShuApi
+
+    fun getKuaiDuApi() = mKuaiDuNetApi
 
     private fun createNetApi(): NetApi {
         return Retrofit.Builder().baseUrl(NetURL.HOST)
@@ -68,14 +79,26 @@ class NetManager {
             .create(KanShuNetApi::class.java)
     }
 
-
-    private fun createRetrofit2(): Retrofit {
-        return Retrofit.Builder().baseUrl(NetURL.HOST)
+    /**
+     * 快读
+     */
+    private fun createKuaiDuNetApi(): KuaiDuNetApi {
+        return Retrofit.Builder().baseUrl(NetURL.HOST_KUAIDU)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(mGson))
             .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+            .create(KuaiDuNetApi::class.java)
     }
+
+
+//    private fun createRetrofit2(): Retrofit {
+//        return Retrofit.Builder().baseUrl(NetURL.HOST)
+//            .addConverterFactory(ScalarsConverterFactory.create())
+//            .addConverterFactory(GsonConverterFactory.create(mGson))
+//            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+//    }
 
     private fun createOkhttp(): OkHttpClient {
         return OkHttpClient().newBuilder()
@@ -86,7 +109,9 @@ class NetManager {
             .connectTimeout(60 * 5, TimeUnit.SECONDS)
             .readTimeout(60 * 5, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
-            .hostnameVerifier(getHostnameVerifier()).sslSocketFactory(createCertificates())
+            .retryOnConnectionFailure(true)
+            .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+            .sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.createTrustAllManager())
             //日志拦截器
             .addInterceptor(
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -128,4 +153,56 @@ class NetManager {
         return sSLSocketFactory
 
     }
+
+    /**
+     * 获取resouce
+     */
+    fun getResponseO(analyzeUrl: AnalyzeUrl): Flowable<String> {
+        when (analyzeUrl.getUrlMode()) {
+            AnalyzeUrl.UrlMode.POST -> return getRetrofitString(analyzeUrl.getHost())
+                .create(ResouceNetApi::class.java)
+                .postMap(
+                    analyzeUrl.getPath(),
+                    analyzeUrl.getQueryMap(),
+                    analyzeUrl.getHeaderMap()
+                )
+            AnalyzeUrl.UrlMode.GET -> return getRetrofitString(analyzeUrl.getHost())
+                .create(ResouceNetApi::class.java)
+                .getMap(
+                    analyzeUrl.getPath(),
+                    analyzeUrl.getQueryMap(),
+                    analyzeUrl.getHeaderMap()
+                )
+            else -> return getRetrofitString(analyzeUrl.getHost())
+                .create(ResouceNetApi::class.java)
+                .get(
+                    analyzeUrl.getPath(),
+                    analyzeUrl.getHeaderMap()
+                )
+        }
+    }
+
+    fun getRetrofitString(url: String): Retrofit {
+        return Retrofit.Builder().baseUrl(url)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            //增加返回值为字符串的支持(以实体类返回)
+            .addConverterFactory(EncodeConverter.create())
+            //增加返回值为Observable<T>的支持
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(createOkhttp())
+            .build()
+    }
+
+    fun getRetrofitString(url: String, encode: String): Retrofit {
+        return Retrofit.Builder().baseUrl(url)
+            //增加返回值为字符串的支持(以实体类返回)
+            .addConverterFactory(EncodeConverter.create(encode))
+            //增加返回值为Observable<T>的支持
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(createOkhttp())
+            .build()
+    }
+
+
+
 }

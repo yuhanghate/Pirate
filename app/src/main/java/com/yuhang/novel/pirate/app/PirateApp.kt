@@ -6,6 +6,7 @@ import android.app.Application
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
+import com.kunfei.bookshelf.MApplication
 import com.meituan.android.walle.WalleChannelReader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -25,7 +26,7 @@ import kotlin.concurrent.thread
 
 
 @SuppressLint("Registered")
-open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
+open class PirateApp : MApplication(), Application.ActivityLifecycleCallbacks {
 
 
     private var mDataRepository: DataRepository? = null

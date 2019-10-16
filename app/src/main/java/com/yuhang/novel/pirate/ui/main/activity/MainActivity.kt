@@ -7,7 +7,13 @@ import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.kunfei.bookshelf.model.BookSourceManager
+import com.kunfei.bookshelf.model.WebBookModel
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
@@ -20,12 +26,14 @@ import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.PrivacyActivity
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 @RuntimePermissions
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
@@ -85,6 +93,39 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         checkVersionWithPermissionCheck()
 
+
+
+        WebBookModel.getInstance().searchBook("凡人修仙传",1,"https://m.biqugecom.com")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindToLifecycle())
+            .subscribe({
+                Logger.i("")
+            },{
+                Logger.i("")
+            })
+//        thread {
+//            val result =
+//                PirateApp.getInstance().getDataRepository().queryResouceRule("c8c4d96295f04fb491384d87dd4ab583")
+//
+//            val observable = BookSourceManager.importSource(Gson().toJson(result))
+//            if (observable != null) {
+//                observable.subscribe({
+//                    Logger.i("")
+//                },{
+//                    Logger.i("")
+//                })
+//            }
+//        }
+//        PirateApp.getInstance().getDataRepository().getSearchResouce("c8c4d96295f04fb491384d87dd4ab583","凡人修仙传",1)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .compose(bindToLifecycle())
+//            .subscribe({
+//                Logger.i(it)
+//            },{
+//                Logger.i("")
+//            })
     }
 
 

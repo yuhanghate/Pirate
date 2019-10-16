@@ -31,7 +31,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
         OnClickItemListener {
 
 
-    var bookid: Long? = null
+    var bookid: String? = null
 
     var chapterid: Int? = null
 

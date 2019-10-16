@@ -6,4 +6,9 @@
         android:orderInCategory="2"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/resouce_tag"
+          android:title="源列表"
+          android:orderInCategory="2"
+          app:showAsAction="never"/>
+
 </menu>

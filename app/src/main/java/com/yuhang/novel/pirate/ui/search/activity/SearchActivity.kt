@@ -7,8 +7,11 @@ import android.os.Handler
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.CheckBox
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.arlib.floatingsearchview.FloatingSearchView
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.yuhang.novel.pirate.R
@@ -16,6 +19,7 @@ import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySearchBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
+import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
@@ -27,7 +31,7 @@ import com.yuhang.novel.pirate.utils.SystemUtil
 class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(),
     FloatingSearchView.OnQueryChangeListener,
     FloatingSearchView.OnSearchListener, FloatingSearchView.OnFocusChangeListener,
-        OnClickItemListener, FloatingSearchView.OnMenuItemClickListener {
+    OnClickItemListener, FloatingSearchView.OnMenuItemClickListener {
 
 
     /**
@@ -83,6 +87,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     /**
      * 根据关键字模糊匹配本地
      */
+    @SuppressLint("CheckResult")
     private fun queryKeywordSearch(keyword: String?) {
         keyword ?: return
         mViewModel.queryListHisotry(keyword)
@@ -240,6 +245,14 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         when (item?.itemId) {
             //清空记录
             R.id.action_tag -> showClearHistory()
+            //显示源列表
+            R.id.resouce_tag -> {
+                mViewModel.queryResouceList()
+                    .compose(bindToLifecycle())
+                    .subscribe({
+                        showResouceList(it)
+                    }, {})
+            }
         }
     }
 
@@ -248,9 +261,38 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     private fun showClearHistory() {
         MaterialDialog(this).show {
-            message(text =  "确认删除全部历史记录?")
+            message(text = "确认删除全部历史记录?")
             positiveButton { mViewModel.clearSearchHistory() }
             negativeButton { it.dismiss() }
+        }
+    }
+
+    /**
+     * 显示源列表
+     */
+    private fun showResouceList(list: List<String>) {
+        if (list.isEmpty()) return
+        val initialSelection = arrayListOf<Int>()
+        val disabledIndices = arrayListOf<Int>()
+        list.forEachIndexed { index, s ->
+            if (mViewModel.resouceList.contains(s)) {
+                disabledIndices.add(index)
+            } else {
+                initialSelection.add(index)
+            }
+        }
+        MaterialDialog(this).show {
+            title(text = "选择搜索源")
+            listItemsMultiChoice(
+                items = list,
+                initialSelection = initialSelection.toIntArray(),
+                disabledIndices = disabledIndices.toIntArray()
+            ) { _, indices, text ->
+
+                niceToast("Selected items ${text.joinToString()} at indices ${indices.joinToString()}")
+            }
+            positiveButton(text = "确定")
+            lifecycleOwner(this@SearchActivity)
         }
     }
 

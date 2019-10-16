@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.workmanager
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -27,12 +28,12 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) : Wo
     override fun doWork(): Result {
 
         val list = inputData.getIntArray(CHANPTER_ID)?:return Result.failure()
-        val bookid = inputData.getLong(BOOKID, 0)
-        if (bookid == 0.toLong()) return Result.failure()
+        val bookid = inputData.getString(BOOKID)
+        if (TextUtils.isEmpty(bookid)) return Result.failure()
         val dataRepository = PirateApp.getInstance().getDataRepository()
 
         list.forEachIndexed { index, chanpterid ->
-            val downloadNovel = dataRepository.downloadNovel(bookid, chanpterid)
+            val downloadNovel = dataRepository.downloadNovel(bookid!!, chanpterid)
             val execute = downloadNovel.execute()
             if (execute.isSuccessful) {
                 execute.body()?.data?.let {contentDataResult ->

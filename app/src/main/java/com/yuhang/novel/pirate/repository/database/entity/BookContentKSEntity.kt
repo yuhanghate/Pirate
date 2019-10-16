@@ -36,7 +36,7 @@ class BookContentKSEntity {
     /**
      * 书籍id
      */
-    var bookId: Long = 0
+    var bookId: String = ""
 
     /**
      * 章节内容

@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.search.viewmodel
 
 import com.yuhang.novel.pirate.base.BaseViewModel
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceSearchResult
 import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookSearchResult
@@ -22,6 +23,11 @@ class SearchViewModel : BaseViewModel() {
      * 每次输入的内容
      */
     var searchKeyword = ""
+
+    /**
+     * 源id
+     */
+    var resouceList = arrayListOf<String>()
 
     val adapter by lazy { SearchAdapter() }
 
@@ -76,5 +82,20 @@ class SearchViewModel : BaseViewModel() {
     fun clearSearchHistory() {
         thread { mDataRepository.clearSearchHistory() }
 
+    }
+
+    /**
+     * 获取源标题
+     */
+    fun queryResouceList():Flowable<List<String>> {
+        return Flowable.just("")
+            .map { mDataRepository.queryResouceCheckTitleList() }
+            .compose(io_main())
+    }
+
+    fun updateResouceList() {
+        thread {
+
+        }
     }
 }

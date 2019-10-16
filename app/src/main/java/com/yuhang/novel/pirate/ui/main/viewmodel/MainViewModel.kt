@@ -49,7 +49,7 @@ class MainViewModel : BaseViewModel() {
      * 查询所有收藏的bookid
      * 如果登陆数据从服务器获取,未登陆数据从本地获取
      */
-    private fun getCollectionId(): Flowable<List<Long>> {
+    private fun getCollectionId(): Flowable<List<String>> {
         return Flowable.just("")
                 .flatMap {
                     val user = mDataRepository.getLastUser()
@@ -58,8 +58,8 @@ class MainViewModel : BaseViewModel() {
                                 .map {
                                     it.data.list.map {
                                         //从服务器获取收藏列表并插入本地
-                                        mDataRepository.insertCollection(it.bookid.toLong())
-                                        it.bookid.toLong()
+                                        mDataRepository.insertCollection(it.bookid)
+                                        it.bookid
                                     }.toList()
                                 }
                     } else {
@@ -109,7 +109,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 从本地查询书籍信息
      */
-    private fun queryBookInfo(bookid: Long): BookInfoKSEntity? {
+    private fun queryBookInfo(bookid: String): BookInfoKSEntity? {
         return mDataRepository.queryBookInfo(bookid = bookid)
     }
 
@@ -130,7 +130,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取章节列表
      */
-    private fun getChapterList(bookid: Long): Flowable<ChapterListResult> {
+    private fun getChapterList(bookid: String): Flowable<ChapterListResult> {
         return mDataRepository.getBookChapterList(bookid)
     }
 
@@ -145,7 +145,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 删除本地对应的书籍章节
      */
-    private fun deleteChapterList(bookid: Long) {
+    private fun deleteChapterList(bookid: String) {
         mDataRepository.deleteChapterList(bookid)
     }
 
@@ -183,7 +183,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 更新置顶时间戳
      */
-    fun updateStickTime(bookid: Long) {
+    fun updateStickTime(bookid: String) {
         thread { mDataRepository.updateBookInfoStickTime(bookid) }
     }
 
@@ -191,7 +191,7 @@ class MainViewModel : BaseViewModel() {
      * 删除收藏书箱
      */
     @SuppressLint("CheckResult")
-    fun deleteCollection(bookid: Long) {
+    fun deleteCollection(bookid: String) {
         //删除线上收藏
         if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
             mDataRepository.deleteNetCollect(bookid, "KS")
@@ -210,7 +210,7 @@ class MainViewModel : BaseViewModel() {
      * true:更新
      * false:不更新
      */
-    private fun isShowNewLabel(bookid: Long): Boolean {
+    private fun isShowNewLabel(bookid: String): Boolean {
         return mDataRepository.isShowUpdateLable(bookid = bookid)
 
     }

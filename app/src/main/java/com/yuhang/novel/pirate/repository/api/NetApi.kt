@@ -1,4 +1,4 @@
-package com.yuhang.novel.pirate.repository.network
+package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import io.reactivex.Flowable
@@ -54,7 +54,7 @@ interface NetApi {
      * 删除收藏
      */
     @DELETE("/api/m/book/collection/delete")
-    fun deleteCollectList(@Query("bookid") bookid: Long, @Query("resouceType") resouceType: String): Flowable<StatusResult>
+    fun deleteCollectList(@Query("bookid") bookid: String, @Query("resouceType") resouceType: String): Flowable<StatusResult>
 
     /**
      * 最近浏览
@@ -78,7 +78,7 @@ interface NetApi {
      * 获取指定小说的阅读记录
      */
     @GET("/api/m/book/read/history/book")
-    fun getReadHistoryCollectionsList(@Query("bookid") bookid: Long): Flowable<ReadHistoryBookResult>
+    fun getReadHistoryCollectionsList(@Query("bookid") bookid: String): Flowable<ReadHistoryBookResult>
 
     /**
      * 发送邮箱验证码
@@ -103,4 +103,10 @@ interface NetApi {
      */
     @POST("/api/m/email/update/password")
     fun updatePassword(@Body body: RequestBody):Flowable<UserResult>
+
+    /**
+     * 书源列表
+     */
+    @POST("/api/m/resouce/list/get")
+    fun getResouceList(@Body body: RequestBody):Flowable<BookResouceResult>
 }

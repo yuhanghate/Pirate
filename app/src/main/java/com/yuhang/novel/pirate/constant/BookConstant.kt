@@ -95,8 +95,8 @@ object BookConstant {
                 PreferenceUtil.commitInt("page_color_index", position)
             }
             3 -> {
-                PreferenceUtil.commitString("page_color", "#FF232533")
-                PreferenceUtil.commitString("page_text_color", "#DEFFFFFF")
+                PreferenceUtil.commitString("page_color", "#000000")
+                PreferenceUtil.commitString("page_text_color", "#66FFFFFF")
                 PreferenceUtil.commitInt("page_color_index", position)
             }
         }
@@ -152,4 +152,13 @@ object BookConstant {
     }
 
 
+    /**
+     * 看书源
+     */
+    const val RESOUCE_TYPE_KS = "KS"
+
+    /**
+     * 快读源
+     */
+    const val RESOUCE_TYPE_KD = "KD"
 }

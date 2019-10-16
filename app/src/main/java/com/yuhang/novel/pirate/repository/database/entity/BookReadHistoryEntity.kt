@@ -20,7 +20,7 @@ class BookReadHistoryEntity {
     /**
      * 小说ID
      */
-    var bookid = -1
+    var bookid = ""
 
     /**
      * 更新最新的阅读时间

@@ -29,10 +29,9 @@ class ProblemActivity :BaseSwipeBackActivity<ActivityProblemNoteBinding, Problem
         super.initView()
 
         onClick()
-        initData()
     }
 
-    private fun initData() {
+    override fun initData() {
         mBinding.markdownView.addStyleSheet(Github())
         mBinding.markdownView.loadMarkdownFromAsset("problem.md")
     }

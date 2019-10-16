@@ -16,7 +16,7 @@ class BookInfoKSEntity{
     /**
      * 小说id
      */
-    var bookid: Long = 0
+    var bookid: String = ""
 
     /**
      * 小说封面

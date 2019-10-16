@@ -251,3 +251,18 @@ public static final int *;
 
  -keep class com.gyf.immersionbar.* {*;}
  -dontwarn com.gyf.immersionbar.**
+
+
+ -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+ public static java.lang.String TABLENAME;
+ }
+ -keep class **$Properties {*;}
+
+ # If you do not use SQLCipher:
+ -dontwarn net.sqlcipher.database.**
+ # If you do not use RxJava:
+ -dontwarn rx.**
+
+ -dontwarn org.xmlpull.v1.XmlPullParser
+ -dontwarn org.xmlpull.v1.XmlSerializer
+ -keep class org.xmlpull.v1.* {*;}

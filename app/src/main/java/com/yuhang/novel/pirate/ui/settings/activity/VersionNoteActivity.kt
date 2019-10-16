@@ -28,11 +28,10 @@ class VersionNoteActivity : BaseSwipeBackActivity<ActivityVersionNoteBinding, Ve
         super.initView()
 
         onClick()
-        initData()
     }
 
 
-    private fun initData() {
+    override fun initData() {
         mBinding.markdownView.addStyleSheet(Github())
         mBinding.markdownView.loadMarkdownFromAsset("version_note.md")
     }

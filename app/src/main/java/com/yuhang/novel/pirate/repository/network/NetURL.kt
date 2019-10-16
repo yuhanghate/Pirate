@@ -37,6 +37,11 @@ object NetURL {
     val HOST_KANSHU = "https://infos.xllxdg.com"
 
     /**
+     * 快读
+     */
+    val HOST_KUAIDU = "http://api.wgfgr.cn"
+
+    /**
      * 用户注册
      */
     val USER_REGISTER = "${HOST}mock/17/uaa/api/register"

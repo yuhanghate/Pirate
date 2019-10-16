@@ -35,7 +35,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     companion object {
         private const val BOOKID = "bookid"
         private const val CHAPTERID = "chapterid"
-        fun start(context: Activity, bookid: Long, chapterid: Int) {
+        fun start(context: Activity, bookid: String, chapterid: Int) {
             val intent = Intent(context, ChapterListActivity::class.java)
             intent.putExtra(BOOKID, bookid)
             intent.putExtra(CHAPTERID, chapterid)
@@ -50,7 +50,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     /**
      * 小说id
      */
-    private fun getBookid() = intent.getLongExtra(BOOKID, -1)
+    private fun getBookid() = intent.getStringExtra(BOOKID)
 
     /**
      * 章节id

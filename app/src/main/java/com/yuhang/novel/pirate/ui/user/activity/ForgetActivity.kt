@@ -34,11 +34,10 @@ class ForgetActivity : BaseActivity<ActivityForgetBinding, ForgetViewModel>() {
         super.initView()
         mViewModel.email = intent.getStringExtra(EMAIL)!!
         onClick()
-        initData()
     }
 
     @SuppressLint("CheckResult")
-    private fun initData() {
+    override fun initData() {
 
         mViewModel.sendMailCodeView(mBinding)
         mViewModel.postMailCode(mViewModel.email)

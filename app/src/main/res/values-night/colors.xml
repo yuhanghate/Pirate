@@ -4,8 +4,8 @@
     <color name="primary_dark">@color/md_blue_grey_500</color>
     <color name="primary_light">@color/md_grey_300</color>
     <color name="accent">#9E9E9E</color>
-    <color name="primary_text">#DEFFFFFF</color>
-    <color name="secondary_text">#99FFFFFF</color>
+    <color name="primary_text">#99FFFFFF</color>
+    <color name="secondary_text">#80FFFFFF</color>
     <color name="icons">#DEFFFFFF</color>
     <color name="divider">@color/md_grey_900</color>
     <color name="window_background">@color/md_black_1000</color>

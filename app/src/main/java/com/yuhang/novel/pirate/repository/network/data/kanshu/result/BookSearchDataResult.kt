@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.kanshu.result
 
+import com.yuhang.novel.pirate.constant.BookConstant
+
 /**
  * Id : 424
  * Name : 凡人修仙传
@@ -18,7 +20,8 @@ data class BookSearchDataResult(val BookStatus: String = "",
                                 val LastChapter: String = "",
                                 val UpdateTime: String = "",
                                 val Author: String = "",
-                                val Id: Long = -1,
+                                val Id: String = "",
                                 val LastChapterId: String = "",
                                 val CName: String = "",
+                                val resouceType:String = BookConstant.RESOUCE_TYPE_KS,//书源类型
                                 val Name: String = "")

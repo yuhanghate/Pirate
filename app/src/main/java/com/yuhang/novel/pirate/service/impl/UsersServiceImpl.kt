@@ -15,7 +15,7 @@ import java.util.*
 
 class UsersServiceImpl : UsersService {
 
-    override fun updateContentToLocal(bookid: Long): Flowable<Long> {
+    override fun updateContentToLocal(bookid: String): Flowable<String> {
         return Flowable.just(bookid)
 //                .map { mDataRepository.queryFirstChapterid(it) }
 //                .flatMap { mDataRepository.getChapterContent(bookid, it) }
@@ -25,7 +25,7 @@ class UsersServiceImpl : UsersService {
 
     val mDataRepository by lazy { PirateApp.getInstance().getDataRepository() }
 
-    override fun updateCollectionToLocal(): Flowable<Long> {
+    override fun updateCollectionToLocal(): Flowable<String> {
         return mDataRepository.getCollectionList(1)
             .map {
                 mDataRepository.clearBookInfo()
@@ -33,13 +33,13 @@ class UsersServiceImpl : UsersService {
             }
             .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
             .map {
-                mDataRepository.insertCollection(it.bookid.toLong())
-                it.bookid.toLong()
+                mDataRepository.insertCollection(it.bookid)
+                it.bookid
             }
     }
 
 
-    override fun updateChapterListToLocal(bookid: Long): Flowable<Long> {
+    override fun updateChapterListToLocal(bookid: String): Flowable<String> {
         return mDataRepository.getBookChapterList(bookid)
             .map {
                 mDataRepository.insertChapterList(it.data.niceBookChapterKSEntity())
@@ -48,7 +48,7 @@ class UsersServiceImpl : UsersService {
     }
 
     @SuppressLint("CheckResult")
-    override fun updateBookInfoToLocal(bookid: Long): Flowable<Long> {
+    override fun updateBookInfoToLocal(bookid: String): Flowable<String> {
 
         return mDataRepository.getBookDetails(bookid)
             .map {
@@ -108,12 +108,12 @@ class UsersServiceImpl : UsersService {
 
     }
 
-    override fun updateReadHistoryToLocal(bookid: Long): Flowable<Long> {
+    override fun updateReadHistoryToLocal(bookid: String): Flowable<String> {
         return mDataRepository.getReadHistoryCollectionsList(bookid)
             .map {
                 val result = it.data?:return@map bookid
                 mDataRepository.updateLocalREadHistory(
-                    result.bookid.toLong(),
+                    result.bookid,
                     result.chapterid.toInt(),
                     result.createTime
                 )

@@ -76,7 +76,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         const val DURATION: Long = 190
 
-        fun start(context: Activity, bookid: Long) {
+        fun start(context: Activity, bookid: String) {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOK_ID, bookid)
             startIntent(context, intent)
@@ -85,7 +85,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         /**
          * 转转指定章节
          */
-        fun start(context: Activity, bookid: Long, chapterid: Int) {
+        fun start(context: Activity, bookid: String, chapterid: Int) {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOK_ID, bookid)
             intent.putExtra(CHAPTERID, chapterid)
@@ -99,7 +99,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     }
 
     override fun initStatusTool() {
-        val color = PreferenceUtil.getString("page_color", "#F6EFDD")
+        val color = PreferenceUtil.getString("page_color", "#000000")
         ImmersionBar.with(this)
             .transparentStatusBar()
             .statusBarColor(color)
@@ -123,7 +123,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         return BookConstant.getPageBackground()
     }
 
-    private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
+    private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
     private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 

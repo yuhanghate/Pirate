@@ -13,13 +13,16 @@ import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.activity.checkVersionWithPermissionCheck
 import com.yuhang.novel.pirate.ui.settings.activity.PrivacyActivity
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import io.reactivex.Flowable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 
@@ -48,13 +51,6 @@ class LaunchActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_launch)
 
-//        if (savedInstanceState == null) {
-//            val inflater = AsyncLayoutInflater(this);
-//            inflater.inflate(R.layout.activity_launch, null, callback)
-//        } else {
-//            val view = layoutInflater.inflate(R.layout.activity_launch, null)
-//            callback.onInflateFinished(view, R.layout.activity_launch, null)
-//        }
 
 
         Flowable.timer(MAX_TIME, TimeUnit.SECONDS)
@@ -69,26 +65,12 @@ class LaunchActivity : AppCompatActivity() {
                 }
 
             }
+
+
+
+
     }
 
-//    val callback: AsyncLayoutInflater.OnInflateFinishedListener = AsyncLayoutInflater.OnInflateFinishedListener { view, resid, parent ->
-//        // setup here
-//
-//        setContentView(view)
-//        Flowable.timer(MAX_TIME, TimeUnit.SECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-//                    //第一次安装弹出隐私条款
-//                    if (!PreferenceUtil.getBoolean("privacy", false)) {
-//                        Handler().postDelayed({ showPrivacyDialog() }, 1500)
-//                    } else {
-//                        startActivity(Intent(this, MainActivity::class.java))
-//                        finish()
-//                    }
-//
-//                }
-//
-//    }
 
     override fun onResume() {
         super.onResume()

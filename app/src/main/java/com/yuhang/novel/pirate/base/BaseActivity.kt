@@ -63,7 +63,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         initViewModel()
         initStatusTool()
         initView()
-
+        initData()
     }
 
     /**
@@ -184,6 +184,10 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     open fun initView() {
 
         Logger.i("baseactivity -> initview")
+    }
+
+    open fun initData(){
+
     }
 
 

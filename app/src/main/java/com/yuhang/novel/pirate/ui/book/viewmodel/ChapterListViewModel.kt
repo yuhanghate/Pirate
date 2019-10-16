@@ -16,7 +16,7 @@ class ChapterListViewModel :BaseViewModel(){
     /**
      * 从本地查询章节目录
      */
-    fun queryChapterList(bookid: Long): Flowable<List<BookChapterKSEntity>> {
+    fun queryChapterList(bookid: String): Flowable<List<BookChapterKSEntity>> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryChapterObjList(it) }
                 .subscribeOn(Schedulers.io())
@@ -26,7 +26,7 @@ class ChapterListViewModel :BaseViewModel(){
     /**
      * 从本地查询书籍信息
      */
-    fun queryBookInfo(bookid: Long): Flowable<BookInfoKSEntity?> {
+    fun queryBookInfo(bookid: String): Flowable<BookInfoKSEntity?> {
         return Flowable.just(bookid)
                 .map { mDataRepository.queryBookInfo(it) }
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -35,7 +35,7 @@ class ChapterListViewModel :BaseViewModel(){
     /**
      * 获取章节内容
      */
-    fun getChapterContent(bookid: Long, chapterid: Int): Flowable<ContentResult> {
+    fun getChapterContent(bookid: String, chapterid: Int): Flowable<ContentResult> {
         return mDataRepository.getChapterContent(bookid, chapterid)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }

@@ -12,9 +12,8 @@ import com.orhanobut.logger.Logger;
 import com.vondear.rxtool.RxFileTool;
 import com.yuhang.novel.pirate.app.PirateApp;
 import com.yuhang.novel.pirate.listener.OnDownloadListener;
-import com.yuhang.novel.pirate.repository.network.NetApi;
+import com.yuhang.novel.pirate.repository.api.NetApi;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,8 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

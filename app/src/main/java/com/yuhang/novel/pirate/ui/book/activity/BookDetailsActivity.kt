@@ -68,7 +68,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     companion object {
         const val BOOK_ID = "book_id"
-        fun start(context: Activity, bookid: Long) {
+        fun start(context: Activity, bookid: String) {
             val intent = Intent(context, BookDetailsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(BOOK_ID, bookid)
@@ -80,7 +80,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         return R.layout.activity_book_details
     }
 
-    private fun getBookid() = intent.getLongExtra(BOOK_ID, -1)
+    private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
 
     @SuppressLint("CheckResult")

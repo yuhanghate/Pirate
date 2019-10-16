@@ -13,7 +13,7 @@ interface BookChapterKSDao {
    * 根据书籍id查找所有章节
    */
   @Query("select * from bookchapterksentity as c where c.bookId = :bookid group by c.chapterId order by c.chapterId asc ")
-  fun queryObj(bookid:Long):List<BookChapterKSEntity>
+  fun queryObj(bookid:String):List<BookChapterKSEntity>
 
   /**
    * 插入章节列表
@@ -25,19 +25,19 @@ interface BookChapterKSDao {
    * 删除书籍对应章节
    */
   @Query("delete from bookchapterksentity where bookId = :bookid")
-  fun delete(bookid: Long)
+  fun delete(bookid: String)
 
   /**
    * 获取第一章节id
    */
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId asc limit 1")
-  fun queryFirstChapterid(bookid: Long):Int
+  fun queryFirstChapterid(bookid: String):Int
 
   /**
    * 获取最后一章,章节ID
    */
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId desc limit 1")
-  fun queryLastChapterid(bookid: Long):Int
+  fun queryLastChapterid(bookid: String):Int
 
   @Query("delete from bookchapterksentity")
   fun clear()

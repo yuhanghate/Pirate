@@ -16,7 +16,7 @@ interface BookCollectionKSDao {
      * 查询指定书籍收藏的名单
      */
     @Query("select * from bookcollectionksentity as c where c.bookid = :bookid order by  c.time desc limit 1")
-    fun query(bookid:Long):BookCollectionKSEntity?
+    fun query(bookid:String):BookCollectionKSEntity?
 
     /**
      * 查询所有收藏记录
@@ -35,13 +35,13 @@ interface BookCollectionKSDao {
      * 删除收藏时间
      */
     @Query("delete from bookcollectionksentity where bookid = :bookid")
-    fun delete(bookid: Long)
+    fun delete(bookid: String)
 
     /**
      * 更新时间
      */
     @Query("update bookcollectionksentity set time = :time where bookid = :bookid")
-    fun updateTime(bookid: Long, time:Long)
+    fun updateTime(bookid: String, time:Long)
 
     @Query("delete from bookcollectionksentity")
     fun clear()

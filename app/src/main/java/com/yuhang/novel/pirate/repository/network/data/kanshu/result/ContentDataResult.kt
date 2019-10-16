@@ -193,7 +193,7 @@ data class ContentDataResult(
   /**
    * 小说id
    */
-  val id: Long = 0,
+  val id: String = "",
   /**
    * 内容
    */

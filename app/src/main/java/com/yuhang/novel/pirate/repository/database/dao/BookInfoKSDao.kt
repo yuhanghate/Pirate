@@ -24,19 +24,19 @@ interface BookInfoKSDao {
      * 查询书本信息
      */
     @Query("select * from bookinfoksentity as b where b.bookid = :bookid order by b.id, b.stickTime desc limit 1")
-    fun query(bookid: Long): BookInfoKSEntity?
+    fun query(bookid: String): BookInfoKSEntity?
 
     /**
      * 删除小说对应书本信息
      */
     @Query("delete from bookinfoksentity where bookid = :bookid")
-    fun delete(bookid: Long)
+    fun delete(bookid: String)
 
     /**
      * 更新置顶时间戳
      */
     @Query("update bookinfoksentity set stickTime = :stickTime where bookid = :bookid")
-    fun update(stickTime: Long, bookid: Long)
+    fun update(stickTime: Long, bookid: String)
 
     /**
      * 查询所有收藏的书本信息
@@ -48,7 +48,7 @@ interface BookInfoKSDao {
      * 查询所有收藏书本信息
      */
     @Query("select * from bookinfoksentity as info where  info.bookid in (:bookids) order by info.stickTime desc")
-    fun queryCollectionAll(vararg bookids: Long):List<BookInfoKSEntity?>
+    fun queryCollectionAll(vararg bookids: String):List<BookInfoKSEntity?>
 
 
     /**
@@ -61,7 +61,7 @@ interface BookInfoKSDao {
      * 获取最后更新时间
      */
     @Query("select max(lastTime) from bookinfoksentity where bookid = :bookid")
-    fun queryLastTime(bookid: Long):Long
+    fun queryLastTime(bookid: String):Long
 
     @Query("delete from bookinfoksentity")
     fun clear()

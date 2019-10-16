@@ -23,7 +23,9 @@ import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
+import com.yuhang.novel.pirate.ui.book.activity.BookResouceActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
+import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListActivity
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
 
@@ -42,8 +44,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     private var mBackgroundInTransparent: Animation? = null
     private var mBackgroundOutTransparent: Animation? = null
 
-    val genderList by lazy { arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl) }
-    val typeList by lazy {
+    private val genderList by lazy { arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl) }
+    private val typeList by lazy {
         arrayListOf<ConstraintLayout>(
             mBinding.typeHotCl,
             mBinding.typeCommendCl,
@@ -53,7 +55,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
             mBinding.typeVoteCl
         )
     }
-    val dateList by lazy {
+    private val dateList by lazy {
         arrayListOf<ConstraintLayout>(
             mBinding.dateWeekCl,
             mBinding.dateMonthCl,
@@ -61,7 +63,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         )
     }
 
-    val DURATION: Long = 190
+    private val DURATION: Long = 190
 
     /**
      * 页面
@@ -101,14 +103,6 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
 
     override fun initView() {
         super.initView()
-        val options = navOptions {
-            anim {
-                enter = R.anim.slide_in_right
-                exit = R.anim.slide_out_left
-                popEnter = R.anim.slide_in_left
-                popExit = R.anim.slide_out_right
-            }
-        }
 
         initRefreshLayout()
         initRecyclerView()
@@ -133,6 +127,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mBinding.filterLl.visibility = View.GONE
 
 
+        mBinding.resouceIv.setOnClickListener { ResouceListActivity.start(mActivity!!) }
         mBinding.genderManCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
         mBinding.genderLadyCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
 

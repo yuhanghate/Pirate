@@ -50,7 +50,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 小说id
      */
-    var bookid: Long = -1
+    var bookid: String = ""
 
     /**
      * 小说名称
@@ -461,7 +461,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 删除本地对应的书籍章节
      */
-    private fun deleteChapterList(bookid: Long) {
+    private fun deleteChapterList(bookid: String) {
         mDataRepository.deleteChapterList(bookid)
     }
 
