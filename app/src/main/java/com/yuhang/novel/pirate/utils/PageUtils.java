@@ -385,6 +385,7 @@ public class PageUtils {
             //转换字体(简体,繁体等)
             paragraph = StringUtils.convertCC(paragraph, PirateApp.Companion.getInstance());
 
+            paragraph = StringUtils.halfToFull(paragraph);
             lines.add(paragraph);
         }
         return lines;
