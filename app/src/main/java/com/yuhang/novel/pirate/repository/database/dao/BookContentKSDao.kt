@@ -18,13 +18,13 @@ interface BookContentKSDao {
      * 查找章节内容
      */
     @Query("select * from bookcontentksentity as c where c.chapterId = :chapterid and c.bookId = :bookid limit 1")
-    fun query(bookid: String, chapterid: Int): BookContentKSEntity?
+    fun query(bookid: String, chapterid: String): BookContentKSEntity?
 
     /**
      * 查询章节内容
      */
     @Query("select * from bookcontentksentity as c where c.chapterId = :chapterid and c.bookId = :bookid limit 1")
-    fun queryObj(bookid: String, chapterid: Int): BookContentKSEntity?
+    fun queryObj(bookid: String, chapterid: String): BookContentKSEntity?
 
 //    /**
 //     * 查询书箱章节所有的更新时间
@@ -43,7 +43,7 @@ interface BookContentKSDao {
      * 更新最后一次打开的时间和内容角标
      */
     @Query("update bookcontentksentity set lastOpenTime = :lastOpenTime, lastContentPosition = :lastContentPosition where chapterId = :chapterid and bookId = :bookid")
-    fun updateLastOpenContent(bookid: String, chapterid: Int, lastOpenTime: Long, lastContentPosition: Int)
+    fun updateLastOpenContent(bookid: String, chapterid: String, lastOpenTime: Long, lastContentPosition: Int)
 
     /**
      * 根据小说id查询最近阅读章节
@@ -77,7 +77,7 @@ interface BookContentKSDao {
      * 删除指定的章节内容
      */
     @Query("delete from bookcontentksentity where bookId = :bookid and chapterId = :chapterid")
-    fun delete(bookid: String, chapterid: Int)
+    fun delete(bookid: String, chapterid: String)
 
 
     @Query("delete from bookcontentksentity")

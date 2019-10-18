@@ -32,11 +32,11 @@ class ChapterListViewModel :BaseViewModel(){
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    /**
-     * 获取章节内容
-     */
-    fun getChapterContent(bookid: String, chapterid: Int): Flowable<ContentResult> {
-        return mDataRepository.getChapterContent(bookid, chapterid)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-    }
+//    /**
+//     * 获取章节内容
+//     */
+//    fun getChapterContent(bookid: String, chapterid: String): Flowable<ContentResult> {
+//        return mDataRepository.getChapterContent(bookid, chapterid)
+//                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//    }
 }

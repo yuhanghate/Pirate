@@ -25,7 +25,7 @@ data class BookChapterKSEntity(
   /**
    * 章节id
    */
-  val chapterId: Int = 0,
+  val chapterId: String = "",
 
   /**
    * 书籍名称
@@ -35,5 +35,10 @@ data class BookChapterKSEntity(
   /**
    * 书籍id
    */
-  val bookId: String = ""
+  val bookId: String = "",
+
+  /**
+   * 数据源类型: 看书神器/快读
+   */
+  val resouce_type :String = ""
 )

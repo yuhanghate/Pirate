@@ -7,4 +7,4 @@ package com.yuhang.novel.pirate.repository.network.data.kanshu.result
  */
 data class ChapterResult(val hasContent: Int = 0,
                          val name: String = "",
-                         val id: Int = 0)
+                         val id: String="")

@@ -64,7 +64,7 @@ interface KanShuNetApi {
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: String
     ): Flowable<ContentResult>
 
     /**
@@ -75,7 +75,7 @@ interface KanShuNetApi {
     fun downloadChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: String
     ): Flowable<ContentResult>
 
     /**
@@ -86,7 +86,7 @@ interface KanShuNetApi {
     fun downloadNovel(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: String
     ): Call<ContentResult>
 
 

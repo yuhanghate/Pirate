@@ -27,7 +27,7 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) : Wo
     }
     override fun doWork(): Result {
 
-        val list = inputData.getIntArray(CHANPTER_ID)?:return Result.failure()
+        val list = inputData.getStringArray(CHANPTER_ID)?:return Result.failure()
         val bookid = inputData.getString(BOOKID)
         if (TextUtils.isEmpty(bookid)) return Result.failure()
         val dataRepository = PirateApp.getInstance().getDataRepository()

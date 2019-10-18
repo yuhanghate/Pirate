@@ -60,7 +60,7 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.lastTime = System.currentTimeMillis()
         this.firstChapterId = obj.pid
         this.lastChapterId = obj.cid
-        this.classifyId = -1
+        this.classifyId = 0
     }
 }
 
@@ -133,7 +133,7 @@ fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.description = result.description
         this.author = result.author
         this.cover = result.cover
-        this.lastChapterId = result.chapterid.toInt()
+        this.lastChapterId = result.chapterid
         this.lastChapterName = result.chapterName
     }
 }

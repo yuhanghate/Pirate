@@ -12,6 +12,9 @@ import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookDetailsKdResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListKdResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ContentKdResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.repository.network.data.resouce.result.ResouceRuleResult
 import com.yuhang.novel.pirate.repository.network.rule.AnalyzeUrl
@@ -92,7 +95,7 @@ class DataRepository(val context: Context) {
      */
     fun getChapterContent(
         bookid: String,
-        chapterid: Int
+        chapterid: String
     ): Flowable<ContentResult> {
         return getKSNetApi().getChapterContent(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
     }
@@ -100,17 +103,7 @@ class DataRepository(val context: Context) {
     /**
      * 下载章节内容
      */
-    fun downloadChapterContent(
-        bookid: String,
-        chapterid: Int
-    ): Flowable<ContentResult> {
-        return getKSNetApi().downloadChapterContent(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
-    }
-
-    /**
-     * 下载章节内容
-     */
-    fun downloadNovel(bookid: String, chapterid: Int): Call<ContentResult> {
+    fun downloadNovel(bookid: String, chapterid: String): Call<ContentResult> {
         return getKSNetApi().downloadNovel(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
     }
 
@@ -162,7 +155,7 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    fun queryBookContent(bookid: String, chapterid: Int): BookContentKSEntity? {
+    fun queryBookContent(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }
 
@@ -188,7 +181,7 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    fun queryBookContentObj(bookid: String, chapterid: Int): BookContentKSEntity? {
+    fun queryBookContentObj(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.queryObj(bookid, chapterid)
     }
 
@@ -308,7 +301,7 @@ class DataRepository(val context: Context) {
     /**
      * 更新最后一次打开的时间和内容角标
      */
-    fun updateLastOpenContent(bookid: String, chapterid: Int, lastContentPosition: Int) {
+    fun updateLastOpenContent(bookid: String, chapterid: String, lastContentPosition: Int) {
         getDatabase().bookContentKSDao.updateLastOpenContent(
             bookid,
             chapterid,
@@ -328,19 +321,19 @@ class DataRepository(val context: Context) {
     /**
      * 获取第一章节id
      */
-    fun queryFirstChapterid(bookid: String): Int {
+    fun queryFirstChapterid(bookid: String): String {
         return getDatabase().bookChapterKSDao.queryFirstChapterid(bookid)
     }
 
     /**
      * 更新标签数据
      */
-    fun updateLable(bookid: String, chapterid: Int) {
+    fun updateLable(bookid: String, chapterid: String) {
         val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid) ?: return
 //        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
 
-        if (chapterid > infoKSEntity.lastChapterId) {
-            PreferenceUtil.commitBoolean(bookid.toString(), true)
+        if (chapterid != infoKSEntity.lastChapterId) {
+            PreferenceUtil.commitBoolean(bookid, true)
         }
     }
 
@@ -587,7 +580,7 @@ class DataRepository(val context: Context) {
     /**
      * 更新最后一次阅读记录到本地
      */
-    fun updateLocalREadHistory(bookid: String, chapterid: Int, lastReadTime: Long = System.currentTimeMillis()) {
+    fun updateLocalREadHistory(bookid: String, chapterid: String, lastReadTime: Long = System.currentTimeMillis()) {
 
 //        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
 //        queryAll.forEach {
@@ -779,8 +772,29 @@ class DataRepository(val context: Context) {
     /**
      * 章节目录
      */
-    fun getChanpterList(bookid: String) :Flowable<com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListResult>{
-        val map = hashMapOf<String, String>("bookId" to bookid)
-        return getKuaiDuApi().getChanpterList(map)
+//    fun getChanpterList(bookid: String) :Flowable<ChapterListResult>{
+//        val map = hashMapOf<String, String>("bookId" to bookid)
+////        return getKuaiDuApi().getChanpterList(map)
+//    }
+
+    /**
+     * 书本源列表
+     */
+    fun getResouceList(bookid: String):Flowable<List<ResouceListKdResult>> {
+        return getKuaiDuApi().getResouceList(bookid)
+    }
+
+    /**
+     * 获取内容
+     */
+    fun getResouceContent(link: String):Flowable<ContentKdResult> {
+        return getKuaiDuApi().getResouceContent(link)
+    }
+
+    /**
+     * 第三方源目录列表
+     */
+    fun getResouceChapterList(bookid: String):Flowable<ChapterListKdResult> {
+        return getKuaiDuApi().getResouceChapterList(bookid)
     }
 }

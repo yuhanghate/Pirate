@@ -114,7 +114,7 @@ class UsersServiceImpl : UsersService {
                 val result = it.data?:return@map bookid
                 mDataRepository.updateLocalREadHistory(
                     result.bookid,
-                    result.chapterid.toInt(),
+                    result.chapterid,
                     result.createTime
                 )
                 return@map bookid

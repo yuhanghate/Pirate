@@ -1,13 +1,11 @@
 package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookSearchDataResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookDetailsKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.SearchKdResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
 import io.reactivex.Flowable
-import org.intellij.lang.annotations.Flow
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface KuaiDuNetApi {
@@ -43,5 +41,24 @@ interface KuaiDuNetApi {
      * 章节目录
      */
     @GET("http://api.wgfgr.cn/toc/mix")
-    fun getChanpterList(@QueryMap map:Map<String, String>):Flowable<ChapterListResult>
+    fun getChanpterList(@QueryMap map:Map<String, String>):Flowable<ChapterListKdResult>
+
+    /**
+     * 获取内容
+     */
+    @GET("http://chapter.baihangsou.cn/chapter/{link}")
+    fun getResouceContent(@Path("link") link:String):Flowable<ContentKdResult>
+
+    /**
+     * 书本源列表
+     */
+    @GET("http://api.wgfgr.cn/toc/list")
+    fun getResouceList(@Query("bookId")bookId:String):Flowable<List<ResouceListKdResult>>
+
+
+    /**
+     * 第三方源目录列表
+     */
+    @GET("http://api.wgfgr.cn/chapter/list")
+    fun getResouceChapterList(@Query("tocId") tocId:String):Flowable<ChapterListKdResult>
 }

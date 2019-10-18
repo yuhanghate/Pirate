@@ -190,7 +190,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                                 UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,
                                 "主页 -> 目录书箱"
                         )
-                        ChapterListActivity.start(mActivity!!, bookInfoKSEntity.bookid, bookInfoKSEntity.lastChapterId)
+                        ChapterListActivity.start(mActivity!!, bookInfoKSEntity.bookid)
                     }
                     "删除" -> {
                         mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DELETE, "主页 -> 从书架删除收藏")

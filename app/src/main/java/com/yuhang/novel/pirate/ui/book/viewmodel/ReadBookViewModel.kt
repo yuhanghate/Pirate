@@ -60,7 +60,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 当前章节id
      */
-    var chapterid = -1
+    var chapterid = ""
 
     /**
      * 当前章节名称
@@ -70,12 +70,12 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 上一页
      */
-    var pid = -1
+    var pid = ""
 
     /**
      * 下一页
      */
-    var nid = -1
+    var nid = ""
 
     /**
      * 当前角标
@@ -88,14 +88,15 @@ class ReadBookViewModel : BaseViewModel() {
      * 根据id获取内容
      */
     @SuppressLint("CheckResult")
-    fun getContentFromChapterid(chapterid: Int): Flowable<BookContentKSEntity> {
+    fun getContentFromChapterid(chapterid: String): Flowable<BookContentKSEntity> {
 
+        if (chapterid == "-1")return Flowable.error(NullPointerException(""))
         return Flowable.just(chapterid)
             .flatMap {
                 val contentKSEntity = mDataRepository.queryBookContent(bookid, chapterid)
 
                 //如果本地没有数据或者没有下一页.进行网络获取.避免脏数据
-                if (contentKSEntity == null || contentKSEntity.nid == -1) {
+                if (contentKSEntity == null || contentKSEntity.nid == "-1") {
                     //从服务器获取章节内容
                     return@flatMap mDataRepository.getChapterContent(bookid, chapterid).filter { it.status == 1 }
                         .map {
@@ -131,14 +132,6 @@ class ReadBookViewModel : BaseViewModel() {
 
         return Flowable.just("")
             .flatMap {
-                //                mDataRepository.getDatabase().bookReadHistoryDao.queryAll()
-//                    .forEach {
-//                        Logger.t("read_history").i(
-//                            "bookid = ${it.bookid} chanpterid = ${it.chapterid}  time = ${SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss").format(
-//                                Date(it.lastReadTime)
-//                            )}"
-//                        )
-//                    }
                 //最后一次阅读的小说信息
                 val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookid)
                 Logger.t("read_history").i(lastOpenChapter.toString())
@@ -171,7 +164,7 @@ class ReadBookViewModel : BaseViewModel() {
                             return@flatMap Flowable.just(contentKSEntity)
                         }
                     } else {
-                        if (lastOpenChapter.nid == -1) {
+                        if (lastOpenChapter.nid.isEmpty()) {
                             //每次最后一次都重新加载
                             return@flatMap getContentFromChapterid(lastOpenChapter.chapterId)
                         } else {
@@ -191,7 +184,7 @@ class ReadBookViewModel : BaseViewModel() {
      * 更新最后打开内容时间和显示的角标
      */
     @SuppressLint("SimpleDateFormat")
-    fun updateLastOpenTimeAndPosition(chapterid: Int, lastContentPosition: Int) {
+    fun updateLastOpenTimeAndPosition(chapterid: String, lastContentPosition: Int) {
         thread {
             mDataRepository.updateLocalREadHistory(bookid, chapterid)
             mDataRepository.updateLastOpenContent(bookid, chapterid, lastContentPosition)
@@ -203,10 +196,10 @@ class ReadBookViewModel : BaseViewModel() {
      * 上一页/下一页.进行预加载灵气.不刷新
      */
     @SuppressLint("CheckResult")
-    fun preloadedChapterContent(chapterid: Int) {
+    fun preloadedChapterContent(chapterid: String) {
 
         //如果没有下一页.不进行预加载
-        if (chapterid == BookKSConstant.NOT_CHAPTER) {
+        if (chapterid.isEmpty()) {
             return
         }
         getContentFromChapterid(chapterid)
@@ -219,7 +212,7 @@ class ReadBookViewModel : BaseViewModel() {
      * 当前列表中是否包括指定章节
      * 用来过滤重复加载
      */
-    fun isLoadAdapter(chapterid: Int): Boolean {
+    fun isLoadAdapter(chapterid: String): Boolean {
         adapter.getList().forEach {
             if (it.chapterId == chapterid) {
                 return true
@@ -361,7 +354,7 @@ class ReadBookViewModel : BaseViewModel() {
      * 更新阅读记录
      */
     @SuppressLint("CheckResult")
-    fun updateReadHistory(chapterid: Int, chapterName: String): Flowable<StatusResult> {
+    fun updateReadHistory(chapterid: String, chapterName: String): Flowable<StatusResult> {
         return Flowable.just("")
             .map { mDataRepository.queryBookInfo(bookid) }
             .flatMap {

@@ -95,15 +95,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
 
 
-        WebBookModel.getInstance().searchBook("凡人修仙传",1,"https://m.biqugecom.com")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
-            .subscribe({
-                Logger.i("")
-            },{
-                Logger.i("")
-            })
 //        thread {
 //            val result =
 //                PirateApp.getInstance().getDataRepository().queryResouceRule("c8c4d96295f04fb491384d87dd4ab583")

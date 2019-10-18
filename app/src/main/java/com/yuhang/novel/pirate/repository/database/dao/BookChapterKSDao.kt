@@ -31,7 +31,7 @@ interface BookChapterKSDao {
    * 获取第一章节id
    */
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid order by c.chapterId asc limit 1")
-  fun queryFirstChapterid(bookid: String):Int
+  fun queryFirstChapterid(bookid: String):String
 
   /**
    * 获取最后一章,章节ID

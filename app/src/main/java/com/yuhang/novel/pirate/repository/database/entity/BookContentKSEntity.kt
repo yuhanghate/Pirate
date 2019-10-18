@@ -26,12 +26,12 @@ class BookContentKSEntity {
     /**
      * 下一章节id
      */
-    var nid: Int = -1
+    var nid: String = ""
 
     /**
      * 上一章节id
      */
-    var pid: Int = -1
+    var pid: String = ""
 
     /**
      * 书籍id
@@ -46,7 +46,7 @@ class BookContentKSEntity {
     /**
      * 章节id
      */
-    var chapterId: Int = 0
+    var chapterId: String = ""
 
     /**
      * 最后阅读时间

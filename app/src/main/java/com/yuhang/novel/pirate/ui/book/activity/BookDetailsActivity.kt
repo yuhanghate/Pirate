@@ -233,8 +233,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             )
             ChapterListActivity.start(
                 this,
-                getBookid(),
-                obj.LastChapterId
+                getBookid()
+
             )
         }
 

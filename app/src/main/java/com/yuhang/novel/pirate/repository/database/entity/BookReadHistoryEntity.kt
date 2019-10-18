@@ -15,7 +15,7 @@ class BookReadHistoryEntity {
     /**
      * 章节id
      */
-    var chapterid = -1
+    var chapterid :String = ""
 
     /**
      * 小说ID

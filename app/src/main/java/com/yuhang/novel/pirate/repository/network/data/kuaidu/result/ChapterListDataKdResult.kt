@@ -1,6 +1,6 @@
 package com.yuhang.novel.pirate.repository.network.data.kuaidu.result
 
-data class ChapterListDataResult(
+data class ChapterListDataKdResult(
     var link: String = "",
     var title: String = ""
 )

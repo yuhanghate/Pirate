@@ -34,11 +34,9 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
 
     companion object {
         private const val BOOKID = "bookid"
-        private const val CHAPTERID = "chapterid"
-        fun start(context: Activity, bookid: String, chapterid: Int) {
+        fun start(context: Activity, bookid: String) {
             val intent = Intent(context, ChapterListActivity::class.java)
             intent.putExtra(BOOKID, bookid)
-            intent.putExtra(CHAPTERID, chapterid)
             startIntent(context, intent)
         }
     }
@@ -52,10 +50,6 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
      */
     private fun getBookid() = intent.getStringExtra(BOOKID)
 
-    /**
-     * 章节id
-     */
-    private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 
 
     override fun initView() {
@@ -110,7 +104,7 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
      * 章节目录点击
      */
     @SuppressLint("CheckResult")
-    override fun onClickChapterItemListener(view: View, chapterid: Int) {
+    override fun onClickChapterItemListener(view: View, chapterid: String) {
         ReadBookActivity.start(this, getBookid(), chapterid)
     }
 

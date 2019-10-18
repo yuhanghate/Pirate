@@ -19,7 +19,7 @@ interface BookReadHistoryDao {
      * 查询指定章节小说最后一次阅读章节
      */
     @Query("select * from bookreadhistoryentity where bookid = :bookid and chapterid = :chapterid order by lastReadTime desc limit 1")
-    fun queryBookReadHistoryEntity(bookid:String, chapterid:Int):BookReadHistoryEntity?
+    fun queryBookReadHistoryEntity(bookid:String, chapterid:String):BookReadHistoryEntity?
 
     /**
      * 获取指定书最后章节

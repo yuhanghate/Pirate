@@ -4,5 +4,5 @@ import android.view.View
 
 interface OnClickChapterItemListener {
 
-    fun onClickChapterItemListener(view:View, chapterid:Int)
+    fun onClickChapterItemListener(view:View, chapterid:String)
 }

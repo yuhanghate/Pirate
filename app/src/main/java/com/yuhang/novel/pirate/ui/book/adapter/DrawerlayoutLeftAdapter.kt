@@ -12,7 +12,7 @@ class DrawerlayoutLeftAdapter:BaseAdapter<BookChapterKSEntity>() {
     /**
      * 当前查看的章节内容
      */
-    var chapterid = -1
+    var chapterid = ""
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

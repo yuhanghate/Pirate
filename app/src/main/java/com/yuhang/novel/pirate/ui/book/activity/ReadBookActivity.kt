@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -85,7 +86,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         /**
          * 转转指定章节
          */
-        fun start(context: Activity, bookid: String, chapterid: Int) {
+        fun start(context: Activity, bookid: String, chapterid: String = "") {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOK_ID, bookid)
             intent.putExtra(CHAPTERID, chapterid)
@@ -125,23 +126,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
-    private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-//        //去除标题栏
-//        requestWindowFeature(Window.FEATURE_NO_TITLE)
-//////        //去除状态栏
-//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//
-//
-//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-//        getActionBar()?.hide()
-        super.onCreate(savedInstanceState)
-//        window.navigationBarColor = BookConstant.getPageBackground()
-
-    }
-
-
+    private fun getChapterid() = intent.getStringExtra(CHAPTERID)
 
 
     override fun onPause() {
@@ -181,7 +166,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //如果获取焦点,并且RecyclerView是第一次加载
         if (hasFocus && mViewModel.adapter.getList().isEmpty()) {
             //当Activity尺寸计算好以后,进行加载.因为需要动态根据尺寸分页
-            if (getChapterid() > 0) {
+            if (!TextUtils.isEmpty(getChapterid())) {
                 //打开指定章节
                 mViewModel.chapterid = getChapterid()
                 netDataChapterContentFromId(getChapterid())
@@ -645,7 +630,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 获取指定章节的内容
      */
     @SuppressLint("CheckResult")
-    private fun netDataChapterContentFromId(chapterid: Int) {
+    private fun netDataChapterContentFromId(chapterid: String) {
         mBinding.loading.showLoading()
         mViewModel.getContentFromChapterid(chapterid)
             .compose(bindUntilEvent(ActivityEvent.PAUSE))
@@ -783,7 +768,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 章节目录点击事件
      */
     @SuppressLint("CheckResult")
-    override fun onClickChapterItemListener(view: View, chapterid: Int) {
+    override fun onClickChapterItemListener(view: View, chapterid: String) {
         mBinding.drawerLayout.closeDrawers()
         mViewModel.chapterid = chapterid
         netDataChapterContentFromId(chapterid)
@@ -801,7 +786,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
 
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
-        if (obj.pid == -1) return
+        if (obj.pid == "-1") return
 
         mViewModel.getContentFromChapterid(obj.pid)
             .compose(bindUntilEvent(ActivityEvent.PAUSE))
@@ -828,7 +813,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
 
-        if (obj.nid == -1) {
+        if (obj.nid == "-1") {
             return
         }
         Logger.i("${this.javaClass.simpleName}  position = $lastVisibleItemPosition  itemCount=${mViewModel.adapter.getList().size}")

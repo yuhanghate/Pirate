@@ -46,7 +46,7 @@ class BookInfoKSEntity{
     /**
      * 上一章节id
      */
-    var firstChapterId: Int = -1
+    var firstChapterId: String = ""
 
     /**
      * 最后更新章节名称
@@ -56,7 +56,7 @@ class BookInfoKSEntity{
     /**
      * 最后更新章节id
      */
-    var lastChapterId: Int = -1
+    var lastChapterId: String  = ""
 
     /**
      * 小说更新状态: 连载/完结

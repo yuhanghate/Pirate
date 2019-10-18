@@ -33,7 +33,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
     var bookid: String? = null
 
-    var chapterid: Int? = null
+    var chapterid: String = ""
 
     /**
      * 排序状态
@@ -84,7 +84,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     fun resetBackground() {
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
         mViewModel.adapter.notifyDataSetChanged()
-        mBinding.recyclerView.scrollToPosition(mViewModel.adapter.chapterid)
+//        mBinding.recyclerView.scrollToPosition(mViewModel.adapter.chapterid)
         mBinding.itemDrawerHeader.athorTv.setTextColor(BookConstant.getPageTextColor())
         mBinding.itemDrawerHeader.titleTv.setTextColor(BookConstant.getPageTextColor())
         mBinding.itemDrawerHeader.updateTimeTv.setTextColor(BookConstant.getPageTextColor())
@@ -186,8 +186,8 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     /**
      * 设置当前读取的目录章节
      */
-    fun setCurrentReadItem(chapterid: Int) {
-        if (mViewModel.adapter.chapterid != -1 && chapterid == mViewModel.adapter.chapterid) return
+    fun setCurrentReadItem(chapterid: String) {
+        if (mViewModel.adapter.chapterid.isNotEmpty() && chapterid == mViewModel.adapter.chapterid) return
 
         var position = -1
         mViewModel.adapter.getList().forEachIndexed { index, bookChapterKSEntity ->
