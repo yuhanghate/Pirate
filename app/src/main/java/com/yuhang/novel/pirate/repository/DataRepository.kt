@@ -770,14 +770,6 @@ class DataRepository(val context: Context) {
     }
 
     /**
-     * 章节目录
-     */
-//    fun getChanpterList(bookid: String) :Flowable<ChapterListResult>{
-//        val map = hashMapOf<String, String>("bookId" to bookid)
-////        return getKuaiDuApi().getChanpterList(map)
-//    }
-
-    /**
      * 书本源列表
      */
     fun getResouceList(bookid: String):Flowable<List<ResouceListKdResult>> {
