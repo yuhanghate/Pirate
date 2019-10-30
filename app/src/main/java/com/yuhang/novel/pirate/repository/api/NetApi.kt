@@ -109,4 +109,16 @@ interface NetApi {
      */
     @POST("/api/m/resouce/list/get")
     fun getResouceList(@Body body: RequestBody):Flowable<BookResouceResult>
+
+    /**
+     * 书名/作者搜索
+     */
+    @POST("/api/m/book/books/search")
+    fun getBookSearchList(@Body body: RequestBody):Flowable<SearchResult>
+
+    /**
+     * 作者所有作品
+     */
+    @POST("/api/m/book/books/author/all")
+    fun getAuthorBooksList(@Body body: RequestBody):Flowable<AuthorBooksResult>
 }

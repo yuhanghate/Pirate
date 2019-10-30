@@ -2,7 +2,6 @@ package com.yuhang.novel.pirate.constant
 
 import com.google.gson.reflect.TypeToken
 import java.util.regex.Pattern
-import javax.script.ScriptEngineManager
 
 object BookResouceConstant {
 
@@ -17,5 +16,4 @@ object BookResouceConstant {
     val JS_PATTERN = Pattern.compile("(<js>[\\w\\W]*?</js>|@js:[\\w\\W]*$)", Pattern.CASE_INSENSITIVE)
     val EXP_PATTERN = Pattern.compile("\\{\\{([\\w\\W]*?)\\}\\}")
 
-    val SCRIPT_ENGINE = ScriptEngineManager().getEngineByName("rhino")
 }

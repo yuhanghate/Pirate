@@ -5,19 +5,16 @@ import android.content.Context
 import androidx.work.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
-import com.yuhang.novel.pirate.constant.BookResouceConstant
 import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookDetailsKdResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListKdResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ContentKdResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.repository.network.data.resouce.result.ResouceRuleResult
-import com.yuhang.novel.pirate.repository.network.rule.AnalyzeUrl
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
 import io.reactivex.Flowable
@@ -713,80 +710,21 @@ class DataRepository(val context: Context) {
         return getDatabase().bookResouceDao.queryCheckList().map { it.title }.toList()
     }
 
-    /**
-     * 获取源规则
-     */
-    fun queryResouceRule(resouceid: String): ResouceRuleResult {
-        val entity = getDatabase().bookResouceDao.query(resouceid)
-        return if (entity?.resouceRule == null) {
-            ResouceRuleResult()
-        } else {
-            Gson().fromJson(entity.resouceRule, ResouceRuleResult::class.java)
-        }
-    }
 
-    fun getSearchResouce(resouceid: String, keyword: String, pageNum: Int): Flowable<String> {
-
-        return Flowable.just(resouceid)
-            .map { queryResouceRule(resouceid) }
-            .map {
-                AnalyzeUrl(
-                    it.ruleSearchUrl,
-                    keyword,
-                    pageNum,
-                    hashMapOf<String, String>("User-Agent" to BookResouceConstant.DEFAULT_USER_AGENT),
-                    it.bookSourceUrl
-                )
-            }
-            .flatMap { mNetManager.getResponseO(it) }
-    }
-
-    fun getResponseO(analyzeUrl: AnalyzeUrl):Flowable<String> {
-        return mNetManager.getResponseO(analyzeUrl)
-    }
 
     /**
-     * 快读搜索
+     * 书名/作者搜索
      */
-    fun searchBookKd(keyword:String):Flowable<List<BookSearchDataResult>> {
-        val map = hashMapOf<String, Any>("key" to keyword, "start" to 0, "limit" to 100)
-        return getKuaiDuApi().search(map).map { it.books.map { it.niceBookSearchDataResult() }.toList() }
-    }
-
-    /**
-     * 快读详情
-     */
-    fun getBookDetailsKd(bookid: String) :Flowable<BookDetailsDataResult>{
-        val map = hashMapOf<String, String>("bookId" to bookid)
-        return getKuaiDuApi().getBookDetails(map).map { it.niceBookDetailsDataResult() }
+    fun getBookSearchList(keyword: String): Flowable<SearchResult> {
+        val map = hashMapOf<String, String>("keyword" to keyword)
+        return getNetApi().getBookSearchList(niceBody(map))
     }
 
     /**
      * 作者所有作品
      */
-    fun getAuthorBookAll(author: String) {
-        val map = hashMapOf<String, Any>("author" to author, "start" to 0, "limit" to 50)
-        getKuaiDuApi().getAuthorBookAll(map)
-    }
-
-    /**
-     * 书本源列表
-     */
-    fun getResouceList(bookid: String):Flowable<List<ResouceListKdResult>> {
-        return getKuaiDuApi().getResouceList(bookid)
-    }
-
-    /**
-     * 获取内容
-     */
-    fun getResouceContent(link: String):Flowable<ContentKdResult> {
-        return getKuaiDuApi().getResouceContent(link)
-    }
-
-    /**
-     * 第三方源目录列表
-     */
-    fun getResouceChapterList(bookid: String):Flowable<ChapterListKdResult> {
-        return getKuaiDuApi().getResouceChapterList(bookid)
+    fun getAuthorBooksList(author:String):Flowable<AuthorBooksResult> {
+        val map = hashMapOf<String, String>("author" to author)
+        return getNetApi().getAuthorBooksList(niceBody(map))
     }
 }

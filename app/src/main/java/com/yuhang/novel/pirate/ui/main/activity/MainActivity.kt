@@ -3,37 +3,24 @@ package com.yuhang.novel.pirate.ui.main.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
 import androidx.appcompat.app.AlertDialog
-import com.afollestad.materialdialogs.DialogCallback
-import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.kunfei.bookshelf.model.BookSourceManager
-import com.kunfei.bookshelf.model.WebBookModel
-import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
-import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
-import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
-import com.yuhang.novel.pirate.ui.settings.activity.PrivacyActivity
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 @RuntimePermissions
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
