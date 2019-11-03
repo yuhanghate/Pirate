@@ -60,20 +60,6 @@ interface BookContentKSDao {
 
 
     /**
-     * 是否显示更新
-     * 对比最近更新时间和上次阅读时间对比
-     * 1:显示  2:不显示
-     */
-    @Query("select  case  when c.lastOpenTime == null then 1 when  max(i.lastTime) < max(c.lastOpenTime)   then 1 else 2 end from bookcontentksentity as c left join bookinfoksentity as i where c.bookId = i.bookid")
-    fun isShowUpdateLable(): Int
-
-    /**
-     * 最后打开时间
-     */
-    @Query("select max(lastOpenTime) from bookcontentksentity where bookId = :bookid ")
-    fun queryLastTime(bookid: String): Long
-
-    /**
      * 删除指定的章节内容
      */
     @Query("delete from bookcontentksentity where bookId = :bookid and chapterId = :chapterid")

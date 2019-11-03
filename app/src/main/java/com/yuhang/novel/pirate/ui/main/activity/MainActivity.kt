@@ -81,29 +81,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         checkVersionWithPermissionCheck()
 
 
-
-//        thread {
-//            val result =
-//                PirateApp.getInstance().getDataRepository().queryResouceRule("c8c4d96295f04fb491384d87dd4ab583")
-//
-//            val observable = BookSourceManager.importSource(Gson().toJson(result))
-//            if (observable != null) {
-//                observable.subscribe({
-//                    Logger.i("")
-//                },{
-//                    Logger.i("")
-//                })
-//            }
-//        }
-//        PirateApp.getInstance().getDataRepository().getSearchResouce("c8c4d96295f04fb491384d87dd4ab583","凡人修仙传",1)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .compose(bindToLifecycle())
-//            .subscribe({
-//                Logger.i(it)
-//            },{
-//                Logger.i("")
-//            })
     }
 
 

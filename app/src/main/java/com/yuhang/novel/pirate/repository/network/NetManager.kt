@@ -103,9 +103,9 @@ class NetManager {
             .dns(HttpDns())
             //增加Header头
             .addInterceptor(TokenInterceptor())
-            .connectTimeout(60 * 5, TimeUnit.SECONDS)
-            .readTimeout(60 * 5, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
+//            .connectTimeout(60 * 5, TimeUnit.SECONDS)
+//            .readTimeout(60 * 5, TimeUnit.SECONDS)
+//            .writeTimeout(15, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
             .sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.createTrustAllManager())

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
+import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import com.yuhang.novel.pirate.service.UsersService
@@ -33,7 +34,7 @@ class UsersServiceImpl : UsersService {
             }
             .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
             .map {
-                mDataRepository.insertCollection(it.bookid)
+                mDataRepository.insertCollection(it.niceBooksResult())
                 it.bookid
             }
     }

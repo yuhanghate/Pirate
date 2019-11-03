@@ -6,12 +6,15 @@ import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxDeviceTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
+import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
@@ -30,7 +33,6 @@ class MainViewModel : BaseViewModel() {
         return Flowable.just("")
                 .flatMap { getCollectionId() }
                 .map {
-//                    val all = mDataRepository.getDatabase().bookInfoKSDao.queryAll()
                     mDataRepository.queryBookInfoCollectionAll()
                 }
                 .map { list ->
@@ -58,7 +60,7 @@ class MainViewModel : BaseViewModel() {
                                 .map {
                                     it.data.list.map {
                                         //从服务器获取收藏列表并插入本地
-                                        mDataRepository.insertCollection(it.bookid)
+                                        mDataRepository.insertCollection(it.niceBooksResult())
                                         it.bookid
                                     }.toList()
                                 }
@@ -146,7 +148,7 @@ class MainViewModel : BaseViewModel() {
      * 删除本地对应的书籍章节
      */
     private fun deleteChapterList(bookid: String) {
-        mDataRepository.deleteChapterList(bookid)
+        mDataRepository.deleteChapterList(bookid, "KS")
     }
 
     /**
@@ -178,6 +180,15 @@ class MainViewModel : BaseViewModel() {
         return Flowable.just("")
                 .map { mDataRepository.queryCollectionAll() }
                 .subscribeOn(Schedulers.io())
+    }
+
+    /**
+     * 查找收藏
+     */
+    fun queryCollection(bookid: String):Flowable<BookCollectionKSEntity?> {
+        return Flowable.just(bookid)
+            .map { mDataRepository.queryCollection(it) }
+            .compose(io_main())
     }
 
     /**

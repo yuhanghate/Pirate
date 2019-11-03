@@ -24,8 +24,8 @@ interface BookChapterKSDao {
   /**
    * 删除书籍对应章节
    */
-  @Query("delete from bookchapterksentity where bookId = :bookid")
-  fun delete(bookid: String)
+  @Query("delete from bookchapterksentity where bookId = :bookid and  resouce = :resouce")
+  fun delete(bookid: String, resouce:String)
 
   /**
    * 获取第一章节id

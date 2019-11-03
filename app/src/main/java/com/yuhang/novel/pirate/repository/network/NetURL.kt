@@ -11,7 +11,7 @@ object NetURL {
 
     //后台API调用接口
 //    private const val HOST_DEVELOP = "http://192.168.123.159:8081/"
-    private const val HOST_DEVELOP = "http://192.168.123.159:8081"
+    private const val HOST_DEVELOP = "http://192.168.1.154:8081"
     private const val HOST_MASTER = "http://www.suibiankanshu.com:8088"
     private const val HOST_QA = "http://47.100.216.212:3000/mock/17/"
     private const val HOST_STAGE = "http://47.100.216.212:3000/mock/17/"

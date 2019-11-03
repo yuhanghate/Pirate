@@ -14,11 +14,9 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0'
         classpath 'com.meituan.android.walle:plugin:1.1.6'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

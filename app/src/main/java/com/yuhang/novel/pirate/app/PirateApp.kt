@@ -66,7 +66,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initToken()
         initYouMent()
         initFragmentManger()
-        initStrictModel()
+//        initStrictModel()
     }
 
     /**

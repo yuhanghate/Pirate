@@ -7,7 +7,7 @@ import io.reactivex.Flowable
 @Dao
 interface SearchHistoryKSDao {
 
-  @Query("select * from searchhistoryksentity as s order by s.updateTime desc limit 5")
+  @Query("select * from searchhistoryksentity as s  order by s.updateTime desc limit 5")
   fun query():List<SearchHistoryKSEntity?>
 
   @Insert

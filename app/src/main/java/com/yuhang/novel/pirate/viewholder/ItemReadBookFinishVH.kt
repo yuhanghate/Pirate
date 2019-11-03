@@ -20,7 +20,7 @@ class ItemReadBookFinishVH(parent: ViewGroup) :
     override fun onBindViewHolder(obj: BookContentKSEntity, position: Int) {
         super.onBindViewHolder(obj, position)
 
-        if (obj.nid == "-1") {
+        if (!obj.hasNext) {
             mBinding.loading.showContent()
         } else {
             mBinding.loading.setLoading(R.layout._loading_layout_loading2)

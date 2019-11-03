@@ -5,16 +5,14 @@ import android.content.Context
 import androidx.work.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
-import com.yuhang.novel.pirate.extension.*
+import com.yuhang.novel.pirate.extension.niceBody
+import com.yuhang.novel.pirate.extension.niceBookResouceEntity
+import com.yuhang.novel.pirate.extension.niceDir
 import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ContentKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
-import com.yuhang.novel.pirate.repository.network.data.resouce.result.ResouceRuleResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
 import io.reactivex.Flowable
@@ -122,8 +120,8 @@ class DataRepository(val context: Context) {
     /**
      * 删除数据库书籍对应的章节列表
      */
-    fun deleteChapterList(bookid: String) {
-        mDatabase.bookChapterKSDao.delete(bookid)
+    fun deleteChapterList(bookid: String, type: String) {
+        mDatabase.bookChapterKSDao.delete(bookid, type)
     }
 
     /**
@@ -160,7 +158,7 @@ class DataRepository(val context: Context) {
      * 插入数据库章节内容
      */
     @Synchronized
-    fun insertBookContent(obj: BookContentKSEntity) {
+    fun insertBookContent(obj: BookContentKSEntity): BookContentKSEntity {
         val contentObj = queryBookContentObj(obj.bookId, obj.chapterId)
         //防止重复插入
         if (contentObj == null) {
@@ -171,7 +169,7 @@ class DataRepository(val context: Context) {
             obj.lastContentPosition = contentObj.lastContentPosition
             getDatabase().bookContentKSDao.insert(obj)
         }
-
+        return obj
     }
 
 
@@ -228,13 +226,14 @@ class DataRepository(val context: Context) {
     /**
      * 收藏书籍
      */
-    fun insertCollection(bookid: String) {
+    fun insertCollection(obj:BooksResult) {
 
-        val collectionKSEntity = mDatabase.bookCollectionKSDao.query(bookid)
+        val collectionKSEntity = mDatabase.bookCollectionKSDao.query(obj.getBookid())
         if (collectionKSEntity == null) {
             mDatabase.bookCollectionKSDao.insert(
                 BookCollectionKSEntity(
-                    bookid = bookid,
+                    bookid = obj.getBookid(),
+                    resouce = obj.getType(),
                     time = System.currentTimeMillis()
                 )
             )
@@ -311,7 +310,6 @@ class DataRepository(val context: Context) {
      * 根据小说id查询最近阅读章节
      */
     fun queryLastOpenChapter(bookid: String): BookContentKSEntity? {
-//        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
         return getDatabase().bookContentKSDao.queryLastOpenChapter(bookid)
     }
 
@@ -575,6 +573,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 查看章节对应记录
+     */
+    fun queryBookReadHistoryEntity(bookid: String, chapterid: String):BookReadHistoryEntity? {
+        return getDatabase().bookReadHistoryDao.queryBookReadHistoryEntity(bookid, chapterid)
+    }
+
+    /**
      * 更新最后一次阅读记录到本地
      */
     fun updateLocalREadHistory(bookid: String, chapterid: String, lastReadTime: Long = System.currentTimeMillis()) {
@@ -711,7 +716,6 @@ class DataRepository(val context: Context) {
     }
 
 
-
     /**
      * 书名/作者搜索
      */
@@ -723,7 +727,7 @@ class DataRepository(val context: Context) {
     /**
      * 作者所有作品
      */
-    fun getAuthorBooksList(author:String):Flowable<AuthorBooksResult> {
+    fun getAuthorBooksList(author: String): Flowable<AuthorBooksResult> {
         val map = hashMapOf<String, String>("author" to author)
         return getNetApi().getAuthorBooksList(niceBody(map))
     }

@@ -200,14 +200,14 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 打开进度等待条
      */
-    fun showProgressbar(message: String = "加载中") {
+    fun showProgressbar(message: String = "加载中", cancel:Boolean = false) {
         if (!::mProgressbar.isInitialized) {
             mProgressbar = ProgressDialog(this)
         }
         if (!mProgressbar.isShowing) {
             mProgressbar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressbar.setMessage(message)
-            mProgressbar.setCancelable(false)
+            mProgressbar.setCancelable(cancel)
             mProgressbar.show()
         }
     }
@@ -223,6 +223,13 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         if (mProgressbar.isShowing) {
             mProgressbar.dismiss()
         }
+    }
+
+    /**
+     * 是否显示进度条
+     */
+    fun hasProgressbar():Boolean {
+        return mProgressbar.isShowing
     }
 
 

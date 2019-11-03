@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.app.PirateApp
+import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
 import org.greenrobot.eventbus.EventBus
 
 open class BaseViewModel : ViewModel() {
 
     val mDataRepository by lazy { PirateApp.getInstance().getDataRepository() }
+
+    val mConvertRepository by lazy { ConvertRepository() }
 
     var mFragment: BaseFragment<*, *>? = null
 

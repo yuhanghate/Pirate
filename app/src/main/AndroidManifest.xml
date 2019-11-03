@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".app.PirateApp"
@@ -82,6 +83,8 @@
         <activity android:name=".ui.settings.activity.ProblemActivity"/>
         <activity android:name=".ui.book.activity.BookResouceActivity" />
         <activity android:name=".ui.resouce.activity.ResouceListActivity" />
+        <activity android:name=".ui.resouce.activity.ResouceListKdActivity" />
+        <activity android:name=".ui.resouce.activity.ResouceChapterListActivity" />
     </application>
 
 </manifest>

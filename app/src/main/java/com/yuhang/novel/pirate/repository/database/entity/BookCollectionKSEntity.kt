@@ -15,16 +15,16 @@ data class BookCollectionKSEntity(
   /**
    * 小说id
    */
-  val bookid: String = "",
+  var bookid: String = "",
 
   /**
    * 数据源类型: 看书神器/快读
    */
-  val resouce_type :String = "",
+  var resouce :String = "",
 
   /**
    * 收藏时间
    */
-  val time:Long = System.currentTimeMillis()
+  var time:Long = System.currentTimeMillis()
 
 )

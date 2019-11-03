@@ -26,4 +26,9 @@ class BookReadHistoryEntity {
      * 更新最新的阅读时间
      */
     var lastReadTime = System.currentTimeMillis()
+
+    /**
+     * 看书/快读
+     */
+    var resouce = "KS"
 }

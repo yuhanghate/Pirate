@@ -24,7 +24,8 @@ import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.eventbus.RemoveCollectionEvent
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
-import com.yuhang.novel.pirate.extension.findNavController
+import com.yuhang.novel.pirate.extension.niceBooksResult
+import com.yuhang.novel.pirate.extension.niceCollectionDataResult
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -140,11 +141,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * 点击事件
      */
     private fun onClick() {
-        mBinding.mainBtn.setOnClickListener {
-            findNavController().navigate(
-                    R.id.storeFragment, null, getNavOptions()
-            )
-        }
+//        mBinding.mainBtn.setOnClickListener {
+//            findNavController().navigate(
+//                    R.id.storeFragment, null, getNavOptions()
+//            )
+//        }
         mBinding.btnMore.setOnClickListener { showPopupMenu(mBinding.btnMore, R.menu.menu_main, itemListener = this) }
         mBinding.btnSearch.setOnClickListener {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
@@ -181,16 +182,26 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
             listItems(items = myItems, selection = { dialog, index, text ->
                 when (text) {
                     "书籍详情" -> {
-                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS, "主页 -> 书箱详情")
-                        BookDetailsActivity.start(mActivity!!, bookid = bookInfoKSEntity.bookid)
+                        mViewModel.queryCollection(bookInfoKSEntity.bookid)
+                            .compose(bindToLifecycle())
+                            .subscribe({
+                                mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS, "主页 -> 书箱详情")
+                                BookDetailsActivity.start(mActivity!!, it?.niceBooksResult()!!)
+                            },{})
+
                     }
                     "目录书摘" -> {
-                        mViewModel.onUMEvent(
-                                mActivity!!,
-                                UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,
-                                "主页 -> 目录书箱"
-                        )
-                        ChapterListActivity.start(mActivity!!, bookInfoKSEntity.bookid)
+                        mViewModel.queryCollection(bookInfoKSEntity.bookid)
+                            .compose(bindToLifecycle())
+                            .subscribe({
+                                mViewModel.onUMEvent(
+                                    mActivity!!,
+                                    UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,
+                                    "主页 -> 目录书箱"
+                                )
+                                ChapterListActivity.start(mActivity!!, it?.niceBooksResult()!!)
+                            },{})
+
                     }
                     "删除" -> {
                         mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DELETE, "主页 -> 从书架删除收藏")
@@ -270,7 +281,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
         obj.isShowLabel = false
-        ReadBookActivity.start(mActivity!!, obj.bookid)
+
+        mViewModel.queryCollection(obj.bookid)
+            .compose(bindToLifecycle())
+            .subscribe({ReadBookActivity.start(mActivity!!, it?.niceBooksResult()!!)},{})
+
 
         //延迟1秒刷新.体验更好
         Handler().postDelayed({ mViewModel.adapter.notifyDataSetChanged() }, 1000)

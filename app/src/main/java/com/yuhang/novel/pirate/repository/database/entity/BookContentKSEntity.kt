@@ -11,12 +11,6 @@ class BookContentKSEntity {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-    var hasContent: Int = 0
-
-    /**
-     * 章节目录(篇)
-     */
-    var chapterDirName: String = ""
 
     /**
      * 章节名称
@@ -66,9 +60,17 @@ class BookContentKSEntity {
     @Ignore
     var textPageBean: TextPageBean? = null
 
-    override fun toString(): String {
-        return "BookContentKSEntity(id=$id, hasContent=$hasContent, chapterDirName='$chapterDirName', chapterName='$chapterName', nid=$nid, pid=$pid, bookId=$bookId, content='$content', chapterId=$chapterId, lastOpenTime=$lastOpenTime, lastContentPosition=$lastContentPosition, txtPage=$txtPage, textPageBean=$textPageBean)"
-    }
+    /**
+     * KS:看书
+     * KD:快读
+     */
+    var resouce : String = "KS"
+
+    /**
+     * 是否还有下一页
+     */
+    @Ignore
+    var hasNext = true
 
 
 }

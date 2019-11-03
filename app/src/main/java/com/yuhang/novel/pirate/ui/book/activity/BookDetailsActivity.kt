@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.github.aakira.expandablelayout.Utils
 import com.google.android.material.appbar.AppBarLayout
+import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -29,14 +30,13 @@ import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceToast
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
+import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.SystemUtil
 import jp.wasabeef.glide.transformations.BlurTransformation
 import org.greenrobot.eventbus.EventBus
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -45,7 +45,8 @@ import kotlin.math.abs
  * 小说详情页
  * 简介/目录/加入书架/立即阅读
  */
-class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
+class BookDetailsActivity :
+    BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
     AppBarLayout.OnOffsetChangedListener {
 
     /**
@@ -68,10 +69,18 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
     companion object {
         const val BOOK_ID = "book_id"
+        const val BOOK_RESULT = "book_result"
         fun start(context: Activity, bookid: String) {
             val intent = Intent(context, BookDetailsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(BOOK_ID, bookid)
+            startIntent(context, intent)
+        }
+
+        fun start(context: Activity, result: BooksResult) {
+            val intent = Intent(context, BookDetailsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra(BOOK_RESULT, Gson().toJson(result))
             startIntent(context, intent)
         }
     }
@@ -80,46 +89,42 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         return R.layout.activity_book_details
     }
 
-    private fun getBookid() = intent.getStringExtra(BOOK_ID)
+//    private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
+    private fun getBookResult() =
+        Gson().fromJson<BooksResult>(intent.getStringExtra(BOOK_RESULT), BooksResult::class.java)
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-
         netServiceData()
         onClick()
         //每次打开详情页加载一下章节目录 .防止进入阅读时本地获取不到章节
-        mViewModel.updateChapterToDB(getBookid()).compose(bindToLifecycle()).subscribe({}, {})
-
+        mViewModel.updateChapterToDB(getBookResult()).compose(bindToLifecycle()).subscribe({
+            //点击过立即阅读,加载完成就直接打开阅读界面
+            if (hasProgressbar()) {
+                closeProgressbar()
+                mBinding.openReadBookTv.callOnClick()
+            }
+        }, {})
         initToolbarHeight()
 
     }
 
     private fun initToolbarHeight() {
-//        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(this))
-//
-//        mBinding.tabNavigationBar.setPadding(0, 0, 0, StatusBarUtil.getNavigationBarSize(this).y * 3 - StatusBarUtil.getStatusBarHeight(this))
-//        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-//        layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
-//        layoutParams.height = StatusBarUtil.getRealHeight(this) - mBinding.appBar.height
-//        mBinding.tabNavigationBar.layoutParams = layoutParams
-
         mBinding.statusBarV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
     }
 
     override fun initStatusTool() {
-        StatusBarUtil.setTranslucentForCoordinatorLayout(this, StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA)
+        StatusBarUtil.setTranslucentForCoordinatorLayout(
+            this,
+            StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
+        )
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            var height = 0
-            val resourceId = applicationContext.resources.getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                height = applicationContext.resources.getDimensionPixelSize(resourceId);
-            }
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -128,12 +133,13 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
                 layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
             } else {
                 layoutParams.height =
-                    StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(this)
+                    StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(
+                        this
+                    )
             }
 
             mBinding.tabNavigationBar.layoutParams = layoutParams
 
-//            mBinding.statusBarV.layoutParams.height = height
         }
     }
 
@@ -156,7 +162,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
      */
     private fun initCollectionStatus() {
         thread {
-            val bookid = mViewModel.obj?.Id ?: return@thread
+            val bookid = mViewModel.entity?.bookid ?: return@thread
             val collection = mViewModel.queryCollection(bookid)
             runOnUiThread {
                 if (collection != null) {
@@ -181,8 +187,14 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
         mBinding.includeToolbarClose.backCloseIv.setOnClickListener { onBackPressed() }
         mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressed() }
         mBinding.openReadBookTv.setOnClickListener {
+
+            //阅读界面需要等章节列表全部加载完成
+            if (mViewModel.chapterList.isEmpty()) {
+                showProgressbar("努力获取章节列表...", true)
+                return@setOnClickListener
+            }
             mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_READ, "立即阅读")
-            ReadBookActivity.start(this, getBookid())
+            ReadBookActivity.start(this, getBookResult())
         }
         mBinding.addBookrackTv.setOnClickListener {
 
@@ -201,88 +213,45 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
      * 重新加载数据
      */
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
-    private fun resetView(obj: BookDetailsDataResult) {
-        Glide.with(this).load(niceCoverPic(obj.Img)).into(mBinding.includeToobarHeadOpen.coverIv)
-        Glide.with(this).load(niceCoverPic(obj.Img))
+    private fun resetView(obj: BookInfoKSEntity) {
+        Glide.with(this).load(obj.cover.niceCoverPic()).into(mBinding.includeToobarHeadOpen.coverIv)
+        Glide.with(this).load(obj.cover.niceCoverPic())
             .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
             .into(mBinding.includeToobarHeadOpen.bgCoverIv)
 
         val details = mBinding.layoutBookDetails
-        details.statusTv.setText("状态   ${obj.BookStatus}", null)
-        details.authorTv.text = obj.Author
-        details.titleTv.text = obj.Name
-        details.chapterNameTv.text = obj.LastChapter
-        details.bookTypeTv.text = obj.CName
-        details.descTv.text = obj.Desc
-        details.authorAllBookTv.text = "${obj.Author} 的全部作品"
-        details.timeTv.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Date(obj.LastTime))
+        details.statusTv.setText("状态   ${obj.bookStatus}", null)
+        details.authorTv.text = obj.author
+        details.titleTv.text = obj.bookName
+        details.chapterNameTv.text = obj.lastChapterName
+        details.bookTypeTv.text = obj.classifyName
+        details.descTv.text = obj.description
+        details.authorAllBookTv.text = "${obj.author} 的全部作品"
+        details.timeTv.text = ""
 
-        mBinding.includeToolbarClose.titleCloseTv.text = obj.Name
+        mBinding.includeToolbarClose.titleCloseTv.text = obj.bookName
 
         //目录点击
         mBinding.layoutBookDetails.chapterListLl.setOnClickListener {
-            val bookName = mViewModel.obj?.Name ?: ""
+            val bookName = mViewModel.entity?.bookName ?: ""
             mViewModel.onUMEvent(
                 this,
                 UMConstant.TYPE_DETAILS_CLICK_DIR_CHANPTER,
                 hashMapOf(
                     "action" to "书箱详情 -> 点击单独章节目录",
                     "bookName" to bookName,
-                    "bookId" to getBookid().toString()
+                    "bookId" to getBookResult().getBookid()
                 )
             )
             ChapterListActivity.start(
                 this,
-                getBookid()
+                getBookResult()
 
             )
         }
 
         //动态加载作者全部作品
         details.authorAllBookLl.removeAllViews()
-
-        if (obj.SameUserBooks.isNotEmpty()) {
-            obj.SameUserBooks.forEachIndexed { index, recommendBooksResult ->
-                recommendBooksResult?.let { book ->
-
-                    //作品Item
-                    val itemBinding = LayoutBookDetailsAuthorAllBookItemBinding.inflate(layoutInflater)
-                    itemBinding.titleTv.text = book.Name
-                    itemBinding.chapterNameTv.text = book.LastChapter
-
-                    val drawable = getDrawable(R.drawable.ic_default_cover)
-                    val placeholder =
-                        RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
-                            .placeholder(drawable)
-                            .error(drawable)
-                    Glide.with(this).load(niceCoverPic(book.Img)).apply(placeholder).into(itemBinding.coverIv)
-
-                    //分隔线
-                    val lineBinding = LayoutBookDetailsAuthorAllBookLineBinding.inflate(layoutInflater)
-
-                    //点击跳转作者相关详情
-                    itemBinding.itemLl.setOnClickListener {
-                        mViewModel.onUMEvent(
-                            this,
-                            UMConstant.TYPE_DETAILS_CLICK_AUTHOR_OTHER_BOOK,
-                            hashMapOf(
-                                "action" to "书箱详情 -> 点击作者其他作品",
-                                "bookId" to book.Id.toString(),
-                                "bookName" to book.Name,
-                                "author" to book.Author
-                            )
-                        )
-                        BookDetailsActivity.start(this, book.Id)
-                    }
-
-                    details.authorAllBookLl.addView(itemBinding.root)
-                    details.authorAllBookLl.addView(lineBinding.root)
-
-                }
-            }
-
-            details.authorAllBookLl.removeViewAt(details.authorAllBookLl.childCount - 1)
-        }
     }
 
 
@@ -310,7 +279,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             mBinding.includeToolbarClose.backCloseIv.visibility = View.VISIBLE
 
             val animationIn = AnimationUtils.loadAnimation(this, R.anim.slide_book_details_in)
-            animationIn.interpolator = Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
+            animationIn.interpolator =
+                Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
             mBinding.includeToolbarClose.titleCloseTv.startAnimation(animationIn)
             Handler().postDelayed({
                 mBinding.includeToolbarClose.titleCloseTv.visibility = View.VISIBLE
@@ -323,7 +293,8 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
             animationEvent = TitleEvent.EXIT_START
             mBinding.includeToolbarClose.root.visibility = View.VISIBLE
             val animationOut = AnimationUtils.loadAnimation(this, R.anim.slide_book_details_out)
-            animationOut.interpolator = Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
+            animationOut.interpolator =
+                Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
             animationOut.fillAfter = true
             mBinding.includeToolbarClose.titleCloseTv.startAnimation(animationOut)
             Handler().postDelayed({
@@ -358,16 +329,17 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
     @SuppressLint("CheckResult")
     private fun netServiceData() {
         mBinding.loading.showLoading()
-        mViewModel.getBookDetails(getBookid())
+        mViewModel.getBookDetails(getBookResult())
             .compose(bindToLifecycle())
             .subscribe({
-                mViewModel.obj = it
+                mViewModel.entity = it
                 //点击立即阅读,返回就刷新一次
                 initCollectionStatus()
                 //插入或更新书箱信息
                 mViewModel.insertBookInfoEntity()
-                mBinding.loading.showContent()
+
                 resetView(it)
+                netAuthorBooksData()
             }, {
                 Logger.e(it.message!!)
                 mBinding.loading.showError()
@@ -376,13 +348,79 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
 
 
     /**
+     * 作者所有作品
+     */
+    @SuppressLint("CheckResult")
+    private fun netAuthorBooksData() {
+        mViewModel.getAuthorBooksList(getBookResult())
+            .compose(bindToLifecycle())
+            .subscribe({
+                resetAuthorBooksView(it)
+                mBinding.loading.showContent()
+            }, {
+                mBinding.loading.showError()
+            })
+    }
+
+
+    /**
+     * 作者全部作品
+     */
+    private fun resetAuthorBooksView(obj: List<BooksResult>) {
+        val details = mBinding.layoutBookDetails
+        obj.forEachIndexed { index, recommendBooksResult ->
+            recommendBooksResult.let { book ->
+
+                //作品Item
+                val itemBinding = LayoutBookDetailsAuthorAllBookItemBinding.inflate(layoutInflater)
+                itemBinding.titleTv.text = book.bookName
+                itemBinding.chapterNameTv.text = book.lastChapterName
+                itemBinding.chapterNameTv.visibility = View.GONE
+
+                val drawable = getDrawable(R.drawable.ic_default_cover)
+                val placeholder =
+                    RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
+                        .placeholder(drawable)
+                        .error(drawable)
+                Glide.with(this).load(book.cover.niceCoverPic()).apply(placeholder)
+                    .into(itemBinding.coverIv)
+
+                //分隔线
+                val lineBinding = LayoutBookDetailsAuthorAllBookLineBinding.inflate(layoutInflater)
+
+                //点击跳转作者相关详情
+                itemBinding.itemLl.setOnClickListener {
+                    mViewModel.onUMEvent(
+                        this,
+                        UMConstant.TYPE_DETAILS_CLICK_AUTHOR_OTHER_BOOK,
+                        hashMapOf(
+                            "action" to "书箱详情 -> 点击作者其他作品",
+                            "bookId" to book.bookKsId.toString(),
+                            "bookName" to book.bookName!!,
+                            "author" to book.author!!
+                        )
+                    )
+                    BookDetailsActivity.start(this, recommendBooksResult)
+                }
+
+                details.authorAllBookLl.addView(itemBinding.root)
+                details.authorAllBookLl.addView(lineBinding.root)
+
+            }
+        }
+
+//        details.authorAllBookLl.removeViewAt(details.authorAllBookLl.childCount - 1)
+    }
+
+
+    /**
      * 增加收藏
      */
     @SuppressLint("CheckResult")
     private fun addCollection() {
-        val bookid = mViewModel.obj?.Id ?: return
-        mViewModel.postCollection(bookid)
-        mViewModel.insertCollection(bookid)
+        val bookid = mViewModel.entity?.bookid ?: return
+        mViewModel.postCollection(getBookResult())
+        mViewModel.insertCollection(getBookResult())
             .compose(bindToLifecycle())
             .subscribe({
                 mViewModel.isCollection = true
@@ -398,7 +436,7 @@ class BookDetailsActivity : BaseSwipeBackActivity<ActivityBookDetailsBinding, Bo
      */
     @SuppressLint("CheckResult")
     private fun removeCollection() {
-        val bookid = mViewModel.obj?.Id ?: return
+        val bookid = mViewModel.entity?.bookid ?: return
         mViewModel.deleteCollection(bookid)
             .compose(bindToLifecycle())
             .subscribe({

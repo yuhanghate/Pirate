@@ -67,6 +67,8 @@ interface KanShuNetApi {
         ) bookId: Long, @Path("chapterId") chapterId: String
     ): Flowable<ContentResult>
 
+
+
     /**
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
@@ -76,7 +78,7 @@ interface KanShuNetApi {
         @Path("dirId") dirId: Int, @Path(
             "bookId"
         ) bookId: Long, @Path("chapterId") chapterId: String
-    ): Flowable<ContentResult>
+    ): Call<ContentResult>
 
     /**
      * 下载章节内容

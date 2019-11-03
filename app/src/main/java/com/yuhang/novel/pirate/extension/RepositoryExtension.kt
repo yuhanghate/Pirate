@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.extension
 
 import com.google.gson.Gson
 import com.yuhang.novel.pirate.repository.DataRepository
+import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part
@@ -65,4 +66,24 @@ fun DataRepository.niceDir(bookid: Long): Int {
       .substring(0, bookid.toString().length - 3)
       .toInt() + 1
   return dirId
+}
+
+
+/**
+ * Post 上传json 格式
+ */
+fun ConvertRepository.niceBody(obj: Any): RequestBody {
+    return RequestBody.create(MediaType.parse("application/json"), Gson().toJson(obj))
+}
+
+/**
+ * 获取存放小说的目录id
+ */
+fun ConvertRepository.niceDir(bookid: String): Int {
+    if (bookid.toLong() < 1000) {
+        return 1
+    }
+    return bookid
+        .substring(0, bookid.length - 3)
+        .toInt() + 1
 }
