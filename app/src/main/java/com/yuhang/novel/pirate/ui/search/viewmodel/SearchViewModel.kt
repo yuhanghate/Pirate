@@ -5,6 +5,8 @@ import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceSearchResult
 import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.SearchSuggestResult
+import com.yuhang.novel.pirate.ui.search.adapter.ItemSearchSuggestAdapter
 import com.yuhang.novel.pirate.ui.search.adapter.SearchAdapter
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
 import io.reactivex.Flowable
@@ -20,11 +22,6 @@ class SearchViewModel : BaseViewModel() {
     var lastKeyword = ""
 
     /**
-     * 每次输入的内容
-     */
-    var searchKeyword = ""
-
-    /**
      * 搜索源
      * KD:快读
      * KS:看书
@@ -32,6 +29,16 @@ class SearchViewModel : BaseViewModel() {
     var resouce = "KD"
 
     val adapter by lazy { SearchAdapter() }
+
+    /**
+     * 联想搜索
+     */
+    val searchAdapter:ItemSearchSuggestAdapter by lazy { ItemSearchSuggestAdapter() }
+
+    /**
+     * 点击联想功能以后关键字
+     */
+    var searchSuggestStr = ""
 
     fun searchBookV2(keyword: String): Flowable<List<BooksResult>> {
         return mConvertRepository.getSearchResult(resouce, keyword)
@@ -67,6 +74,14 @@ class SearchViewModel : BaseViewModel() {
                 )
             )
         }
+    }
+
+    /**
+     * 模糊匹配
+     */
+    fun searchSuggest(keyword: String) :Flowable<List<SearchSuggestResult>>{
+        return mConvertRepository.searchSuggest(keyword)
+            .compose(io_main())
     }
 
 }

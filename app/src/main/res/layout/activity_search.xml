@@ -127,9 +127,9 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_gravity="center_vertical"
-                            android:visibility="gone"
                             android:layout_marginStart="10dp"
-                            android:src="@drawable/btn_search_close" />
+                            android:src="@drawable/btn_search_close"
+                            android:visibility="gone" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -167,12 +167,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:text="清空历史"
+                                android:background="@drawable/bg_material_40dp"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:background="@drawable/bg_material_40dp"
-                                android:textSize="15sp"
-                                android:textColor="@color/secondary_text" />
+                                android:text="清空历史"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="15sp" />
                     </RelativeLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
@@ -204,6 +204,14 @@
                         android:paddingBottom="20dp"
                         android:visibility="gone"
                         tools:listitem="@layout/item_search" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/search_suggest_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:background="@color/window_background"
+                        tools:listitem="@layout/item_search_suggest" />
 
 
                 <RelativeLayout

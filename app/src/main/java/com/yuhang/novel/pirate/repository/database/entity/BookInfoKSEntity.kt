@@ -43,30 +43,20 @@ class BookInfoKSEntity{
      */
     var lastTime: Long = System.currentTimeMillis()
 
-    /**
-     * 上一章节id
-     */
-    var firstChapterId: String = ""
 
     /**
      * 最后更新章节名称
      */
     var lastChapterName: String = ""
 
-    /**
-     * 最后更新章节id
-     */
-    var lastChapterId: String  = ""
+    var lastChapterId : String = ""
+
 
     /**
      * 小说更新状态: 连载/完结
      */
     var bookStatus: String = ""
 
-    /**
-     * 分类id
-     */
-    var classifyId: Int = 0
 
     /**
      * 分类名称
@@ -81,9 +71,19 @@ class BookInfoKSEntity{
     var stickTime: Long = 0
 
     /**
+     * 最后阅读时间
+     */
+    var lastReadTime :Long = 0
+
+    /**
      * 用于View显示,
      * 是否显示标签
      */
     @Ignore
     var isShowLabel = false
+
+    /**
+     * 快读/看书
+     */
+    var resouce = "KS"
 }

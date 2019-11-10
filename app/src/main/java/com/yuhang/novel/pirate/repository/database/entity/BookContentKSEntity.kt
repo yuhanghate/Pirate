@@ -17,15 +17,6 @@ class BookContentKSEntity {
      */
     var chapterName: String = ""
 
-    /**
-     * 下一章节id
-     */
-    var nid: String = ""
-
-    /**
-     * 上一章节id
-     */
-    var pid: String = ""
 
     /**
      * 书籍id
@@ -53,9 +44,6 @@ class BookContentKSEntity {
      * 记录上一次阅读的内容角标位置
      */
     var lastContentPosition: Int = 0
-
-    @Ignore
-    var txtPage: TxtPage? = null
 
     @Ignore
     var textPageBean: TextPageBean? = null

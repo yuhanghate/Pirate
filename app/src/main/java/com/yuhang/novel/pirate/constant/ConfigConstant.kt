@@ -6,6 +6,11 @@ object ConfigConstant {
      * 友盟统计app_key
      */
     val YOUMENT_KEY = "5d44075b570df3f22f0006cb"
+
+    /**
+     * 友盟统计
+     */
+    val YOUMENT_PUSH = "792a0aaaa882f197d74a851b4d29fb19"
     /**
      * 翻页方式
      */

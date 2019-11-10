@@ -26,6 +26,7 @@ import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
 import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
@@ -446,17 +447,17 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         //从服务器下载收藏
         mUsersService.updateCollectionToLocal()
-            .flatMap { mUsersService.updateChapterListToLocal(it) }
+//            .flatMap { mUsersService.updateChapterListToLocal(it) }
             .flatMap { mUsersService.updateBookInfoToLocal(it) }
             .flatMap { mUsersService.updateReadHistoryToLocal(it) }
 //            .flatMap { mUsersService.updateContentToLocal(it) }
             .compose(bindToLifecycle())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .compose(io_main())
             .subscribe({
             }, {
                 closeProgressbar()
                 showUpdateCollectionDialog()
+                throw it
             }, {
                 closeProgressbar()
                 EventBus.getDefault().postSticky(LoginEvent())

@@ -194,7 +194,7 @@ class BookDetailsActivity :
                 return@setOnClickListener
             }
             mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_READ, "立即阅读")
-            ReadBookActivity.start(this, getBookResult())
+            ReadBookActivity.start(this, getBookResult(), false)
         }
         mBinding.addBookrackTv.setOnClickListener {
 
@@ -425,7 +425,6 @@ class BookDetailsActivity :
             .subscribe({
                 mViewModel.isCollection = true
                 mBinding.addBookrackTv.text = "移出书架"
-
                 EventBus.getDefault().post(UpdateChapterEvent())
                 niceToast("加入成功")
             }, { niceToast("加入失败") })

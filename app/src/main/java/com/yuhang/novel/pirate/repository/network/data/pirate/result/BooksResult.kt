@@ -60,6 +60,11 @@ class BooksResult {
     var resouce = "KS"
 
     /**
+     * 最后更新时间
+     */
+    var lastTime :Long = 0
+
+    /**
      * 获取书本id
      */
     fun getBookid(): String {

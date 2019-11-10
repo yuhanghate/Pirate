@@ -22,7 +22,9 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
  */
 @Database(entities = {BookInfoKSEntity.class, BookCollectionKSEntity.class,
         SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
-        UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class, BookResouceEntity.class}, version = 8, exportSchema = false)
+        UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class,
+        PushMessageEntity.class, BookResouceTypeKDEntity.class},
+        version = 9, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -37,7 +39,7 @@ public abstract class AppDatabase
         if (INSTANCE == null) {
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
-//                            .allowMainThreadQueries()
+                            .allowMainThreadQueries()
 //                            .addMigrations(Migration_3_4.instance(), Migration_4_5.instance(), Migration_5_6.instance(),
 //                                    Migration_6_7.instance())
                             .fallbackToDestructiveMigration()
@@ -99,10 +101,17 @@ public abstract class AppDatabase
      */
     public abstract BookReadHistoryDao getBookReadHistoryDao();
 
+
     /**
-     * 书源
+     * 推送类型
      * @return
      */
-    public abstract BookResouceDao getBookResouceDao();
+    public abstract PushMessageDao getPushMessageDao();
+
+    /**
+     * 快读源类型
+     * @return
+     */
+    public abstract BookResouceTypeKDDao getBookResouceTypeKDDao();
 
 }

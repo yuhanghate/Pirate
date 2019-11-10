@@ -4,43 +4,38 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItems
-import com.afollestad.materialdialogs.list.listItemsMultiChoice
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 import com.arlib.floatingsearchview.util.adapter.TextWatcherAdapter
-import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySearchBinding
 import com.yuhang.novel.pirate.databinding.LayoutSearchHistoryBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
-import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.listener.OnClickSearchSuggestListener
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
-import com.yuhang.novel.pirate.utils.SystemUtil
 
 
 /**
  * 搜索书籍
  */
 class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(),
-    OnClickItemListener,TextView.OnEditorActionListener {
+    OnClickItemListener,TextView.OnEditorActionListener, OnClickSearchSuggestListener {
+
+
+    var LONG_SEARCH_SUGGES = System.currentTimeMillis()
 
     companion object {
         fun start(context: Activity) {
@@ -66,11 +61,17 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     override fun initRecyclerView() {
         super.initRecyclerView()
 
-        mViewModel.adapter.setListener(this)
         mViewModel.adapter.setDecorationSize(niceDp2px(15f))
+            .setListener(this)
             .setlayoutManager(LinearLayoutManager(this))
             .setDecorationColor(android.R.color.transparent)
             .setRecyclerView(mBinding.recyclerview)
+
+        mViewModel.searchAdapter
+            .setlayoutManager(LinearLayoutManager(this))
+            .setListener(this)
+            .setRecyclerView(mBinding.searchSuggestRecyclerview)
+
     }
 
     private fun onClick() {
@@ -81,13 +82,18 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         mBinding.searchEt.addTextChangedListener(object : TextWatcherAdapter() {
             override fun afterTextChanged(s: Editable?) {
                 super.afterTextChanged(s)
-                s?.toString()?.let {
-                    if (it.isNotEmpty()) {
-                        mBinding.btnClear.visibility = View.VISIBLE
-                        return@let
-                    }
+                if (TextUtils.isEmpty(s?.toString())) {
                     mBinding.btnClear.visibility = View.GONE
+                    mBinding.recyclerview.visibility = View.GONE
+                    return
                 }
+                mBinding.btnClear.visibility = View.VISIBLE
+
+                if (System.currentTimeMillis() - LONG_SEARCH_SUGGES > 700 && mViewModel.searchSuggestStr != s?.toString()) {
+                    netServiceSearchSuggest(s?.toString())
+                    LONG_SEARCH_SUGGES = System.currentTimeMillis()
+                }
+
             }
         })
     }
@@ -98,10 +104,10 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     @SuppressLint("CheckResult")
     private fun netServiceSearch(keyword: String?) {
-        keyword ?: return
+        if (TextUtils.isEmpty(keyword)) return
 
         showProgress()
-        mViewModel.lastKeyword = keyword.trim()
+        mViewModel.lastKeyword = keyword?.trim()!!
         mViewModel.resouce = if (mBinding.resouceTv.text.toString() == "笔趣阁") "KS" else "KD"
         mViewModel.insertSearchHistory(keyword.trim())
         mViewModel.searchBookV2(keyword.trim())
@@ -109,10 +115,31 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
             .subscribe({
                 mViewModel.adapter.setRefersh(it)
                 mBinding.recyclerview.visibility = View.VISIBLE
+                mBinding.searchSuggestRecyclerview.visibility = View.GONE
                 hideProgress()
             }, {
                 hideProgress()
                 mBinding.recyclerview.visibility = View.VISIBLE
+                mBinding.searchSuggestRecyclerview.visibility = View.GONE
+            })
+    }
+
+    /**
+     * 关键字联想
+     */
+    private fun netServiceSearchSuggest(keyword: String?) {
+        if (TextUtils.isEmpty(keyword)) {
+            mBinding.searchSuggestRecyclerview.visibility = View.GONE
+            return
+        }
+
+        mViewModel.searchSuggest(keyword!!)
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.searchSuggestRecyclerview.visibility = View.VISIBLE
+                mViewModel.searchAdapter.setRefersh(it)
+            },{
+                mBinding.searchSuggestRecyclerview.visibility = View.GONE
             })
     }
 
@@ -172,6 +199,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         val binding = LayoutSearchHistoryBinding.inflate(LayoutInflater.from(this))
         binding.contentTv.text = keyword
         binding.contentTv.setOnClickListener {
+            mViewModel.searchSuggestStr = keyword
             mBinding.searchEt.setText(keyword, null)
             mBinding.searchEt.setSelection(keyword.length)
             netServiceSearch(keyword)
@@ -207,7 +235,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         MaterialDialog(this).show {
             listItems(items = arrayListOf("追书", "笔趣阁")) { dialog, index, text ->
                 mBinding.resouceTv.text = text
-                netServiceSearch(mViewModel.searchKeyword)
+                netServiceSearch(mBinding.searchEt.text.toString())
             }
         }
     }
@@ -222,5 +250,16 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
 
         super.onPause()
         mViewModel.onPause(this)
+    }
+
+    /**
+     * 联想搜索点击
+     */
+    override fun onClickSearchSuggestListener(position: Int) {
+        val text = mViewModel.searchAdapter.getObj(position).text.trim()
+        mViewModel.searchSuggestStr = text
+        mBinding.searchEt.setText(text)
+        mBinding.searchSuggestRecyclerview.visibility = View.GONE
+        netServiceSearch(text)
     }
 }

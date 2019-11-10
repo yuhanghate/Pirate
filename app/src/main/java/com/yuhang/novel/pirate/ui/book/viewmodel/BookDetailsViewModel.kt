@@ -6,14 +6,10 @@ import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
-import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
-import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.AuthorBooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,9 +20,9 @@ class BookDetailsViewModel : BaseViewModel() {
 
     var obj: BookDetailsDataResult? = null
 
-    var entity:BookInfoKSEntity? = null
+    var entity: BookInfoKSEntity? = null
 
-    var chapterList : ArrayList<BookChapterKSEntity> = arrayListOf()
+    var chapterList: ArrayList<BookChapterKSEntity> = arrayListOf()
 
     /**
      * 是否收藏书箱
@@ -37,7 +33,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 作者所有作品
      */
-    fun getAuthorBooksList(obj:BooksResult) :Flowable<List<BooksResult>>{
+    fun getAuthorBooksList(obj: BooksResult): Flowable<List<BooksResult>> {
         return mConvertRepository.getAuthorBooksList(obj)
             .compose(io_main())
 
@@ -46,7 +42,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 获取详情信息
      */
-    fun getBookDetails(obj: BooksResult):Flowable<BookInfoKSEntity> {
+    fun getBookDetails(obj: BooksResult): Flowable<BookInfoKSEntity> {
         return mConvertRepository.getDetailsInfo(obj)
             .compose(io_main())
     }
@@ -69,8 +65,8 @@ class BookDetailsViewModel : BaseViewModel() {
      * 收藏到服务器
      */
     @SuppressLint("CheckResult")
-    fun postCollection(obj:BooksResult) {
-        if (TextUtils.isEmpty(PirateApp.getInstance().getToken())|| entity == null) return
+    fun postCollection(obj: BooksResult) {
+        if (TextUtils.isEmpty(PirateApp.getInstance().getToken()) || entity == null) return
         Flowable.just(obj.getBookid())
 
             .flatMap {
@@ -141,7 +137,7 @@ class BookDetailsViewModel : BaseViewModel() {
     /**
      * 章节列表
      */
-    private fun getChapterListV2(obj:BooksResult): Flowable<List<BookChapterKSEntity>> {
+    private fun getChapterListV2(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
         return mConvertRepository.getChapterList(obj)
     }
 
@@ -153,7 +149,7 @@ class BookDetailsViewModel : BaseViewModel() {
             .map {
                 chapterList.clear()
                 chapterList.addAll(it)
-                mDataRepository.deleteChapterList(it[0].bookId, it[0].resouce)
+                mDataRepository.deleteChapterList(it[0].bookId)
                 mDataRepository.insertChapterList(it)
                 return@map it
             }

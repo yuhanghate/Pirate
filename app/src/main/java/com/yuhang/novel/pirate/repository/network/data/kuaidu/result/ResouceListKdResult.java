@@ -24,6 +24,25 @@ public class ResouceListKdResult {
     private String updated;
     private String host;
 
+    private String bookid;
+    private String bookName;
+
+    public String getBookid() {
+        return bookid;
+    }
+
+    public void setBookid(String bookid) {
+        this.bookid = bookid;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
     public String get_id() {
         return _id;
     }

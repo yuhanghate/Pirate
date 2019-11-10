@@ -2,8 +2,13 @@ package com.yuhang.novel.pirate.ui.main.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
+import com.afollestad.materialdialogs.DialogCallback
+import com.afollestad.materialdialogs.MaterialDialog
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -24,7 +29,23 @@ import java.util.concurrent.TimeUnit
 
 @RuntimePermissions
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
-    //    lateinit var navController: NavController
+
+    companion object {
+
+        private const val PUSH_TITLE = "push_title"
+        private const val PUSH_CONTENT = "push_content"
+        fun start(context: Context, title: String, content: String = "") {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.setPackage(context.packageName)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra(PUSH_TITLE, title)
+            intent.putExtra(PUSH_CONTENT, content)
+            context.startActivity(intent)
+        }
+    }
+
+    fun getPushTitle() = intent.getStringExtra(PUSH_TITLE)
+    fun getPushContent() = intent.getStringExtra(PUSH_CONTENT)
     override fun onLayoutId(): Int {
         return R.layout.activity_main2
     }
@@ -32,6 +53,12 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onCreateEventbus(this)
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        this.intent = intent
     }
 
 
@@ -49,11 +76,11 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
 
         loadMultipleRootFragment(
-                R.id.nav_host_fragment,
-                intent.getIntExtra("tab_index", 0),
-                MainFragment.newInstance(),
-                StoreFragment.newInstance(),
-                MeFragment.newInstance()
+            R.id.nav_host_fragment,
+            intent.getIntExtra("tab_index", 0),
+            MainFragment.newInstance(),
+            StoreFragment.newInstance(),
+            MeFragment.newInstance()
         )
 
 //        val nearby = mBinding.bottomBar.getTabWithId(R.id.tab_main)
@@ -90,10 +117,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
         Flowable.interval(3, 60 * 10, TimeUnit.SECONDS)
-                .flatMap { mViewModel.updateChapterToDB() }
-                .subscribeOn(Schedulers.io())
-                .compose(bindToLifecycle())
-                .subscribe({ }, { })
+            .flatMap { mViewModel.updateChapterToDB() }
+            .subscribeOn(Schedulers.io())
+            .compose(bindToLifecycle())
+            .subscribe({ }, { })
     }
 
 
@@ -104,14 +131,18 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     /**
      * 更新所有章节信息
      */
-    @SuppressLint("CheckResult")
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
-        mViewModel.updateChapterToDB().compose(bindToLifecycle()).subscribeOn(Schedulers.io()).subscribe({}, {})
+        mViewModel.updateChapterToDB().compose(bindToLifecycle()).subscribeOn(Schedulers.io())
+            .subscribe({}, {})
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // NOTE: delegate the permission handling to generated function
         onRequestPermissionsResult(requestCode, grantResults)
@@ -120,18 +151,17 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     /**
      * 版本升级
      */
-    @SuppressLint("CheckResult")
     @NeedsPermission(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun checkVersion() {
 //        mActivity?.showProgressbar()
         mViewModel.checkVersion()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    if (it.constraint) {
-                        showVersionUpdateDialog(it)
-                    }
-                }, {
-                })
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it.constraint) {
+                    showVersionUpdateDialog(it)
+                }
+            }, {
+            })
     }
 
 
@@ -161,8 +191,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         super.onResume()
         mViewModel.onResume(this)
 
-
-
+        showNoteDialog()
     }
 
     override fun onPause() {
@@ -171,6 +200,32 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
     }
 
+    /**
+     * 提示公告
+     */
+    @SuppressLint("CheckResult")
+    private fun showNoteDialog() {
 
+        mViewModel.getPushMessageEntity()
+            .compose(bindToLifecycle())
+            .subscribe({entity ->
+                Handler().postDelayed({
+                    MaterialDialog(this).show {
+                        title(text = entity?.title)
+                        message(text = entity?.message)
+                        positiveButton(text = "确定", click = object :DialogCallback{
+                            override fun invoke(p1: MaterialDialog) {
+                                mViewModel.deletePushMessage(entity!!)
+                                p1.dismiss()
+                            }
+                        })
+                        cancelable(cancelable = false)
+                    }
+                }, 1200)
+
+            }, {})
+
+
+    }
 
 }

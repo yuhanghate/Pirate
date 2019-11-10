@@ -6,7 +6,6 @@ import androidx.work.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.extension.niceBody
-import com.yuhang.novel.pirate.extension.niceBookResouceEntity
 import com.yuhang.novel.pirate.extension.niceDir
 import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
@@ -80,7 +79,10 @@ class DataRepository(val context: Context) {
      */
     fun getBookChapterList(bookid: String): Flowable<ChapterListResult> {
         //返回的格式第二条数据是空的,单独进行处理
-        return getKSNetApi().getBookChapterList(dirId = niceDir(bookid.toLong()), bookId = bookid.toLong())
+        return getKSNetApi().getBookChapterList(
+            dirId = niceDir(bookid.toLong()),
+            bookId = bookid.toLong()
+        )
             .map { it.replace("},]}}", "}]}}") }
             .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
@@ -120,8 +122,8 @@ class DataRepository(val context: Context) {
     /**
      * 删除数据库书籍对应的章节列表
      */
-    fun deleteChapterList(bookid: String, type: String) {
-        mDatabase.bookChapterKSDao.delete(bookid, type)
+    fun deleteChapterList(bookid: String) {
+        mDatabase.bookChapterKSDao.delete(bookid)
     }
 
     /**
@@ -226,7 +228,7 @@ class DataRepository(val context: Context) {
     /**
      * 收藏书籍
      */
-    fun insertCollection(obj:BooksResult) {
+    fun insertCollection(obj: BooksResult) {
 
         val collectionKSEntity = mDatabase.bookCollectionKSDao.query(obj.getBookid())
         if (collectionKSEntity == null) {
@@ -264,26 +266,32 @@ class DataRepository(val context: Context) {
     }
 
     /**
-     * 更新收藏时间
-     */
-    fun updateCollectionTime(bookid: String) {
-        mDatabase.bookCollectionKSDao.updateTime(bookid, System.currentTimeMillis())
-    }
-
-    /**
      * 更新置顶时间戳
      */
     fun updateBookInfoStickTime(bookid: String) {
         mDatabase.bookInfoKSDao.update(System.currentTimeMillis(), bookid)
-        val query = mDatabase.bookInfoKSDao.query(bookid)
+        mDatabase.bookInfoKSDao.query(bookid)
         Logger.i("")
+    }
+
+    /**
+     * 取消置顶
+     */
+    fun updateBookInfoClearStickTime(bookid: String) {
+        mDatabase.bookInfoKSDao.update(0, bookid)
+        mDatabase.bookInfoKSDao.query(bookid)
     }
 
 
     /**
      * 排行榜
      */
-    fun getRankingList(gender: String, type: String, date: String, pageNum: Int): Flowable<RankingListResult> {
+    fun getRankingList(
+        gender: String,
+        type: String,
+        date: String,
+        pageNum: Int
+    ): Flowable<RankingListResult> {
         return getKSNetApi().getRankingList(gender, type, date, pageNum)
     }
 
@@ -325,7 +333,6 @@ class DataRepository(val context: Context) {
      */
     fun updateLable(bookid: String, chapterid: String) {
         val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid) ?: return
-//        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
 
         if (chapterid != infoKSEntity.lastChapterId) {
             PreferenceUtil.commitBoolean(bookid, true)
@@ -344,39 +351,10 @@ class DataRepository(val context: Context) {
      */
     @SuppressLint("SimpleDateFormat")
     fun isShowUpdateLable(bookid: String): Boolean {
-//        val queryLastTime = getDatabase().bookContentKSDao.queryLastTime(bookid)
-//        val queryLastTime1 = getDatabase().bookInfoKSDao.queryLastTime(bookid)
-
-//        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        val content = format.format(Date(queryLastTime))
-//        val info = format.format(Date(queryLastTime))
-
-//        val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid)?:return false
-//        val lastChapterid = getDatabase().bookChapterKSDao.queryLastChapterid(bookid)
-
-
-//        getDatabase().bookChapterKSDao.queryFirstChapterid()
-//
-//        Logger.t("lable").i("content:$content  info:$info")
-//        return queryLastTime < queryLastTime1 && queryLastTime != 0.toLong()
-//        return infoKSEntity.lastChapterId > lastChapterid
 
         return PreferenceUtil.getBoolean(bookid.toString(), false)
     }
 
-//    /**
-//     * 查询书箱章节所有的更新时间
-//     */
-//    fun queryTimeList(bookid: Long): List<Long> {
-//        return getDatabase().bookContentKSDao.queryTimeList(bookid)
-//    }
-
-//    /**
-//     * 更新时间+章节id
-//     */
-//    fun queryTimeAndChapterid(bookid: Long): List<BookContentKSEntity?> {
-//        return getDatabase().bookContentKSDao.queryTimeAndChapterid(bookid)
-//    }
 
     /**
      * 登陆
@@ -390,7 +368,11 @@ class DataRepository(val context: Context) {
      * 注册
      */
     fun register(username: String, password: String, email: String): Flowable<UserResult> {
-        val map = hashMapOf<String, String>("username" to username, "password" to password, "email" to email)
+        val map = hashMapOf<String, String>(
+            "username" to username,
+            "password" to password,
+            "email" to email
+        )
         return getNetApi().register(niceBody(map))
     }
 
@@ -401,18 +383,26 @@ class DataRepository(val context: Context) {
         bookName: String, bookid: String, author: String, cover: String,
         description: String, bookStatus: String, classifyName: String, resouceType: String
     ): Flowable<StatusResult> {
-        val map = hashMapOf<String, String>(
-            "bookName" to bookName,
-            "bookid" to bookid,
-            "author" to author,
-            "cover" to cover,
-            "description" to description,
-            "bookStatus" to bookStatus,
-            "classifyName" to classifyName,
-            "resouceType" to resouceType
-        )
-
-        return getNetApi().addCollection(niceBody(map))
+        return Flowable.just("")
+            .map {
+                val kdEntity = getResouceTypeKd(bookid)
+                val tocId = kdEntity?.tocId ?: ""
+                val tocName = kdEntity?.tocId ?: ""
+                val map = hashMapOf(
+                    "bookName" to bookName,
+                    "bookid" to bookid,
+                    "author" to author,
+                    "cover" to cover,
+                    "description" to description,
+                    "bookStatus" to bookStatus,
+                    "classifyName" to classifyName,
+                    "resouceType" to resouceType,
+                    "tocId" to tocId,
+                    "tocName" to tocName
+                )
+                return@map map
+            }
+            .flatMap { getNetApi().addCollection(niceBody(it)) }
     }
 
     /**
@@ -526,6 +516,7 @@ class DataRepository(val context: Context) {
         getDatabase().bookInfoKSDao.clear()
         getDatabase().bookChapterKSDao.clear()
         getDatabase().bookContentKSDao.clear()
+        getDatabase().bookResouceTypeKDDao.clear()
     }
 
     /**
@@ -563,26 +554,45 @@ class DataRepository(val context: Context) {
         resouceType: String,
         content: String
     ): Flowable<StatusResult> {
+        return Flowable.just("")
+            .map {
+                val kdEntity = getResouceTypeKd(bookid)
+                val tocId = kdEntity?.tocId ?: ""
+                val tocName = kdEntity?.typeName ?: ""
+                val map = hashMapOf<String, Any>(
+                    "bookName" to bookName,
+                    "bookid" to bookid,
+                    "chapterid" to chapterid,
+                    "chapterName" to chapterName,
+                    "author" to author,
+                    "cover" to cover,
+                    "description" to description,
+                    "resouceType" to resouceType,
+                    "content" to content,
+                    "tocId" to tocId,
+                    "tocName" to tocName
+                )
+                return@map  map
+            }
+            .flatMap { getNetApi().updateReadHistory(niceBody(it))}
 
-        val map = hashMapOf<String, Any>(
-            "bookName" to bookName, "bookid" to bookid, "chapterid" to chapterid,
-            "chapterName" to chapterName, "author" to author, "cover" to cover, "description" to description,
-            "resouceType" to resouceType, "content" to content
-        )
-        return getNetApi().updateReadHistory(niceBody(map))
     }
 
     /**
      * 查看章节对应记录
      */
-    fun queryBookReadHistoryEntity(bookid: String, chapterid: String):BookReadHistoryEntity? {
+    fun queryBookReadHistoryEntity(bookid: String, chapterid: String): BookReadHistoryEntity? {
         return getDatabase().bookReadHistoryDao.queryBookReadHistoryEntity(bookid, chapterid)
     }
 
     /**
      * 更新最后一次阅读记录到本地
      */
-    fun updateLocalREadHistory(bookid: String, chapterid: String, lastReadTime: Long = System.currentTimeMillis()) {
+    fun updateLocalREadHistory(
+        bookid: String,
+        chapterid: String,
+        lastReadTime: Long = System.currentTimeMillis()
+    ) {
 
 //        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
 //        queryAll.forEach {
@@ -659,7 +669,12 @@ class DataRepository(val context: Context) {
     /**
      * 修改密码
      */
-    fun updatePassword(email: String, username: String, password: String, againPassword: String): Flowable<UserResult> {
+    fun updatePassword(
+        email: String,
+        username: String,
+        password: String,
+        againPassword: String
+    ): Flowable<UserResult> {
         val map = hashMapOf<String, String>(
             "email" to email, "username" to username,
             "password" to password, "againPassword" to againPassword
@@ -675,51 +690,11 @@ class DataRepository(val context: Context) {
         return getNetApi().getResouceList(niceBody(map))
     }
 
-    /**
-     * 插入源列表到本地
-     */
-    fun insertResouceList(list: List<BookResouceListResult>) {
-        list.forEach {
-            val entity = getDatabase().bookResouceDao.query(it.id)
-            if (entity == null) {
-                getDatabase().bookResouceDao.insert(it.niceBookResouceEntity())
-            } else {
-                getDatabase().bookResouceDao.update(it.id, it.isCheck)
-            }
-
-        }
-    }
-
-    /**
-     * 修改默认选中的源
-     */
-    fun updateResouceList(list: List<BookResouceListResult>) {
-        getDatabase().bookResouceDao.clearCheck()
-        list.forEach {
-            getDatabase().bookResouceDao.update(it.id, it.isCheck)
-
-        }
-    }
-
-    /**
-     * 选中源id
-     */
-    fun queryResouceCheckList(): List<String> {
-        return getDatabase().bookResouceDao.queryCheckList().map { it.resouceId }.toList()
-    }
-
-    /**
-     * 选中源标题
-     */
-    fun queryResouceCheckTitleList(): List<String> {
-        return getDatabase().bookResouceDao.queryCheckList().map { it.title }.toList()
-    }
-
 
     /**
      * 书名/作者搜索
      */
-    fun getBookSearchList(keyword: String): Flowable<SearchResult> {
+    fun getBookSearchList(keyword: String): Flowable<SearchSuggestResult> {
         val map = hashMapOf<String, String>("keyword" to keyword)
         return getNetApi().getBookSearchList(niceBody(map))
     }
@@ -730,5 +705,75 @@ class DataRepository(val context: Context) {
     fun getAuthorBooksList(author: String): Flowable<AuthorBooksResult> {
         val map = hashMapOf<String, String>("author" to author)
         return getNetApi().getAuthorBooksList(niceBody(map))
+    }
+
+    /**
+     * 保存公告信息
+     */
+    fun insert(obj: PushMessageEntity) {
+        getDatabase().pushMessageDao.insert(obj)
+    }
+
+    /**
+     * 查询最后一次公告信息
+     */
+    fun queryNoteEntity(): PushMessageEntity? {
+        return getDatabase().pushMessageDao.queryNote()
+    }
+
+    /**
+     * 删除推送消息
+     */
+    fun delete(obj: PushMessageEntity) {
+        getDatabase().pushMessageDao.delete(obj)
+    }
+
+    /**
+     * 修改书籍详情修改时间
+     */
+    fun updateBookInfoLastReadTime(bookid: String) {
+        getDatabase().bookInfoKSDao.updateLastReadTime(System.currentTimeMillis(), bookid)
+    }
+
+    /**
+     * 快读源插入
+     */
+    fun insertKuaiDuResouce(obj: BookResouceTypeKDEntity) {
+        val typeKDEntity = getDatabase().bookResouceTypeKDDao.query(obj.bookid)
+        if (typeKDEntity == null) {
+            getDatabase().bookResouceTypeKDDao.insert(obj)
+            return
+        }
+
+        obj.id = typeKDEntity.id
+        getDatabase().bookResouceTypeKDDao.update(obj)
+    }
+
+    /**
+     * 删除指定小说记录
+     */
+    fun deleteBookHistory(bookid: String) {
+        getDatabase().bookReadHistoryDao.clear(bookid)
+    }
+
+    /**
+     * 删除小说内容
+     */
+    fun deleteBookContent(bookid: String) {
+        getDatabase().bookContentKSDao.delete(bookid)
+    }
+
+    /**
+     * 更改收藏
+     */
+    fun updateCollection(obj: BookCollectionKSEntity) {
+        getDatabase().bookCollectionKSDao.update(obj)
+    }
+
+    /**
+     * 获取快读渠道源
+     */
+    fun getResouceTypeKd(bookid: String): BookResouceTypeKDEntity? {
+        return getDatabase().bookResouceTypeKDDao.query(bookid)
     }
 }

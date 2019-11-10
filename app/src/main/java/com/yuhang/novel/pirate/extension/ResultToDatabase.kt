@@ -3,11 +3,7 @@ package com.yuhang.novel.pirate.extension
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.AuthorBooksDataKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookDetailsKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ChapterListKdResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.SearchDataKdResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.BookResouceListResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.CollectionDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
@@ -62,8 +58,6 @@ fun ContentDataResult.niceBookContentKSEntity(): BookContentKSEntity {
     return BookContentKSEntity().apply {
         hasContent = obj.hasContent
         chapterName = obj.cname
-        nid = obj.nid
-        pid = obj.pid
         bookId = obj.id
         content = obj.content
         chapterId = obj.cid
@@ -76,9 +70,6 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.bookid = obj.id
         this.bookName = obj.name
         this.lastTime = System.currentTimeMillis()
-        this.firstChapterId = obj.pid
-        this.lastChapterId = obj.cid
-        this.classifyId = 0
     }
 }
 
@@ -95,11 +86,8 @@ fun BookDetailsDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.author = obj.Author
         this.description = obj.Desc
         this.lastTime = date
-        this.firstChapterId = obj.FirstChapterId
         this.lastChapterName = obj.LastChapter
-        this.lastChapterId = obj.LastChapterId
         this.bookStatus = obj.BookStatus
-        this.classifyId = obj.CId
         this.classifyName = obj.CName
     }
 }
@@ -152,51 +140,10 @@ fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.description = result.description
         this.author = result.author
         this.cover = result.cover
-        this.lastChapterId = result.chapterid
         this.lastChapterName = result.chapterName
     }
 }
 
-/**
- * 书籍详情转在线收藏对象
- */
-fun BookInfoKSEntity.niceCollectionDataResult(): CollectionDataResult {
-    return CollectionDataResult(
-        author = this.author, bookName = this.bookName,
-        bookid = this.bookid, cover = this.cover, resouceType = "KS"
-    )
-}
-
-/**
- * 源对象转换
- */
-fun BookResouceListResult.niceBookResouceEntity(): BookResouceEntity {
-    val result = this
-    return BookResouceEntity().apply {
-        this.hot = if (result.heat == null) 0 else result.heat!!
-        this.checkStatus = result.isCheck
-        this.status = if (result.status == null) "" else result.status!!
-        this.title = if (result.title == null) "" else result.title!!
-        this.website = if (result.websiteUrl == null) "" else result.websiteUrl!!
-        this.checkTime = if (result.checkTime == null) 0 else result.checkTime!!
-        this.updateTime = if (result.updateTime == null) 0 else result.updateTime!!
-        this.resouceRule = if (result.resouceRule == null) "" else result.resouceRule!!
-        this.resouceId = result.id
-    }
-}
-
-/**
- * 源对象转换
- */
-fun BookResouceEntity.niceBookResouceListResult(): BookResouceListResult {
-
-    return BookResouceListResult(
-        heat = this.hot, isCheck = this.checkStatus, status = this.status,
-        title = this.status, websiteUrl = this.website, checkTime = this.checkTime,
-        updateTime = this.updateTime, resouceRule = this.resouceRule, id = this.resouceId
-    )
-
-}
 
 /**
  * 搜索: 快读->看书
@@ -248,11 +195,8 @@ fun BookDetailsKdResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.author = obj.author
         this.description = obj.longIntro
         this.lastTime = date
-        this.firstChapterId = ""
         this.lastChapterName = obj.lastChapter
-        this.lastChapterId = ""
         this.bookStatus = if (obj.isSerial) "连载" else "完结"
-        this.classifyId = -1
         this.classifyName = obj.cat
     }
 }
@@ -322,12 +266,29 @@ fun RecommendBooksResult.niceBooksResult(): BooksResult {
     }
 }
 
+/**
+ * 收藏 -> 快读子渠道
+ */
+fun CollectionDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity? {
+    val obj = this
+    if (obj.resouceType != "KD") return null
+    return BookResouceTypeKDEntity().apply {
+        if (obj.resouceType == "KD") {
+            this.bookid = obj.bookid
+            this.typeName = obj.tocName ?: ""
+            this.tocId = obj.tocId ?: ""
+            this.resouce = obj.resouceType
+            this.bookName = obj.bookName ?: ""
+        }
+    }
+}
+
 fun CollectionDataResult.niceBooksResult(): BooksResult {
     val obj = this
     return BooksResult().apply {
-        this.author = obj.author
-        this.bookName = obj.bookName
-        this.cover = obj.cover
+        this.author = obj.author ?: ""
+        this.bookName = obj.bookName ?: ""
+        this.cover = obj.cover ?: ""
 
         if (obj.resouceType == "KS") {
             this.typeKs = 1
@@ -342,6 +303,9 @@ fun CollectionDataResult.niceBooksResult(): BooksResult {
     }
 }
 
+/**
+ * 收藏 -> 书籍
+ */
 fun BookCollectionKSEntity.niceBooksResult(): BooksResult {
     val obj = this
     return BooksResult().apply {
@@ -357,5 +321,44 @@ fun BookCollectionKSEntity.niceBooksResult(): BooksResult {
         }
         this.resouce = obj.resouce
     }
+}
 
+/**
+ *
+ */
+fun ChapterListDataKdResult.niceBookChapterKSEntity(bookid: String): BookChapterKSEntity {
+    val obj = this
+    return BookChapterKSEntity().apply {
+        this.chapterId = obj.link
+        this.resouce = "KD"
+        this.bookId = bookid
+        this.name = obj.title
+    }
+}
+
+/**
+ * 快读更新 -> 小说详情
+ */
+fun BookUpdateKdResult.niceBookInfoKSEntity(): BookInfoKSEntity {
+    val obj = this
+    return BookInfoKSEntity().apply {
+        this.bookid = obj._id
+        this.author = obj.author
+        this.lastChapterName = obj.lastChapter
+        this.lastTime = DateTime(obj.updated).millis
+    }
+}
+
+
+fun BookDetailsDataResult.niceBooksResult(): BooksResult {
+    val obj = this
+    return BooksResult().apply {
+        this.bookKsId = obj.Id
+        this.typeKs = 1
+        this.typeKd = 2
+        this.resouce = "KS"
+        this.author = obj.Author
+        this.lastChapterName = obj.LastChapter
+        this.lastTime = DateTime(obj.LastTime).millis
+    }
 }

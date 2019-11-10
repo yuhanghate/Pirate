@@ -24,7 +24,6 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
-import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListActivity
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
 
@@ -126,7 +125,6 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mBinding.filterLl.visibility = View.GONE
 
 
-        mBinding.resouceIv.setOnClickListener { ResouceListActivity.start(mActivity!!) }
         mBinding.genderManCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
         mBinding.genderLadyCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
 

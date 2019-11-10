@@ -22,6 +22,9 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
 import me.yokeyword.fragmentation.Fragmentation
 import kotlin.concurrent.thread
+import com.umeng.message.IUmengRegisterCallback
+import com.umeng.message.PushAgent
+import com.yuhang.novel.pirate.push.PushUmengMessageHandler
 
 
 @SuppressLint("Registered")
@@ -137,7 +140,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
          * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数5:Push推送业务的secret
          */
-        UMConfigure.init(this, ConfigConstant.YOUMENT_KEY, channel, UMConfigure.DEVICE_TYPE_PHONE, null)
+        UMConfigure.init(this, ConfigConstant.YOUMENT_KEY, channel, UMConfigure.DEVICE_TYPE_PHONE, ConfigConstant.YOUMENT_PUSH)
 
 
         // 选用LEGACY_AUTO页面采集模式
@@ -145,6 +148,22 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
         // 支持在子进程中统计自定义事件
         UMConfigure.setProcessEvent(true)
+
+        val mPushAgent = PushAgent.getInstance(this)
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(object : IUmengRegisterCallback {
+            override fun onSuccess(deviceToken: String) {
+                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
+                Logger.t("UMLog").i( "注册成功：deviceToken：-------->  $deviceToken")
+            }
+
+            override fun onFailure(s: String, s1: String) {
+                Logger.t("UMLog").i( "注册失败：-------->  s:$s,s1:$s1")
+            }
+        })
+
+        mPushAgent.messageHandler = PushUmengMessageHandler()
+//        mPushAgent.notificationClickHandler = PushUmengNotificationClickHandler()
     }
 
 

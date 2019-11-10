@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
+import com.yuhang.novel.pirate.extension.niceBookResouceTypeKDEntity
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
+import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.utils.BeanPropertiesUtil
@@ -26,7 +29,9 @@ class UsersServiceImpl : UsersService {
 
     val mDataRepository by lazy { PirateApp.getInstance().getDataRepository() }
 
-    override fun updateCollectionToLocal(): Flowable<String> {
+    val mConvertRepository by lazy { ConvertRepository() }
+
+    override fun updateCollectionToLocal(): Flowable<BooksResult> {
         return mDataRepository.getCollectionList(1)
             .map {
                 mDataRepository.clearBookInfo()
@@ -34,27 +39,28 @@ class UsersServiceImpl : UsersService {
             }
             .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
             .map {
+                it.niceBookResouceTypeKDEntity()?.let { mDataRepository.insertKuaiDuResouce(it) }
                 mDataRepository.insertCollection(it.niceBooksResult())
-                it.bookid
+                it.niceBooksResult()
             }
     }
 
 
-    override fun updateChapterListToLocal(bookid: String): Flowable<String> {
-        return mDataRepository.getBookChapterList(bookid)
+    override fun updateChapterListToLocal(obj:BooksResult): Flowable<BooksResult> {
+        return mConvertRepository.getChapterList(obj)
             .map {
-                mDataRepository.insertChapterList(it.data.niceBookChapterKSEntity())
-                bookid
+                mDataRepository.insertChapterList(it)
+                obj
             }
     }
 
     @SuppressLint("CheckResult")
-    override fun updateBookInfoToLocal(bookid: String): Flowable<String> {
+    override fun updateBookInfoToLocal(obj:BooksResult): Flowable<BooksResult> {
 
-        return mDataRepository.getBookDetails(bookid)
+        return mConvertRepository.getDetailsInfo(obj)
             .map {
-                mDataRepository.insertBookInfo(it.data.niceBookInfoKSEntity())
-                bookid
+                mDataRepository.insertBookInfo(it)
+                obj
             }
 
 //        //获取收藏列表
@@ -109,16 +115,16 @@ class UsersServiceImpl : UsersService {
 
     }
 
-    override fun updateReadHistoryToLocal(bookid: String): Flowable<String> {
-        return mDataRepository.getReadHistoryCollectionsList(bookid)
+    override fun updateReadHistoryToLocal(obj:BooksResult): Flowable<BooksResult> {
+        return mDataRepository.getReadHistoryCollectionsList(obj.getBookid())
             .map {
-                val result = it.data?:return@map bookid
+                val result = it.data?:return@map obj
                 mDataRepository.updateLocalREadHistory(
                     result.bookid,
                     result.chapterid,
                     result.createTime
                 )
-                return@map bookid
+                 obj
             }
     }
 }

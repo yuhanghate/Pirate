@@ -20,12 +20,7 @@ import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
-import com.yuhang.novel.pirate.eventbus.LoginEvent
-import com.yuhang.novel.pirate.eventbus.LogoutEvent
-import com.yuhang.novel.pirate.eventbus.RemoveCollectionEvent
-import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
-import com.yuhang.novel.pirate.extension.niceBooksResult
-import com.yuhang.novel.pirate.extension.niceCollectionDataResult
+import com.yuhang.novel.pirate.eventbus.*
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -39,6 +34,7 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.ArrayList
 
 
 /**
@@ -76,17 +72,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         super.onSupportInvisible()
         mViewModel.onPageEnd("主页页面")
     }
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-    }
-
 
     override fun onDestroyView() {
         onDestryEventbus(this)
@@ -141,11 +126,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * 点击事件
      */
     private fun onClick() {
-//        mBinding.mainBtn.setOnClickListener {
-//            findNavController().navigate(
-//                    R.id.storeFragment, null, getNavOptions()
-//            )
-//        }
         mBinding.btnMore.setOnClickListener { showPopupMenu(mBinding.btnMore, R.menu.menu_main, itemListener = this) }
         mBinding.btnSearch.setOnClickListener {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
@@ -177,7 +157,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
             position: Int
     ) {
         val bookInfoKSEntity = mViewModel.adapter.getObj(position)
-        val myItems = listOf("书籍详情", "目录书摘", "删除", "置顶")
+
+        val myItems: ArrayList<String>
+        myItems = if (bookInfoKSEntity.stickTime > 0) {
+            arrayListOf("书籍详情", "目录书摘", "删除", "取消置顶")
+        } else {
+            arrayListOf("书籍详情", "目录书摘", "删除", "置顶")
+        }
+
         MaterialDialog(activity!!).show {
             listItems(items = myItems, selection = { dialog, index, text ->
                 when (text) {
@@ -186,7 +173,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                             .compose(bindToLifecycle())
                             .subscribe({
                                 mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS, "主页 -> 书箱详情")
-                                BookDetailsActivity.start(mActivity!!, it?.niceBooksResult()!!)
+                                BookDetailsActivity.start(mActivity!!, it!!)
                             },{})
 
                     }
@@ -194,12 +181,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                         mViewModel.queryCollection(bookInfoKSEntity.bookid)
                             .compose(bindToLifecycle())
                             .subscribe({
-                                mViewModel.onUMEvent(
-                                    mActivity!!,
-                                    UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,
-                                    "主页 -> 目录书箱"
-                                )
-                                ChapterListActivity.start(mActivity!!, it?.niceBooksResult()!!)
+                                mViewModel.onUMEvent(mActivity!!,UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,"主页 -> 目录书箱")
+                                ChapterListActivity.start(mActivity!!, it!!)
                             },{})
 
                     }
@@ -212,6 +195,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     "置顶" -> {
                         mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 书架置顶")
                         mViewModel.updateStickTime(bookInfoKSEntity.bookid)
+                        netLocalData()
+                    }
+                    "取消置顶" ->{
+                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 取消置顶")
+                        mViewModel.updateBookInfoClearStickTime(bookInfoKSEntity.bookid)
                         netLocalData()
                     }
                 }
@@ -280,15 +268,16 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
+        val isShowLabel = obj.isShowLabel
         obj.isShowLabel = false
 
         mViewModel.queryCollection(obj.bookid)
             .compose(bindToLifecycle())
-            .subscribe({ReadBookActivity.start(mActivity!!, it?.niceBooksResult()!!)},{})
+            .subscribe({ReadBookActivity.start(mActivity!!, it!!, isShowLabel)},{})
 
 
         //延迟1秒刷新.体验更好
-        Handler().postDelayed({ mViewModel.adapter.notifyDataSetChanged() }, 1000)
+//        Handler().postDelayed({ mViewModel.adapter.notifyDataSetChanged() }, 1000)
 
     }
 
@@ -376,7 +365,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: LogoutEvent) {
         netLocalData()
-//        isLogin = true
     }
 
     /**
@@ -401,6 +389,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: RemoveCollectionEvent) {
+        netLocalData()
+    }
+
+    /**
+     * 更新历史记录,根据阅读时间排序
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(obj: UpdateReadHistoryEvent) {
         netLocalData()
     }
 }

@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import com.idescout.sql.SqlScoutServer
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -59,6 +60,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
+//        SqlScoutServer.create(this, packageName)
         initLayoutInflater()
         initViewModel()
         initStatusTool()

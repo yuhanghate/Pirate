@@ -32,6 +32,7 @@ import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
+import com.yuhang.novel.pirate.eventbus.UpdateReadHistoryEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
@@ -74,11 +75,21 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     var fragment: DrawerLayoutLeftFragment? = null
 
+    /**
+     * 是否正在加载上一页,防止重复加载
+     */
+    private var isPrevious = false
+
+    /**
+     * 是否正在加载下一页,防止重复加载
+     */
+    private var isNext = false
+
     companion object {
         val TAG = ReadBookActivity::class.java.simpleName
-        const val BOOK_ID = "book_id"
         const val CHAPTERID = "chapter_id"
         const val BOOKS_RESULT = "books_result"
+        const val IS_INIT_CHAPTER = "is_init_chapter"
 
         const val DURATION: Long = 190
 
@@ -92,9 +103,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             startIntent(context, intent)
         }
 
-        fun start(context: Activity, obj: BooksResult) {
+        fun start(context: Activity, obj: BooksResult, initChapter:Boolean = false) {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOKS_RESULT, obj.toJson())
+            intent.putExtra(IS_INIT_CHAPTER, initChapter)
             startIntent(context, intent)
         }
     }
@@ -121,21 +133,24 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         return BookConstant.getPageBackground()
     }
 
+    /**
+     * 是否重新加载章节列表
+     */
+    private fun getInitChapter() = intent.getBooleanExtra(IS_INIT_CHAPTER, false)
 
     private fun getChapterid() = intent.getStringExtra(CHAPTERID)
+
 
     /**
      * 获取参数
      */
     private fun getBooksResult(): BooksResult {
-        if (booksResult == null) {
-            booksResult = Gson().fromJson<BooksResult>(
-                intent.getStringExtra(BOOKS_RESULT),
-                BooksResult::class.java
-            )
-        }
-        return booksResult!!
+        return Gson().fromJson<BooksResult>(
+            intent.getStringExtra(BOOKS_RESULT),
+            BooksResult::class.java
+        )
     }
+
 
 
     override fun onPause() {
@@ -148,8 +163,38 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(mReceiver)
+        isPrevious = false
+        isNext = false
     }
 
+
+    @SuppressLint("CheckResult")
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        this.intent = intent
+        intent ?: return
+        mViewModel.clearData()
+        mViewModel.mBooksResult = getBooksResult()
+        mBinding.loading.showLoading()
+        mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (!TextUtils.isEmpty(getChapterid())) {
+                    //打开指定章节
+                    mViewModel.chapterid = getChapterid()
+                    initDrawerView()
+                    initChapterProgressSeekBar()
+                    netDataChapterContentFromId(getChapterid())
+                    return@subscribe
+                }
+                netDataChatpterContent()
+            }, {
+                mBinding.loading.showError()
+            })
+        mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
+
+    }
 
     override fun initView() {
         super.initView()
@@ -172,9 +217,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             //当Activity尺寸计算好以后,进行加载.因为需要动态根据尺寸分页
 
             mBinding.loading.showLoading()
-            mViewModel.initChapterList(getBooksResult())
+            mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
                 .compose(bindToLifecycle())
                 .subscribe({
+                    mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
                     if (!TextUtils.isEmpty(getChapterid())) {
                         //打开指定章节
                         mViewModel.chapterid = getChapterid()
@@ -186,13 +232,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                     initFontSeekBar()
                     initChapterProgressSeekBar()
                     netDataChatpterContent()
-                    mViewModel.preloadBookContents(getBooksResult())
+
 
                 }, {
                     mBinding.loading.showError()
                 })
-
-
         }
     }
 
@@ -225,6 +269,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .bubbleColor(ContextCompat.getColor(this, R.color.secondary_text))
             .bubbleTextSize(18)
             .build()
+
 
         mBinding.layoutButton.chapterProgressSb.onProgressChangedListener =
             object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
@@ -371,11 +416,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
     @SuppressLint("CheckResult")
     private fun initViewModel() {
-        mViewModel.bookid = getBooksResult().getBookid()
+        mViewModel.mBooksResult = getBooksResult()
+//        mViewModel.bookid = mViewModel.mBooksResult?.getBookid()!!
         mViewModel.clearLable()
-        mViewModel.initBookNameData(getBooksResult())
+        mViewModel.initBookNameData(mViewModel.mBooksResult!!)
         mViewModel.isCollectionBook()
-        mViewModel.initResouceList()
     }
 
 
@@ -424,7 +469,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 UMConstant.TYPE_READ_CLICK_REFRESH,
                 hashMapOf(
                     "action" to "阅读页 -> 点击刷新",
-                    "bookid" to mViewModel.bookid.toString(),
+                    "bookid" to mViewModel.mBooksResult?.getBookid()!!,
                     "bookName" to mViewModel.bookName,
                     "chanpterName" to mViewModel.chapterName
                 )
@@ -476,7 +521,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //换源
         mBinding.layoutTop.resouceTv.setOnClickListener {
             toggleMenu()
-            ResouceListKdActivity.start(this, getBooksResult().getBookid())
+            ResouceListKdActivity.start(this, mViewModel.mBooksResult!!)
         }
     }
 
@@ -593,7 +638,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             }
         })
 
-        fragment?.bookid = getBooksResult().getBookid()
+        fragment?.bookid = mViewModel.mBooksResult?.getBookid()!!
         fragment?.chapterList = mViewModel.chapterList
         fragment?.chapterid = mViewModel.chapterid
         fragment?.mOnClickChapterItemListener = this
@@ -637,13 +682,13 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     @SuppressLint("CheckResult")
     private fun netDataChatpterContent() {
         mBinding.loading.showLoading()
-        mViewModel.getLastBookContent(getBooksResult())
+        mViewModel.getLastBookContent(mViewModel.mBooksResult!!)
             .compose(bindToLifecycle())
             .subscribe({ contentResult ->
                 mBinding.loading.showContent()
 
                 val list = mViewModel.getTxtPageList(mBinding.textPage, contentResult)
-                mViewModel.updateReadHistory(contentResult.chapterId, contentResult.chapterName)
+                mViewModel.updateReadHistory(contentResult.chapterId, contentResult.chapterName, mViewModel.mBooksResult!!)
                     .compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.setRefersh(list)
@@ -665,12 +710,12 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private fun netDataChapterContentFromId(chapterid: String) {
         mBinding.loading.showLoading()
 
-        mViewModel.getBookContent(getBooksResult(), mViewModel.getChapterEntity(chapterid))
+        mViewModel.getBookContent(mViewModel.mBooksResult!!, mViewModel.getChapterEntity(chapterid))
             .compose(bindToLifecycle())
             .subscribe({
 
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory(it.chapterId, it.chapterName)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName, mViewModel.mBooksResult!!)
                     .compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.setRefersh(list)
@@ -703,28 +748,32 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(position))
 
         //最后一页
-        if (!mViewModel.hasNextPage(obj.chapterId)) {
+        if (!mViewModel.hasNextPage(obj.chapterId) ) {
             obj.hasNext = false
+            mViewModel.adapter.notifyDataSetChanged()
             return
         }
+
         //加载最后一页
         if (position >= mViewModel.adapter.getList().size - 2 && !mViewModel.isLoadAdapter(
                 mViewModel.getNextPage(obj.chapterId).chapterId
             )
         ) {
-            mViewModel.getBookContent(getBooksResult(), mViewModel.getNextPage(obj.chapterId))
+            mViewModel.getBookContent(mViewModel.mBooksResult!!, mViewModel.getNextPage(obj.chapterId))
                 .compose(bindUntilEvent(ActivityEvent.PAUSE))
                 .subscribe({
                     mBinding.loading.showContent()
 
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName)
+                    mViewModel.updateReadHistory(it.chapterId, it.chapterName, mViewModel.mBooksResult!!)
                         .compose(bindToLifecycle())
                         .subscribe({}, {})
 
                     mViewModel.adapter.loadMore(list)
+                    isNext = false
                 }, {
                     Logger.i(it.message!!)
+                    isNext = false
                 })
         }
 
@@ -751,15 +800,21 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
 
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(position))
+
+        if (!mViewModel.hasPreviousPage(obj.chapterId) || isPrevious) {
+            return
+        }
+
+        isPrevious = true
         //过滤重复加载
         if (position == 1 || position == 0) {
             //加载上一页数据
-            mViewModel.getBookContent(getBooksResult(), mViewModel.getPreviousPage(obj.chapterId))
+            mViewModel.getBookContent(mViewModel.mBooksResult!!, mViewModel.getPreviousPage(obj.chapterId))
                 .compose(bindUntilEvent(ActivityEvent.PAUSE))
                 .subscribe({
                     mBinding.loading.showContent()
                     val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                    mViewModel.updateReadHistory(it.chapterId, it.chapterName)
+                    mViewModel.updateReadHistory(it.chapterId, it.chapterName, mViewModel.mBooksResult!!)
                         .compose(bindToLifecycle())
                         .subscribe({}, {})
 
@@ -768,9 +823,12 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                     mViewModel.adapter.notifyDataSetChanged()
                     moveToPosition(list.size)
                     Logger.i("onClickPreviousListener list=${list.size}  listitem=${mViewModel.getLastItemPosition()}")
-
+                    isPrevious = false
                 }, {
+                    isPrevious = false
                 })
+        } else {
+            isPrevious = false
         }
 
         /**
@@ -822,6 +880,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 //        fragment?.setCurrentReadItem(chapterid)
     }
 
+
+
     /**
      * 上一页(滑动)
      */
@@ -833,19 +893,23 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
 
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
-//        if (obj.pid == "-1") return
+        if (!mViewModel.hasPreviousPage(obj.chapterId) || isPrevious) return
 
-        mViewModel.getBookContent(getBooksResult(), mViewModel.getChapterEntity(obj.pid))
-            .compose(bindUntilEvent(ActivityEvent.PAUSE))
+        isPrevious = true
+        val ksEntity = mViewModel.getPreviousPage(obj.chapterId)
+        mViewModel.getBookContent(mViewModel.mBooksResult!!, ksEntity)
+            .compose(bindToLifecycle())
             .subscribe({
                 mBinding.loading.showContent()
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory(it.chapterId, it.chapterName)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName, mViewModel.mBooksResult!!)
                     .compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.getList().addAll(0, list)
                 mViewModel.adapter.notifyItemRangeInserted(0, list.size)
+                isPrevious = false
             }, {
+                isPrevious = false
             })
     }
 
@@ -861,29 +925,27 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         val obj = mViewModel.adapter.getObj(mViewModel.getIndexValid(lastVisibleItemPosition))
 
-        if (!mViewModel.hasNextPage(obj.chapterId)) {
+        if (!mViewModel.hasNextPage(obj.chapterId) ) {
             obj.hasNext = false
+            mViewModel.adapter.notifyDataSetChanged()
             return
         }
 
-//        if (obj.nid == "-1") {
-//            return
-//        }
         mBinding.loading.showContent()
         Logger.i("${this.javaClass.simpleName}  position = $lastVisibleItemPosition  itemCount=${mViewModel.adapter.getList().size}")
-        mViewModel.getBookContent(getBooksResult(), mViewModel.getNextPage(obj.chapterId))
+        mViewModel.getBookContent(mViewModel.mBooksResult!!, mViewModel.getNextPage(obj.chapterId))
             .compose(bindToLifecycle())
             .subscribe({
-
-
                 val list = mViewModel.getTxtPageList(mBinding.textPage, it)
-                mViewModel.updateReadHistory(it.chapterId, it.chapterName)
+                mViewModel.updateReadHistory(it.chapterId, it.chapterName, mViewModel.mBooksResult!!)
                     .compose(bindToLifecycle()).subscribe({}, {})
 
                 mViewModel.adapter.loadMore(list)
+                isNext = false
 
             }, {
                 Logger.i(it.message!!)
+                isNext = false
             })
     }
 
@@ -922,6 +984,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 //没收藏弹框
                 showCollectionDialog()
             } else {
+                EventBus.getDefault().post(UpdateReadHistoryEvent())
                 super.onBackPressedSupport()
             }
 
@@ -946,8 +1009,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             positiveButton(text = "确定", click = object : DialogCallback {
                 @SuppressLint("CheckResult")
                 override fun invoke(p1: MaterialDialog) {
-                    mViewModel.postCollection()
-                    mViewModel.insertCollection(getBooksResult()).compose(bindToLifecycle())
+                    mViewModel.postCollection(mViewModel.mBooksResult!!)
+                    mViewModel.insertCollection(mViewModel.mBooksResult!!).compose(bindToLifecycle())
                         .subscribe({
                             mViewModel.onUMEvent(
                                 this@ReadBookActivity,

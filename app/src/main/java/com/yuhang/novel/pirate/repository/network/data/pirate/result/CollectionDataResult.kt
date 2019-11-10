@@ -8,9 +8,11 @@ package com.yuhang.novel.pirate.repository.network.data.pirate.result
  * resouceType : KS
  */
 data class CollectionDataResult(
-    val author: String,
-    val bookName: String,
+    val author: String? = null,
+    val bookName: String? = null,
     val bookid: String,
-    val cover: String,
-    val resouceType: String
+    val cover: String? = null,
+    val resouceType: String,
+    val tocId:String? = null,
+    val tocName:String? = null
 )

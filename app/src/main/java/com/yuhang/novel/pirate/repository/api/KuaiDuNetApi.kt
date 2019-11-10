@@ -2,12 +2,12 @@ package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
 import io.reactivex.Flowable
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface KuaiDuNetApi {
 
-    //搜索 http://api.gdugm.cn/book/search?key=%E5%A4%A9%E8%9A%95%E5%9C%9F%E8%B1%86&start=0&limit=100
 
 
     /**
@@ -70,4 +70,23 @@ interface KuaiDuNetApi {
      */
     @GET("http://api.wgfgr.cn/chapter/list")
     fun getResouceChapterList(@Query("tocId") tocId: String): Flowable<ChapterListKdResult>
+
+    /**
+     * 小说更新
+     */
+    @GET("http://api.gdugm.cn/book/update")
+    fun getBookUpdate(@Query("id") id:String):Flowable<List<BookUpdateKdResult>>
+
+    /**
+     * 搜索模糊匹配
+     */
+    @GET("http://api.wgfgr.cn/search/suggest")
+    fun searchSuggest(@Query("key") key: String):Flowable<SearchSuggestKdResult>
+
+    /**
+     * 精确求书
+     */
+    @POST("http://api.wgfgr.cn/bookfeedback")
+    fun getBookFeedback(@Body body: RequestBody):Flowable<String>
+
 }

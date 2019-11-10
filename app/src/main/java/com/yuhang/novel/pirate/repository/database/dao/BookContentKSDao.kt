@@ -65,6 +65,12 @@ interface BookContentKSDao {
     @Query("delete from bookcontentksentity where bookId = :bookid and chapterId = :chapterid")
     fun delete(bookid: String, chapterid: String)
 
+    /**
+     * 删除小说内容
+     */
+    @Query("delete from bookcontentksentity where bookId = :bookid")
+    fun delete(bookid: String)
+
 
     @Query("delete from bookcontentksentity")
     fun clear()

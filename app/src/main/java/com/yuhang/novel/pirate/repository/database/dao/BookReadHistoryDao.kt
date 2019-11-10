@@ -30,6 +30,12 @@ interface BookReadHistoryDao {
     @Query("select * from bookreadhistoryentity order by lastReadTime desc")
     fun queryAll():List<BookReadHistoryEntity>
 
+    /**
+     * 删除指定小说章节
+     */
+    @Query("delete from bookreadhistoryentity where bookid = :bookid")
+    fun clear(bookid: String)
+
     @Query("delete from bookreadhistoryentity")
     fun clear()
 }

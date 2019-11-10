@@ -114,11 +114,17 @@ interface NetApi {
      * 书名/作者搜索
      */
     @POST("/api/m/book/books/search")
-    fun getBookSearchList(@Body body: RequestBody):Flowable<SearchResult>
+    fun getBookSearchList(@Body body: RequestBody):Flowable<SearchSuggestResult>
 
     /**
      * 作者所有作品
      */
     @POST("/api/m/book/books/author/all")
     fun getAuthorBooksList(@Body body: RequestBody):Flowable<AuthorBooksResult>
+
+    /**
+     * 根据看书id查找
+     */
+    @POST("/api/m/book/books/search/bookid/ks")
+    fun getBooksSearch(@Body body: RequestBody):Flowable<BookSearchKdResult>
 }
