@@ -64,8 +64,10 @@ interface KanShuNetApi {
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: String
     ): Flowable<ContentResult>
+
+
 
     /**
      * 下载章节内容
@@ -75,8 +77,8 @@ interface KanShuNetApi {
     fun downloadChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
-    ): Flowable<ContentResult>
+        ) bookId: Long, @Path("chapterId") chapterId: String
+    ): Call<ContentResult>
 
     /**
      * 下载章节内容
@@ -86,7 +88,7 @@ interface KanShuNetApi {
     fun downloadNovel(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: Int
+        ) bookId: Long, @Path("chapterId") chapterId: String
     ): Call<ContentResult>
 
 

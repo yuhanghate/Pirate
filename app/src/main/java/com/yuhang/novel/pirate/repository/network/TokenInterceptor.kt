@@ -18,9 +18,13 @@ class TokenInterceptor : Interceptor {
 
         val originalHttpUrl = original?.newBuilder()
             ?.header("token", PirateApp.getInstance().getToken())
-            ?.addHeader("Keep-Alive", "300")
+//            ?.addHeader("Keep-Alive", "300")
             ?.addHeader("Connection", "Keep-Alive")
             ?.addHeader("Cache-Control", "no-cache")
+//            ?.addHeader("Accept", "*/*")
+//            ?.addHeader("Accept-Encoding", "gzip, deflate")
+//            ?.addHeader("Accept-Language", "zh-CN,en-US;q=0.8,en;q=0.6")
+//            ?.addHeader("Content-Type", "application/json;charset=gbk")
             ?.build()
 
         // Request customization: add request headers

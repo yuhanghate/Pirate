@@ -76,6 +76,13 @@
                 android:layout_alignParentEnd="true"
                 android:orientation="vertical"
                 app:fastscroll__handleColor="#bfbfbf" />
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/progress_view"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerInParent="true" />
         </RelativeLayout>
 
     </LinearLayout>

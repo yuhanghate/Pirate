@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import com.idescout.sql.SqlScoutServer
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -59,6 +60,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
+//        SqlScoutServer.create(this, packageName)
         initLayoutInflater()
         initViewModel()
         initStatusTool()
@@ -200,14 +202,14 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 打开进度等待条
      */
-    fun showProgressbar(message: String = "加载中") {
+    fun showProgressbar(message: String = "加载中", cancel:Boolean = false) {
         if (!::mProgressbar.isInitialized) {
             mProgressbar = ProgressDialog(this)
         }
         if (!mProgressbar.isShowing) {
             mProgressbar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressbar.setMessage(message)
-            mProgressbar.setCancelable(false)
+            mProgressbar.setCancelable(cancel)
             mProgressbar.show()
         }
     }
@@ -223,6 +225,13 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         if (mProgressbar.isShowing) {
             mProgressbar.dismiss()
         }
+    }
+
+    /**
+     * 是否显示进度条
+     */
+    fun hasProgressbar():Boolean {
+        return mProgressbar.isShowing
     }
 
 

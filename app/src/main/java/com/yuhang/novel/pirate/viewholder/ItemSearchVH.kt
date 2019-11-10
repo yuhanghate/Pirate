@@ -12,16 +12,17 @@ import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookSearchDataResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 
-class ItemSearchVH(parent:ViewGroup):BaseViewHolder<BookSearchDataResult, ItemSearchBinding>(parent, R.layout.item_search) {
+class ItemSearchVH(parent:ViewGroup):BaseViewHolder<BooksResult, ItemSearchBinding>(parent, R.layout.item_search) {
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(obj: BookSearchDataResult, position: Int) {
+    override fun onBindViewHolder(obj: BooksResult, position: Int) {
         super.onBindViewHolder(obj, position)
 
-        mBinding.descTv.text = obj.Desc
-        mBinding.titleTv2.text = "${obj.CName} | ${obj.Author}"
-        mBinding.titleTv.text = obj.Name
+        mBinding.descTv.text = obj.description
+        mBinding.titleTv2.text = "${obj.kind} | ${obj.author}"
+        mBinding.titleTv.text = obj.bookName
 
         /**
          * 加载头像
@@ -31,7 +32,7 @@ class ItemSearchVH(parent:ViewGroup):BaseViewHolder<BookSearchDataResult, ItemSe
                 RequestOptions().transforms(CenterCrop(), RoundedCorners(mContext.niceDp2px(3f)))
                         .placeholder(drawable)
                         .error(drawable)
-        getGlide().load(niceCoverPic(obj.Img))
+        getGlide().load(obj.cover)
                 .apply(placeholder)
                 .into(niceGlideInto(mBinding.converIv))
     }

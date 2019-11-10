@@ -1,0 +1,116 @@
+package com.yuhang.novel.pirate.ui.resouce.activity
+
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
+import com.yuhang.novel.pirate.constant.BookConstant
+import com.yuhang.novel.pirate.databinding.ActivityResouceChapterListBinding
+import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
+import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceChapterListViewModel
+
+/**
+ * 第三方源章节列表
+ */
+class ResouceChapterListActivity :
+    BaseSwipeBackActivity<ActivityResouceChapterListBinding, ResouceChapterListViewModel>(),
+    OnClickItemListener {
+
+
+    companion object {
+        const val CHAPTER = "chapter"
+        const val BOOKS_RESULT = "books_result"
+        fun start(context: Activity, obj: BooksResult, chapter: ResouceListKdResult) {
+            val intent = Intent(context, ResouceChapterListActivity::class.java)
+            intent.putExtra(CHAPTER, Gson().toJson(chapter))
+            intent.putExtra(BOOKS_RESULT, obj.toJson())
+            startIntent(context, intent)
+        }
+    }
+
+    private fun getResouceListKdResult() = Gson().fromJson<ResouceListKdResult>(
+        intent.getStringExtra(CHAPTER),
+        ResouceListKdResult::class.java
+    )
+
+    private fun getBooksResult() =
+        Gson().fromJson<BooksResult>(intent.getStringExtra(BOOKS_RESULT), BooksResult::class.java)
+
+
+    override fun onLayoutId(): Int {
+        return R.layout.activity_resouce_chapter_list
+    }
+
+    override fun initView() {
+        super.initView()
+        initRecyclerView()
+        initBackgroud()
+    }
+
+    override fun initRecyclerView() {
+        super.initRecyclerView()
+        mViewModel.adapter
+            .setListener(this)
+            .setDecorationColor(BookConstant.getPageBackground())
+            .setDecorationSize(0)
+            .setlayoutManager(LinearLayoutManager(this))
+            .setRecyclerView(mBinding.recyclerView)
+
+        mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
+    }
+
+    private fun initBackgroud() {
+        //navigateion状态栏颜色
+        window.navigationBarColor = BookConstant.getPageBackground()
+        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+    }
+
+    @SuppressLint("CheckResult")
+    override fun initData() {
+        super.initData()
+        mBinding.progressView.show()
+        mViewModel.getChapterList(getResouceListKdResult()._id, getResouceListKdResult().book)
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.titleTv.text =
+                    "${getResouceListKdResult().name}(${getBooksResult().bookName})"
+                mViewModel.chapterList.addAll(it)
+                mViewModel.adapter.setRefersh(it)
+                mBinding.progressView.hide()
+            }, {
+                mBinding.progressView.hide()
+            })
+    }
+
+    /**
+     * 点击打开阅读页
+     */
+    @SuppressLint("CheckResult")
+    override fun onClickItemListener(view: View, position: Int) {
+        val obj = mViewModel.chapterList[position]
+        mViewModel.insertChapterList(BookResouceTypeKDEntity().apply {
+            this.bookName = getBooksResult().bookName
+            this.bookid = getResouceListKdResult().book
+            this.resouce = getBooksResult().resouce
+            this.tocId = getResouceListKdResult()._id
+            this.typeName = getResouceListKdResult().name
+        }, getBooksResult()).compose(bindToLifecycle()).subscribe({
+            ReadBookActivity.start(this, BooksResult().apply {
+                this.bookKdId = obj.bookId
+                this.bookName = getBooksResult().bookName
+                this.typeKd = 1
+                this.typeKs = 2
+                this.resouce = obj.resouce
+            }, obj.chapterId)
+            finish()
+        }, {})
+    }
+}

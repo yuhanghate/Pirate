@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -20,6 +21,7 @@ import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.ui.book.viewmodel.DrawerlayoutLeftViewModel
 import com.yuhang.novel.pirate.utils.DateUtils
 import java.util.*
@@ -33,7 +35,12 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
 
     var bookid: String? = null
 
-    var chapterid: Int? = null
+    /**
+     * 章节列表
+     */
+    var chapterList : List<BookChapterKSEntity> = arrayListOf()
+
+    var chapterid: String = ""
 
     /**
      * 排序状态
@@ -84,7 +91,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     fun resetBackground() {
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
         mViewModel.adapter.notifyDataSetChanged()
-        mBinding.recyclerView.scrollToPosition(mViewModel.adapter.chapterid)
+//        mBinding.recyclerView.scrollToPosition(mViewModel.adapter.chapterid)
         mBinding.itemDrawerHeader.athorTv.setTextColor(BookConstant.getPageTextColor())
         mBinding.itemDrawerHeader.titleTv.setTextColor(BookConstant.getPageTextColor())
         mBinding.itemDrawerHeader.updateTimeTv.setTextColor(BookConstant.getPageTextColor())
@@ -131,7 +138,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
      * 获取目录头部
      */
     @SuppressLint("CheckResult")
-    private fun initHeaderView() {
+    fun initHeaderView() {
         bookid ?: return
         mViewModel.queryBookInfo(bookid!!)
                 .compose(bindToLifecycle())
@@ -151,9 +158,10 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
                                 .apply(placeholder)
                                 .into(mBinding.itemDrawerHeader.converIv)
                     }
-                }, {})
+                }, {
+                    Logger.i("")
+                })
 
-//        mBinding.root.setPadding(0, 0, 0, StatusBarUtil.getStatusBarHeight(activity))
     }
 
     override fun initRecyclerView() {
@@ -165,13 +173,6 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
                 .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
-        bookid?.let {
-            mViewModel.queryChapterList(it)
-                    .compose(bindToLifecycle())
-                    .subscribe({ list ->
-                        mViewModel.adapter.setRefersh(list)
-                    }, {})
-        }
     }
 
     /**
@@ -186,8 +187,8 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     /**
      * 设置当前读取的目录章节
      */
-    fun setCurrentReadItem(chapterid: Int) {
-        if (mViewModel.adapter.chapterid != -1 && chapterid == mViewModel.adapter.chapterid) return
+    fun setCurrentReadItem(chapterid: String) {
+        if (mViewModel.adapter.chapterid.isNotEmpty() && chapterid == mViewModel.adapter.chapterid) return
 
         var position = -1
         mViewModel.adapter.getList().forEachIndexed { index, bookChapterKSEntity ->
@@ -198,5 +199,13 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
         mViewModel.adapter.chapterid = chapterid
         mViewModel.adapter.notifyDataSetChanged()
         mBinding.recyclerView.scrollToPosition(position)
+    }
+
+    /**
+     * 刷新界面
+     */
+    fun setRefreshView() {
+        initHeaderView()
+        mViewModel.adapter.setRefersh(chapterList)
     }
 }

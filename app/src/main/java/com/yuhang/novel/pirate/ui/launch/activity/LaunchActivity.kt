@@ -57,13 +57,15 @@ class LaunchActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 //第一次安装弹出隐私条款
-                if (!PreferenceUtil.getBoolean("privacy", false)) {
-                    Handler().postDelayed({ showPrivacyDialog() }, 1500)
-                } else {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                }
+//                if (!PreferenceUtil.getBoolean("privacy", false)) {
+//                    Handler().postDelayed({ showPrivacyDialog() }, 1500)
+//                } else {
+//                    startActivity(Intent(this, MainActivity::class.java))
+//                    finish()
+//                }
 
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
 
 

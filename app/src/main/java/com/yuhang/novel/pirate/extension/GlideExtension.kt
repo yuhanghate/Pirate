@@ -30,8 +30,17 @@ fun Any.niceCoverPic(conver: String):String {
         return conver
     }
 
-//    val url = "https://imgapi.jiaston.com/BookFiles/BookImages/$conver"
-    val url = "https://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(conver, "utf-8")}"
+    val url = "http://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(conver, "utf-8")}"
+    Logger.t("cover").i("$url")
+    return url
+}
+
+fun String.niceCoverPic(): String {
+    if (this.startsWith("https://") || this.startsWith("http://")) {
+        return this
+    }
+
+    val url = "http://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(this, "utf-8")}"
     Logger.t("cover").i("$url")
     return url
 }

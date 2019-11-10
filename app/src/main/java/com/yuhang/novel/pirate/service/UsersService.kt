@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.service
 
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BookResouceResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import io.reactivex.Flowable
 
@@ -11,23 +13,23 @@ interface UsersService {
     /**
      * 更新线上收藏记录到本地
      */
-    fun updateCollectionToLocal(): Flowable<String>
+    fun updateCollectionToLocal(): Flowable<BooksResult>
 
 
     /**
      * 更新小说章节列表到本地
      */
-    fun updateChapterListToLocal(bookid: String): Flowable<String>
+    fun updateChapterListToLocal(bookid: BooksResult): Flowable<BooksResult>
 
     /**
      * 更新最后阅读章节到本地
      */
-    fun updateReadHistoryToLocal(bookid: String):Flowable<String>
+    fun updateReadHistoryToLocal(obj:BooksResult):Flowable<BooksResult>
 
     /**
      * 更新小说详情到本地
      */
-    fun updateBookInfoToLocal(bookid: String): Flowable<String>
+    fun updateBookInfoToLocal(obj:BooksResult): Flowable<BooksResult>
 
     /**
      * 更新用户信息到本地

@@ -5,6 +5,7 @@ import android.widget.EditText
 import com.vondear.rxtool.RxRegTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
@@ -106,31 +107,30 @@ class LoginViewModel : BaseViewModel() {
                 val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookINfoEntity.bookid)?: return@flatMap Flowable.just(bookINfoEntity)
                 return@flatMap mDataRepository.updateReadHistory(
                     bookName = bookINfoEntity.bookName,
-                    bookid = bookINfoEntity.bookid.toString(),
-                    chapterid = lastOpenChapter.chapterId.toString(),
+                    bookid = bookINfoEntity.bookid,
+                    chapterid = lastOpenChapter.chapterId,
                     chapterName = lastOpenChapter.chapterName,
                     author = bookINfoEntity.author,
                     cover = bookINfoEntity.cover,
                     description = bookINfoEntity.description,
-                    resouceType = "KS",
-                    content = mDataRepository.queryBookContent(bookINfoEntity.bookid, lastOpenChapter.chapterId)?.content!!
-                ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map { bookINfoEntity }
+                    resouceType = mDataRepository.queryCollection(bookINfoEntity.bookid)?.resouce!!,
+                    content = ""
+                ).compose(io_main()).map { bookINfoEntity }
             }
             .flatMap {
                 //收藏列表上传服务器
                 if (it.bookName.isNotEmpty()) {
                     return@flatMap mDataRepository.addCollection(
-                        bookName = it.bookName, bookid = it.bookid.toString(),
+                        bookName = it.bookName, bookid = it.bookid,
                         author = it.author, cover = it.cover, description = it.description,
                         bookStatus = it.bookStatus, classifyName = it.classifyName,
-                        resouceType = "KS"
-                    )
+                        resouceType = mDataRepository.queryCollection(it.bookid)?.resouce!!
+                    ).compose(io_main())
                 } else {
                     return@flatMap Flowable.just(StatusResult(code = -1, msg = "本地收藏数据为空"))
                 }
 
-            }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            }.compose(io_main())
     }
 
 }

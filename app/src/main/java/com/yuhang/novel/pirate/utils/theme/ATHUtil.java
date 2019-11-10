@@ -3,16 +3,12 @@ package com.yuhang.novel.pirate.utils.theme;
 import android.content.Context;
 import android.content.res.TypedArray;
 import androidx.annotation.AttrRes;
-import com.kunfei.bookshelf.utils.ColorUtil;
 
 /**
  * @author Aidan Follestad (afollestad)
  */
 public final class ATHUtil {
 
-    public static boolean isWindowBackgroundDark(Context context) {
-        return !ColorUtil.isColorLight(ATHUtil.resolveColor(context, android.R.attr.windowBackground));
-    }
 
     public static int resolveColor(Context context, @AttrRes int attr) {
         return resolveColor(context, attr, 0);

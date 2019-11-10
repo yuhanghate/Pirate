@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smartrefresh.layout.api.RefreshLayout
@@ -22,10 +21,9 @@ import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
-import com.yuhang.novel.pirate.ui.book.activity.BookResouceActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
-import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListActivity
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
 
@@ -127,7 +125,6 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mBinding.filterLl.visibility = View.GONE
 
 
-        mBinding.resouceIv.setOnClickListener { ResouceListActivity.start(mActivity!!) }
         mBinding.genderManCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
         mBinding.genderLadyCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
 
@@ -365,6 +362,11 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 "author" to obj.Author
             )
         )
-        BookDetailsActivity.start(mActivity!!, obj.Id)
+        BookDetailsActivity.start(mActivity!!, BooksResult().apply {
+            bookKsId = obj.Id
+            typeKs = 1
+            bookName = obj.Name
+            author = obj.Author
+        })
     }
 }

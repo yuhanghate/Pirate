@@ -9,6 +9,7 @@ import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityLoginBinding
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
@@ -70,6 +71,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                         MobclickAgent.onProfileSignIn(userResult.data.id)
                         PirateApp.getInstance().setToken(userResult.data.token)
                         mViewModel.synCollection()
+                            .compose(bindToLifecycle())
                             .subscribe({
                             }, {
                                 onBackPressed()

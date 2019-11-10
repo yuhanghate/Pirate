@@ -9,14 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavOptions
-import androidx.navigation.navOptions
 import com.trello.rxlifecycle2.LifecycleProvider
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
@@ -196,19 +193,6 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
     beginTransaction?.commit()
   }
 
-  /**
-   * Fragment动画配置
-   */
-  fun getNavOptions(): NavOptions {
-    return navOptions {
-      anim {
-        enter = anim.slide_in_right
-        exit = anim.slide_out_left
-        popEnter = anim.slide_in_left
-        popExit = anim.slide_out_right
-      }
-    }
-  }
 
   /**
    * 打开进度等待条

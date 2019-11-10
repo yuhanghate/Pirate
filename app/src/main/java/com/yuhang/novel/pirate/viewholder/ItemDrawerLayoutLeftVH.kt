@@ -9,7 +9,7 @@ import com.yuhang.novel.pirate.databinding.ItemDrawerlayoutLeftBinding
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 
 class ItemDrawerLayoutLeftVH(parent:ViewGroup):BaseViewHolder<BookChapterKSEntity, ItemDrawerlayoutLeftBinding>(parent, R.layout.item_drawerlayout_left) {
-    var chapterid = -1
+    var chapterid = ""
     override fun onBindViewHolder(obj: BookChapterKSEntity, position: Int) {
         super.onBindViewHolder(obj, position)
 

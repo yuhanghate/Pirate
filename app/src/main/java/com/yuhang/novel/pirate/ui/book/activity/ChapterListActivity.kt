@@ -2,43 +2,38 @@ package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.os.Bundle
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
-import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityChapterListBinding
-import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
+import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
-import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.ChapterListViewModel
 
 /**
  * 章节目录
  */
-class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, ChapterListViewModel>(), OnClickChapterItemListener,
-        OnClickItemListener {
+class ChapterListActivity :
+    BaseSwipeBackActivity<ActivityChapterListBinding, ChapterListViewModel>(),
+    OnClickChapterItemListener,
+    OnClickItemListener {
 
-
+    private var booksResult: BooksResult? = null
 
     companion object {
         private const val BOOKID = "bookid"
-        private const val CHAPTERID = "chapterid"
-        fun start(context: Activity, bookid: String, chapterid: Int) {
+        private const val BOOK_RESULT = "book_result"
+
+        fun start(context: Activity, obj: BooksResult) {
             val intent = Intent(context, ChapterListActivity::class.java)
-            intent.putExtra(BOOKID, bookid)
-            intent.putExtra(CHAPTERID, chapterid)
+            intent.putExtra(BOOK_RESULT, obj.toJson())
             startIntent(context, intent)
         }
     }
@@ -47,15 +42,20 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
         return R.layout.activity_chapter_list
     }
 
+    private fun getBooksResult(): BooksResult {
+        if (booksResult == null) {
+            booksResult = Gson().fromJson<BooksResult>(
+                intent.getStringExtra(BOOK_RESULT),
+                BooksResult::class.java
+            )
+        }
+        return booksResult!!
+    }
+
     /**
      * 小说id
      */
     private fun getBookid() = intent.getStringExtra(BOOKID)
-
-    /**
-     * 章节id
-     */
-    private fun getChapterid() = intent.getIntExtra(CHAPTERID, -1)
 
 
     override fun initView() {
@@ -67,6 +67,8 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
     }
 
     private fun initBackgroud() {
+        //navigateion状态栏颜色
+        window.navigationBarColor = BookConstant.getPageBackground()
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.toolbar.setBackgroundColor(BookConstant.getPageBackground())
         if (BookConstant.getPageColorIndex() == 3) {
@@ -78,11 +80,11 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
 
     @SuppressLint("CheckResult")
     private fun initBookInfo() {
-        mViewModel.queryBookInfo(getBookid())
-                .compose(bindToLifecycle())
-                .subscribe({
-                    mBinding.titleCloseTv.text = it?.bookName
-                },{})
+        mViewModel.queryBookInfo(getBooksResult().getBookid())
+            .compose(bindToLifecycle())
+            .subscribe({
+                mBinding.titleCloseTv.text = it?.bookName
+            }, {})
     }
 
     @SuppressLint("CheckResult")
@@ -92,14 +94,16 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
         mViewModel.adapter.setListener(this)
         mViewModel.adapter
             .setlayoutManager(LinearLayoutManager(this))
-                .setRecyclerView(mBinding.recyclerView, false)
+            .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
-        mViewModel.queryChapterList(getBookid())
-                .compose(bindToLifecycle())
-                .subscribe({ list ->
-                    mViewModel.adapter.setRefersh(list)
-                }, {})
+        mBinding.progressView.show()
+        mViewModel.queryChapterList(getBooksResult())
+            .compose(bindToLifecycle())
+            .subscribe({ list ->
+                mViewModel.adapter.setRefersh(list)
+                mBinding.progressView.hide()
+            }, { mBinding.progressView.hide() })
     }
 
     private fun onClick() {
@@ -110,16 +114,33 @@ class ChapterListActivity : BaseSwipeBackActivity<ActivityChapterListBinding, Ch
      * 章节目录点击
      */
     @SuppressLint("CheckResult")
-    override fun onClickChapterItemListener(view: View, chapterid: Int) {
-        ReadBookActivity.start(this, getBookid(), chapterid)
+    override fun onClickChapterItemListener(view: View, chapterid: String) {
+        mViewModel.queryCollection(getBookid())
+            .compose(bindToLifecycle())
+            .subscribe({
+                ReadBookActivity.start(this, it?.niceBooksResult()!!, chapterid)
+                onBackPressedSupport()
+            }, {
+                Logger.i("")
+            })
+
     }
 
     /**
      * Item点击事件
      */
+    @SuppressLint("CheckResult")
     override fun onClickItemListener(view: View, position: Int) {
         val chapterKSEntity = mViewModel.adapter.getObj(position)
-        ReadBookActivity.start(this, getBookid(), chapterKSEntity.chapterId)
+        mViewModel.queryCollection(chapterKSEntity.bookId)
+            .compose(bindToLifecycle())
+            .subscribe({
+                ReadBookActivity.start(this, it?.niceBooksResult()!!, chapterKSEntity.chapterId)
+                onBackPressedSupport()
+            }, {
+
+            })
+
     }
 
     override fun onPause() {

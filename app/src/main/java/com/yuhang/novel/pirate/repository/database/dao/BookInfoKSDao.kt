@@ -39,16 +39,17 @@ interface BookInfoKSDao {
     fun update(stickTime: Long, bookid: String)
 
     /**
-     * 查询所有收藏的书本信息
+     * 修改最后阅读时间
      */
-    @Query("select * from bookinfoksentity as info where info.bookid in (select c.bookid from bookcollectionksentity as c group by c.bookid order by c.time desc) group by info.bookid order by info.stickTime desc")
-    fun queryCollectionAll(): List<BookInfoKSEntity?>
+    @Query("update bookinfoksentity set lastReadTime = :lastReadTime where bookid = :bookid")
+    fun updateLastReadTime(lastReadTime : Long, bookid: String)
 
     /**
-     * 查询所有收藏书本信息
+     * 查询所有收藏的书本信息
      */
-    @Query("select * from bookinfoksentity as info where  info.bookid in (:bookids) order by info.stickTime desc")
-    fun queryCollectionAll(vararg bookids: String):List<BookInfoKSEntity?>
+    @Query("select * from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid order by info.stickTime DESC, info.lastReadTime DESC ")
+    fun queryCollectionAll(): List<BookInfoKSEntity?>
+
 
 
     /**
@@ -62,6 +63,7 @@ interface BookInfoKSDao {
      */
     @Query("select max(lastTime) from bookinfoksentity where bookid = :bookid")
     fun queryLastTime(bookid: String):Long
+
 
     @Query("delete from bookinfoksentity")
     fun clear()

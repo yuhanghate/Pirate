@@ -185,11 +185,11 @@ data class ContentDataResult(
   /**
    * 下一节章ID
    */
-  val nid: Int = 0,
+  val nid: String = "",
   /**
    * 上一章节ID
    */
-  val pid: Int = 0,
+  val pid: String = "",
   /**
    * 小说id
    */
@@ -201,5 +201,5 @@ data class ContentDataResult(
   /**
    * 当前章节ID
    */
-  val cid: Int = 0
+  val cid: String = ""
 )

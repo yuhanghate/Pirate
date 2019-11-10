@@ -25,23 +25,17 @@ interface BookCollectionKSDao {
     fun queryAll():List<BookCollectionKSEntity?>
 
     /**
-     * 更新收藏时间
-     * 可用于置顶功能
-     */
-    @Update
-    fun udpate(vararg list:BookCollectionKSEntity)
-
-    /**
      * 删除收藏时间
      */
     @Query("delete from bookcollectionksentity where bookid = :bookid")
     fun delete(bookid: String)
 
     /**
-     * 更新时间
+     * 更新收藏
      */
-    @Query("update bookcollectionksentity set time = :time where bookid = :bookid")
-    fun updateTime(bookid: String, time:Long)
+    @Update
+    fun update(obj: BookCollectionKSEntity)
+
 
     @Query("delete from bookcollectionksentity")
     fun clear()

@@ -16,12 +16,12 @@ class DrawerlayoutLeftViewModel : BaseViewModel() {
     /**
      * 从本地查询章节目录
      */
-    fun queryChapterList(bookid: String): Flowable<List<BookChapterKSEntity>> {
-        return Flowable.just(bookid)
-                .map { mDataRepository.queryChapterObjList(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+//    fun queryChapterList(bookid: String): Flowable<List<BookChapterKSEntity>> {
+//        return Flowable.just(bookid)
+//                .map { mConvertRepository.getChapterList(it) }
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//    }
 
     /**
      * 从本地查询书籍信息

@@ -5,12 +5,12 @@ import android.text.TextUtils
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
-import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
+import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -20,30 +20,40 @@ class BookDetailsViewModel : BaseViewModel() {
 
     var obj: BookDetailsDataResult? = null
 
+    var entity: BookInfoKSEntity? = null
+
+    var chapterList: ArrayList<BookChapterKSEntity> = arrayListOf()
 
     /**
      * 是否收藏书箱
      */
     var isCollection = false
 
+
     /**
-     * 获取小说详情
+     * 作者所有作品
      */
-    fun getBookDetails(bookid: String): Flowable<BookDetailsDataResult> {
-        return mDataRepository.getBookDetails(bookid)
-            .filter { it.status == 1 }
-            .map { it.data }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    fun getAuthorBooksList(obj: BooksResult): Flowable<List<BooksResult>> {
+        return mConvertRepository.getAuthorBooksList(obj)
+            .compose(io_main())
+
+    }
+
+    /**
+     * 获取详情信息
+     */
+    fun getBookDetails(obj: BooksResult): Flowable<BookInfoKSEntity> {
+        return mConvertRepository.getDetailsInfo(obj)
+            .compose(io_main())
     }
 
     /**
      * 增加收藏
      */
-    fun insertCollection(bookid: String): Flowable<Boolean> {
-        return Flowable.just(bookid)
+    fun insertCollection(obj: BooksResult): Flowable<Boolean> {
+        return Flowable.just("")
             .map {
-                mDataRepository.insertCollection(it)
+                mDataRepository.insertCollection(obj)
                 return@map true
             }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -55,21 +65,21 @@ class BookDetailsViewModel : BaseViewModel() {
      * 收藏到服务器
      */
     @SuppressLint("CheckResult")
-    fun postCollection(bookid: String) {
-        if (TextUtils.isEmpty(PirateApp.getInstance().getToken())|| obj == null) return
-        Flowable.just(bookid)
+    fun postCollection(obj: BooksResult) {
+        if (TextUtils.isEmpty(PirateApp.getInstance().getToken()) || entity == null) return
+        Flowable.just(obj.getBookid())
 
             .flatMap {
-                obj?.niceBookInfoKSEntity()?.let {
+                entity?.let {
                     mDataRepository.addCollection(
-                        bookid = it.bookid.toString(),
+                        bookid = it.bookid,
                         bookName = it.bookName,
                         author = it.author,
                         cover = it.cover,
                         description = it.description,
                         bookStatus = it.bookStatus,
                         classifyName = it.classifyName,
-                        resouceType = "KS"
+                        resouceType = obj.getType()
                     )
                 }
 
@@ -88,17 +98,16 @@ class BookDetailsViewModel : BaseViewModel() {
      * 插入书箱信息
      */
     fun insertBookInfoEntity() {
-        val book = obj ?: return
+        val book = entity ?: return
         thread {
-            val bookInfo = mDataRepository.queryBookInfo(book.Id)
+            val bookInfo = mDataRepository.queryBookInfo(book.bookid)
             if (bookInfo == null) {
                 //书籍信息插入本地
-                mDataRepository.insertBookInfo(book.niceBookInfoKSEntity())
+                mDataRepository.insertBookInfo(book)
             } else {
                 //更新本地数据
-                val infoKSEntity = book.niceBookInfoKSEntity()
-                infoKSEntity.id = bookInfo.id
-                mDataRepository.updateBookInfo(infoKSEntity)
+                book.id = bookInfo.id
+                mDataRepository.updateBookInfo(book)
             }
         }
 
@@ -124,38 +133,25 @@ class BookDetailsViewModel : BaseViewModel() {
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    /**
-     * 插入章节列表到本地
-     */
-    fun insertChapterList(list: List<BookChapterKSEntity>) {
-        mDataRepository.insertChapterList(list)
-    }
 
     /**
-     * 删除本地对应的书籍章节
+     * 章节列表
      */
-    fun deleteChapterList(bookid: String) {
-        mDataRepository.deleteChapterList(bookid)
-    }
-
-    /**
-     * 获取章节列表
-     */
-    fun getChapterList(bookid: String): Flowable<ChapterListResult> {
-        return mDataRepository.getBookChapterList(bookid)
+    private fun getChapterListV2(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
+        return mConvertRepository.getChapterList(obj)
     }
 
     /**
      * 从服务器更新书籍章节到本地
      */
-    fun updateChapterToDB(bookid: String): Flowable<List<BookChapterKSEntity>> {
-        return getChapterList(bookid)
-            .filter { it.status == 1 }
+    fun updateChapterToDB(bookid: BooksResult): Flowable<List<BookChapterKSEntity>> {
+        return getChapterListV2(bookid)
             .map {
-                deleteChapterList(it.data.id)
-                val list = it.data.niceBookChapterKSEntity()
-                insertChapterList(list)
-                return@map list
+                chapterList.clear()
+                chapterList.addAll(it)
+                mDataRepository.deleteChapterList(it[0].bookId)
+                mDataRepository.insertChapterList(it)
+                return@map it
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

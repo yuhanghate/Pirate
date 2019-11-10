@@ -16,10 +16,10 @@ interface BookReadHistoryDao {
     fun update(entity: BookReadHistoryEntity)
 
     /**
-     * 查询指定章节小说最后一次阅读章节
+     * 查询指定章节小说最后一次阅读内容
      */
     @Query("select * from bookreadhistoryentity where bookid = :bookid and chapterid = :chapterid order by lastReadTime desc limit 1")
-    fun queryBookReadHistoryEntity(bookid:String, chapterid:Int):BookReadHistoryEntity?
+    fun queryBookReadHistoryEntity(bookid:String, chapterid:String):BookReadHistoryEntity?
 
     /**
      * 获取指定书最后章节
@@ -29,6 +29,12 @@ interface BookReadHistoryDao {
 
     @Query("select * from bookreadhistoryentity order by lastReadTime desc")
     fun queryAll():List<BookReadHistoryEntity>
+
+    /**
+     * 删除指定小说章节
+     */
+    @Query("delete from bookreadhistoryentity where bookid = :bookid")
+    fun clear(bookid: String)
 
     @Query("delete from bookreadhistoryentity")
     fun clear()

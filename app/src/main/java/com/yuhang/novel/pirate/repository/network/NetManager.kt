@@ -5,10 +5,7 @@ import com.yuhang.novel.pirate.repository.api.KanShuNetApi
 import com.yuhang.novel.pirate.repository.api.KuaiDuNetApi
 import com.yuhang.novel.pirate.repository.api.NetApi
 import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
-import com.yuhang.novel.pirate.repository.network.rule.AnalyzeUrl
-import com.yuhang.novel.pirate.utils.EncodeConverter
 import com.yuhang.novel.pirate.utils.SSLSocketClient
-import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
@@ -106,8 +103,8 @@ class NetManager {
             .dns(HttpDns())
             //增加Header头
             .addInterceptor(TokenInterceptor())
-            .connectTimeout(60 * 5, TimeUnit.SECONDS)
-            .readTimeout(60 * 5, TimeUnit.SECONDS)
+            .connectTimeout(60 * 1, TimeUnit.SECONDS)
+            .readTimeout(60 * 1, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
@@ -153,56 +150,4 @@ class NetManager {
         return sSLSocketFactory
 
     }
-
-    /**
-     * 获取resouce
-     */
-    fun getResponseO(analyzeUrl: AnalyzeUrl): Flowable<String> {
-        when (analyzeUrl.getUrlMode()) {
-            AnalyzeUrl.UrlMode.POST -> return getRetrofitString(analyzeUrl.getHost())
-                .create(ResouceNetApi::class.java)
-                .postMap(
-                    analyzeUrl.getPath(),
-                    analyzeUrl.getQueryMap(),
-                    analyzeUrl.getHeaderMap()
-                )
-            AnalyzeUrl.UrlMode.GET -> return getRetrofitString(analyzeUrl.getHost())
-                .create(ResouceNetApi::class.java)
-                .getMap(
-                    analyzeUrl.getPath(),
-                    analyzeUrl.getQueryMap(),
-                    analyzeUrl.getHeaderMap()
-                )
-            else -> return getRetrofitString(analyzeUrl.getHost())
-                .create(ResouceNetApi::class.java)
-                .get(
-                    analyzeUrl.getPath(),
-                    analyzeUrl.getHeaderMap()
-                )
-        }
-    }
-
-    fun getRetrofitString(url: String): Retrofit {
-        return Retrofit.Builder().baseUrl(url)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            //增加返回值为字符串的支持(以实体类返回)
-            .addConverterFactory(EncodeConverter.create())
-            //增加返回值为Observable<T>的支持
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(createOkhttp())
-            .build()
-    }
-
-    fun getRetrofitString(url: String, encode: String): Retrofit {
-        return Retrofit.Builder().baseUrl(url)
-            //增加返回值为字符串的支持(以实体类返回)
-            .addConverterFactory(EncodeConverter.create(encode))
-            //增加返回值为Observable<T>的支持
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(createOkhttp())
-            .build()
-    }
-
-
-
 }
