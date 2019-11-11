@@ -365,7 +365,7 @@ class ReadBookViewModel : BaseViewModel() {
                 return index
             }
         }
-        return 1
+        return chapterList.size - 1
     }
 
     /**
@@ -420,10 +420,9 @@ class ReadBookViewModel : BaseViewModel() {
                 //快读更新不及时,部分源更新了,他的还没
                 mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
                     ?.let { entity ->
-                        list.filter { it.chapterId == entity.chapterid }
-                            .forEachIndexed { index, bookChapterKSEntity ->
-                                if (index >= list.size - 1) {
-                                    mConvertRepository.getChapterList(obj).map {
+                        list.forEachIndexed { index, bookChapterKSEntity ->
+                                if (bookChapterKSEntity.chapterId == entity.chapterid && index >= list.size - 1) {
+                                    return@flatMap mConvertRepository.getChapterList(obj).map {
                                         mDataRepository.deleteChapterList(it[0].bookId)
                                         mDataRepository.insertChapterList(it)
                                         it

@@ -89,8 +89,11 @@ class ConvertRepository {
                     .flatMap {
                         //获取快读官方源列表
                         val entity = mDatabase.bookResouceTypeKDDao.query(obj.bookKdId)
-                            ?: return@flatMap mKuaiDuNetApi.getChapterList(obj.bookKdId)
+
+                        if (entity == null || entity.tocId.isEmpty()) {
+                            return@flatMap mKuaiDuNetApi.getChapterList(obj.bookKdId)
                                 .map { it.niceBookChapterKSEntity() }
+                        }
 
                         //获取快读子渠道列表
                         return@flatMap getResouceChapterList(entity.tocId, obj.bookKdId)

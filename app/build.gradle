@@ -12,8 +12,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 142
-        versionName "1.4.2"
+        versionCode 143
+        versionName "1.4.3"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -23,7 +23,7 @@ android {
             //设置支持的so库架构
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
-        applicationIdSuffix = '.dev'
+//        applicationIdSuffix = '.dev'
     }
 
 
@@ -240,7 +240,7 @@ dependencies {
     implementation 'com.qiniu:happy-dns:0.2.13'
 
     //数据库调试工具
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     //开关
     implementation project(path: ':switch-button')

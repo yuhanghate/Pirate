@@ -61,8 +61,8 @@
         <activity android:name=".ui.book.activity.ReadHistoryActivity" />
         <activity
                 android:name=".ui.user.activity.LoginActivity"
-                android:focusableInTouchMode="true"
-                android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize" />
+                android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize"
+                />
         <activity
                 android:name=".ui.user.activity.RegisterActivity"
                 android:windowSoftInputMode="stateVisible|stateAlwaysVisible|adjustResize" />

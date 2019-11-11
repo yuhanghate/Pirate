@@ -16,6 +16,7 @@ import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceList
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceChapterListViewModel
+import java.util.logging.Handler
 
 /**
  * 第三方源章节列表
@@ -28,10 +29,12 @@ class ResouceChapterListActivity :
     companion object {
         const val CHAPTER = "chapter"
         const val BOOKS_RESULT = "books_result"
-        fun start(context: Activity, obj: BooksResult, chapter: ResouceListKdResult) {
+        const val BOOKS_CHAPTER_INDEX = "books_chapter_index"
+        fun start(context: Activity, obj: BooksResult, chapter: ResouceListKdResult, chapterIndex:Int) {
             val intent = Intent(context, ResouceChapterListActivity::class.java)
             intent.putExtra(CHAPTER, Gson().toJson(chapter))
             intent.putExtra(BOOKS_RESULT, obj.toJson())
+            intent.putExtra(ResouceListKdActivity.BOOKS_CHAPTER_INDEX, chapterIndex)
             startIntent(context, intent)
         }
     }
@@ -40,6 +43,11 @@ class ResouceChapterListActivity :
         intent.getStringExtra(CHAPTER),
         ResouceListKdResult::class.java
     )
+
+    /**
+     * 看书章节列表
+     */
+    fun getBooksChapterIndex() = intent.getIntExtra(ResouceListKdActivity.BOOKS_CHAPTER_INDEX, 0)
 
     private fun getBooksResult() =
         Gson().fromJson<BooksResult>(intent.getStringExtra(BOOKS_RESULT), BooksResult::class.java)
@@ -84,6 +92,11 @@ class ResouceChapterListActivity :
                     "${getResouceListKdResult().name}(${getBooksResult().bookName})"
                 mViewModel.chapterList.addAll(it)
                 mViewModel.adapter.setRefersh(it)
+
+                //跳转到附近的章节
+//                android.os.Handler().postDelayed({mBinding.recyclerView.scrollToPosition(mViewModel.getChapterIndex(getBooksChapterIndex()))}, 200)
+                mBinding.recyclerView.scrollToPosition(mViewModel.getChapterIndex(getBooksChapterIndex()))
+
                 mBinding.progressView.hide()
             }, {
                 mBinding.progressView.hide()

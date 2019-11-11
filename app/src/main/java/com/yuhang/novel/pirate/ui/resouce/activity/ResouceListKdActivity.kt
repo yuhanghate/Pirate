@@ -26,8 +26,10 @@ class ResouceListKdActivity :
 
     companion object {
         const val BOOKS_RESULT = "books_result"
-        fun start(context: Activity, obj: BooksResult) {
+        const val BOOKS_CHAPTER_INDEX = "books_chapter_index"
+        fun start(context: Activity, obj: BooksResult, chapterIndex:Int) {
             val intent = Intent(context, ResouceListKdActivity::class.java)
+            intent.putExtra(BOOKS_CHAPTER_INDEX, chapterIndex)
             intent.putExtra(BOOKS_RESULT, obj.toJson())
             startIntent(context, intent)
         }
@@ -35,6 +37,11 @@ class ResouceListKdActivity :
 
     fun getBooksResult() =
         Gson().fromJson<BooksResult>(intent.getStringExtra(BOOKS_RESULT), BooksResult::class.java)
+
+    /**
+     * 看书章节列表
+     */
+    fun getBooksChapterIndex() = intent.getIntExtra(BOOKS_CHAPTER_INDEX, 0)
 
     override fun onLayoutId(): Int {
         return R.layout.activity_resouce_list_kd
@@ -96,6 +103,6 @@ class ResouceListKdActivity :
             this.typeKs = 2
             this.bookName = getBooksResult().bookName
             this.bookKdId = getBooksResult().getBookid()
-        }, obj)
+        }, obj, getBooksChapterIndex())
     }
 }

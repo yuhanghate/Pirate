@@ -60,7 +60,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
-//        SqlScoutServer.create(this, packageName)
+        SqlScoutServer.create(this, packageName)
         initLayoutInflater()
         initViewModel()
         initStatusTool()

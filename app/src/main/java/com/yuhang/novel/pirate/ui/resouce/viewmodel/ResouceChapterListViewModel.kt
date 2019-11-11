@@ -53,4 +53,15 @@ class ResouceChapterListViewModel:BaseViewModel() {
                 }
             }.compose(io_main())
     }
+
+    /**
+     * 获取最新阅读的角标
+     */
+    fun getChapterIndex(index: Int):Int {
+        return if (chapterList.size > index) {
+            return index
+        } else {
+            chapterList.size -1
+        }
+    }
 }

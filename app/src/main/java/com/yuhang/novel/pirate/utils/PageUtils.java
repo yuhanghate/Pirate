@@ -106,13 +106,17 @@ public class PageUtils {
     private static float drawTitle(Canvas canvas, List<String> list, PageBean bean) {
 
         float top = bean.marginTop + bean.paddingTop + bean.getTitleHeight() + bean.titlePare;
+        //上边距.大标题居中显示
+        float start = bean.marginStart + bean.padddingStart;
+        float[] measuredWidth = {0};
+        bean.textPaint.breakText(BookConstant.WIDTH_MEASURE,
+                true, bean.getShowWidth(), measuredWidth);
+        float x = (bean.getShowWidth() - measuredWidth[0]) / 2 + start;
 
         for (String title : list) {
 
-            //上边距.大标题居中显示
-            float start = (bean.getShowWidth() - bean.titlePaint.measureText(title)) / 2;
             //进行绘制
-            canvas.drawText(title, start, top, bean.titlePaint);
+            canvas.drawText(title, x, top, bean.titlePaint);
             //移动上边距离. 文字高度+行间距
             top += bean.titleInterval + bean.getTitleHeight();
         }

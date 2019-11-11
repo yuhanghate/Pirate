@@ -521,7 +521,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         //换源
         mBinding.layoutTop.resouceTv.setOnClickListener {
             toggleMenu()
-            ResouceListKdActivity.start(this, mViewModel.mBooksResult!!)
+            ResouceListKdActivity.start(this, mViewModel.mBooksResult!!, mViewModel.getChapterIndex())
         }
     }
 
@@ -1009,6 +1009,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             positiveButton(text = "确定", click = object : DialogCallback {
                 @SuppressLint("CheckResult")
                 override fun invoke(p1: MaterialDialog) {
+
                     mViewModel.postCollection(mViewModel.mBooksResult!!)
                     mViewModel.insertCollection(mViewModel.mBooksResult!!).compose(bindToLifecycle())
                         .subscribe({

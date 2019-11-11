@@ -47,7 +47,7 @@ class MainViewModel : BaseViewModel() {
         return queryCollectionAll()
             .flatMap { Flowable.fromArray(* it.toTypedArray()) }
             .flatMap {
-                mConvertRepository.updateBook(it,it.resouce)
+                mConvertRepository.updateBook(it, it.resouce)
             }
             .flatMap {
                 val bookInfo = queryBookInfo(it.bookid)
@@ -178,9 +178,10 @@ class MainViewModel : BaseViewModel() {
      */
     @SuppressLint("CheckResult")
     fun deleteCollection(bookid: String) {
-        //删除线上收藏
-        if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
-            thread {
+        thread {
+            //删除线上收藏
+            if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
+
                 mDataRepository.deleteNetCollect(
                     bookid,
                     mDataRepository.queryCollection(bookid)?.resouce!!
@@ -189,12 +190,9 @@ class MainViewModel : BaseViewModel() {
                     .compose(mFragment?.bindToLifecycle())
                     .subscribe({}, {})
             }
-
+            //删除本地收藏
+            mDataRepository.deleteCollection(bookid)
         }
-
-
-        //删除本地收藏
-        thread { mDataRepository.deleteCollection(bookid) }
     }
 
     /**

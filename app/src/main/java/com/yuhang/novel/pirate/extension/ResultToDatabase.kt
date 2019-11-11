@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.extension
 
+import android.text.TextUtils
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
@@ -272,7 +273,7 @@ fun RecommendBooksResult.niceBooksResult(): BooksResult {
  */
 fun CollectionDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity? {
     val obj = this
-    if (obj.resouceType != "KD") return null
+    if (obj.resouceType != "KD" ||  TextUtils.isEmpty(obj.tocId)) return null
     return BookResouceTypeKDEntity().apply {
         if (obj.resouceType == "KD") {
             this.bookid = obj.bookid
@@ -290,6 +291,7 @@ fun CollectionDataResult.niceBooksResult(): BooksResult {
         this.author = obj.author ?: ""
         this.bookName = obj.bookName ?: ""
         this.cover = obj.cover ?: ""
+        this.resouce = obj.resouceType
 
         if (obj.resouceType == "KS") {
             this.typeKs = 1
