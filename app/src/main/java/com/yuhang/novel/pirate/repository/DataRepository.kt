@@ -145,7 +145,7 @@ class DataRepository(val context: Context) {
      */
     fun updateBookInfo(obj: BookInfoKSEntity) {
         //更新标签
-        updateLable(obj.bookid, obj.lastChapterId)
+        updateLable(obj.bookid, obj.lastChapterName)
         mDatabase.bookInfoKSDao.update(obj)
     }
 
@@ -331,10 +331,10 @@ class DataRepository(val context: Context) {
     /**
      * 更新标签数据
      */
-    fun updateLable(bookid: String, chapterid: String) {
+    fun updateLable(bookid: String, chapterName: String) {
         val infoKSEntity = getDatabase().bookInfoKSDao.query(bookid) ?: return
 
-        if (chapterid != infoKSEntity.lastChapterId) {
+        if (chapterName != infoKSEntity.lastChapterName) {
             PreferenceUtil.commitBoolean(bookid, true)
         }
     }

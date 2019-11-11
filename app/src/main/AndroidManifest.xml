@@ -38,7 +38,8 @@
                 android:name="notch.config"
                 android:value="portrait|landscape" />
 
-        <activity android:name="com.yuhang.novel.pirate.ui.launch.activity.LaunchActivity">
+        <activity android:name="com.yuhang.novel.pirate.ui.launch.activity.LaunchActivity"
+                >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -184,9 +184,9 @@ class MainViewModel : BaseViewModel() {
 
                 mDataRepository.deleteNetCollect(
                     bookid,
-                    mDataRepository.queryCollection(bookid)?.resouce!!
+                    mDataRepository.queryCollection(bookid)?.resouce?:""
                 )
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .compose(io_main())
                     .compose(mFragment?.bindToLifecycle())
                     .subscribe({}, {})
             }
