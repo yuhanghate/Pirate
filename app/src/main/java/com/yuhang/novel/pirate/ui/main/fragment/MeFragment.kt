@@ -43,8 +43,6 @@ import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.ImageUtils
 import com.yuhang.novel.pirate.utils.ThemeHelper
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -56,6 +54,7 @@ import java.io.File
 /**
  * 我的
  */
+@Suppress("IMPLICIT_CAST_TO_ANY")
 @RuntimePermissions
 class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
@@ -114,7 +113,11 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun initUserInfoView() {
 
         //初始化模式
-        if (PreferenceUtil.getString("themePref", ThemeHelper.LIGHT_MODE) == ThemeHelper.DARK_MODE) {
+        if (PreferenceUtil.getString(
+                "themePref",
+                ThemeHelper.LIGHT_MODE
+            ) == ThemeHelper.DARK_MODE
+        ) {
             mBinding.subjectModeIv.setImageResource(R.drawable.ic_sun)
         } else {
             mBinding.subjectModeIv.setImageResource(R.drawable.ic_moon)
@@ -174,7 +177,10 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         mBinding.checkVersionCl.setOnClickListener {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_VERSION_CHECK, "我的 -> 检测升级")
             isInitView = true
-            checkVersionWithPermissionCheck()
+            if (mViewModel.installProcess()) {
+                checkVersionWithPermissionCheck()
+            }
+
         }
         //设置
         mBinding.settingsCl.setOnClickListener {
@@ -295,15 +301,22 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_YES, "分享应用 -> 点击取消")
                     //获取剪贴板管理器：
-                    val cm = mActivity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                    val cm =
+                        mActivity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
                     // 创建普通字符型ClipData
-                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+                    val mClipData = ClipData.newPlainText(
+                        "Label",
+                        "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7"
+                    )
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
 
                     val textIntent = Intent(Intent.ACTION_SEND)
                     textIntent.type = "text/plain"
-                    textIntent.putExtra(Intent.EXTRA_TEXT, "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+                    textIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7"
+                    )
                     startActivity(Intent.createChooser(textIntent, "温馨提示"))
 
                     niceToast("复制成功,可以分享给朋友了")
@@ -345,7 +358,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 if (it.update == "Yes") {
                     mBinding.versionNameTv.text = "可升级"
 
-                    if (isInitView) {
+                    if (isInitView ) {
                         showVersionUpdateDialog(it)
                         isInitView = false
                     }
@@ -376,8 +389,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         builder.setCancelable(true)
         builder.setNegativeButton("更新") { p0, p1 ->
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_VERSION_UPDATE_YES, "版本更新 -> 点击更新")
-            showVersionUpdateProgress(result)
 
+            showVersionUpdateProgress(result)
         }
         builder.setPositiveButton("取消") { p0, p1 ->
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_VERSION_UPDATE_NO, "分享应用 -> 点击取消")
@@ -401,9 +414,13 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
          * 下载APK文件
          */
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
-        val outputApk = DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
+        val outputApk =
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
         OkGo.get<File>(url).execute(object :
-            com.lzy.okgo.callback.FileCallback(DownloadUtil.PATH_CHALLENGE_VIDEO, MD5Util.md5Encode(url) + ".apk") {
+            com.lzy.okgo.callback.FileCallback(
+                DownloadUtil.PATH_CHALLENGE_VIDEO,
+                MD5Util.md5Encode(url) + ".apk"
+            ) {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()
                 RxAppTool.installApp(mActivity, outputApk)
@@ -432,7 +449,11 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // NOTE: delegate the permission handling to generated function
         onRequestPermissionsResult(requestCode, grantResults)
