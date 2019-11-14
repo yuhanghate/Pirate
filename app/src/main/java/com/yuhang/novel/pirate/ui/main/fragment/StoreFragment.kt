@@ -80,12 +80,12 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
 
     override fun onSupportVisible() {
         super.onSupportVisible()
-        mViewModel.onPageStart("商城页面")
+//        mViewModel.onPageStart("商城页面")
     }
 
     override fun onSupportInvisible() {
         super.onSupportInvisible()
-        mViewModel.onPageEnd("商城页面")
+//        mViewModel.onPageEnd("商城页面")
 
     }
     override fun onResume() {

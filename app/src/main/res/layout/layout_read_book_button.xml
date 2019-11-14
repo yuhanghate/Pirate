@@ -2,193 +2,233 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="invisible">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible">
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#f2f2f2"
-            android:visibility="invisible" />
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#f2f2f2"
+                android:visibility="invisible" />
 
         <LinearLayout
-            android:id="@+id/color_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
+                android:id="@+id/color_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/page_bg1"
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:padding="1dp"
-                android:src="@drawable/bg_read_book_color_list1" />
+                    android:id="@+id/page_bg1"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:padding="1dp"
+                    android:src="@drawable/bg_read_book_color_list1" />
 
             <ImageView
-                android:id="@+id/page_bg2"
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:padding="1dp"
-                android:src="@drawable/bg_read_book_color_list2" />
+                    android:id="@+id/page_bg2"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:padding="1dp"
+                    android:src="@drawable/bg_read_book_color_list2" />
 
             <ImageView
-                android:id="@+id/page_bg3"
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:padding="1dp"
-                android:src="@drawable/bg_read_book_color_list3" />
+                    android:id="@+id/page_bg3"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:padding="1dp"
+                    android:src="@drawable/bg_read_book_color_list3" />
 
             <ImageView
-                android:id="@+id/page_bg4"
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:padding="1dp"
-                android:src="@drawable/bg_read_book_color_list4" />
+                    android:id="@+id/page_bg4"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:padding="1dp"
+                    android:src="@drawable/bg_read_book_color_list4" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/font_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:visibility="gone"
-            android:paddingEnd="20dp"
-            android:orientation="horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+                android:id="@+id/font_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="20dp"
+                android:visibility="gone">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A"
-                android:textColor="@color/secondary_text"
-                android:textSize="20sp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="20sp" />
 
             <com.xw.repo.BubbleSeekBar
-                android:id="@+id/seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="30dp" />
+                    android:id="@+id/seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A"
-                android:textColor="@color/secondary_text"
-                android:textSize="30sp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="30sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/chapter_progress_ll"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:paddingBottom="20dp"
-            android:layout_height="wrap_content">
-
-            <com.xw.repo.BubbleSeekBar
-                android:id="@+id/chapter_progress_sb"
+                android:id="@+id/chapter_progress_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="50dp" />
+                android:orientation="vertical"
+                android:paddingBottom="20dp"
+                android:visibility="gone">
+
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp">
+
+                <TextView
+                        android:id="@+id/btn_previous_chapter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/bg_material_40dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="上一章"
+                        android:textColor="@color/primary_text"
+                        android:textSize="15sp" />
+
+                <TextView
+                        android:id="@+id/btn_next_chapter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/bg_material_40dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="下一章"
+                        android:textColor="@color/primary_text"
+                        android:textSize="15sp" />
+
+                <com.xw.repo.BubbleSeekBar
+                        android:id="@+id/chapter_progress_sb"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_toStartOf="@+id/btn_next_chapter"
+                        android:layout_toEndOf="@+id/btn_previous_chapter" />
+            </RelativeLayout>
+
 
             <TextView
-                android:id="@+id/chapter_name_tv"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textSize="15sp"
-                android:textColor="@color/secondary_text"
-                android:layout_height="wrap_content" />
+                    android:id="@+id/chapter_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="15sp" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="65dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="65dp"
+                android:orientation="horizontal">
 
 
             <TextView
-                android:id="@+id/chapter_dir_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_read_book_bottom_dir"
-                android:background="@drawable/bg_material_item_yellow"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="目录"
-                android:textColor="@color/primary_text"
-                android:textSize="13sp" />
+                    android:id="@+id/chapter_dir_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_read_book_bottom_dir"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="目录"
+                    android:textColor="@color/primary_text"
+                    android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/content_background_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_read_book_bottom_background"
-                android:background="@drawable/bg_material_item_yellow"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="背景"
-                android:textColor="@color/primary_text"
-                android:textSize="13sp" />
+                    android:id="@+id/content_background_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_read_book_bottom_background"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="背景"
+                    android:textColor="@color/primary_text"
+                    android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/font_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_material_item_yellow"
-                android:drawableTop="@drawable/ic_read_book_bottom_font"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="字体"
-                android:textColor="@color/primary_text"
-                android:textSize="13sp" />
+                    android:id="@+id/font_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_read_book_bottom_font"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="字体"
+                    android:textColor="@color/primary_text"
+                    android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/chapter_progress_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/ic_read_book_bottom_progress"
-                android:background="@drawable/bg_material_item_yellow"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="进度"
-                android:textColor="@color/primary_text"
-                android:textSize="13sp" />
+                    android:id="@+id/chapter_progress_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_material_item_yellow"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_read_book_bottom_progress"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="进度"
+                    android:textColor="@color/primary_text"
+                    android:textSize="13sp" />
 
         </LinearLayout>
     </LinearLayout>

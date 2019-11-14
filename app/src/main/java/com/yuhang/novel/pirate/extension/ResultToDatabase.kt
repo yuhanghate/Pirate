@@ -143,6 +143,7 @@ fun ReadHistoryDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.author = result.author
         this.cover = result.cover
         this.lastChapterName = result.chapterName
+        this.resouce = result.resouceType
     }
 }
 

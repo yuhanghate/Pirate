@@ -60,9 +60,25 @@
                 android:gravity="center"
                 android:src="@drawable/btn_refresh"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/resouce_tv"
+                app:layout_constraintEnd_toStartOf="@+id/download_tv"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginEnd="20dp" />
+
+            <TextView
+                    android:id="@+id/download_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/bg_material_40dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="下载"
+                    android:textColor="@color/primary_text"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/resouce_tv"
+                    app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View

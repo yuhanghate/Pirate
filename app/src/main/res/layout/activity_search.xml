@@ -199,7 +199,7 @@
                         android:background="@color/window_background"
                         android:clipToPadding="false"
                         android:paddingStart="10dp"
-                        android:paddingTop="30dp"
+                        android:paddingTop="15dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="20dp"
                         android:visibility="gone"

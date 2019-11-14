@@ -155,6 +155,12 @@ class BookDetailsViewModel : BaseViewModel() {
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+    }
 
+    /**
+     * 下载小说
+     */
+    fun downloadBook(obj:BooksResult) {
+        mDataRepository.startWorker(obj)
     }
 }

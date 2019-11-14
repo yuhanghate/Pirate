@@ -243,4 +243,6 @@ class MainViewModel : BaseViewModel() {
     fun deletePushMessage(obj: PushMessageEntity) {
         thread { mDataRepository.delete(obj) }
     }
+
+
 }

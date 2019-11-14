@@ -24,8 +24,10 @@ import com.yuhang.novel.pirate.databinding.LayoutSearchHistoryBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickSearchSuggestListener
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
+import com.yuhang.novel.pirate.ui.settings.activity.SearchFeedbackActivity
 
 
 /**
@@ -113,7 +115,10 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         mViewModel.searchBookV2(keyword.trim())
             .compose(bindToLifecycle())
             .subscribe({
-                mViewModel.adapter.setRefersh(it)
+                val list = arrayListOf<BooksResult>()
+                list.add(BooksResult())
+                list.addAll(it)
+                mViewModel.adapter.setRefersh(list)
                 mBinding.recyclerview.visibility = View.VISIBLE
                 mBinding.searchSuggestRecyclerview.visibility = View.GONE
                 hideProgress()
@@ -212,6 +217,14 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      * 搜索结果点击
      */
     override fun onClickItemListener(view: View, position: Int) {
+
+        //精确求书
+        if (position == 0) {
+            SearchFeedbackActivity.start(this)
+            return
+        }
+
+        //书籍详情页
         val obj = mViewModel.adapter.getObj(position)
         mViewModel.insertSearchHistory(obj.bookName)
         mViewModel.onUMEvent(

@@ -167,7 +167,6 @@ class ReadBookViewModel : BaseViewModel() {
 
             }.subscribeOn(Schedulers.io()).compose(mActivity?.bindToLifecycle())
             .subscribe({}, {}, {})
-
     }
 
 
@@ -344,12 +343,9 @@ class ReadBookViewModel : BaseViewModel() {
                     chapterName = chapterName,
                     author = it.author,
                     cover = it.cover,
-                    description = "",
+                    description = it.description,
                     resouceType = obj.resouce,
-                    content = mDataRepository.queryBookContent(
-                        mBooksResult?.getBookid()!!,
-                        chapterid
-                    )?.content!!
+                    content = ""
                 )
             }.compose(io_main())
 
@@ -504,5 +500,12 @@ class ReadBookViewModel : BaseViewModel() {
         adapter.getList().clear()
         chapterList.clear()
         chapterMap.clear()
+    }
+
+    /**
+     * 下载小说
+     */
+    fun downloadBook(obj:BooksResult) {
+        mDataRepository.startWorker(obj)
     }
 }

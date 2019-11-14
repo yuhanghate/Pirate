@@ -572,9 +572,9 @@ class DataRepository(val context: Context) {
                     "tocId" to tocId,
                     "tocName" to tocName
                 )
-                return@map  map
+                return@map map
             }
-            .flatMap { getNetApi().updateReadHistory(niceBody(it))}
+            .flatMap { getNetApi().updateReadHistory(niceBody(it)) }
 
     }
 
@@ -621,24 +621,23 @@ class DataRepository(val context: Context) {
     /**
      * 开始下载任务
      */
-    fun startWorker(bookid: String, chapterid: List<Int>) {
+    fun startWorker(obj: BooksResult) {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
             .build()
 
-        val data = Data.Builder().putString(
-            NovelDownloadWorker.BOOKID,
-            bookid
-        ).putIntArray(NovelDownloadWorker.CHANPTER_ID, chapterid.toIntArray()).build()
+        val data = Data.Builder().putString(NovelDownloadWorker.BOOKS_RESULT, obj.toJson())
+            .build()
 
 
         val request = OneTimeWorkRequest.Builder(NovelDownloadWorker::class.java)
             .setConstraints(constraints)
             .setInputData(data)
             .build()
+
+        val uuid = request.getId()
         val enqueue = WorkManager.getInstance().enqueue(request)
-        enqueue.state
     }
 
     /**
@@ -775,5 +774,63 @@ class DataRepository(val context: Context) {
      */
     fun getResouceTypeKd(bookid: String): BookResouceTypeKDEntity? {
         return getDatabase().bookResouceTypeKDDao.query(bookid)
+    }
+
+    /**
+     * 快读精确求书
+     */
+    fun getBookFeedback(bookName: String, author: String): Flowable<String> {
+        val map = hashMapOf<String, String>(
+            "book" to bookName, "author" to author, "system" to "Android",
+            "package" to "kuaidu.xiaoshuo.yueduqi", "version" to "1100"
+        )
+        return getKuaiDuApi().getBookFeedback(niceBody(map))
+    }
+
+    /**
+     * 获取所有下载的书籍
+     */
+    fun queryDownloadBooks(): List<BookDownloadEntity> {
+        return getDatabase().bookDownloadDao.queryAll()
+    }
+
+    /**
+     * 更新下载记录
+     */
+    fun updateDownloadBook(
+        bookid: String,
+        bookName: String,
+        resouce: String,
+        progress: Int,
+        total: Int,
+        cover: String,
+        author:String
+    ) {
+
+        val entity = getDatabase().bookDownloadDao.query(bookid)
+        if (entity == null) {
+            getDatabase().bookDownloadDao.insert(BookDownloadEntity().apply {
+                this.bookId = bookid
+                this.bookName = bookName
+                this.resouce = resouce
+                this.progress = progress
+                this.total = total
+                this.cover = cover
+                this.author = author
+            })
+            return
+        }
+
+        getDatabase().bookDownloadDao.update(entity.apply {
+            this.progress = progress
+            this.total = total
+        })
+    }
+
+    /**
+     * 删除缓存记录
+     */
+    fun deleteDownload(bookid: String) {
+        getDatabase().bookDownloadDao.deleteDownload(bookid)
     }
 }

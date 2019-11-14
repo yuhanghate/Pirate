@@ -91,6 +91,8 @@
                 android:launchMode="singleTask"/>
         <activity android:name=".ui.resouce.activity.ResouceChapterListActivity"
                 android:launchMode="singleTask"/>
+        <activity android:name=".ui.settings.activity.SearchFeedbackActivity" />
+        <activity android:name=".ui.download.activity.BookDownloadActivity" />
     </application>
 
 </manifest>

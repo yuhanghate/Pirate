@@ -11,6 +11,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityReadHistoryBinding
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadHistoryViewModel
 
 /**
@@ -107,7 +108,24 @@ class ReadHistoryActivity : BaseSwipeBackActivity<ActivityReadHistoryBinding, Re
      * Item点击事件
      */
     override fun onClickItemListener(view: View, position: Int) {
-        BookDetailsActivity.start(this, mViewModel.adapter.getObj(position).bookid)
+        val obj = mViewModel.adapter.getObj(position)
+        BookDetailsActivity.start(this, BooksResult().apply {
+            this.author = obj.author
+            this.cover = obj.cover
+            this.bookName = obj.bookName
+            if (obj.resouce.trim() == "" || obj.resouce.trim() == "KS") {
+                this.resouce = "KS"
+                this.typeKs = 1
+                this.typeKd = 2
+                this.bookKsId = obj.bookid
+            }
+            if (obj.resouce == "KD") {
+                this.resouce = "KD"
+                this.typeKd = 1
+                this.typeKs = 2
+                this.bookKdId = obj.bookid
+            }
+        })
     }
 
     override fun onPause() {

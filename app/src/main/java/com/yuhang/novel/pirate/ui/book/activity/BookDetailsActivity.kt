@@ -67,15 +67,18 @@ class BookDetailsActivity :
      */
     private var animationEvent = TitleEvent.DEFAULT
 
+    /**
+     * 立即阅读
+     */
+    private var clickOpenRead = false
+
+    /**
+     * 全本缓存
+     */
+    private var clickDownloadBook = false
+
     companion object {
-        const val BOOK_ID = "book_id"
         const val BOOK_RESULT = "book_result"
-        fun start(context: Activity, bookid: String) {
-            val intent = Intent(context, BookDetailsActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra(BOOK_ID, bookid)
-            startIntent(context, intent)
-        }
 
         fun start(context: Activity, result: BooksResult) {
             val intent = Intent(context, BookDetailsActivity::class.java)
@@ -104,7 +107,14 @@ class BookDetailsActivity :
             //点击过立即阅读,加载完成就直接打开阅读界面
             if (hasProgressbar()) {
                 closeProgressbar()
-                mBinding.openReadBookTv.callOnClick()
+                if (clickOpenRead) {
+                    clickOpenRead = false
+                    mBinding.openReadBookTv.callOnClick()
+                }
+                if (clickDownloadBook) {
+                    clickDownloadBook = false
+                    mBinding.downloadTv.callOnClick()
+                }
             }
         }, {})
         initToolbarHeight()
@@ -172,15 +182,12 @@ class BookDetailsActivity :
                     mViewModel.isCollection = false
                     mBinding.addBookrackTv.text = "加入书架"
                 }
-
-
             }
-
         }
     }
 
     /**
-     *
+     * 点击事件
      */
     private fun onClick() {
         mBinding.appBar.addOnOffsetChangedListener(this)
@@ -188,6 +195,7 @@ class BookDetailsActivity :
         mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressed() }
         mBinding.openReadBookTv.setOnClickListener {
 
+            clickOpenRead = true
             //阅读界面需要等章节列表全部加载完成
             if (mViewModel.chapterList.isEmpty()) {
                 showProgressbar("努力获取章节列表...", true)
@@ -206,6 +214,18 @@ class BookDetailsActivity :
                 mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "加入书架")
                 addCollection()
             }
+        }
+
+        //全本缓存
+        mBinding.downloadTv.setOnClickListener {
+            clickDownloadBook = true
+            //阅读界面需要等章节列表全部加载完成
+            if (mViewModel.chapterList.isEmpty()) {
+                showProgressbar("努力获取章节列表...", true)
+                return@setOnClickListener
+            }
+            mViewModel.downloadBook(getBookResult())
+            niceToast("已加入缓存队列")
         }
     }
 
@@ -445,4 +465,6 @@ class BookDetailsActivity :
                 niceToast("移除成功")
             }, { niceToast("加入失败") })
     }
+
+
 }

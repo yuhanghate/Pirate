@@ -35,6 +35,7 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
 import com.yuhang.novel.pirate.ui.book.activity.ReadHistoryActivity
+import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
@@ -204,6 +205,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         //帮助与问题
         mBinding.problemCl.setOnClickListener { ProblemActivity.start(mActivity!!) }
 
+        //缓存管理
+        mBinding.downloadCl.setOnClickListener { BookDownloadActivity.start(mActivity!!) }
+
     }
 
     /****************
@@ -358,7 +362,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 if (it.update == "Yes") {
                     mBinding.versionNameTv.text = "可升级"
 
-                    if (isInitView ) {
+                    if (isInitView) {
                         showVersionUpdateDialog(it)
                         isInitView = false
                     }
