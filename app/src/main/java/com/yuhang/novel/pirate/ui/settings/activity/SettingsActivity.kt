@@ -165,6 +165,12 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         mBinding.btnVolume.setOnCheckedChangeListener { _, status ->
             PreferenceUtil.commitBoolean(BookConstant.VOLUME_STATUS, status)
         }
+
+        //意见反馈
+        mBinding.feedbackLl.setOnClickListener{
+            mViewModel.onUMEvent(this, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 意见反馈")
+            mViewModel.sendEmail()
+        }
     }
 
     /**

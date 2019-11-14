@@ -24,6 +24,7 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
+import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
 
@@ -165,6 +166,9 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 scrollTop()
             }
         }))
+
+        //帮助与问题
+        mBinding.helpIv.setOnClickListener { ProblemActivity.start(mActivity!!) }
 
     }
 

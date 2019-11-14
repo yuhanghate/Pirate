@@ -381,6 +381,40 @@
                             android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
+
+                    <LinearLayout
+                            android:id="@+id/feedback_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
+
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_disclaimer"
+                                android:visibility="gone" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="意见反馈"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
+
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_item_right" />
+                    </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/btn_note_ll"
                         android:layout_width="match_parent"

@@ -154,11 +154,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_APP_SHARE, "我的 -> 分享应用")
             showShareDialog()
         }
-        //意见反馈
-        mBinding.feedbackCl.setOnClickListener {
-            mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 意见反馈")
-            sendEmail()
-        }
         //最新浏览
         mBinding.historyCl.setOnClickListener {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_HISTORY, "我的 -> 最近浏览")
@@ -329,24 +324,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
     }
 
-    /**
-     * 意见反馈
-     */
-    private fun sendEmail() {
-        val data = Intent(Intent.ACTION_SENDTO);
-        data.data = Uri.parse("mailto:yh714610354@gmail.com")
-        data.putExtra(
-            Intent.EXTRA_SUBJECT,
-            "我对App有话说[${android.os.Build.BRAND}/${android.os.Build.MODEL}/${android.os.Build.VERSION.RELEASE}/随便看书]"
-        )
-        data.putExtra(Intent.EXTRA_TEXT, "")
-        try {
-            startActivity(data)
-        } catch (e: Exception) {
-            niceToast("未安装邮箱或安装的版本不支持")
-        }
 
-    }
 
     /**
      * 版本升级
