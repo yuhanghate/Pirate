@@ -45,28 +45,27 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
                     //返回服务器数据
                     val entity = convertRepository.downloadChapterContent(obj, chapterKSEntity)
                     dataRepository.insertBookContent(entity.apply { lastOpenTime = 0 })
-
-                    //更新进度到数据库
-                    dataRepository.updateDownloadBook(
-                        obj.getBookid(),
-                        obj.bookName,
-                        obj.resouce,
-                        index + 1,
-                        chapterList.size,
-                        info?.cover ?: "",
-                        author = info?.author ?: ""
-                    )
-                    EventBus.getDefault().post(DownloadEvent().apply {
-                        this.bookName = info?.bookName ?: ""
-                        this.progress = index + 1
-                        this.total = chapterList.size
-                        this.cover = info?.cover ?: ""
-                        this.bookId = info?.bookid ?: ""
-                        this.author = info?.author ?: ""
-                    })
                 }
 
-
+                //更新进度到数据库
+                dataRepository.updateDownloadBook(
+                    obj.getBookid(),
+                    obj.bookName,
+                    obj.resouce,
+                    index + 1,
+                    chapterList.size,
+                    info?.cover ?: "",
+                    author = info?.author ?: "",
+                    uuid = id.toString()
+                )
+                EventBus.getDefault().post(DownloadEvent().apply {
+                    this.bookName = info?.bookName ?: ""
+                    this.progress = index + 1
+                    this.total = chapterList.size
+                    this.cover = info?.cover ?: ""
+                    this.bookId = info?.bookid ?: ""
+                    this.author = info?.author ?: ""
+                })
 
             } catch (e: Exception) {
             }

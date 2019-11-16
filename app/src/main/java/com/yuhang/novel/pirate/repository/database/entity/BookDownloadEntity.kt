@@ -46,4 +46,9 @@ class BookDownloadEntity {
      * 作者
      */
     var author:String = ""
+
+    /**
+     * 后台任务id
+     */
+    var uuid:String=""
 }

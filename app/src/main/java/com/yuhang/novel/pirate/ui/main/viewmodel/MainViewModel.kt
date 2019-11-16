@@ -1,9 +1,15 @@
 package com.yuhang.novel.pirate.ui.main.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxDeviceTool
+import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
@@ -15,6 +21,7 @@ import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +29,16 @@ import io.reactivex.schedulers.Schedulers
 import kotlin.concurrent.thread
 
 class MainViewModel : BaseViewModel() {
+
+    /**
+     * 更新检测时间10天
+     */
+    val MAX_TIME_VERSION = 1000 * 60 * 60 * 24 * 10
+
+    /**
+     * 更新检测时间8天
+     */
+    val MAX_TIME_LOGIN = 1000 * 60 * 60 * 24 * 8
 
     val adapter: MainAdapter by lazy { MainAdapter() }
 
@@ -47,7 +64,12 @@ class MainViewModel : BaseViewModel() {
         return queryCollectionAll()
             .flatMap { Flowable.fromArray(* it.toTypedArray()) }
             .flatMap {
-                mConvertRepository.updateBook(it, it.resouce)
+                //网络可用加载服务器数据
+                if (RxNetTool.isAvailable(mFragment?.context)) {
+                    return@flatMap mConvertRepository.updateBook(it, it.resouce)
+                }
+                return@flatMap Flowable.just(it)
+
             }
             .flatMap {
                 val bookInfo = queryBookInfo(it.bookid)
@@ -245,4 +267,63 @@ class MainViewModel : BaseViewModel() {
     }
 
 
+    /**
+     * 是否有安装应用权限
+     * true:有
+     * false:没有
+     */
+    fun installProcess():Boolean {
+        var haveInstallPermission = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //先获取是否有安装未知来源应用的权限
+            haveInstallPermission = mActivity?.packageManager?.canRequestPackageInstalls()!!
+            if (!haveInstallPermission) {//没有权限
+                startInstallPermissionSettingActivity()
+                return haveInstallPermission
+            }
+            return haveInstallPermission
+        }
+        return haveInstallPermission
+    }
+
+    /**
+     * 打开允许安装界面
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun startInstallPermissionSettingActivity() {
+        //注意这个是8.0新API
+        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,  Uri.parse("package:" + mActivity?.packageName))
+        mActivity?.startActivityForResult(intent, 10086)
+    }
+
+    /**
+     * 是否检测版本
+     */
+    fun isShowVersionDialog():Boolean {
+        val millis = System.currentTimeMillis()
+        val lastTime = PreferenceUtil.getLong("version_update", millis)
+        val b = lastTime - millis > MAX_TIME_VERSION
+        //第一次或者超过最大时间弹出版本检测
+        if (lastTime == millis || b) {
+            PreferenceUtil.commitLong("version_update", millis)
+            return true
+        }
+        return false
+    }
+
+    /**
+     * 是否显示登陆
+     */
+    fun isShowLoginDialog(): Boolean {
+
+        val millis = System.currentTimeMillis()
+        val lastTime = PreferenceUtil.getLong("show_login", millis)
+        val b = lastTime - millis > MAX_TIME_LOGIN
+        //第一次或者超过最大时间弹出版本检测
+        if (lastTime == millis || b) {
+            PreferenceUtil.commitLong("show_login", millis)
+            return true
+        }
+        return false
+    }
 }

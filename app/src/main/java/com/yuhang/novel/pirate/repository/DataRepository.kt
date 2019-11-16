@@ -621,7 +621,7 @@ class DataRepository(val context: Context) {
     /**
      * 开始下载任务
      */
-    fun startWorker(obj: BooksResult) {
+    fun startWorker(obj: BooksResult):UUID {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
@@ -636,8 +636,9 @@ class DataRepository(val context: Context) {
             .setInputData(data)
             .build()
 
-        val uuid = request.getId()
+
         val enqueue = WorkManager.getInstance().enqueue(request)
+        return request.id
     }
 
     /**
@@ -804,7 +805,8 @@ class DataRepository(val context: Context) {
         progress: Int,
         total: Int,
         cover: String,
-        author:String
+        author:String,
+        uuid:String
     ) {
 
         val entity = getDatabase().bookDownloadDao.query(bookid)
@@ -817,6 +819,7 @@ class DataRepository(val context: Context) {
                 this.total = total
                 this.cover = cover
                 this.author = author
+                this.uuid = uuid
             })
             return
         }

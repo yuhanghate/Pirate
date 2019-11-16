@@ -25,9 +25,17 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     private val mUsersService: UsersService by lazy { UsersServiceImpl() }
 
     companion object {
+
+        const val RESULT_CODE = 1000
         fun start(context: Activity) {
             val intent = Intent(context, LoginActivity::class.java)
             startIntent(context, intent)
+        }
+
+        fun startForResult(context: Activity) {
+            val intent = Intent(context, LoginActivity::class.java)
+            context.startActivityForResult(intent, RESULT_CODE)
+            context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_in_left)
         }
     }
 

@@ -7,28 +7,45 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
+import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.lzy.okgo.OkGo
+import com.lzy.okgo.model.Progress
+import com.orhanobut.logger.Logger
+import com.vondear.rxtool.RxAppTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
+import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
+import com.yuhang.novel.pirate.extension.niceToast
+import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
+import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
+import com.yuhang.novel.pirate.utils.DownloadUtil
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 @RuntimePermissions
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
+    var binding: DialogVersionUpdateBinding? = null
+
+    var dialog: AlertDialog? = null
+
+    var result: VersionResult? = null
 
     companion object {
 
@@ -44,8 +61,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         }
     }
 
-    fun getPushTitle() = intent.getStringExtra(PUSH_TITLE)
-    fun getPushContent() = intent.getStringExtra(PUSH_CONTENT)
     override fun onLayoutId(): Int {
         return R.layout.activity_main2
     }
@@ -73,8 +88,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
 
         initUpdateChapterList()
-
-
         loadMultipleRootFragment(
             R.id.nav_host_fragment,
             intent.getIntExtra("tab_index", 0),
@@ -83,14 +96,14 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             MeFragment.newInstance()
         )
 
-//        val nearby = mBinding.bottomBar.getTabWithId(R.id.tab_main)
-//        nearby.setBadgeCount(5)
-
         mBinding.bottomBar.setOnTabSelectListener {
 
             when (it) {
                 R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_store -> {
+                    startLoginActivity()
+                    showHideFragment(findFragment(StoreFragment::class.java))
+                }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
@@ -105,8 +118,23 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         mBinding.bottomBar.getTabAtPosition(intent.getIntExtra("tab_index", 0)).callOnClick()
 
-        checkVersionWithPermissionCheck()
 
+
+        Handler().postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
+
+
+    }
+
+    /**
+     * 打开登陆界面
+     */
+    private fun startLoginActivity() {
+        if (mViewModel.isShowLoginDialog()) {
+            Handler().postDelayed({
+                //第一次安装打开登陆界面
+                LoginActivity.startForResult(this)
+            }, 1000 * 2)
+        }
 
     }
 
@@ -151,40 +179,23 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     /**
      * 版本升级
      */
-    @NeedsPermission(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @NeedsPermission(
+        Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_PHONE_STATE
+    )
     fun checkVersion() {
-//        mActivity?.showProgressbar()
-        mViewModel.checkVersion()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.constraint) {
-                    showVersionUpdateDialog(it)
-                }
-            }, {
-            })
+        if (mViewModel.isShowVersionDialog()) {
+            mViewModel.checkVersion()
+                .compose(bindToLifecycle())
+                .subscribe({
+                    if (it.update == "Yes") {
+                        showVersionUpdateDialog(it)
+                    }
+                }, {})
+        }
+
     }
 
-
-    /**
-     * 新版本Dialog
-     */
-    private fun showVersionUpdateDialog(result: VersionResult) {
-
-        // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("检测到新版本")
-        builder.setMessage(mViewModel.getMessage(result))
-        //点击对话框以外的区域是否让对话框消失
-        builder.setCancelable(true)
-        builder.setNegativeButton("更新") { p0, p1 ->
-            mViewModel.onUMEvent(this, UMConstant.TYPE_VERSION_UPDATE_YES, "版本更新 -> 点击更新")
-
-        }
-        builder.setPositiveButton("取消") { p0, p1 ->
-            mViewModel.onUMEvent(this, UMConstant.TYPE_VERSION_UPDATE_NO, "分享应用 -> 点击取消")
-        }
-        builder.show()
-    }
 
     @SuppressLint("NoDelegateOnResumeDetector")
     override fun onResume() {
@@ -208,12 +219,12 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         mViewModel.getPushMessageEntity()
             .compose(bindToLifecycle())
-            .subscribe({entity ->
+            .subscribe({ entity ->
                 Handler().postDelayed({
                     MaterialDialog(this).show {
                         title(text = entity?.title)
                         message(text = entity?.message)
-                        positiveButton(text = "确定", click = object :DialogCallback{
+                        positiveButton(text = "确定", click = object : DialogCallback {
                             override fun invoke(p1: MaterialDialog) {
                                 mViewModel.deletePushMessage(entity!!)
                                 p1.dismiss()
@@ -224,8 +235,89 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                 }, 1200)
 
             }, {})
-
-
     }
 
+    /**
+     * 新版本Dialog
+     */
+    private fun showVersionUpdateDialog(result: VersionResult) {
+
+        // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("检测到新版本")
+        builder.setMessage(mViewModel.getMessage(result))
+        //点击对话框以外的区域是否让对话框消失
+        builder.setCancelable(true)
+        builder.setNegativeButton("更新") { p0, p1 ->
+            this.result = result
+            mViewModel.onUMEvent(this, UMConstant.TYPE_VERSION_UPDATE_YES, "版本更新 -> 点击更新")
+            if (mViewModel.installProcess()) {
+                showVersionUpdateProgress(result)
+            }
+
+        }
+        builder.setPositiveButton("取消") { p0, p1 ->
+            mViewModel.onUMEvent(this, UMConstant.TYPE_VERSION_UPDATE_NO, "分享应用 -> 点击取消")
+        }
+        builder.show()
+    }
+
+    /**
+     * 更新进度条显示
+     */
+    @SuppressLint("CheckResult", "SetTextI18n")
+    private fun showVersionUpdateProgress(result: VersionResult) {
+        binding = DialogVersionUpdateBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(binding?.root)
+        builder.setCancelable(false)
+        dialog = builder.show()
+
+
+        /**
+         * 下载APK文件
+         */
+        val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
+        val outputApk =
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
+        OkGo.get<File>(url).execute(object :
+            com.lzy.okgo.callback.FileCallback(
+                DownloadUtil.PATH_CHALLENGE_VIDEO,
+                MD5Util.md5Encode(url) + ".apk"
+            ) {
+            override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
+                dialog?.dismiss()
+                RxAppTool.installApp(this@MainActivity, outputApk)
+            }
+
+            override fun onStart(request: com.lzy.okgo.request.base.Request<File, out com.lzy.okgo.request.base.Request<*, *>>?) {
+                super.onStart(request)
+
+            }
+
+            override fun onError(response: com.lzy.okgo.model.Response<File>) {
+                super.onError(response)
+                dialog?.dismiss()
+                niceToast("下载异常,请重试")
+            }
+
+            override fun downloadProgress(progress: Progress?) {
+                super.downloadProgress(progress)
+
+                val currentProgress = (progress?.fraction!! * 100).toInt()
+                Logger.i("fraction = $currentProgress")
+                binding?.progressTv?.text = "$currentProgress%"
+                binding?.progressHorizontal?.progress = currentProgress
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == 10086) {
+            //再次执行安装流程，包含权限判等
+            this.result?.let { showVersionUpdateProgress(it) }
+
+        }
+    }
 }

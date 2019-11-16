@@ -5,12 +5,16 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.work.WorkManager
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookDownloadBinding
 import com.yuhang.novel.pirate.eventbus.DownloadEvent
+import com.yuhang.novel.pirate.extension.niceBookResult
+import com.yuhang.novel.pirate.listener.OnBookDownloadListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
+import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.download.DownloadDeleteDialog
@@ -18,6 +22,7 @@ import com.yuhang.novel.pirate.ui.download.viewmodel.BookDownloadViewModel
 import com.yuhang.novel.pirate.viewholder.ItemBookDownloadVH
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
 
 
 /**
@@ -25,9 +30,8 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class BookDownloadActivity :
     BaseSwipeBackActivity<ActivityBookDownloadBinding, BookDownloadViewModel>(),
-    OnClickItemListener,
+    OnClickItemListener, OnBookDownloadListener,
     OnClickItemLongListener {
-
 
 
     companion object {
@@ -62,7 +66,7 @@ class BookDownloadActivity :
 
         mViewModel.adapter
             .setListener(this)
-            .setRecyclerView(mBinding.recyclerview)
+            .setRecyclerView(mBinding.recyclerview, false)
             .initData(arrayListOf())
     }
 
@@ -80,31 +84,17 @@ class BookDownloadActivity :
      */
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
-
-        ReadBookActivity.start(this, BooksResult().apply {
-            this.bookName = obj.bookName
-            this.author = obj.author
-            this.cover = obj.cover
-            if (obj.resouce == "KS") {
-                this.resouce = "KS"
-                this.typeKs = 1
-                this.typeKd = 2
-                this.bookKsId = obj.bookId
-            }
-            if (obj.resouce == "KD") {
-                this.resouce = "KD"
-                this.typeKd = 1
-                this.typeKs = 2
-                this.bookKdId = obj.bookId
-            }
-        }, false)
+        ReadBookActivity.start(this, obj.niceBookResult(), false)
     }
 
     /**
      * 长按删除
      */
     override fun onClickItemLongListener(view: View, position: Int) {
-        DownloadDeleteDialog(this, mViewModel, mViewModel.adapter.getObj(position)).show()
+        val obj = mViewModel.adapter.getObj(position)
+        WorkManager.getInstance().cancelWorkById(UUID.fromString(obj.uuid))
+
+        DownloadDeleteDialog(this, mViewModel, obj).show()
     }
 
     /**
@@ -124,15 +114,16 @@ class BookDownloadActivity :
 
                 val vh =
                     mBinding.recyclerview.findViewHolderForAdapterPosition(index) as? ItemBookDownloadVH
-
-                val progress =
-                    (bookDownloadEntity.progress.toDouble() / bookDownloadEntity.total.toDouble() * 100).toInt() + 1
-                vh?.mBinding?.progressHorizontal?.progress = progress
-                vh?.mBinding?.progressTv?.text =
-                    "${bookDownloadEntity.progress}/${bookDownloadEntity.total}"
-
+                vh?.upateProgress(bookDownloadEntity)
                 return@forEachIndexed
             }
+    }
+
+    /**
+     * 阅读
+     */
+    override fun onBookDownloadListener(obj: BookDownloadEntity, position: Int, isDownload:Boolean) {
+        ReadBookActivity.start(this, obj.niceBookResult(), false)
     }
 
 }

@@ -366,3 +366,24 @@ fun BookDetailsDataResult.niceBooksResult(): BooksResult {
         this.lastTime = DateTime(obj.LastTime).millis
     }
 }
+
+fun BookDownloadEntity.niceBookResult(): BooksResult {
+    val obj = this
+    return BooksResult().apply {
+        this.bookName = obj.bookName
+        this.author = obj.author
+        this.cover = obj.cover
+        if (obj.resouce == "KS") {
+            this.resouce = "KS"
+            this.typeKs = 1
+            this.typeKd = 2
+            this.bookKsId = obj.bookId
+        }
+        if (obj.resouce == "KD") {
+            this.resouce = "KD"
+            this.typeKd = 1
+            this.typeKs = 2
+            this.bookKdId = obj.bookId
+        }
+    }
+}
