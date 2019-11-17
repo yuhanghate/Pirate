@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.repository.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * 下载
@@ -51,4 +52,8 @@ class BookDownloadEntity {
      * 后台任务id
      */
     var uuid:String=""
+
+    fun toUUId():UUID {
+        return UUID.fromString(uuid)
+    }
 }

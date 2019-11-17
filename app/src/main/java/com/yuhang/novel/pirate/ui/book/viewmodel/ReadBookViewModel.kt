@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
+import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.constant.BookConstant
+import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_BACKGROUND
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_CHANPTER
@@ -24,7 +26,9 @@ import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
+import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.widget.pageview.TextPagerView
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -226,6 +230,7 @@ class ReadBookViewModel : BaseViewModel() {
             .setTitle(obj.chapterName)
             .setMargin(margin, margin, ImmersionBar.getStatusBarHeight(mActivity!!), 0)
             .setContent(obj.content)
+            .setPageType(getPageType())
             .build2().map {
                 BookContentKSEntity().apply {
                     chapterName = obj.chapterName
@@ -401,7 +406,6 @@ class ReadBookViewModel : BaseViewModel() {
 
         return Flowable.just(obj.getBookid())
             .flatMap {
-
                 //重新从服务器加载
                 if (reload) return@flatMap mConvertRepository.getChapterList(obj).map {
                     mDataRepository.deleteChapterList(it[0].bookId)
@@ -417,22 +421,29 @@ class ReadBookViewModel : BaseViewModel() {
                 mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
                     ?.let { entity ->
                         list.forEachIndexed { index, bookChapterKSEntity ->
-                                if (bookChapterKSEntity.chapterId == entity.chapterid && index >= list.size - 1) {
+                            if (bookChapterKSEntity.chapterId == entity.chapterid && index >= list.size - 1) {
+
+                                //没有网络,返回本地章节数据
+                                if (RxNetTool.isAvailable(mActivity)) {
                                     return@flatMap mConvertRepository.getChapterList(obj).map {
                                         mDataRepository.deleteChapterList(it[0].bookId)
                                         mDataRepository.insertChapterList(it)
                                         it
                                     }
                                 }
+                                return@flatMap Flowable.just(list)
+
                             }
+                        }
                     }
-
-
-
                 if (list.isNotEmpty()) return@flatMap Flowable.just(list)
 
                 //从服务器获取
-                return@flatMap mConvertRepository.getChapterList(obj)
+                return@flatMap mConvertRepository.getChapterList(obj).map {
+                    mDataRepository.deleteChapterList(it[0].bookId)
+                    mDataRepository.insertChapterList(it)
+                    mDataRepository.queryChapterObjList(obj.getBookid())
+                }
             }
             .map {
                 chapterMap.clear()
@@ -441,6 +452,29 @@ class ReadBookViewModel : BaseViewModel() {
                 it.forEach { chapterMap[it.chapterId] = it }
             }
             .compose(io_main())
+    }
+
+    /**
+     * 初始化缓存状态
+     */
+    fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) {
+        //单独查询.懒加载
+        Flowable.just("")
+            .map {
+                val list = arrayListOf<BookChapterKSEntity>()
+                chapterList.forEach {
+                    val content = mDataRepository.queryBookContent(it.bookId, it.chapterId)
+                    if (content != null) it.hasContent = 1 else it.hasContent = 0
+                    chapterMap[it.chapterId] = it
+                    mDataRepository.updateChapter(it)
+                }
+            }
+            .compose(io_main())
+            .compose(mActivity?.bindToLifecycle())
+            .subscribe({
+                fragment?.chapterList = chapterList
+                fragment?.setRefreshView()
+            },{})
     }
 
 
@@ -505,7 +539,14 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 下载小说
      */
-    fun downloadBook(obj:BooksResult) {
-        mDataRepository.startWorker(obj)
+    fun downloadBook(obj: BooksResult, chapterid: String = "") {
+        mDataRepository.startWorker(obj.apply { this.lastChapterId = chapterid })
+    }
+
+    /**
+     * 左右翻页/上下翻页
+     */
+    private fun getPageType(): Int {
+        return PirateApp.getInstance().getPageType()
     }
 }

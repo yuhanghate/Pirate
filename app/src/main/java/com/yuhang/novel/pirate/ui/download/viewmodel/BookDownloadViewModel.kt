@@ -5,6 +5,7 @@ import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceBookResult
 import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.download.adapter.BookDownloadAdapter
 import io.reactivex.Flowable
 import java.util.*
@@ -49,6 +50,13 @@ class BookDownloadViewModel : BaseViewModel() {
      */
     fun cancelTask(obj:BookDownloadEntity) {
         WorkManager.getInstance().cancelWorkById(UUID.fromString(obj.uuid))
+    }
+
+    /**
+     * 下载小说
+     */
+    fun downloadBook(obj: BooksResult, chapterid: String = "") {
+        mDataRepository.startWorker(obj.apply { this.lastChapterId = chapterid })
     }
 
 }

@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.repository.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import io.reactivex.Flowable
 
@@ -26,6 +27,9 @@ interface BookChapterKSDao {
    */
   @Query("delete from bookchapterksentity where bookId = :bookid")
   fun delete(bookid: String)
+
+  @Update
+  fun update(obj:BookChapterKSEntity)
 
   /**
    * 获取第一章节id

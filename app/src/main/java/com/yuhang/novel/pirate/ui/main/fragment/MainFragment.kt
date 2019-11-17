@@ -30,6 +30,7 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
+import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import org.greenrobot.eventbus.Subscribe
@@ -213,10 +214,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.delete -> {
+            //下载管理
+            R.id.download -> {
+                BookDownloadActivity.start(mActivity!!)
             }
-            R.id.share -> {
-                showShareDialog()
+
+            //公告
+            R.id.tip -> {
+                showTipdialog()
             }
 
         }

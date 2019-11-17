@@ -26,6 +26,12 @@ interface BookContentKSDao {
     @Query("select * from bookcontentksentity as c where c.chapterId = :chapterid and c.bookId = :bookid limit 1")
     fun queryObj(bookid: String, chapterid: String): BookContentKSEntity?
 
+    /**
+     * 获取书本所有章节内容
+     */
+    @Query("select * from bookcontentksentity where bookId = :bookid")
+    fun queryAll(bookid:String):List<BookContentKSEntity>
+
 //    /**
 //     * 查询书箱章节所有的更新时间
 //     */

@@ -2,15 +2,16 @@ package com.yuhang.novel.pirate.utils;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import com.orhanobut.logger.Logger;
+
 import com.yuhang.novel.pirate.app.PirateApp;
 import com.yuhang.novel.pirate.constant.BookConstant;
+import com.yuhang.novel.pirate.constant.ConfigConstant;
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil;
 import com.yuhang.novel.pirate.widget.pageview.TextPageBean;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -26,19 +27,34 @@ public class PageUtils {
         //画标题
         LinesBean linesBean = textPageBean.getLines().get(0);
 
-        float top = bean.marginTop + bean.paddingTop;
+        float top = 0;
+
+        LinesBean contentLines;
         if (linesBean.type == LinesType.TITLE) {
             top = drawTitle(canvas, linesBean.lines, bean);
         } else if (linesBean.type == LinesType.SUB_TITLE) {
-            top = drawSubTitle(canvas, linesBean.lines, bean);
+            //左右滑动增加小标题.上下滑动去掉小标题
+            if (PirateApp.Companion.getInstance().getPageType() == 1) {
+                top = drawSubTitle(canvas, linesBean.lines, bean);
+            } else {
+                //上下滑动,除了大标题页面我.都不留边
+                top = bean.getContentHeight();
+            }
+        }else {
+            if (PirateApp.Companion.getInstance().getPageType() == 1) {
+                //左右滑动,增加头部距离
+                top = bean.marginTop + bean.paddingTop;
+            } else {
+                //上下滑动,除了大标题页面我.都不留边
+                top = bean.getContentHeight();
+            }
         }
 
-
-        LinesBean contentLines = textPageBean.getLines().get(1);
+        contentLines = textPageBean.getLines().get(1);
         drawContent(canvas, contentLines.lines, bean, top);
-
         return canvas;
     }
+
 
     /**
      * 画内容
@@ -57,8 +73,6 @@ public class PageUtils {
                 true, bean.getShowWidth(), measuredWidth);
         float x = (bean.getShowWidth() - measuredWidth[0]) / 2 + start;
         for (String content : list) {
-
-
             //进行绘制
             canvas.drawText(content, x, top, bean.textPaint);
             //移动上边距离. 文字高度+行间距
@@ -147,7 +161,7 @@ public class PageUtils {
         String paragraph;
         for (String content : originalLines) {
             paragraph = content.replaceAll("\\s", "");
-                    paragraph = paragraph.trim();
+            paragraph = paragraph.trim();
             // 如果只有换行符，那么就不执行
             if (paragraph.equals("")) continue;
             paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
@@ -158,18 +172,30 @@ public class PageUtils {
 
         //获取大标题所有行对象
         List<String> titleLines = getTitleLines(bean.title, bean);
-        //获取小标题所有行对象
+        //获取小标题所有行对象,横屏才计算
         List<String> tipTitleLines = getTipTitleLines(bean.title, bean);
 
+
         //获取第一页对象
-        TextPageBean titlePage = getTitlePage(titleLines, contentLines, bean);
+        if (bean.hasHorizontal()) {
+            TextPageBean titlePage = getTitlePage(titleLines, contentLines, bean);
+            pages.add(titlePage);
+        } else {
+            TextPageBean titlePage = getTitlePageVertical(titleLines, contentLines, bean);
+            pages.add(titlePage);
+        }
 //        Logger.t("空白").i("第一页 contentLines="+contentLines.size());
-        pages.add(titlePage);
+
         //循环获取除一第页以外的页数. 第一页标题大小跟其他页面不一样,另外计算
         while (contentLines.size() > 0) {
-//            Logger.t("空白").i("其他页 contentLines="+contentLines.size());
-            TextPageBean normalPage = getNormalPage(tipTitleLines, contentLines, bean);
-            pages.add(normalPage);
+            if (bean.hasHorizontal()) {
+                //计算左右滑动
+                pages.add(getNormalPage(tipTitleLines, contentLines, bean));
+            } else {
+                //计算上下滑动
+                pages.add(getNormalPagVertical(tipTitleLines, contentLines, bean));
+            }
+
         }
 
 
@@ -186,6 +212,7 @@ public class PageUtils {
 
     /**
      * 返回正常页: 小标题+内容
+     * 左右滑动
      *
      * @param subTitleLines
      * @param contentLines
@@ -203,6 +230,36 @@ public class PageUtils {
 
         //获取内容, 去除小标题高度
         LinesBean contentLinesBean = getContentLinesBean(contentLines, bean, bean.getShowHeight() - height);
+        list.add(subTitleLinesBean);
+        list.add(contentLinesBean);
+
+        TextPageBean textPageBean = new TextPageBean();
+        textPageBean.setChapterName(bean.title);
+        textPageBean.setCurrentPage(0);
+        textPageBean.setLines(list);
+
+        //去掉计算过的内容
+        removeContentLines(contentLinesBean, contentLines);
+
+        return textPageBean;
+    }
+
+    /**
+     * 返回正常页: 内容
+     *
+     * @param contentLines
+     * @param bean
+     * @return
+     */
+    private static TextPageBean getNormalPagVertical(List<String> subTitleLines, List<String> contentLines, PageBean bean) {
+        List<LinesBean> list = new ArrayList<>();
+        //获取小标题
+        LinesBean subTitleLinesBean = getSubTitleLinesBeanVertical(subTitleLines, bean);
+
+        float showHeight = bean.getShowSubHeightVertical();
+
+        //获取内容, 去除小标题高度
+        LinesBean contentLinesBean = getContentLinesBeanVertical(contentLines, bean, showHeight);
         list.add(subTitleLinesBean);
         list.add(contentLinesBean);
 
@@ -247,6 +304,39 @@ public class PageUtils {
 
         return textPageBean;
     }
+
+
+    /**
+     * 第一页大标题
+     * 上下滑动
+     * @param titleLines
+     * @param contentLines
+     * @param bean
+     * @return
+     */
+    private static TextPageBean getTitlePageVertical(List<String> titleLines, List<String> contentLines, PageBean bean) {
+        List<LinesBean> list = new ArrayList<>();
+        //第一页的标题
+        LinesBean titleLinesBean = getTitleLinesBeanVertical(titleLines, bean);
+        //上内边距+上外边距+标题高度
+        float height = titleLinesBean.showHeight;
+
+        //第一页的内容
+        LinesBean contentLinesBean = getContentLinesBeanVertical(contentLines, bean, bean.getShowTitleHeightVertical()-height);
+        list.add(titleLinesBean);
+        list.add(contentLinesBean);
+
+        TextPageBean textPageBean = new TextPageBean();
+        textPageBean.setChapterName(bean.title);
+        textPageBean.setCurrentPage(0);
+        textPageBean.setLines(list);
+
+        //去掉计算过的内容
+        removeContentLines(contentLinesBean, contentLines);
+
+        return textPageBean;
+    }
+
 
     /**
      * 把计算好的内容从章节内容中移除
@@ -300,6 +390,44 @@ public class PageUtils {
         return linesBean;
     }
 
+
+    /**
+     * 计算一页可以显示多少条内容
+     *
+     * @param list      章节内容
+     * @param bean      配置
+     * @param maxHeight 最大显示高度
+     * @return
+     */
+    private static LinesBean getContentLinesBeanVertical(List<String> list, PageBean bean, float maxHeight) {
+        LinesBean linesBean = new LinesBean();
+        linesBean.height = maxHeight;
+        linesBean.type = LinesType.CONTENT;
+
+        //增加开始段落间距
+//        linesBean.showHeight = bean.textPare;
+
+        for (String content : list) {
+            //每行标题需要的高度: 标题高度+行间距
+            float lineHeight = bean.getContentHeight() + bean.textInterval;
+
+            //当前显示
+            if (linesBean.showHeight + lineHeight <= linesBean.height) {
+                linesBean.showHeight += lineHeight;
+                linesBean.lines.add(content);
+            } else {
+                break;
+            }
+        }
+
+        //增加结束段落间距
+//        linesBean.showHeight += bean.textPare;
+
+        //for循环都会在每一行下面加行间距,把最后一行多余的行间距去掉
+        linesBean.showHeight -= bean.textInterval;
+
+        return linesBean;
+    }
     /**
      * 小标题进行分行对象
      *
@@ -337,6 +465,42 @@ public class PageUtils {
     }
 
     /**
+     * 小标题进行分行对象
+     *
+     * @param list
+     * @param bean
+     * @return
+     */
+    private static LinesBean getSubTitleLinesBeanVertical(List<String> list, PageBean bean) {
+        LinesBean linesBean = new LinesBean();
+        linesBean.height = bean.getShowSubHeightVertical();
+        linesBean.type = LinesType.SUB_TITLE;
+
+        //增加开始段落间距
+        linesBean.showHeight = bean.tipPare;
+        for (String subTitle : list) {
+            //每行标题需要的高度: 标题高度+行间距
+            float lineHeight = bean.getTipHeight() + bean.tipInterval;
+
+            //可显示高度不能超过指定的高度
+            if (linesBean.showHeight + lineHeight <= bean.height) {
+                linesBean.showHeight = lineHeight;
+                linesBean.lines.add(subTitle);
+            } else {
+                break;
+            }
+        }
+
+        //增加结束段落间距
+        linesBean.showHeight += bean.tipPare;
+
+        //for循环都会在每一行下面加行间距,把最后一行多余的行间距去掉
+        linesBean.showHeight -= bean.tipInterval;
+
+        return linesBean;
+    }
+
+    /**
      * 大标题进行对象
      *
      * @param list
@@ -347,6 +511,42 @@ public class PageUtils {
 
         LinesBean linesBean = new LinesBean();
         linesBean.height = bean.getShowHeight();
+        linesBean.type = LinesType.TITLE;
+
+        //增加开始段落间距
+        linesBean.showHeight = bean.titlePare;
+        for (String title : list) {
+            //每行标题需要的高度: 标题高度+行间距
+            float lineHeight = bean.getTitleHeight() + bean.titleInterval;
+
+            //可显示高度不能超过指定的高度
+            if (linesBean.showHeight + lineHeight <= bean.height) {
+                linesBean.showHeight += lineHeight;
+                linesBean.lines.add(title);
+            } else {
+                break;
+            }
+        }
+
+        //增加结束段落间距
+        linesBean.showHeight += bean.titlePare;
+
+        //for循环都会在每一行下面加行间距,把最后一行多余的行间距去掉
+        linesBean.showHeight -= bean.titleInterval;
+
+        return linesBean;
+    }
+
+    /**
+     * 小标题进行对象
+     * @param list
+     * @param bean
+     * @return
+     */
+    private static LinesBean getTitleLinesBeanVertical(List<String> list, PageBean bean) {
+
+        LinesBean linesBean = new LinesBean();
+        linesBean.height = bean.getShowTitleHeightVertical();
         linesBean.type = LinesType.TITLE;
 
         //增加开始段落间距
@@ -521,6 +721,7 @@ public class PageUtils {
         public float height;//显示高度
 
         public String title;//标题
+        public int pageType;//上下翻页/左右翻页
 
         /**
          * 获取大标题高度
@@ -574,6 +775,32 @@ public class PageUtils {
          */
         public float getShowHeight() {
             return height - marginTop - marginButtom - paddingTop - paddingButtom;
+        }
+
+        /**
+         * 大标题显示高度
+         * 上下滑动
+         */
+
+        public float getShowTitleHeightVertical() {
+            return height - marginTop -paddingTop;
+        }
+
+        /**
+         * 小标题显示高度
+         * 上下滑动
+         * @return
+         */
+        public float getShowSubHeightVertical() {
+            return height;
+        }
+
+        /**
+         * 是否左右滑动
+         * @return
+         */
+        public boolean hasHorizontal() {
+            return PirateApp.Companion.getInstance().getPageType() == ConfigConstant.INSTANCE.getPAGE_TYPE_HORIZONTAL();
         }
     }
 

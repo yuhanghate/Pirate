@@ -3,382 +3,382 @@
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/window_background_gray"
-        android:orientation="vertical">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background_gray"
+            android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/actionbar_color">
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/actionbar_color">
 
             <ImageView
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/bg_material_40dp"
-                android:src="@drawable/btn_back_black" />
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/bg_material_40dp"
+                    android:src="@drawable/btn_back_black" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="设置"
-                android:textColor="@color/primary_text"
-                android:textSize="18sp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="设置"
+                    android:textColor="@color/primary_text"
+                    android:textSize="18sp" />
         </RelativeLayout>
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
 
         <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="20dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp">
 
                 <LinearLayout
-                    android:id="@+id/page_type_ll"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/bg_material_item"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="20dp"
-                    android:visibility="gone">
+                        android:id="@+id/page_type_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp"
+                        android:visibility="visible">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_page_type"
-                        android:visibility="gone" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_page_type"
+                            android:visibility="gone" />
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:lineSpacingMultiplier="1.1"
-                        android:paddingStart="15dp"
-                        android:text="翻页方式"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp" />
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="翻页方式"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/page_type_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="左右翻页"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
+                                android:id="@+id/page_type_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="左右翻页"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="13sp" />
 
                         <ImageView
-                            android:id="@+id/page_type_iv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:src="@drawable/ic_item_buttom" />
+                                android:id="@+id/page_type_iv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_item_buttom" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <com.github.aakira.expandablelayout.ExpandableLinearLayout
-                    android:id="@+id/page_type_ell"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    app:ael_duration="200"
-                    app:ael_expanded="false">
+                        android:id="@+id/page_type_ell"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        app:ael_duration="200"
+                        app:ael_expanded="false">
 
                     <LinearLayout
-                        android:id="@+id/page_vertical_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/page_vertical_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="30dp"
+                            android:paddingEnd="20dp">
 
                         <RadioButton
-                            android:id="@+id/page_vertical_rb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:buttonTint="@color/md_blue_grey_500"
-                            android:checked="true"
-                            android:clickable="false"
-                            android:drawablePadding="10dp"
-                            android:text="上下翻页"
-                            android:textColor="@color/primary_text"
-                            android:textSize="14sp" />
+                                android:id="@+id/page_vertical_rb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:buttonTint="@color/md_blue_grey_500"
+                                android:checked="true"
+                                android:clickable="false"
+                                android:drawablePadding="10dp"
+                                android:text="上下翻页"
+                                android:textColor="@color/primary_text"
+                                android:textSize="14sp" />
 
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/page_horizontal_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/page_horizontal_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="30dp"
+                            android:paddingEnd="20dp">
 
                         <RadioButton
-                            android:id="@+id/page_horizontal_rb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:buttonTint="@color/md_blue_grey_500"
-                            android:clickable="false"
-                            android:drawablePadding="10dp"
-                            android:text="左右翻页"
-                            android:textColor="@color/primary_text"
-                            android:textSize="14sp" />
+                                android:id="@+id/page_horizontal_rb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:buttonTint="@color/md_blue_grey_500"
+                                android:clickable="false"
+                                android:drawablePadding="10dp"
+                                android:text="左右翻页"
+                                android:textColor="@color/primary_text"
+                                android:textSize="14sp" />
 
 
                     </LinearLayout>
                 </com.github.aakira.expandablelayout.ExpandableLinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/page_time_ll"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="1dp"
-                    android:background="@drawable/bg_material_item"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="20dp">
+                        android:id="@+id/page_time_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_page_time"
-                        android:visibility="gone" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_page_time"
+                            android:visibility="gone" />
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:lineSpacingMultiplier="1.1"
-                        android:paddingStart="15dp"
-                        android:text="阅读界面"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp" />
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="阅读界面"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/page_time_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="显示时间"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
+                                android:id="@+id/page_time_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="显示时间"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="13sp" />
 
                         <ImageView
-                            android:id="@+id/page_time_iv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:src="@drawable/ic_item_buttom" />
+                                android:id="@+id/page_time_iv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_item_buttom" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <com.github.aakira.expandablelayout.ExpandableLinearLayout
-                    android:id="@+id/page_time_ell"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:ael_duration="200"
-                    app:ael_expanded="false">
+                        android:id="@+id/page_time_ell"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:ael_duration="200"
+                        app:ael_expanded="false">
 
                     <LinearLayout
-                        android:id="@+id/page_time_show_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/page_time_show_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="30dp"
+                            android:paddingEnd="20dp">
 
                         <RadioButton
-                            android:id="@+id/page_time_show_rb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:buttonTint="@color/md_blue_grey_500"
-                            android:checked="true"
-                            android:clickable="false"
-                            android:drawablePadding="10dp"
-                            android:text="显示时间"
-                            android:textColor="@color/primary_text"
-                            android:textSize="14sp" />
+                                android:id="@+id/page_time_show_rb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:buttonTint="@color/md_blue_grey_500"
+                                android:checked="true"
+                                android:clickable="false"
+                                android:drawablePadding="10dp"
+                                android:text="显示时间"
+                                android:textColor="@color/primary_text"
+                                android:textSize="14sp" />
 
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/page_time_hide_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/page_time_hide_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="30dp"
+                            android:paddingEnd="20dp">
 
                         <RadioButton
-                            android:id="@+id/page_time_hide_rb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:buttonTint="@color/md_blue_grey_500"
-                            android:clickable="false"
-                            android:drawablePadding="10dp"
-                            android:text="显示电池百分比"
-                            android:textColor="@color/primary_text"
-                            android:textSize="14sp" />
+                                android:id="@+id/page_time_hide_rb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:buttonTint="@color/md_blue_grey_500"
+                                android:clickable="false"
+                                android:drawablePadding="10dp"
+                                android:text="显示电池百分比"
+                                android:textColor="@color/primary_text"
+                                android:textSize="14sp" />
 
 
                     </LinearLayout>
                 </com.github.aakira.expandablelayout.ExpandableLinearLayout>
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="1dp"
-                    android:background="@drawable/bg_material_item"
-                    android:paddingStart="15dp">
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:paddingStart="15dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="15dp"
-                        android:lineSpacingMultiplier="1.1"
-                        android:text="使用音量键翻页"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:lineSpacingMultiplier="1.1"
+                            android:text="使用音量键翻页"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
 
 
                     <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/btn_volume"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        app:kswAnimationDuration="200"
-                        app:kswBackDrawable="@drawable/ios_back_drawable"
-                        app:kswThumbDrawable="@drawable/ksw_md_thumb"
-                        app:kswThumbMargin="-10dp"
-                        app:kswThumbRangeRatio="1.4" />
+                            android:id="@+id/btn_volume"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            app:kswAnimationDuration="200"
+                            app:kswBackDrawable="@drawable/ios_back_drawable"
+                            app:kswThumbDrawable="@drawable/ksw_md_thumb"
+                            app:kswThumbMargin="-10dp"
+                            app:kswThumbRangeRatio="1.4" />
 
                 </RelativeLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/btn_clear"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/btn_clear"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_clear"
-                            android:visibility="gone" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_clear"
+                                android:visibility="gone" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:lineSpacingMultiplier="1.1"
-                            android:paddingStart="15dp"
-                            android:text="清除缓存"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="清除缓存"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/size_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableEnd="@drawable/ic_item_right"
-                            android:drawablePadding="8dp"
-                            android:gravity="center"
-                            android:text="0MB"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
+                                android:id="@+id/size_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawableEnd="@drawable/ic_item_right"
+                                android:drawablePadding="8dp"
+                                android:gravity="center"
+                                android:text="0MB"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="13sp" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/btn_disclaimer"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/btn_disclaimer"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_disclaimer"
-                            android:visibility="gone" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_disclaimer"
+                                android:visibility="gone" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:lineSpacingMultiplier="1.1"
-                            android:paddingStart="15dp"
-                            android:text="免责申明"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="免责申明"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_item_right" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
 
@@ -416,137 +416,138 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/btn_note_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/btn_note_ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_disclaimer"
-                            android:visibility="gone" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_disclaimer"
+                                android:visibility="gone" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:lineSpacingMultiplier="1.1"
-                            android:paddingStart="15dp"
-                            android:text="功能介绍"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="功能介绍"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_item_right" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:id="@+id/btn_privacy"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/btn_privacy"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_disclaimer"
-                            android:visibility="gone" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_disclaimer"
+                                android:visibility="gone" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:lineSpacingMultiplier="1.1"
-                            android:paddingStart="15dp"
-                            android:text="隐私条款"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="隐私条款"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_item_right" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_item_right" />
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:id="@+id/btn_version"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/bg_material_item"
-                        android:clickable="false"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                            android:id="@+id/btn_version"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="1dp"
+                            android:background="@drawable/bg_material_item"
+                            android:clickable="false"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="20dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_version"
-                            android:visibility="gone" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_version"
+                                android:visibility="gone" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:lineSpacingMultiplier="1.1"
-                            android:paddingStart="15dp"
-                            android:text="版本号"
-                            android:textColor="@color/primary_text"
-                            android:textSize="16sp" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:lineSpacingMultiplier="1.1"
+                                android:paddingStart="15dp"
+                                android:text="版本号"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/version_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="8dp"
-                            android:gravity="center"
-                            android:paddingEnd="24dp"
-                            android:text="0MB"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
+                                android:id="@+id/version_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="8dp"
+                                android:gravity="center"
+                                android:paddingEnd="24dp"
+                                android:text="0MB"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="13sp" />
                     </LinearLayout>
                 </LinearLayout>
 
 
                 <TextView
-                    android:id="@+id/btn_logout"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/bg_material_item_red_round"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="退出登陆"
-                    android:textColor="#ffffffff"
-                    android:textSize="18sp" />
+                        android:id="@+id/btn_logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/bg_material_item_red_round"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="退出登陆"
+                        android:textColor="#ffffffff"
+                        android:textSize="18sp" />
 
                 <Button
-                    android:id="@+id/btn_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Bar"
-                    android:visibility="gone" />
+                        android:id="@+id/btn_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Bar"
+                        android:visibility="gone" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

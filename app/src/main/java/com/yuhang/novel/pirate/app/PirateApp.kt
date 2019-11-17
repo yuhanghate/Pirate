@@ -40,6 +40,8 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
      */
     private var token = ""
 
+    private var pageType = ConfigConstant.PAGE_TYPE_HORIZONTAL
+
     companion object {
         var mInstance: PirateApp? = null
 
@@ -69,6 +71,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initToken()
         initYouMent()
         initFragmentManger()
+        pageType = PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
 //        initStrictModel()
     }
 
@@ -237,6 +240,17 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     fun setToken(token: String) {
         this.token = token
         PreferenceUtil.commitString("token", token)
+    }
+
+    /**
+     * 左右滑动/上下滑动
+     */
+    fun getPageType():Int {
+        return pageType
+    }
+
+    fun setPageType(pageType: Int) {
+        this.pageType = pageType
     }
 
 

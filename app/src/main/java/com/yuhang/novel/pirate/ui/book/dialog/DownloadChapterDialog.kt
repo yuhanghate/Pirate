@@ -10,6 +10,7 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
+import kotlinx.android.synthetic.main.activity_problem_note.*
 
 class DownloadChapterDialog(val activity:ReadBookActivity, val viewModel:ReadBookViewModel, val obj:BooksResult):DialogCallback {
     override fun invoke(p1: MaterialDialog) {
@@ -25,8 +26,12 @@ class DownloadChapterDialog(val activity:ReadBookActivity, val viewModel:ReadBoo
                         DownloadWifiDialog(activity, viewModel, obj).show()
                         return
                     }
-                    viewModel.downloadBook(obj)
                     activity.niceToast("已加入缓存队列")
+                    when (index) {
+                        0->viewModel.downloadBook(obj)
+                        1 -> viewModel.downloadBook(obj, viewModel.chapterid)
+                    }
+
 
                 }
             })

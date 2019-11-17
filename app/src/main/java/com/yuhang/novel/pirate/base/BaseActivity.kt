@@ -26,6 +26,7 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import org.greenrobot.eventbus.EventBus
+import java.io.IOException
 import java.lang.reflect.ParameterizedType
 
 
@@ -60,12 +61,24 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.navigationBarColor = ContextCompat.getColor(this, R.color.navigation_bar_color)
         Logger.i(" oncreate ->${this}")
-        SqlScoutServer.create(this, packageName)
+        initSqlScoutServer()
         initLayoutInflater()
         initViewModel()
         initStatusTool()
         initView()
         initData()
+    }
+
+    /**
+     * 初始化数据库
+     */
+    private fun initSqlScoutServer() {
+        try {
+            SqlScoutServer.create(this, packageName)
+        } catch (e: IOException) {
+
+        }
+
     }
 
     /**

@@ -127,6 +127,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 更新章节内容
+     */
+    fun updateChapter(obj: BookChapterKSEntity) {
+        mDatabase.bookChapterKSDao.update(obj)
+    }
+
+    /**
      * 从数据库查询当前id对应的书籍信息
      */
     fun queryBookInfo(bookid: String): BookInfoKSEntity? {
@@ -506,6 +513,10 @@ class DataRepository(val context: Context) {
         getDatabase().bookInfoKSDao.clear()
         getDatabase().bookChapterKSDao.clear()
         getDatabase().bookContentKSDao.clear()
+        getDatabase().searchHistoryKSDao.clear()
+        getDatabase().bookResouceTypeKDDao.clear()
+        getDatabase().bookDownloadDao.clear()
+
     }
 
     /**
@@ -517,6 +528,8 @@ class DataRepository(val context: Context) {
         getDatabase().bookChapterKSDao.clear()
         getDatabase().bookContentKSDao.clear()
         getDatabase().bookResouceTypeKDDao.clear()
+        getDatabase().bookReadHistoryDao.clear()
+        getDatabase().bookDownloadDao.clear()
     }
 
     /**

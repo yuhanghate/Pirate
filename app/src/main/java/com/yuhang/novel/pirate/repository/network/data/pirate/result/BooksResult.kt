@@ -30,6 +30,11 @@ class BooksResult {
     var lastChapterName: String = ""
 
     /**
+     * 最后章节id
+     */
+    var lastChapterId:String = ""
+
+    /**
      * 看书id
      */
     var bookKsId: String = ""

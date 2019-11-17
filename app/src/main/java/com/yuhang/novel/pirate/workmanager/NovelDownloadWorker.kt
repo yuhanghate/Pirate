@@ -1,29 +1,36 @@
 package com.yuhang.novel.pirate.workmanager
 
 import android.content.Context
+import androidx.work.WorkInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.eventbus.DownloadEvent
+import com.yuhang.novel.pirate.eventbus.WorkInfoEvent
 import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * 后台下载整本小说
  */
 class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
+
+
+    var isCancel = false
+
     companion object {
 
-        /**
-         *
-         */
         const val BOOKS_RESULT = "books_result"
     }
 
+
     override fun doWork(): Result {
+
+        EventBus.getDefault().register(this)
 
         val obj =
             Gson().fromJson<BooksResult>(inputData.getString(BOOKS_RESULT), BooksResult::class.java)
@@ -34,9 +41,25 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
         val convertRepository = ConvertRepository()
         val info = dataRepository.queryBookInfo(obj.getBookid())
         val chapterList = dataRepository.queryChapterObjList(obj.getBookid())
+        var isStart = false
         chapterList.forEachIndexed { index, chapterKSEntity ->
 
+            //全本缓存或者指定章节开始
+            if (obj.lastChapterId.isEmpty() || obj.lastChapterId == chapterKSEntity.chapterId) {
+                isStart = true
+            }
+
+            if (!isStart) {
+                return@forEachIndexed
+            }
+
+            //如果点击取消就结束任务
+            if (isCancel) {
+                dataRepository.deleteDownload(obj.getBookid())
+                return Result.success()
+            }
             //返回本地数据
+
             val contentKSEntity =
                 dataRepository.queryBookContent(obj.getBookid(), chapterKSEntity.chapterId)
 
@@ -58,6 +81,12 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
                     author = info?.author ?: "",
                     uuid = id.toString()
                 )
+
+                //如果点击取消就结束任务
+                if (isCancel) {
+                    dataRepository.deleteDownload(obj.getBookid())
+                    return Result.success()
+                }
                 EventBus.getDefault().post(DownloadEvent().apply {
                     this.bookName = info?.bookName ?: ""
                     this.progress = index + 1
@@ -71,7 +100,17 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
             }
         }
 
+        EventBus.getDefault().unregister(this)
         return Result.success()
 
     }
+
+    @Subscribe
+    fun onEvent(info: WorkInfoEvent) {
+        if (info.uuid == id.toString()) {
+            isCancel = true
+        }
+    }
+
+
 }

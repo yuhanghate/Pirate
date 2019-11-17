@@ -22,7 +22,6 @@ import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
-import com.vondear.rxtool.RxNetTool
 import com.xw.repo.BubbleSeekBar
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
@@ -40,7 +39,6 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.dialog.BookCollectionDialog
 import com.yuhang.novel.pirate.ui.book.dialog.DownloadChapterDialog
-import com.yuhang.novel.pirate.ui.book.dialog.DownloadWifiDialog
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListKdActivity
@@ -218,6 +216,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
                 .compose(bindToLifecycle())
                 .subscribe({
+                    initDrawerView()
+                    initFontSeekBar()
+                    initChapterProgressSeekBar()
+                    mViewModel.setCacheChapter(fragment)
                     mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
                     if (!TextUtils.isEmpty(getChapterid())) {
                         //打开指定章节
@@ -226,9 +228,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                         return@subscribe
                     }
                     //打开最近章节
-                    initDrawerView()
-                    initFontSeekBar()
-                    initChapterProgressSeekBar()
+
                     netDataChatpterContent()
 
 
@@ -555,7 +555,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      */
     private fun downloadBook() {
         toggleMenu()
-        DownloadChapterDialog(this,mViewModel, getBooksResult()).show()
+        DownloadChapterDialog(this, mViewModel, getBooksResult()).show()
     }
 
 
@@ -695,17 +695,33 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     override fun initRecyclerView() {
 
         mBinding.loading.setLoading(R.layout._loading_layout_loading2)
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(mBinding.recyclerView)
-        val linearLayoutManager = WrapContentLinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        mBinding.recyclerView.isNestedScrollingEnabled = false
-        mViewModel.adapter.setListener(this)
-        mBinding.recyclerView.layoutManager = linearLayoutManager
-        mViewModel.adapter.initData(arrayListOf())
-        mBinding.recyclerView.adapter = mViewModel.adapter
-        mBinding.recyclerView.addOnScrollListener(OnScrollListener(mViewModel.adapter, this))
-        mBinding.loading.showLoading()
+
+        if (PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
+            == ConfigConstant.PAGE_TYPE_HORIZONTAL
+        ) {
+            val snapHelper = PagerSnapHelper()
+            snapHelper.attachToRecyclerView(mBinding.recyclerView)
+            val linearLayoutManager = WrapContentLinearLayoutManager(this)
+            linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+            mBinding.recyclerView.isNestedScrollingEnabled = false
+            mViewModel.adapter.setListener(this)
+            mBinding.recyclerView.layoutManager = linearLayoutManager
+            mViewModel.adapter.initData(arrayListOf())
+            mBinding.recyclerView.adapter = mViewModel.adapter
+            mBinding.recyclerView.addOnScrollListener(OnScrollListener(mViewModel.adapter, this))
+            mBinding.loading.showLoading()
+        } else {
+            val linearLayoutManager = WrapContentLinearLayoutManager(this)
+            linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+            mBinding.recyclerView.isNestedScrollingEnabled = false
+            mViewModel.adapter.setListener(this)
+            mBinding.recyclerView.layoutManager = linearLayoutManager
+            mViewModel.adapter.initData(arrayListOf())
+            mBinding.recyclerView.adapter = mViewModel.adapter
+            mBinding.recyclerView.addOnScrollListener(OnScrollListener(mViewModel.adapter, this))
+            mBinding.loading.showLoading()
+        }
+
 
     }
 

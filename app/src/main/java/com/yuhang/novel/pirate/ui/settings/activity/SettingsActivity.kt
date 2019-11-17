@@ -12,6 +12,7 @@ import android.widget.RadioButton
 import com.github.aakira.expandablelayout.Utils
 import com.vondear.rxtool.RxDeviceTool
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.ConfigConstant
@@ -61,12 +62,12 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
      */
     private fun initRadioButtonTitle() {
         mBinding.pageTypeTv.text =
-                mPageTypeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)]
+                mPageTypeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)]
         mBinding.pageTimeTv.text =
                 mPageTimeTitle[PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW)]
         resetRadioButton(
                 mPageTypeList,
-                PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)
+                PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
         )
         resetRadioButton(mPageTimeList, PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW))
     }
@@ -130,12 +131,14 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_VERTICAL)
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_VERTICAL)
             mBinding.pageTypeTv.text = mPageTypeTitle[ConfigConstant.PAGE_TYPE_VERTICAL]
+            PirateApp.getInstance().setPageType(ConfigConstant.PAGE_TYPE_VERTICAL)
         }
         mBinding.pageHorizontalLl.setOnClickListener {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_PAGE_MODEL, "左右翻页")
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_HORIZONTAL)
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
             mBinding.pageTypeTv.text = mPageTypeTitle[ConfigConstant.PAGE_TYPE_HORIZONTAL]
+            PirateApp.getInstance().setPageType(ConfigConstant.PAGE_TYPE_HORIZONTAL)
         }
 
         //阅读界面显示

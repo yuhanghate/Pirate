@@ -29,4 +29,7 @@ interface BookDownloadDao {
      */
     @Query("delete from bookdownloadentity where bookId = :bookid")
     fun deleteDownload(bookid: String)
+
+    @Query("delete from bookdownloadentity")
+    fun clear()
 }

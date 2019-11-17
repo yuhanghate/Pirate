@@ -3,24 +3,36 @@
 
 
     <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="55dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:minHeight="55dp"
+            android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/chapter_name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:ellipsize="end"
-            android:layout_marginEnd="15dp"
-            android:lines="1"
-            android:textColor="@color/primary_text"
-            android:textSize="14sp"
-            tools:text="第一章 大汉好男儿" />
+                android:id="@+id/chapter_name_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/primary_text"
+                android:textSize="14sp"
+                tools:text="第一章 大汉好男儿" />
+
+        <TextView
+                android:id="@+id/cache_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:lines="1"
+                android:text="已缓存"
+                android:textColor="@color/secondary_text"
+                android:textSize="14sp" />
     </LinearLayout>
 </layout>
