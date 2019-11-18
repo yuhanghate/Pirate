@@ -82,13 +82,14 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                             .compose(bindToLifecycle())
                             .subscribe({
                             }, {
+                                closeProgressbar()
                                 onBackPressed()
                             },{
                                 mUsersService.updateUsersToLocal(userResult = userResult).subscribe({
-
                                     EventBus.getDefault().postSticky(userResult)
                                     onBackPressed()
                                 }, {
+                                    closeProgressbar()
                                     onBackPressed()
                                 },{
                                     com.orhanobut.logger.Logger.i("","")
