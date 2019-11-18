@@ -39,5 +39,5 @@ class BookChapterKSEntity{
    * 1:缓存
    * 0:未缓存
    */
-  var hasContent : Int = 1
+  var hasContent : Int = 0
 }
