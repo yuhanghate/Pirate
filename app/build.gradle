@@ -259,6 +259,7 @@ dependencies {
 
     //动画库
     implementation 'com.airbnb.android:lottie:3.2.0'
+    implementation project(path: ':FlycoTabLayout')
 
 
 }

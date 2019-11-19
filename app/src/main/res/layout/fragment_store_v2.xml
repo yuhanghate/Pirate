@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+            <ImageView
+                    android:id="@+id/help_iv"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_material_40dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/fragmentation_help"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+            </ImageView>
+
+            <TextView
+                    android:id="@+id/classify_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_material_40dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="分类"
+                    android:textColor="@color/primary_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/help_iv"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_search_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/classify_tv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:scaleType="centerInside"
+                        android:layout_marginEnd="12dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/btn_search" />
+
+                <EditText
+                        android:id="@+id/search_et"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="start|center_vertical"
+                        android:hint="搜索书名或作者"
+                        android:imeOptions="actionSearch"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/primary_text"
+                        android:textColorHint="#ff999999"
+                        android:textSize="14sp" />
+
+                <ImageView
+                        android:id="@+id/btn_clear"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/btn_search_close"
+                        android:visibility="gone" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.flyco.tablayout.SlidingTabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/md_white_1000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/right_icon"
+                app:tl_indicator_corner_radius="1.5dp"
+                app:tl_textUnselectColor="#ff999999"
+                app:tl_indicator_height="4dp"
+                app:tl_textSelectColor="#333333"
+                app:tl_textBold="SELECT"
+                app:tl_indicator_width="10dp" />
+
+    </LinearLayout>
+</layout>

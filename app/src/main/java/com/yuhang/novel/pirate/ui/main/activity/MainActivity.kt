@@ -27,6 +27,7 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
+import com.yuhang.novel.pirate.ui.main.fragment.StoreFragmentV2
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
@@ -92,7 +93,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             R.id.nav_host_fragment,
             intent.getIntExtra("tab_index", 0),
             MainFragment.newInstance(),
-            StoreFragment.newInstance(),
+            StoreFragmentV2.newInstance(),
             MeFragment.newInstance()
         )
 
@@ -102,7 +103,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                 R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
                 R.id.tab_store -> {
                     startLoginActivity()
-                    showHideFragment(findFragment(StoreFragment::class.java))
+                    showHideFragment(findFragment(StoreFragmentV2::class.java))
                 }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
@@ -111,7 +112,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mBinding.bottomBar.setOnTabReselectListener {
             when (it) {
                 R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_store -> showHideFragment(findFragment(StoreFragmentV2::class.java))
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
