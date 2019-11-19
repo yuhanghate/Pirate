@@ -39,7 +39,7 @@ class UsersServiceImpl : UsersService {
             }
             .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
             .map {
-                it.niceBookResouceTypeKDEntity()?.let { mDataRepository.insertKuaiDuResouce(it) }
+
                 mDataRepository.insertCollection(it.niceBooksResult())
                 it.niceBooksResult()
             }
@@ -119,6 +119,7 @@ class UsersServiceImpl : UsersService {
         return mDataRepository.getReadHistoryCollectionsList(obj.getBookid())
             .map {
                 val result = it.data?:return@map obj
+                result.niceBookResouceTypeKDEntity()?.let { mDataRepository.insertKuaiDuResouce(it) }
                 mDataRepository.updateLocalREadHistory(
                     result.bookid,
                     result.chapterid,

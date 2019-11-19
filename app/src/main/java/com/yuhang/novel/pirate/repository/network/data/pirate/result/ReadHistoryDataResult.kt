@@ -18,5 +18,7 @@ data class ReadHistoryDataResult(
     val description: String = "",
     val chapterid: String = "",
     val chapterName: String = "",
-    val createTime:Long = System.currentTimeMillis()
+    val createTime:Long = System.currentTimeMillis(),
+    val tocId:String = "",
+    val tocName:String = ""
 )

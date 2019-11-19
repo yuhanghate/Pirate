@@ -607,10 +607,6 @@ class DataRepository(val context: Context) {
         lastReadTime: Long = System.currentTimeMillis()
     ) {
 
-//        val queryAll = getDatabase().bookReadHistoryDao.queryAll()
-//        queryAll.forEach {
-//            Logger.t("read_history").i("isChapter = ${it.chapterid == chapterid}  chapterid = ${it.chapterid} time=${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(it.lastReadTime*1000))}")
-//        }
         val entity = getDatabase().bookReadHistoryDao.queryBookReadHistoryEntity(bookid, chapterid)
         if (entity == null) {
             getDatabase().bookReadHistoryDao.insert(BookReadHistoryEntity().apply {

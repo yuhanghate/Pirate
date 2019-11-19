@@ -11,7 +11,6 @@ import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.constant.BookConstant
-import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_BACKGROUND
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_CHANPTER
@@ -26,7 +25,6 @@ import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
-import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.widget.pageview.TextPagerView
@@ -169,7 +167,7 @@ class ReadBookViewModel : BaseViewModel() {
 
                 return@flatMap Flowable.just("")
 
-            }.subscribeOn(Schedulers.io()).compose(mActivity?.bindToLifecycle())
+            }.compose(io_main()).compose(mActivity?.bindToLifecycle())
             .subscribe({}, {}, {})
     }
 
@@ -307,7 +305,7 @@ class ReadBookViewModel : BaseViewModel() {
         if (TextUtils.isEmpty(PirateApp.getInstance().getToken())) return
         Flowable.just(mBooksResult?.getBookid()!!)
             .map { mDataRepository.queryBookInfo(mBooksResult?.getBookid()!!) }
-            .compose(mActivity?.bindToLifecycle())
+
             .flatMap {
                 mDataRepository.addCollection(
                     bookid = it.bookid,
@@ -320,6 +318,7 @@ class ReadBookViewModel : BaseViewModel() {
                     resouceType = obj.resouce
                 )
             }
+            .compose(mActivity?.bindToLifecycle())
             .compose(io_main())
             .subscribe({
                 Logger.i("")
@@ -411,7 +410,7 @@ class ReadBookViewModel : BaseViewModel() {
                     mDataRepository.deleteChapterList(it[0].bookId)
                     mDataRepository.insertChapterList(it)
                     it
-                }
+                }.compose(io_main())
                 //从本地获取
                 val list = mDataRepository.queryChapterObjList(obj.getBookid())
 
@@ -429,7 +428,7 @@ class ReadBookViewModel : BaseViewModel() {
                                         mDataRepository.deleteChapterList(it[0].bookId)
                                         mDataRepository.insertChapterList(it)
                                         it
-                                    }
+                                    }.compose(io_main())
                                 }
                                 return@flatMap Flowable.just(list)
 
@@ -443,7 +442,7 @@ class ReadBookViewModel : BaseViewModel() {
                     mDataRepository.deleteChapterList(it[0].bookId)
                     mDataRepository.insertChapterList(it)
                     mDataRepository.queryChapterObjList(obj.getBookid())
-                }
+                }.compose(io_main())
             }
             .map {
                 chapterMap.clear()
@@ -474,7 +473,7 @@ class ReadBookViewModel : BaseViewModel() {
             .subscribe({
                 fragment?.chapterList = chapterList
                 fragment?.setRefreshView()
-            },{})
+            }, {})
     }
 
 

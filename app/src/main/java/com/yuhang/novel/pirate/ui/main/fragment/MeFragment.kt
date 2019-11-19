@@ -460,7 +460,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             }, {
                 closeProgressbar()
                 showUpdateCollectionDialog()
-                throw it
             }, {
                 closeProgressbar()
                 EventBus.getDefault().postSticky(LoginEvent())

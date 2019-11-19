@@ -286,6 +286,20 @@ fun CollectionDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity?
     }
 }
 
+fun ReadHistoryDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity? {
+    val obj = this
+    if (obj.resouceType != "KD" ||  TextUtils.isEmpty(obj.tocId)) return null
+    return BookResouceTypeKDEntity().apply {
+        if (obj.resouceType == "KD") {
+            this.bookid = obj.bookid
+            this.typeName = obj.tocName
+            this.tocId = obj.tocId
+            this.resouce = obj.resouceType
+            this.bookName = obj.bookName ?: ""
+        }
+    }
+}
+
 fun CollectionDataResult.niceBooksResult(): BooksResult {
     val obj = this
     return BooksResult().apply {

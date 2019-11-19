@@ -919,7 +919,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 移动到指定位置
      */
     private fun moveToPosition(position: Int) {
-        val manager = mBinding.recyclerView.layoutManager as LinearLayoutManager
+        val manager = mBinding.recyclerView.layoutManager as WrapContentLinearLayoutManager
         val recyclerview = mBinding.recyclerView
         val firstItem = manager.findFirstVisibleItemPosition()
         val lastItem = manager.findLastVisibleItemPosition()
@@ -1005,6 +1005,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             mViewModel.adapter.notifyDataSetChanged()
             return
         }
+
 
         mBinding.loading.showContent()
         Logger.i("${this.javaClass.simpleName}  position = $lastVisibleItemPosition  itemCount=${mViewModel.adapter.getList().size}")
