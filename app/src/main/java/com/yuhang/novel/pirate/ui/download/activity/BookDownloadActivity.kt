@@ -17,7 +17,7 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
-import com.yuhang.novel.pirate.ui.download.DownloadDeleteDialog
+import com.yuhang.novel.pirate.ui.download.dialog.DownloadDeleteDialog
 import com.yuhang.novel.pirate.ui.download.viewmodel.BookDownloadViewModel
 import com.yuhang.novel.pirate.viewholder.ItemBookDownloadVH
 import org.greenrobot.eventbus.Subscribe
@@ -66,7 +66,7 @@ class BookDownloadActivity :
 
         mViewModel.adapter
             .setListener(this)
-            .setRecyclerView(mBinding.recyclerview, false)
+            .setRecyclerView(mBinding.recyclerview)
             .initData(arrayListOf())
     }
     override fun initData() {
@@ -103,7 +103,12 @@ class BookDownloadActivity :
      */
     override fun onClickItemLongListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
-        DownloadDeleteDialog(this, mViewModel, obj, workMap[obj.uuid]!!).show()
+        DownloadDeleteDialog(
+            this,
+            mViewModel,
+            obj,
+            workMap[obj.uuid]!!
+        ).show()
     }
 
     /**

@@ -17,6 +17,7 @@ import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnBookDownloadListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity
+import com.yuhang.novel.pirate.utils.DownloadUtil
 import java.util.*
 
 class ItemBookDownloadVH(parent: ViewGroup) :
@@ -29,6 +30,7 @@ class ItemBookDownloadVH(parent: ViewGroup) :
     override fun onBindViewHolder(obj: BookDownloadEntity, position: Int) {
         super.onBindViewHolder(obj, position)
         mBinding.titleTv.text = obj.bookName
+        mBinding.authorTv.text = obj.author
         upateProgress(obj)
 
         /**
@@ -44,8 +46,6 @@ class ItemBookDownloadVH(parent: ViewGroup) :
             .apply(placeholder)
             .into(niceGlideInto(mBinding.coverIv))
 
-
-//        downloadStatus(obj)
 
         mBinding.btnProgress.setOnClickListener {
             getListener<OnClickItemListener>()?.onClickItemListener(it, position)
@@ -72,8 +72,17 @@ class ItemBookDownloadVH(parent: ViewGroup) :
      * 刷新进度条
      */
     fun upateProgress(obj: BookDownloadEntity) {
-        val progress = (obj.progress.toDouble() / obj.total.toDouble() * 100).toInt() + 1
-        mBinding.progressHorizontal.progress = if (progress > 100) 100 else progress
+
+        val progress = DownloadUtil.calcProgressToView(
+            mBinding.progressLayout,
+            obj.progress.toLong(),
+            obj.total.toLong()
+        )
+
         mBinding.progressTv.text = "${obj.progress} / ${obj.total}章"
+
+        if (progress == 100) {
+            mBinding.progressLayout.setCurrentProgress(0)
+        }
     }
 }

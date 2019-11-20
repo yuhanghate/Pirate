@@ -2,20 +2,34 @@
 <layout>
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
+            android:background="@drawable/bg_material_item"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+        <co.mobiwise.library.ProgressLayout
+                android:id="@+id/progressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:emptyColor="@color/md_white_1000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:autoProgress="false"
+                app:loadedColor="#4DBDBDBD"
+                app:maxProgress="100" />
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_material_item"
                 android:orientation="horizontal"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                     android:id="@+id/cover_iv"
@@ -38,16 +52,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    <TextView
-                            android:id="@+id/progress_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/head_ll"
-                            android:layout_alignParentEnd="true"
-                            android:text="0%"
-                            android:textColor="@color/primary_text"
-                            android:textSize="14sp"
-                            tools:text="20%" />
+
 
                     <LinearLayout
                             android:id="@+id/head_ll"
@@ -63,6 +68,7 @@
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:lines="1"
+                                android:textStyle="bold"
                                 android:text="凡人修仙传"
                                 android:textColor="@color/primary_text"
                                 android:textSize="17sp" />
@@ -74,24 +80,22 @@
                                 android:layout_marginTop="5dp"
                                 android:ellipsize="end"
                                 android:lines="1"
-                                android:text="下载进度"
+                                android:text="忘语"
                                 android:textColor="@color/secondary_text"
-                                android:textSize="13sp" />
+                                android:textSize="14sp" />
                     </LinearLayout>
 
                 </RelativeLayout>
 
-
-                <com.daimajia.numberprogressbar.NumberProgressBar
-                        android:id="@+id/progress_horizontal"
-                        style="@style/NumberProgressBar_Beauty_Red"
-                        android:layout_width="match_parent"
+                <TextView
+                        android:id="@+id/progress_tv"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:max="100"
-                        app:progress_reached_color="@color/primary"
-                        app:progress_text_color="@color/primary"
-                        app:progress_reached_bar_height="2dp" />
+                        android:layout_marginTop="15sp"
+                        android:text="0/0"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="15sp"
+                        tools:text="20%" />
 
             </LinearLayout>
 
@@ -101,14 +105,14 @@
                     android:layout_width="56dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:textSize="12sp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/bg_material_item_red_round"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="阅读"
                     android:gravity="center"
+                    android:text="阅读"
                     android:textColor="@color/md_white_1000"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_material_item_red_round" />
+                    android:textSize="12sp" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

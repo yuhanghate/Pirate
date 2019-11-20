@@ -93,6 +93,7 @@
                 android:launchMode="singleTask"/>
         <activity android:name=".ui.settings.activity.SearchFeedbackActivity" />
         <activity android:name=".ui.download.activity.BookDownloadActivity" />
+        <activity android:name=".ui.ad.activity.GameActivity" />
     </application>
 
 </manifest>

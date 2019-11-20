@@ -256,9 +256,15 @@ dependencies {
 
     //进度条
     implementation 'com.daimajia.numberprogressbar:library:1.4@aar'
+    implementation project(path: ':progress-layout')
 
-    //动画库
-    implementation 'com.airbnb.android:lottie:3.2.0'
+
+    // 文件下载
+    implementation 'com.liulishuo.okdownload:okdownload:1.0.7-SNAPSHOT'
+    // 断点续传
+    implementation 'com.liulishuo.okdownload:sqlite:1.0.7-SNAPSHOT'
+    // okhttp支持
+    implementation 'com.liulishuo.okdownload:okhttp:1.0.7-SNAPSHOT'
 
 
 }

@@ -34,6 +34,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResu
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
+import com.yuhang.novel.pirate.ui.ad.activity.GameActivity
 import com.yuhang.novel.pirate.ui.book.activity.ReadHistoryActivity
 import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
@@ -202,6 +203,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         //缓存管理
         mBinding.downloadCl.setOnClickListener { BookDownloadActivity.start(mActivity!!) }
+
+        //游戏推荐
+        mBinding.gamesCl.setOnClickListener { GameActivity.start(mActivity!!) }
 
     }
 
