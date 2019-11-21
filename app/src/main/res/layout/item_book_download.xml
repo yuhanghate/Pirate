@@ -82,7 +82,7 @@
                                 android:lines="1"
                                 android:text="忘语"
                                 android:textColor="@color/secondary_text"
-                                android:textSize="14sp" />
+                                android:textSize="13sp" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -91,10 +91,10 @@
                         android:id="@+id/progress_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15sp"
+                        android:layout_marginTop="8sp"
                         android:text="0/0"
                         android:textColor="@color/secondary_text"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         tools:text="20%" />
 
             </LinearLayout>
@@ -102,8 +102,8 @@
 
             <TextView
                     android:id="@+id/btn_progress"
-                    android:layout_width="56dp"
-                    android:layout_height="28dp"
+                    android:layout_width="62dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
                     android:background="@drawable/bg_material_item_red_round"
@@ -111,8 +111,9 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="阅读"
+                    android:textStyle="bold"
                     android:textColor="@color/md_white_1000"
-                    android:textSize="12sp" />
+                    android:textSize="13sp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

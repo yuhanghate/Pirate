@@ -1039,8 +1039,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         }
         val obj = mViewModel.adapter.getObj(position)
         mViewModel.chapterid = obj.chapterId
-//        mViewModel.nid = mViewModel.getNextPage(obj.chapterId).chapterId
-//        mViewModel.pid = mViewModel.getPreviousPage(obj.chapterId).chapterId
         mViewModel.currentPosition = position
         mViewModel.chapterName = obj.chapterName
 
@@ -1052,6 +1050,9 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
          * 每次滑动页面都更新时间和角标
          */
         mViewModel.updateLastOpenTimeAndPosition(obj.chapterId, obj.textPageBean?.currentPage!!)
+
+        //进度条点击下一章,更新章节名称
+        mBinding.layoutButton.chapterNameTv.text = mViewModel.chapterMap[mViewModel.chapterid]?.name
 
     }
 
