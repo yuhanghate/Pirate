@@ -79,8 +79,10 @@ class ConvertRepository {
      */
     fun getChapterList(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
         return when {
-            obj.isKanShu() -> mKanShuNetApi.getBookChapterList(dirId = niceDir(obj.bookKsId),
-                bookId = obj.bookKsId.toLong())
+            obj.isKanShu() -> mKanShuNetApi.getBookChapterList(
+                dirId = niceDir(obj.bookKsId),
+                bookId = obj.bookKsId.toLong()
+            )
                 .map { it.replace("},]}}", "}]}}") }
                 .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
                 .map { it.data.niceBookChapterKSEntity() }
@@ -162,7 +164,7 @@ class ConvertRepository {
                     this.content = content?.data?.content!!
                     this.bookId = obj.bookKsId
                     this.lastContentPosition = 0
-                    this.chapterName = content?.data?.cname!!
+                    this.chapterName = content.data?.cname!!
                     this.resouce = obj.resouce
                 }
             }
@@ -193,7 +195,11 @@ class ConvertRepository {
             obj.isKanShu() -> mKanShuNetApi.getBookDetails(
                 dirId = niceDir(obj.bookKsId),
                 bookId = obj.bookKsId.toLong()
-            ).map { it.data.SameUserBooks.filterNotNull().map { it.niceBooksResult() }.toList() }
+            ).map {
+                it.data.SameUserBooks?.map {
+                    it.niceBooksResult()
+                }?.toList()
+            }
 
             //快读
             obj.isKuaiDu() -> mKuaiDuNetApi.getAuthorBookAll(
@@ -231,7 +237,7 @@ class ConvertRepository {
      * 第三方源目录列表
      */
     fun getResouceChapterList(
-        tocId: String, bookid:String
+        tocId: String, bookid: String
     ): Flowable<List<BookChapterKSEntity>> {
 
         return mKuaiDuNetApi.getResouceChapterList(tocId).map {

@@ -72,7 +72,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initYouMent()
         initFragmentManger()
         pageType = PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
-//        initStrictModel()
     }
 
     /**
@@ -166,7 +165,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         })
 
         mPushAgent.messageHandler = PushUmengMessageHandler()
-//        mPushAgent.notificationClickHandler = PushUmengNotificationClickHandler()
     }
 
 

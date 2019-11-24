@@ -92,7 +92,7 @@
                     android:layout_alignParentEnd="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="20dp"
-                    android:background="@drawable/bg_material_40dp"
+                    android:background="@drawable/bg_material_20dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_marginBottom="8dp"

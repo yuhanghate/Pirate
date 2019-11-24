@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="20dp"
-                android:background="@drawable/bg_material_40dp"
+                android:background="@drawable/bg_material_20dp"
                 android:src="@drawable/btn_back_black" />
 
             <TextView

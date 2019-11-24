@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/actionbar_color">
+
+            <ImageView
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/bg_material_20dp"
+                    android:src="@drawable/btn_back_black" />
+
+            <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    tools:text="书单"
+                    android:textColor="@color/primary_text"
+                    android:textSize="18sp" />
+        </RelativeLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp" />
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/item_books_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </LinearLayout>
+</layout>

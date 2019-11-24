@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/new_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="@drawable/bg_material_40dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:textColor="@color/primary_text"
+                android:drawableTop="@drawable/ic_store_new"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="最新发布"
+                android:textSize="13sp" />
+
+
+        <TextView
+                android:id="@+id/hot_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="@drawable/bg_material_40dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:textColor="@color/primary_text"
+                android:drawableTop="@drawable/ic_store_hot"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="本周最热"
+                android:textSize="13sp" />
+
+        <TextView
+                android:id="@+id/collect_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_material_40dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/primary_text"
+                android:drawableTop="@drawable/ic_store_collect"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="最多收藏"
+                android:textSize="13sp" />
+
+        <TextView
+                android:id="@+id/recommend_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="@drawable/bg_material_40dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/primary_text"
+                android:drawableTop="@drawable/ic_store_recommend"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="小编推荐"
+                android:textSize="13sp" />
+    </LinearLayout>
+</layout>

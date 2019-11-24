@@ -93,6 +93,8 @@
                 android:launchMode="singleTask"/>
         <activity android:name=".ui.settings.activity.SearchFeedbackActivity" />
         <activity android:name=".ui.download.activity.BookDownloadActivity" />
+        <activity android:name=".ui.store.activity.BooksListActivity" />
+        <activity android:name=".ui.store.activity.MoreRankingListActivity" />
     </application>
 
 </manifest>

@@ -256,7 +256,7 @@ fun AuthorBooksDataKdResult.niceBooksResult(): BooksResult {
     }
 }
 
-fun RecommendBooksResult.niceBooksResult(): BooksResult {
+fun BooksKSResult.niceBooksResult(): BooksResult {
     val obj = this
     return BooksResult().apply {
         this.author = obj.Author

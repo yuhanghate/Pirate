@@ -21,6 +21,9 @@ interface KanShuNetApi {
     //缓存书 -> 每个章节进行下载缓存 https://codeapibak.jiaston.com/BookFiles/Html/37/36007/2610933.html
     //缓存书 -> https://downbak.1122dh.com/BookFiles/Html/7/6493/3170867.html
 
+    //笔趣阁 精选  https://quapp.anchengcn.com/v5/base/lady.html
+    //看书神器 精选 https://appbdsc.cdn.bcebos.com/v6/base/man.html
+
     /**
      * 看书站内搜索
      */
@@ -68,7 +71,6 @@ interface KanShuNetApi {
     ): Flowable<ContentResult>
 
 
-
     /**
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
@@ -92,8 +94,6 @@ interface KanShuNetApi {
     ): Call<ContentResult>
 
 
-
-
     /**
      * 排行榜
      * gender >  man:男的  lady:女生
@@ -102,5 +102,49 @@ interface KanShuNetApi {
      * pageNum : 分页
      */
     @GET("https://quapp.1122dh.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
-    fun getRankingList(@Path("gender") gender: String, @Path("type") type: String, @Path("date") date: String, @Path("pageNum") pageNum: Int): Flowable<RankingListResult>
+    fun getRankingList(
+        @Path("gender") gender: String, @Path("type") type: String, @Path("date") date: String, @Path(
+            "pageNum"
+        ) pageNum: Int
+    ): Flowable<RankingListResult>
+
+    /**
+     * 书城 -> 男生
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/v6/base/man.html")
+    fun getStoreMan(): Flowable<StoreManResult>
+
+    /**
+     * 书城 -> 女生
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/v6/base/lady.html")
+    fun getStoreLady(): Flowable<StoreManResult>
+
+    /**
+     * 书城 -> 榜单 -> 男生
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/top/man/index.html")
+    fun getStoreRankingMan(): Flowable<StoreRankingResult>
+
+    /**
+     * 书城 -> 榜单 -> 女生
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/top/lady/index.html")
+    fun getStoreRankingLady(): Flowable<StoreRankingResult>
+
+    /**
+     * 获取书单
+     *
+     * 最新发布/本周最热/最多收藏/小编推荐
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/shudan/{gender}/all/{type}/{pageNum}.html")
+    fun getBooksList(@Path("gender") gender: String, @Path("type") type: String, @Path("pageNum") pageNum: String): Flowable<BooksListResult>
+
+    /**
+     * 正版排行榜
+     *
+     * 起点/纵横/去起/若初/红薯/潇湘/逐浪
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/more/{type}/{pageNum}.html")
+    fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):Flowable<MoreRankingResult>
 }

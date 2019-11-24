@@ -4,7 +4,10 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.bumptech.glide.request.transition.Transition
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
@@ -58,4 +61,24 @@ fun Any.niceGlideInto(view: ImageView):CustomTarget<Drawable> {
 
     }
     return value
+}
+
+/**
+ * 200毫秒 动画
+ */
+fun Any.niceCrossFade(): DrawableTransitionOptions {
+    val drawableCrossFadeFactory =
+        DrawableCrossFadeFactory.Builder(300).setCrossFadeEnabled(true).build()
+    return DrawableTransitionOptions.with(drawableCrossFadeFactory)
+}
+
+/**
+ * Glide占位图 竖
+ */
+fun Any.niceDefaultImageVertical():RequestOptions {
+
+    val drawable = PirateApp.getInstance().getDrawable(R.drawable.ic_default_img2)
+    return RequestOptions()
+        .placeholder(drawable)
+        .error(drawable)
 }

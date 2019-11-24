@@ -6,7 +6,7 @@ object NetURL {
 //    } else {
 //        NetType.MASTER
 //    }
-    var type = NetType.DEVELOP
+    var type = NetType.MASTER
 
 
     //后台API调用接口

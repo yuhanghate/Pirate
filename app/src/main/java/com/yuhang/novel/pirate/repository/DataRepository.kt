@@ -845,4 +845,50 @@ class DataRepository(val context: Context) {
     fun deleteDownload(bookid: String) {
         getDatabase().bookDownloadDao.deleteDownload(bookid)
     }
+
+    /**
+     * 书城 -> 男生
+     */
+    fun getStoreMan(): Flowable<StoreManResult> {
+        return getKSNetApi().getStoreMan()
+    }
+
+    /**
+     * 书城 -> 女生
+     */
+    fun getStoreLady(): Flowable<StoreManResult> {
+        return getKSNetApi().getStoreLady()
+    }
+
+    /**
+     * 书城 -> 榜单 -> 男生
+     */
+    fun getStoreRankingMan(): Flowable<StoreRankingResult> {
+        return getKSNetApi().getStoreRankingMan()
+    }
+
+    /**
+     * 书城 -> 榜单 -> 女生
+     */
+    fun getStoreRankingLady(): Flowable<StoreRankingResult> {
+        return getKSNetApi().getStoreRankingLady()
+    }
+
+    /**
+     * 获取书单
+     *
+     * 最新发布/本周最热/最多收藏/小编推荐
+     */
+    fun getBooksList(gender:String, type:String, pageNum:Int): Flowable<BooksListResult> {
+        return getKSNetApi().getBooksList(gender, type, pageNum.toString())
+    }
+
+    /**
+     * 正版排行榜
+     *
+     * 起点/纵横/去起/若初/红薯/潇湘/逐浪
+     */
+    fun getMoreRankingList(gender:String, type:Int, pageNum:Int):Flowable<MoreRankingResult>{
+        return getKSNetApi().getMoreRankingList(gender, type, pageNum.toString())
+    }
 }

@@ -45,7 +45,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginStart="25dp"
-                            android:background="@drawable/bg_material_40dp"
+                            android:background="@drawable/bg_material_20dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/ic_problem" />
@@ -55,7 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="25dp"
-                        android:background="@drawable/bg_material_40dp"
+                        android:background="@drawable/bg_material_20dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:scaleType="centerInside"
