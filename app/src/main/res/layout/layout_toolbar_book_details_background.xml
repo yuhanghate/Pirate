@@ -13,14 +13,13 @@
                 android:scaleType="fitXY" />
 
         <ImageView
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                android:layout_marginTop="250dp"
-                android:layout_width="1500dp"
-                android:layout_height="1500dp"
-                android:src="@drawable/bg_book_details_background_round" />
+                android:layout_marginTop="10dp"
+                android:layout_width="1440px"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_book_details_round" />
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/cover_cv"
