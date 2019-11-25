@@ -40,6 +40,7 @@
                 android:value="portrait|landscape" />
 
         <activity android:name="com.yuhang.novel.pirate.ui.launch.activity.LaunchActivity"
+                android:theme="@style/LauncherTheme"
                 >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,7 +54,9 @@
         <activity android:name=".ui.webview.activity.WebViewActivity" />
         <activity
                 android:name=".ui.main.activity.MainActivity"
-                android:configChanges="orientation|screenSize|uiMode" />
+                android:configChanges="orientation|screenSize|uiMode" >
+
+        </activity>
         <activity
                 android:name=".ui.book.activity.ReadBookActivity"
                 android:launchMode="singleTask" />
@@ -95,6 +98,7 @@
         <activity android:name=".ui.download.activity.BookDownloadActivity" />
         <activity android:name=".ui.store.activity.BooksListActivity" />
         <activity android:name=".ui.store.activity.MoreRankingListActivity" />
+        <activity android:name=".ui.store.activity.KanShuRankingActivity" />
     </application>
 
 </manifest>

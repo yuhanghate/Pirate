@@ -14,6 +14,7 @@ import com.yuhang.novel.pirate.extension.niceCrossFade
 import com.yuhang.novel.pirate.extension.niceDefaultImageVertical
 import com.yuhang.novel.pirate.extension.niceGlideInto
 import com.yuhang.novel.pirate.listener.OnClickBookListener
+import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
 
@@ -43,10 +44,17 @@ class ItemStoreRankingChildVH(parent:ViewGroup):BaseViewHolder<StoreRankingModel
         mBinding.cover1Iv.setOnClickListener { clickBook(it, position, obj.list[0]) }
         mBinding.cover2Iv.setOnClickListener { clickBook(it, position, obj.list[1]) }
         mBinding.cover3Iv.setOnClickListener { clickBook(it, position, obj.list[2]) }
+
+        mBinding.moreLl.setOnClickListener {
+            getListener<OnClickItemStoreTitleMoreListener>()?.onClickItemStoreTitleMoreListener(itemView, obj.name, position)
+        }
+
     }
 
     private fun clickBook(view: View, position: Int,  obj:BooksKSResult) {
         getListener<OnClickBookListener>()?.onClickBookListener(view, obj, position)
+
+
 
     }
 

@@ -23,8 +23,10 @@
     </style>
 
     <style name="LauncherTheme" parent="@style/AppTheme">
-
-        <item name="android:windowBackground">@drawable/bg_material_item</item>
+        <item name="colorPrimary">@color/md_white_1000</item>
+        <item name="colorPrimaryDark">@color/md_white_1000</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@drawable/ic_launch_page</item>
     </style>
     <style name="AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>

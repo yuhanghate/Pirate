@@ -43,7 +43,7 @@ interface KanShuNetApi {
      * dirId = (bookId - 后三位) + 1
      * bookId: 书本id
      */
-    @GET("https://infos.1122dh.com/BookFiles/Html/{dirId}/{bookId}/info.html")
+    @GET("https://infos.jiaston.com/BookFiles/Html/{dirId}/{bookId}/info.html")
     fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -53,7 +53,7 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
-    @GET("https://infos.1122dh.com/BookFiles/Html/{dirId}/{bookId}/index.html")
+    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -63,7 +63,7 @@ interface KanShuNetApi {
     /**
      * 获取章节内容
      */
-    @GET("https://content.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -75,23 +75,13 @@ interface KanShuNetApi {
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
      */
-    @GET("https://downbak.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://codeapibak.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun downloadChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
         ) bookId: Long, @Path("chapterId") chapterId: String
     ): Call<ContentResult>
 
-    /**
-     * 下载章节内容
-     * 不知道为什么要区分,可能这个域名是CDN
-     */
-    @GET("https://downbak.1122dh.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
-    fun downloadNovel(
-        @Path("dirId") dirId: Int, @Path(
-            "bookId"
-        ) bookId: Long, @Path("chapterId") chapterId: String
-    ): Call<ContentResult>
 
 
     /**
@@ -147,4 +137,11 @@ interface KanShuNetApi {
      */
     @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/more/{type}/{pageNum}.html")
     fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):Flowable<MoreRankingResult>
+
+    /**
+     * 看书神器 排行榜
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
+    fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : Flowable<KanShuRankingResult>
+
 }

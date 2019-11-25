@@ -87,22 +87,6 @@ class DataRepository(val context: Context) {
             .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
 
-    /**
-     * 获取章节内容
-     */
-    fun getChapterContent(
-        bookid: String,
-        chapterid: String
-    ): Flowable<ContentResult> {
-        return getKSNetApi().getChapterContent(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
-    }
-
-    /**
-     * 下载章节内容
-     */
-    fun downloadNovel(bookid: String, chapterid: String): Call<ContentResult> {
-        return getKSNetApi().downloadNovel(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
-    }
 
 
     /**
@@ -890,5 +874,12 @@ class DataRepository(val context: Context) {
      */
     fun getMoreRankingList(gender:String, type:Int, pageNum:Int):Flowable<MoreRankingResult>{
         return getKSNetApi().getMoreRankingList(gender, type, pageNum.toString())
+    }
+
+    /**
+     * 看书神器 排行榜
+     */
+    fun getKanShuRankingList(gender:String, type:String, date:String, pageNum:Int): Flowable<KanShuRankingResult> {
+        return getKSNetApi().getKanShuRankingList(gender, type, date, pageNum)
     }
 }

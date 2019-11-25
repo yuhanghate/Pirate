@@ -70,7 +70,10 @@ class LadyViewModel:BaseViewModel() {
      * 分解类型
      */
     fun buildBook(list: List<StoreManResult.DataBean>) {
-
+        hotList.clear()
+        newList.clear()
+        recommendList.clear()
+        goodList.clear()
         list.forEach {
             when (it.category) {
                 "热门连载" -> hotList.addAll(it.books)
@@ -85,9 +88,10 @@ class LadyViewModel:BaseViewModel() {
      * 男生榜单
      */
     fun buildRanking(obj: StoreRankingResult.DataBean) {
+        rankingList.clear()
         rankingList.add(StoreRankingModel(name = "女生热读榜", list = obj.hot, desc = "优质精品好书新鲜出炉!", background = R.color.md_pink_300))
         rankingList.add(StoreRankingModel(name = "完本榜", list = obj.over, desc = "不用等更了,喜欢的都有", background = R.color.md_purple_300))
-        rankingList.add(StoreRankingModel(name = "热销榜", list = obj.commend, desc = "火热好书", background = R.color.md_deep_orange_300))
+        rankingList.add(StoreRankingModel(name = "收藏榜", list = obj.commend, desc = "火热好书", background = R.color.md_deep_orange_300))
         rankingList.add(StoreRankingModel(name = "潜力榜", list = obj.newX, desc = "更多好书等你来~", background = R.color.md_light_blue_300))
         rankingList.add(StoreRankingModel(name = "好评榜", list = obj.vote, desc = "超多好评,万人追更!", background = R.color.md_blue_300))
         rankingList.add(StoreRankingModel(name = "人气榜", list = obj.collect, desc = "超强人气,等待阅读", background = R.color.md_green_300))
@@ -97,6 +101,7 @@ class LadyViewModel:BaseViewModel() {
      * 排行榜
      */
     fun getRankingModelList(): List<RankingModel> {
+        list.clear()
         list.add(RankingModel(name = "起点中文网", type = 2))
         list.add(RankingModel(name = "纵横中文网", type = 4))
         list.add(RankingModel(name = "云起书院", type = 7))

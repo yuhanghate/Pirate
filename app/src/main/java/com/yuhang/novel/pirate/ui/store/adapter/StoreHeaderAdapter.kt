@@ -4,10 +4,8 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
-import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseAdapterV2
 import com.yuhang.novel.pirate.base.BaseViewHolder
-import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.viewholder.ItemStoreHeaderVH
 
 /**
@@ -19,9 +17,7 @@ class StoreHeaderAdapter: BaseAdapterV2<String>() {
     }
 
     override fun onCreateLayoutHelper(): LayoutHelper {
-        val helper = LinearLayoutHelper()
-        helper.marginBottom = PirateApp.getInstance().niceDp2px(10f)
-        return helper
+        return LinearLayoutHelper()
     }
 
     override fun getItemViewType(position: Int): Int {

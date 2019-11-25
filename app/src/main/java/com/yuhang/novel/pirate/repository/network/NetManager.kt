@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.net.Proxy
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.*
@@ -100,6 +101,7 @@ class NetManager {
     private fun createOkhttp(): OkHttpClient {
         return OkHttpClient().newBuilder()
             .protocols(Collections.singletonList(Protocol.HTTP_1_1))
+            .proxy(Proxy.NO_PROXY)
             .dns(HttpDns())
             //增加Header头
             .addInterceptor(TokenInterceptor())
@@ -136,6 +138,7 @@ class NetManager {
 
             override fun getAcceptedIssuers(): Array<X509Certificate?> {
                 return arrayOfNulls(0)
+//                return X509Certificate[0]
             }
         }
 

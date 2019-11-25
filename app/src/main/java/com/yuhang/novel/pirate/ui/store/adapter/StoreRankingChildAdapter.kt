@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.store.adapter
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
 import com.yuhang.novel.pirate.viewholder.ItemStoreRankingChildVH

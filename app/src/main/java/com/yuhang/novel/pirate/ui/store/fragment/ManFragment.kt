@@ -12,6 +12,7 @@ import com.yuhang.novel.pirate.databinding.FragmentManBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickBookListener
 import com.yuhang.novel.pirate.listener.OnClickBooksListListener
+import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
@@ -20,15 +21,18 @@ import com.yuhang.novel.pirate.ui.common.model.LineModel
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.TitleNomoreModel
 import com.yuhang.novel.pirate.ui.store.activity.BooksListActivity
+import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.activity.MoreRankingListActivity
 import com.yuhang.novel.pirate.ui.store.adapter.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.ManViewModel
+
 
 /**
  * 书城 -> 男生
  */
 class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshListener,
-    OnClickBookListener, OnClickBooksListListener, OnClickMoreRankingListener {
+    OnClickBookListener, OnClickBooksListListener, OnClickMoreRankingListener,
+    OnClickItemStoreTitleMoreListener {
 
     var PAGE_NUM = 1
 
@@ -57,6 +61,17 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+
+        val viewPool = RecyclerView.RecycledViewPool()
+        mBinding.recyclerview.setRecycledViewPool(viewPool)
+        viewPool.setMaxRecycledViews(0, 1)
+        viewPool.setMaxRecycledViews(3, 4)
+        viewPool.setMaxRecycledViews(9, 2)
+        viewPool.setMaxRecycledViews(5, 3)
+        viewPool.setMaxRecycledViews(1, 15)
+        viewPool.setMaxRecycledViews(8, 1)
+        viewPool.setMaxRecycledViews(6, 1)
+
         val layoutManager = VirtualLayoutManager(mActivity!!)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)
@@ -90,11 +105,8 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
                 //分隔线
                 adapters.add(getLineAdapter(10))
 
-
                 adapters.add(getTitleAndMoreAdapter("热门连载"))
                 adapters.add(getColumn3Adapter(mViewModel.hotList))
-
-
 
                 //分隔线 粗
                 adapters.add(getBoldLineAdapter())
@@ -227,5 +239,12 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
      */
     override fun onClickMoreRankingListener(obj: RankingModel, position: Int) {
         MoreRankingListActivity.start(mActivity!!, MoreRankingListActivity.TYPE_MAN, obj.type, obj.name)
+    }
+
+    /**
+     * 点击更多
+     */
+    override fun onClickItemStoreTitleMoreListener(view: View, obj: String, position: Int) {
+        KanShuRankingActivity.start(mActivity!!, obj, KanShuRankingActivity.TYPE_MAN, mViewModel.rankingMap[obj]!!)
     }
 }

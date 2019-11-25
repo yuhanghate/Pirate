@@ -94,7 +94,6 @@ class BookDetailsActivity :
         return R.layout.activity_book_details
     }
 
-//    private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
     private fun getBookResult() =
         Gson().fromJson<BooksResult>(intent.getStringExtra(BOOK_RESULT), BooksResult::class.java)

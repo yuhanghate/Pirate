@@ -57,6 +57,16 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+        val viewPool = RecyclerView.RecycledViewPool()
+        mBinding.recyclerview.setRecycledViewPool(viewPool)
+        viewPool.setMaxRecycledViews(0, 1)
+        viewPool.setMaxRecycledViews(3, 4)
+        viewPool.setMaxRecycledViews(9, 2)
+        viewPool.setMaxRecycledViews(5, 3)
+        viewPool.setMaxRecycledViews(1, 15)
+        viewPool.setMaxRecycledViews(8, 1)
+        viewPool.setMaxRecycledViews(6, 1)
+
         val layoutManager = VirtualLayoutManager(mActivity!!)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)
