@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.base
 
+import android.os.SystemClock
 import android.view.SoundEffectConstants
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
@@ -12,8 +13,8 @@ import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
-import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
+
 
 abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, ViewDataBinding>>() {
 
@@ -58,6 +59,7 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
      */
     fun getList() = mList
 
+    private var mLastClickTime: Long = 0
 
     override fun getItemCount(): Int {
         return mList.size
@@ -165,6 +167,14 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
     override fun onBindViewHolder(holder: BaseViewHolder<T, ViewDataBinding>, position: Int) {
         //设置Item点击事件
         holder.itemView.setOnClickListener {
+
+            //防止双击
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 700){
+                return@setOnClickListener
+            }
+            mLastClickTime = SystemClock.elapsedRealtime()
+
+
             lastClickItemPosition = position
 
             (mListener as? OnClickItemListener)?.onClickItemListener(it, position)
