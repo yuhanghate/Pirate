@@ -40,7 +40,7 @@ interface KanShuNetApi {
      * dirId = (bookId - 后三位) + 1
      * bookId: 书本id
      */
-    @GET("https://appbdsc.cdn.bcebos.com/BookFiles/Html/{dirId}/{bookId}/info.html")
+    @GET("https://infos.jiaston.com/BookFiles/Html/{dirId}/{bookId}/info.html")
     fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -50,7 +50,7 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
-    @GET("https://appbdsc.cdn.bcebos.com/BookFiles/Html/{dirId}/{bookId}/index.html")
+    @GET("https://infos.jiaston.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
             "bookId"

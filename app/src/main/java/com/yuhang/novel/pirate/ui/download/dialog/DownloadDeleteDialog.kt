@@ -17,8 +17,7 @@ import java.util.*
 class DownloadDeleteDialog(
     val activity: BookDownloadActivity,
     val viewModel: BookDownloadViewModel,
-    val obj: BookDownloadEntity,
-    val info:WorkInfo
+    val obj: BookDownloadEntity
 ) {
 
     fun show() {
@@ -27,9 +26,9 @@ class DownloadDeleteDialog(
             message(text = "是否删除缓存数据?")
             positiveButton(text = "确定", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
-                    WorkManager.getInstance().cancelWorkById(UUID.fromString(info.id.toString()))
+                    WorkManager.getInstance().cancelWorkById(UUID.fromString(obj.uuid))
                     viewModel.deleteDownload(obj.bookId)
-                    EventBus.getDefault().post(WorkInfoEvent().apply { this.uuid = info.id.toString() })
+                    EventBus.getDefault().post(WorkInfoEvent().apply { this.uuid = obj.uuid })
                     viewModel.adapter.getList().remove(obj)
                     viewModel.adapter.notifyDataSetChanged()
                     p1.dismiss()

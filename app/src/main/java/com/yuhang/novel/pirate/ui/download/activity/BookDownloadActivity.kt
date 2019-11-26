@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.yuhang.novel.pirate.R
@@ -12,6 +14,7 @@ import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookDownloadBinding
 import com.yuhang.novel.pirate.eventbus.DownloadEvent
 import com.yuhang.novel.pirate.extension.niceBookResult
+import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnBookDownloadListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -66,9 +69,11 @@ class BookDownloadActivity :
 
         mViewModel.adapter
             .setListener(this)
+            .setlayoutManager(LinearLayoutManager(this))
             .setRecyclerView(mBinding.recyclerview)
             .initData(arrayListOf())
     }
+
     override fun initData() {
         super.initData()
         mViewModel.queryBookDownloadAll()
@@ -106,8 +111,7 @@ class BookDownloadActivity :
         DownloadDeleteDialog(
             this,
             mViewModel,
-            obj,
-            workMap[obj.uuid]!!
+            obj
         ).show()
     }
 
