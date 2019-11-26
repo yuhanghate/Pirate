@@ -9,6 +9,7 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreManRes
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreRankingResult
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
+import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import io.reactivex.Flowable
 import kotlin.properties.Delegates
 
@@ -21,6 +22,13 @@ class LadyViewModel:BaseViewModel() {
 
     val titleList = hashMapOf("热门连载" to "女生畅销书", "火热新书" to "热门新书",
         "重磅推荐" to "主编推荐", "完本精选" to "完本精品")
+
+    val rankingMap = hashMapOf<String, String>(
+        "女生畅销书" to KanShuRankingActivity.TYPE_HOT,
+        "热门新书" to KanShuRankingActivity.TYPE_NEW,
+        "主编推荐" to KanShuRankingActivity.TYPE_COMMEND,
+        "完本精品" to KanShuRankingActivity.TYPE_OVER
+    )
 
     /**
      * 热门连载

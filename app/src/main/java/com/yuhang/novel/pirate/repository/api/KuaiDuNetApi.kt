@@ -19,6 +19,7 @@ interface KuaiDuNetApi {
     /**
      * 书籍详情页
      */
+    @Headers("Cache-Control: public, max-age=3")
     @GET("http://api.wgfgr.cn/book/info")
     fun getBookDetails(@Query("bookId") bookId: String): Flowable<BookDetailsKdResult>
 
@@ -31,12 +32,14 @@ interface KuaiDuNetApi {
     /**
      * 作者所有作品
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/book/accurate-search")
     fun getAuthorBookAll(@QueryMap map: Map<String, String>): Flowable<AuthorBooksKdResult>
 
     /**
      * 章节目录
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/toc/mix")
     fun getChapterList(@Query("bookId") bookId: String): Flowable<ChapterListKdResult>
 
@@ -46,7 +49,8 @@ interface KuaiDuNetApi {
     @Headers(
         value = [
             "Content-Type: application/json;charset=gbk",
-            "Accept: */*"
+            "Accept: */*",
+            "Cache-Control: public, max-age=60"
         ]
     )
     @GET("http://chapter.baihangsou.cn/chapter/{link}")
@@ -61,6 +65,7 @@ interface KuaiDuNetApi {
     /**
      * 书本源列表
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/toc/list")
     fun getResouceList(@Query("bookId") bookId: String): Flowable<List<ResouceListKdResult>>
 
@@ -68,6 +73,7 @@ interface KuaiDuNetApi {
     /**
      * 第三方源目录列表
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/chapter/list")
     fun getResouceChapterList(@Query("tocId") tocId: String): Flowable<ChapterListKdResult>
 

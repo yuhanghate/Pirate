@@ -105,18 +105,18 @@
                             tools:listitem="@layout/item_main" />
 
                     <androidx.cardview.widget.CardView
-                            android:id="@+id/btn_empty"
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             app:cardCornerRadius="3dp"
                             app:cardUseCompatPadding="true">
 
                         <TextView
+                                android:id="@+id/btn_empty"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-
                                 android:background="@drawable/bg_material_item_pink"
                                 android:clickable="true"
                                 android:focusable="true"

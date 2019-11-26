@@ -54,6 +54,11 @@ class DataRepository(val context: Context) {
     fun getKuaiDuApi() = mNetManager.getKuaiDuApi()
 
     /**
+     * okhttp
+     */
+    fun getOkhttpClick() = mNetManager.getOkHttpClient()
+
+    /**
      * 看书神器站内搜索
      */
     fun searchBook(keyword: String): Flowable<BookSearchResult> {

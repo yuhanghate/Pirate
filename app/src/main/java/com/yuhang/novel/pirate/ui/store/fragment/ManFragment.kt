@@ -69,7 +69,7 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
         viewPool.setMaxRecycledViews(9, 2)
         viewPool.setMaxRecycledViews(5, 3)
         viewPool.setMaxRecycledViews(1, 15)
-        viewPool.setMaxRecycledViews(8, 1)
+        viewPool.setMaxRecycledViews(8, 5)
         viewPool.setMaxRecycledViews(6, 1)
 
         val layoutManager = VirtualLayoutManager(mActivity!!)

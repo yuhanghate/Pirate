@@ -73,11 +73,11 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 初始化数据库
      */
     private fun initSqlScoutServer() {
-        try {
-            SqlScoutServer.create(this, packageName)
-        } catch (e: IOException) {
-
-        }
+//        try {
+//            SqlScoutServer.create(this, packageName)
+//        } catch (e: IOException) {
+//
+//        }
 
     }
 

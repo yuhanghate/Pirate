@@ -12,6 +12,7 @@ import com.yuhang.novel.pirate.databinding.FragmentLadyBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickBookListener
 import com.yuhang.novel.pirate.listener.OnClickBooksListListener
+import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
@@ -20,6 +21,7 @@ import com.yuhang.novel.pirate.ui.common.model.LineModel
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.TitleNomoreModel
 import com.yuhang.novel.pirate.ui.store.activity.BooksListActivity
+import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.activity.MoreRankingListActivity
 import com.yuhang.novel.pirate.ui.store.adapter.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.LadyViewModel
@@ -27,13 +29,14 @@ import com.yuhang.novel.pirate.ui.store.viewmodel.LadyViewModel
 /**
  * 书城 - 女生
  */
-class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefreshListener,
-    OnClickBookListener, OnClickBooksListListener, OnClickMoreRankingListener {
+class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefreshListener,
+    OnClickBookListener, OnClickBooksListListener, OnClickMoreRankingListener,
+    OnClickItemStoreTitleMoreListener {
 
     var PAGE_NUM = 1
 
-    companion object{
-        fun newInstance() :LadyFragment{
+    companion object {
+        fun newInstance(): LadyFragment {
             return LadyFragment()
         }
     }
@@ -64,7 +67,7 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
         viewPool.setMaxRecycledViews(9, 2)
         viewPool.setMaxRecycledViews(5, 3)
         viewPool.setMaxRecycledViews(1, 15)
-        viewPool.setMaxRecycledViews(8, 1)
+        viewPool.setMaxRecycledViews(8, 5)
         viewPool.setMaxRecycledViews(6, 1)
 
         val layoutManager = VirtualLayoutManager(mActivity!!)
@@ -102,7 +105,6 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
 
                 adapters.add(getTitleAndMoreAdapter("热门连载"))
                 adapters.add(getColumn3Adapter(mViewModel.hotList))
-
 
 
                 //分隔线 粗
@@ -181,7 +183,7 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
     /**
      * 榜单
      */
-    private fun getRankingAdapter():DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
+    private fun getRankingAdapter(): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
         val adapter = StoreRankingAdapter()
             .setListener(this)
             .initData(mViewModel.rankingList)
@@ -191,7 +193,7 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
     /**
      * 分隔线 粗
      */
-    private fun getBoldLineAdapter() :DelegateAdapter.Adapter<RecyclerView.ViewHolder>{
+    private fun getBoldLineAdapter(): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
         val adapter = StoreLineBoldAdapter()
             .initData(LineModel(bottom = 20))
         return adapter.toAdapter()
@@ -240,6 +242,23 @@ class LadyFragment:BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefresh
      * 点击正版排行榜
      */
     override fun onClickMoreRankingListener(obj: RankingModel, position: Int) {
-        MoreRankingListActivity.start(mActivity!!, MoreRankingListActivity.TYPE_LADY, obj.type, obj.name)
+        MoreRankingListActivity.start(
+            mActivity!!,
+            MoreRankingListActivity.TYPE_LADY,
+            obj.type,
+            obj.name
+        )
+    }
+
+    /**
+     * 点击更多
+     */
+    override fun onClickItemStoreTitleMoreListener(view: View, obj: String, position: Int) {
+        KanShuRankingActivity.start(
+            mActivity!!,
+            obj,
+            KanShuRankingActivity.TYPE_MAN,
+            mViewModel.rankingMap[obj]!!
+        )
     }
 }

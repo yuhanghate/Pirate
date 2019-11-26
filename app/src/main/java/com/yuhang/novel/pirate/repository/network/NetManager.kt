@@ -1,11 +1,14 @@
 package com.yuhang.novel.pirate.repository.network
 
 import com.google.gson.Gson
+import com.yuhang.novel.pirate.BuildConfig
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.repository.api.KanShuNetApi
 import com.yuhang.novel.pirate.repository.api.KuaiDuNetApi
 import com.yuhang.novel.pirate.repository.api.NetApi
 import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
 import com.yuhang.novel.pirate.utils.SSLSocketClient
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,6 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.File
 import java.net.Proxy
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -40,7 +44,7 @@ class NetManager {
 
     private val mZhuiShuApi: KanShuNetApi by lazy { createKanZhuNetApi() }
 
-    private val mKuaiDuNetApi : KuaiDuNetApi by lazy { createKuaiDuNetApi() }
+    private val mKuaiDuNetApi: KuaiDuNetApi by lazy { createKuaiDuNetApi() }
 
     private val mGson: Gson by lazy { Gson() }
 
@@ -99,9 +103,10 @@ class NetManager {
 //    }
 
     private fun createOkhttp(): OkHttpClient {
-        return OkHttpClient().newBuilder()
+        val builder = OkHttpClient().newBuilder()
             .protocols(Collections.singletonList(Protocol.HTTP_1_1))
-            .proxy(Proxy.NO_PROXY)
+            //缓存1g
+            .cache(Cache(File(PirateApp.getInstance().cacheDir, "priate"), 1024 * 1024 * 1204))
             .dns(HttpDns())
             //增加Header头
             .addInterceptor(TokenInterceptor())
@@ -110,13 +115,20 @@ class NetManager {
             .writeTimeout(15, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
-            .sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), SSLSocketClient.createTrustAllManager())
+            .sslSocketFactory(
+                SSLSocketClient.getSSLSocketFactory(),
+                SSLSocketClient.createTrustAllManager()
+            )
             //日志拦截器
             .addInterceptor(
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-//
-            .build()
+
+        if (BuildConfig.DEBUG) {
+            //不能代理
+            return builder.proxy(Proxy.NO_PROXY).build()
+        }
+        return builder.build()
     }
 
     private fun getHostnameVerifier(): HostnameVerifier {
