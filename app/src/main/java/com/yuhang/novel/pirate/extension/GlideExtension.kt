@@ -55,7 +55,6 @@ fun Any.niceGlideInto(view: ImageView):CustomTarget<Drawable> {
 
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
             resource.setColorFilter(ContextCompat.getColor(view.context, R.color.image_tint), PorterDuff.Mode.DST_IN)
-//                DrawableCompat.setTintMode(resource, PorterDuff.Mode.DARKEN)
             view.setImageDrawable(resource)
         }
 

@@ -156,4 +156,9 @@ interface KanShuNetApi {
     @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
     fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : Flowable<KanShuRankingResult>
 
+    /**
+     * 书单详情
+     */
+    @GET("https://appbdsc.cdn.bcebos.com/shudan/detail/{id}.html")
+    fun getBookListDetail(@Path("id") id:String):Flowable<ShuDanDetailResult>
 }

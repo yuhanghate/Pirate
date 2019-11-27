@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.store.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
@@ -10,6 +11,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBooksListBinding
+import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.store.adapter.BooksListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.BooksListViewModel
 
@@ -19,7 +21,7 @@ import com.yuhang.novel.pirate.ui.store.viewmodel.BooksListViewModel
  * 最新发布/本周最热/最多收藏/小编推荐
  */
 class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksListViewModel>(),
-    OnRefreshLoadMoreListener {
+    OnRefreshLoadMoreListener, OnClickItemListener {
 
     var PAGE_NUM = 1
 
@@ -72,6 +74,7 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+//        addOnScrollListener(mBinding.recyclerview)
         val layoutManager = VirtualLayoutManager(this)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)
@@ -104,12 +107,14 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
                     .setListener(this)
                     .initData(it.data)
 
+                mViewModel.list.addAll(it.data)
+
                 adapters.add(adapter.toAdapter())
 
                 mViewModel.adapter.addAdapters(adapters)
                 mBinding.recyclerview.requestLayout()
                 mBinding.refreshLayout.finishRefresh()
-            },{
+            }, {
                 mBinding.refreshLayout.finishRefresh()
             })
     }
@@ -134,8 +139,15 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
                 mViewModel.adapter.addAdapters(adapters)
                 mBinding.recyclerview.requestLayout()
                 mBinding.refreshLayout.finishLoadMore()
-            },{
+            }, {
                 mBinding.refreshLayout.finishLoadMore()
             })
+    }
+
+    /**
+     * 点击事件
+     */
+    override fun onClickItemListener(view: View, position: Int) {
+        BookListDetailActivity.start(this, mViewModel.list[position].ListId.toString())
     }
 }

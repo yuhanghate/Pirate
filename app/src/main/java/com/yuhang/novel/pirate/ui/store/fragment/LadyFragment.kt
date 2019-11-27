@@ -60,6 +60,8 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+//        addOnScrollListener(mBinding.recyclerview)
+
         val viewPool = RecyclerView.RecycledViewPool()
         mBinding.recyclerview.setRecycledViewPool(viewPool)
         viewPool.setMaxRecycledViews(0, 1)

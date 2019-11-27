@@ -8,9 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemVlayoutColumn3Binding
-import com.yuhang.novel.pirate.extension.niceCoverPic
-import com.yuhang.novel.pirate.extension.niceDp2px
-import com.yuhang.novel.pirate.extension.niceGlideInto
+import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.listener.OnClickBookListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 
@@ -34,7 +32,8 @@ class ItemVlayoutColumn3VH(parent: ViewGroup) :
                 .error(drawable)
         getGlide().load(niceCoverPic(obj.Img))
             .apply(placeholder)
-            .into(niceGlideInto(mBinding.coverIv))
+            .transition(niceCrossFade())
+            .into(mBinding.coverIv)
 
         mBinding.root.setOnClickListener { clickBook(it, position, obj) }
         mBinding.coverIv.setOnClickListener { clickBook(it, position, obj) }

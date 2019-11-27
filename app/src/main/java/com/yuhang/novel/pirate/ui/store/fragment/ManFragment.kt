@@ -61,6 +61,7 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+        addOnScrollListener(mBinding.recyclerview)
 
         val viewPool = RecyclerView.RecycledViewPool()
         mBinding.recyclerview.setRecycledViewPool(viewPool)

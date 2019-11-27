@@ -54,6 +54,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
 
     override fun initRecyclerView() {
         super.initRecyclerView()
+//        addOnScrollListener(mBinding.recyclerview)
         val layoutManager = VirtualLayoutManager(mActivity!!)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)

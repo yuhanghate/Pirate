@@ -2,22 +2,18 @@ package com.yuhang.novel.pirate.ui.store.adapter
 
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
 import com.yuhang.novel.pirate.base.BaseAdapterV2
 import com.yuhang.novel.pirate.base.BaseViewHolder
-import com.yuhang.novel.pirate.ui.common.model.LineModel
-import com.yuhang.novel.pirate.viewholder.ItemStoreLineVH
+import com.yuhang.novel.pirate.viewholder.ItemShuDanDetailDescVH
 
-/**
- * 书城分隔线
- */
-class StoreLineAdapter : BaseAdapterV2<LineModel>() {
+class ShuDanDetailDescAdapter : BaseAdapterV2<String>() {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<LineModel, ViewDataBinding> {
-        return ItemStoreLineVH(parent)
+    ): BaseViewHolder<String, ViewDataBinding> {
+        return ItemShuDanDetailDescVH(parent)
     }
 
     override fun getItemCount(): Int {
@@ -29,6 +25,6 @@ class StoreLineAdapter : BaseAdapterV2<LineModel>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return 3
+        return 0
     }
 }

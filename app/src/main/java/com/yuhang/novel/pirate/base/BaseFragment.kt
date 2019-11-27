@@ -14,6 +14,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.trello.rxlifecycle2.LifecycleProvider
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
@@ -277,6 +279,23 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
    * 初始化RecyclerView列表数据
    */
   open fun initRecyclerView() {
+
+  }
+
+  /**
+   * RecyclerView
+   */
+  fun addOnScrollListener(recyclerView: RecyclerView) {
+    recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+      override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        super.onScrollStateChanged(recyclerView, newState)
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+          Glide.with(this@BaseFragment).resumeRequests()
+        }else {
+          Glide.with(this@BaseFragment).pauseRequests()
+        }
+      }
+    })
 
   }
 

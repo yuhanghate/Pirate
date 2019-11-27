@@ -16,7 +16,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
+import com.bumptech.glide.Glide
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.idescout.sql.SqlScoutServer
@@ -332,7 +334,22 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         BGAKeyboardUtil.closeKeyboard(this)
         finish()
         this.overridePendingTransition(R.anim.bga_sbl_activity_backward_enter, R.anim.bga_sbl_activity_backward_exit)
-//        super.onBackPressedSupport()
+    }
+
+    /**
+     * RecyclerView
+     */
+    fun addOnScrollListener(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Glide.with(this@BaseActivity).resumeRequests()
+                }else {
+                    Glide.with(this@BaseActivity).pauseRequests()
+                }
+            }
+        })
 
     }
 

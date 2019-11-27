@@ -401,3 +401,20 @@ fun BookDownloadEntity.niceBookResult(): BooksResult {
         }
     }
 }
+
+/**
+ * 书单 -> 书本对象
+ */
+fun ShuDanDetailDataResult.niceBooksKSResult(): BooksKSResult {
+    val obj = this
+    return BooksKSResult().apply {
+        this.Author = obj.Author
+        this.BookStatus = ""
+        this.CName = obj.CategoryName
+        this.Desc = obj.Description
+        this.Id = obj.BookId.toString()
+        this.Img = obj.BookImage
+        this.Score = obj.Score
+        this.Name = obj.BookName
+    }
+}

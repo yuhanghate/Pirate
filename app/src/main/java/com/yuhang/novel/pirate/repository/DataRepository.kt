@@ -887,4 +887,12 @@ class DataRepository(val context: Context) {
     fun getKanShuRankingList(gender:String, type:String, date:String, pageNum:Int): Flowable<KanShuRankingResult> {
         return getKSNetApi().getKanShuRankingList(gender, type, date, pageNum)
     }
+
+
+    /**
+     * 书单详情页
+     */
+    fun getBookListDetail(id: String):Flowable<ShuDanDetailResult> {
+        return getKSNetApi().getBookListDetail(id)
+    }
 }
