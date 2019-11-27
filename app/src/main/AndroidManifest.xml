@@ -100,6 +100,7 @@
         <activity android:name=".ui.store.activity.MoreRankingListActivity" />
         <activity android:name=".ui.store.activity.KanShuRankingActivity" />
         <activity android:name=".ui.store.activity.BookListDetailActivity" />
+        <activity android:name=".ui.store.activity.BookCategoryActivity" />
     </application>
 
 </manifest>

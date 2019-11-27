@@ -89,6 +89,10 @@ class BookListDetailActivity :
     private fun onClick() {
         mBinding.includeToolbarClose.backCloseIv.setOnClickListener { onBackPressedSupport() }
         mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressedSupport() }
+        //置顶
+        mBinding.includeToolbarClose.root.setOnClickListener {
+            onTopRecyclerView(mBinding.recyclerview, 50)
+        }
     }
 
 

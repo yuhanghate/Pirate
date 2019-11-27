@@ -51,7 +51,7 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/primary_text"
                                 android:textSize="18sp"
-                                tools:text="完结榜" />
+                                tools:text="分类" />
                     </RelativeLayout>
 
                 </androidx.appcompat.widget.Toolbar>

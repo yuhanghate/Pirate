@@ -14,6 +14,7 @@ import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
+import com.yuhang.novel.pirate.ui.store.adapter.BooksListAdapter
 import com.yuhang.novel.pirate.ui.store.adapter.MoreRankingListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.MoreRankingViewModel
 
@@ -66,14 +67,22 @@ class MoreRankingListActivity :
 
     override fun initView() {
         super.initView()
-        mBinding.titleTv.text = getName()
+        mBinding.layoutToolbar.titleTv.text = getName()
         initRefreshLayout()
         initRecyclerView()
         onClick()
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
+        //置顶
+        mBinding.layoutToolbar.toolbar.setOnClickListener {
+            onTopRecyclerView(
+                mBinding.refreshLayout,
+                mBinding.recyclerview,
+                25
+            )
+        }
     }
 
     override fun initRefreshLayout() {
@@ -130,11 +139,11 @@ class MoreRankingListActivity :
                     mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                 }
 
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
 
-                mViewModel.adapter.addAdapter(adapter.toAdapter())
+                val adapter = mViewModel.adapter.findAdapterByIndex(0) as? MoreRankingListAdapter
+                adapter?.getList()?.addAll(it.data.bookList)
+                adapter?.notifyDataSetChanged()
+
                 mBinding.refreshLayout.finishLoadMore()
             },{
                 mBinding.refreshLayout.finishLoadMore()

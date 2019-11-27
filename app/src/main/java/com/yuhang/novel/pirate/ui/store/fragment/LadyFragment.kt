@@ -259,7 +259,7 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
         KanShuRankingActivity.start(
             mActivity!!,
             obj,
-            KanShuRankingActivity.TYPE_MAN,
+            KanShuRankingActivity.TYPE_LADY,
             mViewModel.rankingMap[obj]!!
         )
     }

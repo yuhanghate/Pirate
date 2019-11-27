@@ -23,10 +23,12 @@ import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.idescout.sql.SqlScoutServer
 import com.orhanobut.logger.Logger
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
+import com.yuhang.novel.pirate.widget.TopSmoothScroller
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
@@ -353,6 +355,33 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
 
     }
 
+    /**
+     * 双击置顶 + 刷新
+     */
+    fun onTopRecyclerView(refreshLayout: SmartRefreshLayout, recyclerView: RecyclerView, position: Int) {
+
+        val firstItem = recyclerView.getChildLayoutPosition(recyclerView.getChildAt(0))
+        //刷新
+        if (firstItem <= position) {
+            refreshLayout.autoRefresh()
+            return
+        }
+
+        //置顶
+        onTopRecyclerView(recyclerView, position)
+    }
+
+    /**
+     * 双击置顶
+     */
+    fun onTopRecyclerView(recyclerView: RecyclerView, position: Int) {
+
+        //置顶
+        val scroller = TopSmoothScroller(this)
+        scroller.smoothMoveToPosition(recyclerView, position)
+//        scroller.targetPosition = position
+//        recyclerView.layoutManager?.startSmoothScroll(scroller)
+    }
 
     /**************************** 子类调用 end **************************/
 

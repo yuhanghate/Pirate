@@ -16,10 +16,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.trello.rxlifecycle2.LifecycleProvider
 import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.R.anim
+import com.yuhang.novel.pirate.widget.TopSmoothScroller
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
 
@@ -297,6 +300,25 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
       }
     })
 
+  }
+
+  /**
+   * 双击置顶
+   */
+  fun onTopRecyclerView(refreshLayout: SmartRefreshLayout, recyclerView: RecyclerView, position: Int) {
+
+    val firstItem = recyclerView.getChildLayoutPosition(recyclerView.getChildAt(0))
+    //刷新
+    if (firstItem <= position) {
+      refreshLayout.autoRefresh()
+      return
+    }
+
+    //置顶
+    val scroller = TopSmoothScroller(mActivity!!)
+    scroller.smoothMoveToPosition(recyclerView, position)
+//    scroller.targetPosition = position
+//    recyclerView.layoutManager?.startSmoothScroll(scroller)
   }
 
   /**

@@ -23,13 +23,11 @@ import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
-import com.yuhang.novel.pirate.ui.launch.activity.LaunchActivity
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragmentV2
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
-import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
@@ -112,7 +110,11 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mBinding.bottomBar.setOnTabReselectListener {
             when (it) {
                 R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> showHideFragment(findFragment(StoreFragmentV2::class.java))
+                R.id.tab_store -> {
+                    val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
+                    showHideFragment(storeFragmentV2)
+                    storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
+                }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
@@ -122,7 +124,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
 
         Handler().postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
-
 
 
     }

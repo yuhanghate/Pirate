@@ -76,8 +76,7 @@ fun Any.niceCrossFade(): DrawableTransitionOptions {
  */
 fun Any.niceDefaultImageVertical():RequestOptions {
 
-    val drawable = PirateApp.getInstance().getDrawable(R.drawable.ic_default_img2)
     return RequestOptions()
-        .placeholder(drawable)
-        .error(drawable)
+        .placeholder(R.drawable.ic_default_img2)
+        .error(R.drawable.ic_default_img2)
 }

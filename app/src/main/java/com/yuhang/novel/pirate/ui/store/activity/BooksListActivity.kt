@@ -82,12 +82,20 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
+        //置顶
+        mBinding.layoutToolbar.toolbar.setOnClickListener {
+            onTopRecyclerView(
+                mBinding.refreshLayout,
+                mBinding.recyclerview,
+                25
+            )
+        }
         when (getType()) {
-            TYPE_NEW -> mBinding.titleTv.text = "最新发布"
-            TYPE_HOT -> mBinding.titleTv.text = "本周最热"
-            TYPE_COLLECT -> mBinding.titleTv.text = "最多收藏"
-            TYPE_RECOMMEND -> mBinding.titleTv.text = "小编推荐"
+            TYPE_NEW -> mBinding.layoutToolbar.titleTv.text = "最新发布"
+            TYPE_HOT -> mBinding.layoutToolbar.titleTv.text = "本周最热"
+            TYPE_COLLECT -> mBinding.layoutToolbar.titleTv.text = "最多收藏"
+            TYPE_RECOMMEND -> mBinding.layoutToolbar.titleTv.text = "小编推荐"
         }
     }
 
@@ -101,6 +109,7 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
             .subscribe({
 
                 mViewModel.adapter.clear()
+                mViewModel.list.clear()
                 val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
 
                 val adapter = BooksListAdapter()
@@ -128,16 +137,12 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
             .compose(bindToLifecycle())
             .subscribe({
 
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+                mViewModel.list.addAll(it.data)
 
-                val adapter = BooksListAdapter()
-                    .setListener(this)
-                    .initData(it.data)
+                val adapter = mViewModel.adapter.findAdapterByIndex(0) as? BooksListAdapter
+                adapter?.getList()?.addAll(it.data)
+                adapter?.notifyDataSetChanged()
 
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
                 mBinding.refreshLayout.finishLoadMore()
             }, {
                 mBinding.refreshLayout.finishLoadMore()

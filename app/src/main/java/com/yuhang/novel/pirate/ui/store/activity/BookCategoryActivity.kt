@@ -3,74 +3,37 @@ package com.yuhang.novel.pirate.ui.store.activity
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.base.ViewPagerAdapter
-import com.yuhang.novel.pirate.databinding.ActivityKanshuRankingBinding
-import com.yuhang.novel.pirate.ui.store.fragment.LadyFragment
-import com.yuhang.novel.pirate.ui.store.fragment.ManFragment
-import com.yuhang.novel.pirate.ui.store.viewmodel.KanShuRankingViewModel
+import com.yuhang.novel.pirate.databinding.ActivityBookCategoryBinding
+import com.yuhang.novel.pirate.ui.store.viewmodel.BookCategoryViewModel
 
 /**
- * 看书神器 排行榜
+ * 小说分类
+ * 男生/女生/出版
  */
-class KanShuRankingActivity :
-    BaseSwipeBackActivity<ActivityKanshuRankingBinding, KanShuRankingViewModel>(),
+class BookCategoryActivity : BaseSwipeBackActivity<ActivityBookCategoryBinding, BookCategoryViewModel>(),
     OnTabSelectListener, ViewPager.OnPageChangeListener {
 
-    companion object {
-
-        const val TYPE_MAN = "man"//男生
-        const val TYPE_LADY = "lady"//女生
-
-        const val TYPE_WEEK = "week"//周榜
-        const val TYPE_MONTH = "month"//月榜
-        const val TYPE_TOTAL = "total"//总榜
-
-        const val TYPE_HOT = "hot"//热门榜
-        const val TYPE_OVER = "over"//完结榜
-        const val TYPE_COMMEND = "commend"//推荐榜
-        const val TYPE_COLLECT = "collect"//收藏榜
-        const val TYPE_NEW = "new"//新书榜
-        const val TYPE_VOTE = "vote"//评分榜
-
-        const val GENDER = "gender"//性别
-        const val TYPE = "type"//类型
-        const val DATE = "date"//时间
-        const val NAME = "name"//标题名称
-        fun start(context: Activity, name: String, gender: String, type: String) {
-            val intent = Intent(context, KanShuRankingActivity::class.java)
-            intent.putExtra(GENDER, gender)
-            intent.putExtra(TYPE, type)
-            intent.putExtra(NAME, name)
+    companion object{
+        fun start(context: Activity) {
+            val intent = Intent(context, BookCategoryActivity::class.java)
             startIntent(context, intent)
         }
     }
-
-    /**
-     * 性别
-     */
-    private fun getGender() = intent.getStringExtra(GENDER)
-
-    //类型
-    private fun getType() = intent.getStringExtra(TYPE)
-
-    private fun getName() = intent.getStringExtra(NAME)
-
     override fun onLayoutId(): Int {
-        return R.layout.activity_kanshu_ranking
+        return R.layout.activity_book_category
     }
 
     override fun initView() {
         super.initView()
-
-
         onClick()
         initTabLayoutView()
-        mBinding.titleTv.text = getName()
     }
 
     private fun onClick() {
@@ -82,7 +45,7 @@ class KanShuRankingActivity :
      */
     private fun initTabLayoutView() {
         val pagerAdapter =
-            ViewPagerAdapter(supportFragmentManager, mViewModel.mTitles, mViewModel.getFragments(getGender(), getType()))
+            ViewPagerAdapter(supportFragmentManager, mViewModel.mTitles, mViewModel.getFragments())
         mBinding.tablayout.setOnTabSelectListener(this)
         mBinding.viewPager.addOnPageChangeListener(this)
         mBinding.viewPager.adapter = pagerAdapter
@@ -91,23 +54,7 @@ class KanShuRankingActivity :
         mBinding.tablayout.currentTab = 0
     }
 
-
-    /**
-     * 刷新 + 置顶
-     */
     override fun onTabReselect(position: Int) {
-        when (val fragment = mViewModel.getFragments(getGender(), getType())[position]) {
-            is ManFragment -> onTopRecyclerView(
-                fragment.mBinding.refreshLayout,
-                fragment.mBinding.recyclerview,
-                25
-            )
-            is LadyFragment -> onTopRecyclerView(
-                fragment.mBinding.refreshLayout,
-                fragment.mBinding.recyclerview,
-                25
-            )
-        }
     }
 
     override fun onPageScrollStateChanged(state: Int) {

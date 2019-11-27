@@ -15,26 +15,26 @@ class KanShuRankingViewModel : BaseViewModel() {
     var lastTabEntity = 0
 
     val mTitles: ArrayList<String> = arrayListOf<String>("周榜", "月榜", "总榜")
-//    val mFragments: ArrayList<BaseFragment<*, *>> = arrayListOf(
-//        WeekRankingFragment.newInstance(),
-//        MonthRankingFragment.newInstance(),
-//        TotalRankingFragment.newInstance()
-//    )
 
+    var fragments: ArrayList<BaseFragment<*, *>>? = null
 
-    fun getFragments(gender: String, type: String):ArrayList<BaseFragment<*, *>> {
-        return arrayListOf(
-            WeekRankingFragment.newInstance().apply {
-                this.gender = gender
-                this.type = type
-            }, MonthRankingFragment.newInstance().apply {
-                this.gender = gender
-                this.type = type
-            },
-            TotalRankingFragment.newInstance().apply {
-                this.gender = gender
-                this.type = type
-            }
-        )
+    fun getFragments(gender: String, type: String): ArrayList<BaseFragment<*, *>> {
+        if (fragments == null) {
+            fragments = arrayListOf(
+                WeekRankingFragment.newInstance().apply {
+                    this.gender = gender
+                    this.type = type
+                }, MonthRankingFragment.newInstance().apply {
+                    this.gender = gender
+                    this.type = type
+                },
+                TotalRankingFragment.newInstance().apply {
+                    this.gender = gender
+                    this.type = type
+                }
+            )
+
+        }
+        return fragments!!
     }
 }
