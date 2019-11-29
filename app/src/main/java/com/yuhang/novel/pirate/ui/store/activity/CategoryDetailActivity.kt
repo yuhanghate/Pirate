@@ -3,36 +3,45 @@ package com.yuhang.novel.pirate.ui.store.activity
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.yuhang.novel.pirate.R
-import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
+import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.ViewPagerAdapter
-import com.yuhang.novel.pirate.databinding.ActivityBookCategoryBinding
-import com.yuhang.novel.pirate.ui.store.fragment.*
-import com.yuhang.novel.pirate.ui.store.viewmodel.BookCategoryViewModel
+import com.yuhang.novel.pirate.databinding.ActivityCategoryDetailBinding
+import com.yuhang.novel.pirate.ui.store.fragment.CategoryDetailFragment
+import com.yuhang.novel.pirate.ui.store.viewmodel.CategoryDetailViewModel
 
 /**
- * 小说分类
- * 男生/女生/出版
+ * 分类详情页
  */
-class BookCategoryActivity : BaseSwipeBackActivity<ActivityBookCategoryBinding, BookCategoryViewModel>(),
+class CategoryDetailActivity :
+    BaseActivity<ActivityCategoryDetailBinding, CategoryDetailViewModel>(),
     OnTabSelectListener, ViewPager.OnPageChangeListener {
 
-    companion object{
-        fun start(context: Activity) {
-            val intent = Intent(context, BookCategoryActivity::class.java)
+
+    companion object {
+        const val GENDER = "gender"
+        const val MAJOR = "major"
+        fun start(context: Activity, gender: String, major: String) {
+            val intent = Intent(context, CategoryDetailActivity::class.java)
+            intent.putExtra(GENDER, gender)
+            intent.putExtra(MAJOR, major)
             startIntent(context, intent)
         }
     }
+
+    private fun getGender() = intent.getStringExtra(GENDER)
+    private fun getMajor() = intent.getStringExtra(MAJOR)
+
     override fun onLayoutId(): Int {
-        return R.layout.activity_book_category
+        return R.layout.activity_category_detail
     }
 
     override fun initView() {
         super.initView()
+        mBinding.titleTv.text = getMajor()
         onClick()
         initTabLayoutView()
     }
@@ -46,7 +55,11 @@ class BookCategoryActivity : BaseSwipeBackActivity<ActivityBookCategoryBinding, 
      */
     private fun initTabLayoutView() {
         val pagerAdapter =
-            ViewPagerAdapter(supportFragmentManager, mViewModel.mTitles, mViewModel.getFragments())
+            ViewPagerAdapter(
+                supportFragmentManager,
+                mViewModel.mTitles,
+                mViewModel.getFragments(getGender(), getMajor())
+            )
         mBinding.tablayout.setOnTabSelectListener(this)
         mBinding.viewPager.addOnPageChangeListener(this)
         mBinding.viewPager.adapter = pagerAdapter
@@ -56,7 +69,14 @@ class BookCategoryActivity : BaseSwipeBackActivity<ActivityBookCategoryBinding, 
     }
 
     override fun onTabReselect(position: Int) {
-
+        val fragment = mViewModel.getFragments(getGender(), getGender())[position]
+        when (fragment) {
+            is CategoryDetailFragment -> onTopRecyclerView(
+                fragment.mBinding.refreshLayout,
+                fragment.mBinding.recyclerview,
+                25
+            )
+        }
     }
 
     override fun onPageScrollStateChanged(state: Int) {
@@ -107,4 +127,6 @@ class BookCategoryActivity : BaseSwipeBackActivity<ActivityBookCategoryBinding, 
             mBinding.viewPager.currentItem = position
         }
     }
+
+
 }

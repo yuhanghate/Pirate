@@ -3,6 +3,7 @@
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -14,6 +15,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview"
+                    android:paddingTop="20dp"
+                    tools:listitem="@layout/item_category"
+                    android:clipToPadding="false"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>

@@ -52,7 +52,7 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/primary_text"
                                 android:textSize="18sp"
-                                android:text="分类"
+                                android:text="玄幻"
                                 tools:text="分类" />
                     </RelativeLayout>
 

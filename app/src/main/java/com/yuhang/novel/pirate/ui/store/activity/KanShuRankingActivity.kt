@@ -10,8 +10,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.base.ViewPagerAdapter
 import com.yuhang.novel.pirate.databinding.ActivityKanshuRankingBinding
-import com.yuhang.novel.pirate.ui.store.fragment.LadyFragment
-import com.yuhang.novel.pirate.ui.store.fragment.ManFragment
+import com.yuhang.novel.pirate.ui.store.fragment.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.KanShuRankingViewModel
 
 /**
@@ -97,12 +96,17 @@ class KanShuRankingActivity :
      */
     override fun onTabReselect(position: Int) {
         when (val fragment = mViewModel.getFragments(getGender(), getType())[position]) {
-            is ManFragment -> onTopRecyclerView(
+            is WeekRankingFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,
                 25
             )
-            is LadyFragment -> onTopRecyclerView(
+            is MonthRankingFragment -> onTopRecyclerView(
+                fragment.mBinding.refreshLayout,
+                fragment.mBinding.recyclerview,
+                25
+            )
+            is TotalRankingFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,
                 25

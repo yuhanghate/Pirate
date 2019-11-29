@@ -75,7 +75,7 @@
                                 android:paddingStart="20dp"
                                 android:paddingEnd="20dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/classify_tv"
+                                app:layout_constraintEnd_toStartOf="@+id/category_tv"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent">
 

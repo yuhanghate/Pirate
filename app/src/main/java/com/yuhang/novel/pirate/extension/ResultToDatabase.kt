@@ -1,11 +1,13 @@
 package com.yuhang.novel.pirate.extension
 
 import android.text.TextUtils
+import com.google.gson.Gson
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListDataResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.CollectionDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
@@ -416,5 +418,16 @@ fun ShuDanDetailDataResult.niceBooksKSResult(): BooksKSResult {
         this.Img = obj.BookImage
         this.Score = obj.Score
         this.Name = obj.BookName
+    }
+}
+
+fun BookCategoryDataResult.niceCategoryKDEntity(): CategoryKDEntity {
+    val obj = this
+    return CategoryKDEntity().apply {
+        this.bookCover = Gson().toJson(obj.bookCover)
+        this.count = obj.count
+        this.gender = obj.gender
+        this.majorCate = obj.majorCate
+        this.order = obj.order
     }
 }

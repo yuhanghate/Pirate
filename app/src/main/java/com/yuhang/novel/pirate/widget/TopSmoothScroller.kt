@@ -27,10 +27,15 @@ class TopSmoothScroller(context: Context) : LinearSmoothScroller(context) {
         val lastItem: Int =
             recyclerView.getChildLayoutPosition(recyclerView.getChildAt(recyclerView.childCount - 1))
 
-        if (lastItem > position) {
+        if (position == -1) {
+            //从头加载到尾
+            recyclerView.smoothScrollToPosition(0)
+        }else if (lastItem > position) {
+            //太长了,先移动到指定位置再置顶
             recyclerView.scrollToPosition(position)
             recyclerView.smoothScrollToPosition(0)
         } else {
+            //置顶
             recyclerView.smoothScrollToPosition(0)
         }
 //        if (position < firstItem) { // 指定item在第一个可见item之前

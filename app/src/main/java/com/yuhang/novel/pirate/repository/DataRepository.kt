@@ -11,6 +11,8 @@ import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.CategoryDetailResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
@@ -894,5 +896,54 @@ class DataRepository(val context: Context) {
      */
     fun getBookListDetail(id: String):Flowable<ShuDanDetailResult> {
         return getKSNetApi().getBookListDetail(id)
+    }
+
+    /**
+     * 分类
+     */
+    fun getCategoryList(): Flowable<List<BookCategoryDataResult>> {
+        return getKuaiDuApi().getCategoryList()
+    }
+
+    /**
+     * 快读 男生分类
+     */
+    fun queryCategoryMan(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryMan()
+    }
+
+    /**
+     * 快读 女生分类
+     */
+    fun queryCategoryLady(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryLady()
+    }
+
+    /**
+     * 快读 出版分类
+     */
+    fun queryCategoryPress(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryPress()
+    }
+
+    /**
+     * 快读 插入分类
+     */
+    fun insertCategoryList(obj : List<CategoryKDEntity>) {
+        if (obj.isEmpty()) return
+        getDatabase().categoryKDDao.clear()
+        getDatabase().categoryKDDao.insert(obj = obj )
+    }
+
+    /**
+     * 分类详情
+     */
+    fun getCategoryDetailList(
+        gender: String,
+        type: Int,
+        major: String,
+        pageNum:Int
+    ) :Flowable<CategoryDetailResult> {
+        return getKuaiDuApi().getCategoryDetailList(gender, type, major, pageNum, 50)
     }
 }

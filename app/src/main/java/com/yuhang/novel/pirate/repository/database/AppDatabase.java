@@ -1,12 +1,38 @@
 package com.yuhang.novel.pirate.repository.database;
 
 import android.content.Context;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import com.yuhang.novel.pirate.repository.database.dao.*;
-import com.yuhang.novel.pirate.repository.database.entity.*;
+
+import com.yuhang.novel.pirate.repository.database.dao.BookChapterKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookCollectionKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookContentKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookDownloadDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookInfoKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookReadHistoryDao;
+import com.yuhang.novel.pirate.repository.database.dao.BookResouceTypeKDDao;
+import com.yuhang.novel.pirate.repository.database.dao.CategoryKDDao;
+import com.yuhang.novel.pirate.repository.database.dao.PushMessageDao;
+import com.yuhang.novel.pirate.repository.database.dao.RankingListDao;
+import com.yuhang.novel.pirate.repository.database.dao.SearchHistoryKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.UserDao;
+import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity;
+import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity;
+import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity;
+import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity;
+import com.yuhang.novel.pirate.repository.database.entity.RankingListEntity;
+import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.UserEntity;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_13_16;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_14_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
@@ -23,8 +49,9 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
 @Database(entities = {BookInfoKSEntity.class, BookCollectionKSEntity.class,
         SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
         UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class,
-        PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class},
-        version = 13, exportSchema = false)
+        PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class,
+        CategoryKDEntity.class},
+        version = 16, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -40,9 +67,13 @@ public abstract class AppDatabase
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
                             .allowMainThreadQueries()
-//                            .addMigrations(Migration_3_4.instance(), Migration_4_5.instance(), Migration_5_6.instance(),
-//                                    Migration_6_7.instance())
-                            .fallbackToDestructiveMigration()
+                            .addMigrations(Migration_3_4.instance(),
+                                    Migration_4_5.instance(),
+                                    Migration_5_6.instance(),
+                                    Migration_6_7.instance(),
+                                    Migration_13_16.instance(),
+                                    Migration_14_16.instance())
+//                            .fallbackToDestructiveMigration()
                             .build();
         }
         return INSTANCE;
@@ -97,6 +128,7 @@ public abstract class AppDatabase
 
     /**
      * 最近阅读章节记录
+     *
      * @return
      */
     public abstract BookReadHistoryDao getBookReadHistoryDao();
@@ -104,20 +136,30 @@ public abstract class AppDatabase
 
     /**
      * 推送类型
+     *
      * @return
      */
     public abstract PushMessageDao getPushMessageDao();
 
     /**
      * 快读源类型
+     *
      * @return
      */
     public abstract BookResouceTypeKDDao getBookResouceTypeKDDao();
 
     /**
      * 下载表
+     *
      * @return
      */
     public abstract BookDownloadDao getBookDownloadDao();
+
+    /**
+     * 快读分类
+     *
+     * @return
+     */
+    public abstract CategoryKDDao getCategoryKDDao();
 
 }

@@ -55,7 +55,6 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
-    @Headers("Cache-Control: public, max-age=60")
     @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
@@ -66,7 +65,6 @@ interface KanShuNetApi {
     /**
      * 获取章节内容
      */
-    @Headers("Cache-Control: public, max-age=60")
     @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
@@ -95,7 +93,6 @@ interface KanShuNetApi {
      * date -> week:周榜 month:月榜  total:总榜
      * pageNum : 分页
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://quapp.1122dh.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
     fun getRankingList(
         @Path("gender") gender: String, @Path("type") type: String, @Path("date") date: String, @Path(
@@ -106,28 +103,24 @@ interface KanShuNetApi {
     /**
      * 书城 -> 男生
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/v6/base/man.html")
     fun getStoreMan(): Flowable<StoreManResult>
 
     /**
      * 书城 -> 女生
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/v6/base/lady.html")
     fun getStoreLady(): Flowable<StoreManResult>
 
     /**
      * 书城 -> 榜单 -> 男生
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/top/man/index.html")
     fun getStoreRankingMan(): Flowable<StoreRankingResult>
 
     /**
      * 书城 -> 榜单 -> 女生
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/top/lady/index.html")
     fun getStoreRankingLady(): Flowable<StoreRankingResult>
 
@@ -136,7 +129,6 @@ interface KanShuNetApi {
      *
      * 最新发布/本周最热/最多收藏/小编推荐
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/shudan/{gender}/all/{type}/{pageNum}.html")
     fun getBooksList(@Path("gender") gender: String, @Path("type") type: String, @Path("pageNum") pageNum: String): Flowable<BooksListResult>
 
@@ -145,14 +137,12 @@ interface KanShuNetApi {
      *
      * 起点/纵横/去起/若初/红薯/潇湘/逐浪
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/more/{type}/{pageNum}.html")
     fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):Flowable<MoreRankingResult>
 
     /**
      * 看书神器 排行榜
      */
-    @Headers("Cache-Control: public, max-age=3600")
     @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
     fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : Flowable<KanShuRankingResult>
 

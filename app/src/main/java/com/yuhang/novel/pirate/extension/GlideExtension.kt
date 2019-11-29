@@ -75,8 +75,16 @@ fun Any.niceCrossFade(): DrawableTransitionOptions {
  * Glide占位图 竖
  */
 fun Any.niceDefaultImageVertical():RequestOptions {
-
     return RequestOptions()
         .placeholder(R.drawable.ic_default_img2)
         .error(R.drawable.ic_default_img2)
+}
+
+/**
+ * Glide占位图 竖
+ */
+fun Any.niceDefaultAvatar():RequestOptions {
+    return RequestOptions()
+        .placeholder(R.color.divider)
+        .error(R.color.divider)
 }

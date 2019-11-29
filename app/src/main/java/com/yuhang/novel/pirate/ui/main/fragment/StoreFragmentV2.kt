@@ -66,12 +66,12 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
             is ManFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,
-                0
+                -1
             )
             is LadyFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,
-                0
+                -1
             )
         }
     }

@@ -74,7 +74,6 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
 
     override fun initRecyclerView() {
         super.initRecyclerView()
-//        addOnScrollListener(mBinding.recyclerview)
         val layoutManager = VirtualLayoutManager(this)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)

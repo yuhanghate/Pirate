@@ -9,7 +9,6 @@ import retrofit2.http.*
 interface KuaiDuNetApi {
 
 
-
     /**
      * 搜索
      */
@@ -81,18 +80,35 @@ interface KuaiDuNetApi {
      * 小说更新
      */
     @GET("http://api.gdugm.cn/book/update")
-    fun getBookUpdate(@Query("id") id:String):Flowable<List<BookUpdateKdResult>>
+    fun getBookUpdate(@Query("id") id: String): Flowable<List<BookUpdateKdResult>>
 
     /**
      * 搜索模糊匹配
      */
     @GET("http://api.wgfgr.cn/search/suggest")
-    fun searchSuggest(@Query("key") key: String):Flowable<SearchSuggestKdResult>
+    fun searchSuggest(@Query("key") key: String): Flowable<SearchSuggestKdResult>
 
     /**
      * 精确求书
      */
     @POST("http://api.wgfgr.cn/bookfeedback")
-    fun getBookFeedback(@Body body: RequestBody):Flowable<String>
+    fun getBookFeedback(@Body body: RequestBody): Flowable<String>
 
+    /**
+     * 分类
+     * 男生/女生/出版
+     */
+    @GET("http://api.gdugm.cn/category/all")
+    fun getCategoryList(): Flowable<List<BookCategoryDataResult>>
+
+    /**
+     * gender  press=出版  female=女生  male=男生
+     * type 热门=1 好评=2 连载=3 完结=4
+     */
+    @GET("http://api.gdugm.cn/book/list")
+    fun getCategoryDetailList(
+        @Query("gender") gender: String, @Query("type") type: Int,
+        @Query("major") major: String,
+        @Query("start") start: Int, @Query("limit") limit: Int
+    ):Flowable<CategoryDetailResult>
 }

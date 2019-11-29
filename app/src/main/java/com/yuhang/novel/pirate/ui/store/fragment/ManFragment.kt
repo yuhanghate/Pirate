@@ -6,6 +6,7 @@ import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
+import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.FragmentManBinding
@@ -87,7 +88,7 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
                 mViewModel.buildRanking(it.data)
                 mViewModel.getStoreMan()
             }
-            .compose(bindToLifecycle())
+            .compose(bindUntilEvent(FragmentEvent.DESTROY))
             .subscribe({
 
                 mViewModel.adapter.clear()
