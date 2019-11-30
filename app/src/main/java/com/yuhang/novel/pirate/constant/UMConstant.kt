@@ -44,7 +44,7 @@ object UMConstant {
     }
 
     /**
-     * 登陆事件
+     * 登录事件
      */
     const val TYPE_LOGIN = "um_login"
 
@@ -184,7 +184,7 @@ object UMConstant {
     const val TYPE_SETTINGS_CLEAN_CACHE = "um_settings_clean_cache"
 
     /**
-     * 设置 -> 退出登陆
+     * 设置 -> 退出登录
      */
     const val TYPE_SETTINGS_CLICK_LOGOUT = "um_settings_click_logout"
 

@@ -537,7 +537,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
-                        android:text="退出登陆"
+                        android:text="退出登录"
                         android:textColor="#ffffffff"
                         android:textSize="18sp" />
 

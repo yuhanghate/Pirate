@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 class LoginViewModel : BaseViewModel() {
 
     /**
-     * 登陆
+     * 登录
      */
     fun login(username: String, password: String): Flowable<UserResult> {
         return mDataRepository.login(username, password)

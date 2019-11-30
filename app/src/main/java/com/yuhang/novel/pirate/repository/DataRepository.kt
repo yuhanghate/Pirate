@@ -355,7 +355,7 @@ class DataRepository(val context: Context) {
 
 
     /**
-     * 登陆
+     * 登录
      */
     fun login(username: String, password: String): Flowable<UserResult> {
         val map = hashMapOf<String, String>("username" to username, "password" to password)
@@ -418,7 +418,7 @@ class DataRepository(val context: Context) {
     }
 
     /**
-     * 查找最后一次登陆帐号
+     * 查找最后一次登录帐号
      */
     fun getLastUser(): UserEntity? {
         return getDatabase().userDao.queryUser()

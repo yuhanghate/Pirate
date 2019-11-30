@@ -10,7 +10,7 @@ import retrofit2.http.*
 interface NetApi {
 
     /**
-     * 登陆
+     * 登录
      */
     @POST("/api/m/user/login")
     fun login(@Body body: RequestBody): Flowable<UserResult>

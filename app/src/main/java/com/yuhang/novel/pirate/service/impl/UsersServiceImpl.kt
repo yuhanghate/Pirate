@@ -94,7 +94,7 @@ class UsersServiceImpl : UsersService {
                 val userDataResult = userResult.data
                 val user = mDataRepository.queryUser(userDataResult.username)
 
-                //登陆帐号清除之前所有记录
+                //登录帐号清除之前所有记录
                 mDataRepository.clearUsers()
                 if (user == null) {
                     //插入帐号
