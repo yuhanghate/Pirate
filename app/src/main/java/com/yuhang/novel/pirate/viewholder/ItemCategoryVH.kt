@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemCategoryBinding
+import com.yuhang.novel.pirate.listener.OnClickCategoryListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
 
@@ -29,20 +30,8 @@ class ItemCategoryVH(parent: ViewGroup) :
         mBinding.nameTv.text = obj.majorCate
         mBinding.countTv.text = getBookCount(obj)
 
-        mBinding.itemLl.setOnClickListener { getListener<OnClickItemListener>()?.onClickItemListener(it, position) }
+        mBinding.itemLl.setOnClickListener { getListener<OnClickCategoryListener>()?.onClickCategoryListener(obj, position) }
 
-        //获取outline
-//        val vop: ViewOutlineProvider = object : ViewOutlineProvider() {
-//            override fun getOutline(view: View, outline: Outline) { //修改outline
-//                outline.setOval(0, 0, view.width, view.height)
-//            }
-//        }
-        //重新设置
-//        mBinding.avatarIv.outlineProvider = vop
-//        getGlide().load(obj.toCover()[0].niceCoverPic())
-//            .transition(niceCrossFade())
-//            .apply(niceDefaultAvatar())
-//            .into(mBinding.avatarIv)
 
     }
 

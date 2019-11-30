@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.gyf.immersionbar.ImmersionBar
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
@@ -75,6 +76,15 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         this.intent = intent
     }
 
+    override fun initStatusTool() {
+        ImmersionBar.with(this)
+            .statusBarView(mBinding.statusBarV)
+            .navigationBarColor(R.color.md_white_1000)
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
+            .init()
+    }
 
     override fun onDestroy() {
         onDestryEventbus(this)
@@ -98,12 +108,31 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mBinding.bottomBar.setOnTabSelectListener {
 
             when (it) {
-                R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
+                R.id.tab_main -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
+                    showHideFragment(findFragment(MainFragment::class.java))
+                }
                 R.id.tab_store -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
                     startLoginActivity()
                     showHideFragment(findFragment(StoreFragmentV2::class.java))
                 }
-                R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
+                R.id.tab_me -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.md_grey_900)
+                        .flymeOSStatusBarFontColor(R.color.md_white_1000)
+                        .init()
+                    showHideFragment(findFragment(MeFragment::class.java))
+                }
             }
         }
 //

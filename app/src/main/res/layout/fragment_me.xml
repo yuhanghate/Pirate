@@ -13,7 +13,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/actionbar_color"
+                android:background="@color/md_grey_900"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -86,27 +86,27 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/head_cl"
                             android:layout_width="match_parent"
-                            android:layout_height="220dp"
-                            android:background="@color/item_color">
+                            android:layout_height="170dp"
+                            android:background="@color/md_grey_900">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/avatar_civ"
-                                android:layout_width="120dp"
-                                android:layout_height="120dp"
+                                android:layout_width="78dp"
+                                android:layout_height="78dp"
+                                android:layout_marginStart="30dp"
                                 android:layout_marginTop="20dp"
                                 android:elevation="6dp"
                                 android:src="#cdcdcd"
-                                app:civ_border_color="@color/icons"
-                                app:civ_border_width="3dp"
-                                app:layout_constraintEnd_toEndOf="parent"
+                                app:civ_border_color="@color/md_grey_100"
+                                app:civ_border_width="2dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
 
                         <ImageView
                                 android:id="@+id/avatar_iv"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
                                 android:elevation="6dp"
                                 android:src="@drawable/ic_default_avatar"
                                 app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
@@ -125,33 +125,45 @@
                                 app:layout_constraintEnd_toEndOf="@+id/avatar_civ" />
 
 
-                        <TextView
-                                android:id="@+id/btn_login"
+                        <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="立即登陆"
-                                android:textColor="@color/primary_text"
-                                android:textSize="23sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                android:layout_marginStart="15dp"
+                                app:layout_constraintStart_toEndOf="@+id/avatar_civ"
+                                app:layout_constraintTop_toTopOf="@+id/avatar_civ"
+                                app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
+                                android:orientation="vertical">
 
-                    <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2px"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_marginBottom="15dp"
-                            android:background="@color/divider" />
+                            <TextView
+                                    android:id="@+id/btn_login"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="立即登陆"
+                                    android:textColor="@color/md_grey_100"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    />
+
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:text="登陆更安全,可同步书籍"
+                                    android:textColor="@color/md_grey_100"
+                                    android:textSize="12sp"
+                                    />
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/check_version_cl"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
                             android:background="@drawable/bg_material_item"
                             android:clickable="true"
                             android:focusable="true">
@@ -311,8 +323,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="15dp"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginBottom="15dp"
-                            android:background="@color/divider" />
+                            android:layout_marginBottom="15dp" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/share_cl"
@@ -421,10 +432,10 @@
                             android:id="@+id/problem_cl"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
                             android:background="@drawable/bg_material_item"
                             android:clickable="true"
-                            android:focusable="true">
+                            android:focusable="true"
+                            android:visibility="gone">
 
                         <ImageView
 
