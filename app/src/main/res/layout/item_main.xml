@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@drawable/bg_material_40dp"
+            android:background="@drawable/bg_material_20dp"
             android:src="@drawable/btn_item_more"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

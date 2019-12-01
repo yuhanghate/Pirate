@@ -15,10 +15,12 @@ import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBooksResult
+import com.yuhang.novel.pirate.extension.niceCategoryKDEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -325,5 +327,15 @@ class MainViewModel : BaseViewModel() {
             return true
         }
         return false
+    }
+
+    /**
+     * 快读分类预加载
+     */
+    fun preloadCategory(): Flowable<Unit> {
+        return mDataRepository.getCategoryList()
+            .map { it.map { it.niceCategoryKDEntity() }.toList() }
+            .map { mDataRepository.insertCategoryList(it) }
+            .compose(io_main())
     }
 }

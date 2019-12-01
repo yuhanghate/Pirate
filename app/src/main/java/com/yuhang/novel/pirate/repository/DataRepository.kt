@@ -11,6 +11,8 @@ import com.yuhang.novel.pirate.repository.database.AppDatabase
 import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.NetManager
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.CategoryDetailResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
@@ -54,6 +56,11 @@ class DataRepository(val context: Context) {
     fun getKuaiDuApi() = mNetManager.getKuaiDuApi()
 
     /**
+     * okhttp
+     */
+    fun getOkhttpClick() = mNetManager.getOkHttpClient()
+
+    /**
      * 看书神器站内搜索
      */
     fun searchBook(keyword: String): Flowable<BookSearchResult> {
@@ -87,22 +94,6 @@ class DataRepository(val context: Context) {
             .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
     }
 
-    /**
-     * 获取章节内容
-     */
-    fun getChapterContent(
-        bookid: String,
-        chapterid: String
-    ): Flowable<ContentResult> {
-        return getKSNetApi().getChapterContent(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
-    }
-
-    /**
-     * 下载章节内容
-     */
-    fun downloadNovel(bookid: String, chapterid: String): Call<ContentResult> {
-        return getKSNetApi().downloadNovel(niceDir(bookid.toLong()), bookid.toLong(), chapterid)
-    }
 
 
     /**
@@ -364,7 +355,7 @@ class DataRepository(val context: Context) {
 
 
     /**
-     * 登陆
+     * 登录
      */
     fun login(username: String, password: String): Flowable<UserResult> {
         val map = hashMapOf<String, String>("username" to username, "password" to password)
@@ -427,7 +418,7 @@ class DataRepository(val context: Context) {
     }
 
     /**
-     * 查找最后一次登陆帐号
+     * 查找最后一次登录帐号
      */
     fun getLastUser(): UserEntity? {
         return getDatabase().userDao.queryUser()
@@ -844,5 +835,115 @@ class DataRepository(val context: Context) {
      */
     fun deleteDownload(bookid: String) {
         getDatabase().bookDownloadDao.deleteDownload(bookid)
+    }
+
+    /**
+     * 书城 -> 男生
+     */
+    fun getStoreMan(): Flowable<StoreManResult> {
+        return getKSNetApi().getStoreMan()
+    }
+
+    /**
+     * 书城 -> 女生
+     */
+    fun getStoreLady(): Flowable<StoreManResult> {
+        return getKSNetApi().getStoreLady()
+    }
+
+    /**
+     * 书城 -> 榜单 -> 男生
+     */
+    fun getStoreRankingMan(): Flowable<StoreRankingResult> {
+        return getKSNetApi().getStoreRankingMan()
+    }
+
+    /**
+     * 书城 -> 榜单 -> 女生
+     */
+    fun getStoreRankingLady(): Flowable<StoreRankingResult> {
+        return getKSNetApi().getStoreRankingLady()
+    }
+
+    /**
+     * 获取书单
+     *
+     * 最新发布/本周最热/最多收藏/小编推荐
+     */
+    fun getBooksList(gender:String, type:String, pageNum:Int): Flowable<BooksListResult> {
+        return getKSNetApi().getBooksList(gender, type, pageNum.toString())
+    }
+
+    /**
+     * 正版排行榜
+     *
+     * 起点/纵横/去起/若初/红薯/潇湘/逐浪
+     */
+    fun getMoreRankingList(gender:String, type:Int, pageNum:Int):Flowable<MoreRankingResult>{
+        return getKSNetApi().getMoreRankingList(gender, type, pageNum.toString())
+    }
+
+    /**
+     * 看书神器 排行榜
+     */
+    fun getKanShuRankingList(gender:String, type:String, date:String, pageNum:Int): Flowable<KanShuRankingResult> {
+        return getKSNetApi().getKanShuRankingList(gender, type, date, pageNum)
+    }
+
+
+    /**
+     * 书单详情页
+     */
+    fun getBookListDetail(id: String):Flowable<ShuDanDetailResult> {
+        return getKSNetApi().getBookListDetail(id)
+    }
+
+    /**
+     * 分类
+     */
+    fun getCategoryList(): Flowable<List<BookCategoryDataResult>> {
+        return getKuaiDuApi().getCategoryList()
+    }
+
+    /**
+     * 快读 男生分类
+     */
+    fun queryCategoryMan(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryMan()
+    }
+
+    /**
+     * 快读 女生分类
+     */
+    fun queryCategoryLady(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryLady()
+    }
+
+    /**
+     * 快读 出版分类
+     */
+    fun queryCategoryPress(): List<CategoryKDEntity> {
+        return getDatabase().categoryKDDao.queryPress()
+    }
+
+    /**
+     * 快读 插入分类
+     */
+    fun insertCategoryList(obj : List<CategoryKDEntity>) {
+        if (obj.isEmpty()) return
+        getDatabase().categoryKDDao.clear()
+        getDatabase().categoryKDDao.insert(obj = obj )
+    }
+
+    /**
+     * 分类详情
+     */
+    fun getCategoryDetailList(
+        gender: String,
+        type: Int,
+        major: String,
+        pageNum:Int
+    ) :Flowable<CategoryDetailResult> {
+        return getKuaiDuApi().getCategoryDetailList(gender, type, major, pageNum, 50)
     }
 }

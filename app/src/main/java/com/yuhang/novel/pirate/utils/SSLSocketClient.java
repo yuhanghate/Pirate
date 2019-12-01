@@ -2,9 +2,13 @@ package com.yuhang.novel.pirate.utils;
 
 import android.annotation.SuppressLint;
 
+import com.yuhang.novel.pirate.constant.ConfigConstant;
+
 import javax.net.ssl.*;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GKF on 2018/3/1.
@@ -46,8 +50,18 @@ public class SSLSocketClient {
         return tm;
     }
 
+
     //获取HostnameVerifier
     public static HostnameVerifier getHostnameVerifier() {
-        return (s, sslSession) -> true;
+        return (s, sslSession) -> {
+//            for (String hosts : ConfigConstant.INSTANCE.getHTTPS_HOSTS()) {
+//                if (s.equals(hosts)) {
+//                    return true;
+//                }
+//            }
+//            return false;
+
+            return true;
+        };
     }
 }

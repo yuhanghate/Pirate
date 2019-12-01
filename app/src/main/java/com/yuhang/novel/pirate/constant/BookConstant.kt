@@ -57,6 +57,13 @@ object BookConstant {
     }
 
     /**
+     * 阅读背景
+     */
+    fun getPageBackgroundString(): String {
+        return PreferenceUtil.getString("page_color", "#F6EFDD")
+    }
+
+    /**
      * 获取字体颜色
      */
     fun getPageTextColor(): Int {

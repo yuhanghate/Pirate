@@ -35,6 +35,5 @@
         android:layout_height="136dp"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_wechat_qrcode" />
+        android:scaleType="centerInside" />
 </LinearLayout>

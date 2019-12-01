@@ -299,3 +299,20 @@ public static final int *;
 }
 
 
+#Vlayout
+-keepattributes InnerClasses
+-keep class com.alibaba.android.vlayout.ExposeLinearLayoutManagerEx { *; }
+-keep class android.support.v7.widget.RecyclerView$LayoutParams { *; }
+-keep class android.support.v7.widget.RecyclerView$ViewHolder { *; }
+-keep class android.support.v7.widget.ChildHelper { *; }
+-keep class android.support.v7.widget.ChildHelper$Bucket { *; }
+-keep class android.support.v7.widget.RecyclerView$LayoutManager { *; }
+
+
+# Glide 混淆
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}

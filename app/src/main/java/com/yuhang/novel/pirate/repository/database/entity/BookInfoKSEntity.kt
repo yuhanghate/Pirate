@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.repository.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -11,6 +12,7 @@ import java.util.Date
 @Entity
 class BookInfoKSEntity{
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     var id: Int = 0
 
     /**

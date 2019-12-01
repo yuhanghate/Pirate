@@ -15,7 +15,7 @@
                 android:clickable="true"
                 android:layout_marginTop="15dp"
                 android:focusable="true"
-                android:background="@drawable/bg_material_40dp"
+                android:background="@drawable/bg_material_20dp"
                 android:src="@drawable/btn_close"/>
 
         <androidx.core.widget.NestedScrollView

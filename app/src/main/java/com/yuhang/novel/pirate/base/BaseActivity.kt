@@ -16,15 +16,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
-import com.gyf.immersionbar.BarHide
+import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
 import com.idescout.sql.SqlScoutServer
 import com.orhanobut.logger.Logger
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
-import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
+import com.yuhang.novel.pirate.widget.TopSmoothScroller
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
@@ -106,7 +109,10 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
             val styleableRes =
                 Class.forName("com.android.internal.R\$styleable").getField("Window").get(null) as IntArray
             val ta = obtainStyledAttributes(styleableRes)
-            val m = ActivityInfo::class.java.getMethod("isTranslucentOrFloating", TypedArray::class.java)
+            val m = ActivityInfo::class.java.getMethod(
+                "isTranslucentOrFloating",
+                TypedArray::class.java
+            )
             m.isAccessible = true
             isTranslucentOrFloating = m.invoke(null, ta) as Boolean
             m.isAccessible = false
@@ -201,7 +207,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         Logger.i("baseactivity -> initview")
     }
 
-    open fun initData(){
+    open fun initData() {
 
     }
 
@@ -215,7 +221,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 打开进度等待条
      */
-    fun showProgressbar(message: String = "加载中", cancel:Boolean = false) {
+    fun showProgressbar(message: String = "加载中", cancel: Boolean = false) {
         if (!::mProgressbar.isInitialized) {
             mProgressbar = ProgressDialog(this)
         }
@@ -243,7 +249,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 是否显示进度条
      */
-    fun hasProgressbar():Boolean {
+    fun hasProgressbar(): Boolean {
         return mProgressbar.isShowing
     }
 
@@ -331,11 +337,59 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     override fun onBackPressedSupport() {
         BGAKeyboardUtil.closeKeyboard(this)
         finish()
-        this.overridePendingTransition(R.anim.bga_sbl_activity_backward_enter, R.anim.bga_sbl_activity_backward_exit)
-//        super.onBackPressedSupport()
+        this.overridePendingTransition(
+            R.anim.bga_sbl_activity_backward_enter,
+            R.anim.bga_sbl_activity_backward_exit
+        )
+    }
+
+    /**
+     * RecyclerView
+     */
+    fun addOnScrollListener(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Glide.with(this@BaseActivity).resumeRequests()
+                } else {
+                    Glide.with(this@BaseActivity).pauseRequests()
+                }
+            }
+        })
 
     }
 
+    /**
+     * 双击置顶 + 刷新
+     */
+    fun onTopRecyclerView(
+        refreshLayout: SmartRefreshLayout,
+        recyclerView: RecyclerView,
+        position: Int
+    ) {
+
+        val manager = recyclerView.layoutManager as? VirtualLayoutManager
+        val firstItem = manager?.findFirstVisibleItemPosition()
+        //刷新
+        if (firstItem == 0) {
+            refreshLayout.autoRefresh()
+            return
+        }
+
+        //置顶
+        onTopRecyclerView(recyclerView, position)
+    }
+
+    /**
+     * 双击置顶
+     */
+    fun onTopRecyclerView(recyclerView: RecyclerView, position: Int) {
+
+        //置顶
+        val scroller = TopSmoothScroller(this)
+        scroller.smoothMoveToPosition(recyclerView, position)
+    }
 
     /**************************** 子类调用 end **************************/
 

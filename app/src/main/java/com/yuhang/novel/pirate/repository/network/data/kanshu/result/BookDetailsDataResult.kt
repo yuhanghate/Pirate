@@ -1,6 +1,6 @@
 package com.yuhang.novel.pirate.repository.network.data.kanshu.result
 
-data class BookDetailsDataResult(val SameUserBooks: List<RecommendBooksResult?>,
+data class BookDetailsDataResult(val SameUserBooks: List<BooksKSResult>?,
                                  val Img: String = "",
                                  val BookVote: BookVote,
                                  val FirstChapterId: String = "",
@@ -12,6 +12,6 @@ data class BookDetailsDataResult(val SameUserBooks: List<RecommendBooksResult?>,
                                  val Id: String = "",
                                  val CName: String = "",
                                  val LastChapterId: String = "",
-                                 val SameCategoryBooks: List<RecommendBooksResult?>,
+                                 val SameCategoryBooks: List<BooksKSResult?>,
                                  val LastTime: String = "",
                                  val CId: Int = 0)

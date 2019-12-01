@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.github.aakira.expandablelayout.Utils
+import com.github.florent37.glidepalette.BitmapPalette
+import com.github.florent37.glidepalette.GlidePalette
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
@@ -92,7 +94,6 @@ class BookDetailsActivity :
         return R.layout.activity_book_details
     }
 
-//    private fun getBookid() = intent.getStringExtra(BOOK_ID)
 
     private fun getBookResult() =
         Gson().fromJson<BooksResult>(intent.getStringExtra(BOOK_RESULT), BooksResult::class.java)
@@ -234,10 +235,16 @@ class BookDetailsActivity :
      */
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun resetView(obj: BookInfoKSEntity) {
-        Glide.with(this).load(obj.cover.niceCoverPic()).into(mBinding.includeToobarHeadOpen.coverIv)
         Glide.with(this).load(obj.cover.niceCoverPic())
-            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
-            .into(mBinding.includeToobarHeadOpen.bgCoverIv)
+            .listener(
+                GlidePalette.with(obj.cover.niceCoverPic())
+                    .use(BitmapPalette.Profile.MUTED_DARK)
+                    .crossfade(true)
+                    .intoBackground(mBinding.includeToobarHeadOpen.bgCoverIv))
+            .into(mBinding.includeToobarHeadOpen.coverIv)
+//        Glide.with(this).load(obj.cover.niceCoverPic())
+//            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
+//            .into(mBinding.includeToobarHeadOpen.bgCoverIv)
 
         val details = mBinding.layoutBookDetails
         details.statusTv.setText("状态   ${obj.bookStatus}", null)

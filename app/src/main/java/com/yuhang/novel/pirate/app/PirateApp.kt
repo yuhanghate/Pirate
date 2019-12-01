@@ -14,17 +14,17 @@ import com.scwang.smartrefresh.header.MaterialHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
+import com.umeng.message.IUmengRegisterCallback
+import com.umeng.message.PushAgent
 import com.yuhang.novel.pirate.BuildConfig
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.constant.ConfigConstant
+import com.yuhang.novel.pirate.push.PushUmengMessageHandler
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
 import me.yokeyword.fragmentation.Fragmentation
 import kotlin.concurrent.thread
-import com.umeng.message.IUmengRegisterCallback
-import com.umeng.message.PushAgent
-import com.yuhang.novel.pirate.push.PushUmengMessageHandler
 
 
 @SuppressLint("Registered")
@@ -66,13 +66,15 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
      */
     private fun initAppcation() {
         PreferenceUtil.init(this)
+        pageType =
+            PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
         initRefreshLayout()
-        initLog()
-        initToken()
-        initYouMent()
         initFragmentManger()
-        pageType = PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
-//        initStrictModel()
+        initLog()
+        thread { initYouMent() }
+        initToken()
+
+
     }
 
     /**
@@ -143,7 +145,13 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
          * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数5:Push推送业务的secret
          */
-        UMConfigure.init(this, ConfigConstant.YOUMENT_KEY, channel, UMConfigure.DEVICE_TYPE_PHONE, ConfigConstant.YOUMENT_PUSH)
+        UMConfigure.init(
+            this,
+            ConfigConstant.YOUMENT_KEY,
+            channel,
+            UMConfigure.DEVICE_TYPE_PHONE,
+            ConfigConstant.YOUMENT_PUSH
+        )
 
 
         // 选用LEGACY_AUTO页面采集模式
@@ -157,16 +165,15 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         mPushAgent.register(object : IUmengRegisterCallback {
             override fun onSuccess(deviceToken: String) {
                 //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
-                Logger.t("UMLog").i( "注册成功：deviceToken：-------->  $deviceToken")
+                Logger.t("UMLog").i("注册成功：deviceToken：-------->  $deviceToken")
             }
 
             override fun onFailure(s: String, s1: String) {
-                Logger.t("UMLog").i( "注册失败：-------->  s:$s,s1:$s1")
+                Logger.t("UMLog").i("注册失败：-------->  s:$s,s1:$s1")
             }
         })
 
         mPushAgent.messageHandler = PushUmengMessageHandler()
-//        mPushAgent.notificationClickHandler = PushUmengNotificationClickHandler()
     }
 
 
@@ -179,6 +186,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
                 setToken(this.getToken())
             }
         }
+
     }
 
     /**
@@ -205,7 +213,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     private fun initRefreshLayout() {
         //设置全局的Header构建器
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout ->
-            //                layout.setPrimaryColorsId(R.color.primary, android.R.color.white)//全局设置主题颜色
             MaterialHeader(context).setColorSchemeResources(R.color.primary)//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
         }
     }
@@ -245,7 +252,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     /**
      * 左右滑动/上下滑动
      */
-    fun getPageType():Int {
+    fun getPageType(): Int {
         return pageType
     }
 

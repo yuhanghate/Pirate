@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.gyf.immersionbar.ImmersionBar
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
@@ -23,10 +24,9 @@ import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
-import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
-import com.yuhang.novel.pirate.ui.main.fragment.StoreFragment
+import com.yuhang.novel.pirate.ui.main.fragment.StoreFragmentV2
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
@@ -76,6 +76,15 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         this.intent = intent
     }
 
+    override fun initStatusTool() {
+        ImmersionBar.with(this)
+            .statusBarView(mBinding.statusBarV)
+            .navigationBarColor(R.color.md_white_1000)
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
+            .init()
+    }
 
     override fun onDestroy() {
         onDestryEventbus(this)
@@ -92,26 +101,49 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             R.id.nav_host_fragment,
             intent.getIntExtra("tab_index", 0),
             MainFragment.newInstance(),
-            StoreFragment.newInstance(),
+            StoreFragmentV2.newInstance(),
             MeFragment.newInstance()
         )
 
         mBinding.bottomBar.setOnTabSelectListener {
 
             when (it) {
-                R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> {
-                    startLoginActivity()
-                    showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_main -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
+                    showHideFragment(findFragment(MainFragment::class.java))
                 }
-                R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
+                R.id.tab_store -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
+                    startLoginActivity()
+                    showHideFragment(findFragment(StoreFragmentV2::class.java))
+                }
+                R.id.tab_me -> {
+                    ImmersionBar.with(this)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.md_grey_900)
+                        .flymeOSStatusBarFontColor(R.color.md_white_1000)
+                        .init()
+                    showHideFragment(findFragment(MeFragment::class.java))
+                }
             }
         }
 //
         mBinding.bottomBar.setOnTabReselectListener {
             when (it) {
                 R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> showHideFragment(findFragment(StoreFragment::class.java))
+                R.id.tab_store -> {
+                    val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
+                    showHideFragment(storeFragmentV2)
+                    storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
+                }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
         }
@@ -122,7 +154,16 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         Handler().postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
 
+        initCategory()
+    }
 
+    /**
+     * 预加载分类数据
+     */
+    private fun initCategory() {
+        mViewModel.preloadCategory()
+            .compose(bindToLifecycle())
+            .subscribe({},{})
     }
 
     /**
@@ -153,7 +194,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
 
     override fun onBackPressedSupport() {
-        moveTaskToBack(false)
+        moveTaskToBack(true)
     }
 
     /**

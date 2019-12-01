@@ -23,8 +23,10 @@
     </style>
 
     <style name="LauncherTheme" parent="@style/AppTheme">
-
-        <item name="android:windowBackground">@drawable/bg_material_item</item>
+        <item name="colorPrimary">@color/md_white_1000</item>
+        <item name="colorPrimaryDark">@color/md_white_1000</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@drawable/ic_launch_page</item>
     </style>
     <style name="AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
@@ -65,4 +67,7 @@
         <item name="colorControlActivated">@color/md_red_500</item>
     </style>
 
+    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">#9a000000</item>
+    </style>
 </resources>

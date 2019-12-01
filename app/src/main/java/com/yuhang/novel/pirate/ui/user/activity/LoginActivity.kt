@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Logger
 
 /**
- * 登陆
+ * 登录
  */
 class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
@@ -51,7 +51,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     private fun onClick() {
         mBinding.btnBack.setOnClickListener { onBackPressed() }
         mBinding.btnCommit.setOnClickListener {
-            mViewModel.onUMEvent(this, UMConstant.TYPE_LOGIN, "点击登陆")
+            mViewModel.onUMEvent(this, UMConstant.TYPE_LOGIN, "点击登录")
             netLogin()
         }
         mBinding.btnRegister.setOnClickListener { RegisterActivity.start(this) }
@@ -67,7 +67,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         val password = mBinding.passwordEt.text.toString()
 
         if (mViewModel.checkParams(mBinding.mobileEt, mBinding.passwordEt)) {
-            showProgressbar("登陆中...")
+            showProgressbar("登录中...")
             mViewModel.login(username, password)
                 .compose(bindToLifecycle())
                 .subscribe({
@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
                 }, {
                     closeProgressbar()
-                    niceToast("登陆失败")
+                    niceToast("登录失败")
                 })
         }
 

@@ -130,21 +130,21 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             .subscribe({
                 if (it == null) {
                     onClick()
-                    mBinding.btnLogin.text = "立即登陆"
+                    mBinding.btnLogin.text = "立即登录"
                     mBinding.btnLogin.textSize = 24f
                 } else {
                     mBinding.btnLogin.text = "随友:${it?.username}"
                     mBinding.btnLogin.textSize = 18f
                     mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
-                    //登陆界面
+                    //登录界面
                     mBinding.btnLogin.setOnClickListener { }
-                    //登陆
+                    //登录
                     mBinding.avatarCiv.setOnClickListener { }
                 }
 
             }, {
                 onClick()
-                mBinding.btnLogin.text = "立即登陆"
+                mBinding.btnLogin.text = "立即登录"
                 mBinding.btnLogin.textSize = 24f
             })
     }
@@ -164,11 +164,11 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 ReadHistoryActivity.start(mActivity!!)
             }
         }
-        //登陆界面
+        //登录界面
         mBinding.btnLogin.setOnClickListener {
             LoginActivity.start(mActivity!!)
         }
-        //登陆
+        //登录
         mBinding.avatarCiv.setOnClickListener { LoginActivity.start(mActivity!!) }
         //检测版本更新
         mBinding.checkVersionCl.setOnClickListener {
@@ -492,9 +492,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun showHistoryDialog() {
         MaterialDialog(mActivity!!).show {
             title(text = "提示")
-            message(text = "登陆以后可以查看浏览记录")
+            message(text = "登录以后可以查看浏览记录")
             negativeButton(text = "取消")
-            positiveButton(text = "登陆", click = object : DialogCallback {
+            positiveButton(text = "登录", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     LoginActivity.start(mActivity!!)
                 }
@@ -505,7 +505,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
 
     /**
-     * 登陆/注册成功回调
+     * 登录/注册成功回调
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(userResult: UserResult) {
@@ -514,7 +514,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     }
 
     /**
-     * 退出登陆回调
+     * 退出登录回调
      */
     @Subscribe
     fun onEvent(obj: LogoutEvent) {

@@ -44,7 +44,7 @@
                             android:id="@+id/btn_search"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_40dp"
+                            android:background="@drawable/bg_material_20dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/btn_search" />
@@ -54,7 +54,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="18dp"
-                            android:background="@drawable/bg_material_40dp"
+                            android:background="@drawable/bg_material_20dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/ic_prompt"
@@ -65,7 +65,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
-                            android:background="@drawable/bg_material_40dp"
+                            android:background="@drawable/bg_material_20dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:src="@drawable/btn_more"
@@ -104,23 +104,32 @@
                             android:background="@color/window_background"
                             tools:listitem="@layout/item_main" />
 
-                    <TextView
-                            android:id="@+id/btn_empty"
+                    <androidx.cardview.widget.CardView
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:background="@drawable/bg_material_item_pink"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:paddingStart="30dp"
-                            android:paddingTop="12dp"
-                            android:paddingEnd="30dp"
-                            android:paddingBottom="12dp"
-                            android:text="去搜索书"
-                            android:textColor="#ffffffff"
-                            android:textSize="17sp"
-                            android:visibility="gone" />
+                            android:visibility="visible"
+                            app:cardCornerRadius="3dp"
+                            app:cardUseCompatPadding="true">
+
+                        <TextView
+                                android:id="@+id/btn_empty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_material_item_pink"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:paddingStart="30dp"
+                                android:paddingTop="12dp"
+                                android:paddingEnd="30dp"
+                                android:paddingBottom="12dp"
+                                android:text="去搜索书"
+                                android:textColor="#ffffffff"
+                                android:textSize="17sp" />
+                    </androidx.cardview.widget.CardView>
+
                 </FrameLayout>
 
             </ezy.ui.layout.LoadingLayout>

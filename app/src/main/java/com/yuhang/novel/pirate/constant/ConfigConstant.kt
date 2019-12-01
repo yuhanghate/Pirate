@@ -40,4 +40,18 @@ object ConfigConstant {
      * 显示电量百分比
      */
     val PAGE_TIME_HIDE = 1
+
+    val HTTPS_HOSTS = arrayListOf<String>(
+        "sou.jiaston.com",
+        "appbdsc.cdn.bcebos.com",
+        "infos.jiaston.com",
+        "content.jiaston.com",
+        "codeapibak.jiaston.com",
+        "api.gdugm.cn",
+        "api.wgfgr.cn",
+        "chapter.baihangsou.cn",
+        "api.gdugm.cn",
+        "www.suibiankanshu.com",
+        "192.168.123.159"
+    )
 }

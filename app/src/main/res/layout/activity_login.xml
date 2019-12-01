@@ -19,7 +19,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
-                    android:background="@drawable/bg_material_40dp"
+                    android:background="@drawable/bg_material_20dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/btn_close" />
@@ -52,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="100dp"
-                        android:text="使用手机号登陆"
+                        android:text="使用手机号登录"
                         android:textColor="@color/primary_text"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -123,7 +123,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
-                        android:text="登陆"
+                        android:text="登录"
                         android:textColor="#ffffffff"
                         android:textSize="18sp" />
 

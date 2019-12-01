@@ -2,26 +2,43 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
-
-
-        <ImageView
-            android:id="@+id/bg_cover_iv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY" />
+            android:layout_height="300dp">
+
 
         <ImageView
-            android:id="@+id/cover_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="84dp"
-            android:minHeight="112dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/bg_cover_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+
+        <ImageView
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
+                android:layout_width="1440px"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_book_details_round" />
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cover_cv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="3dp"
+                app:cardUseCompatPadding="true"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                    android:id="@+id/cover_iv"
+                    android:layout_width="105dp"
+                    android:layout_height="140dp"
+                    android:scaleType="fitXY" />
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -83,7 +83,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
     }
 
     /**
-     * 没登陆不显示退出按钮
+     * 没登录不显示退出按钮
      */
     @SuppressLint("CheckResult")
     private fun initLogoutBtn() {
@@ -104,7 +104,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         mBinding.btnPrivacy.setOnClickListener { PrivacyActivity.start(this) }
         mBinding.btnNoteLl.setOnClickListener { VersionNoteActivity.start(this) }
         mBinding.btnLogout.setOnClickListener {
-            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLICK_LOGOUT, "设置 -> 退出登陆")
+            mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLICK_LOGOUT, "设置 -> 退出登录")
             mViewModel.logout()
         }
         mBinding.btnDisclaimer.setOnClickListener {

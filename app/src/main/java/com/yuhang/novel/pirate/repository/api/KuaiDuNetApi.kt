@@ -9,7 +9,6 @@ import retrofit2.http.*
 interface KuaiDuNetApi {
 
 
-
     /**
      * 搜索
      */
@@ -19,6 +18,7 @@ interface KuaiDuNetApi {
     /**
      * 书籍详情页
      */
+    @Headers("Cache-Control: public, max-age=3")
     @GET("http://api.wgfgr.cn/book/info")
     fun getBookDetails(@Query("bookId") bookId: String): Flowable<BookDetailsKdResult>
 
@@ -31,12 +31,14 @@ interface KuaiDuNetApi {
     /**
      * 作者所有作品
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/book/accurate-search")
     fun getAuthorBookAll(@QueryMap map: Map<String, String>): Flowable<AuthorBooksKdResult>
 
     /**
      * 章节目录
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/toc/mix")
     fun getChapterList(@Query("bookId") bookId: String): Flowable<ChapterListKdResult>
 
@@ -46,7 +48,8 @@ interface KuaiDuNetApi {
     @Headers(
         value = [
             "Content-Type: application/json;charset=gbk",
-            "Accept: */*"
+            "Accept: */*",
+            "Cache-Control: public, max-age=60"
         ]
     )
     @GET("http://chapter.baihangsou.cn/chapter/{link}")
@@ -61,6 +64,7 @@ interface KuaiDuNetApi {
     /**
      * 书本源列表
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/toc/list")
     fun getResouceList(@Query("bookId") bookId: String): Flowable<List<ResouceListKdResult>>
 
@@ -68,6 +72,7 @@ interface KuaiDuNetApi {
     /**
      * 第三方源目录列表
      */
+    @Headers("Cache-Control: public, max-age=60")
     @GET("http://api.wgfgr.cn/chapter/list")
     fun getResouceChapterList(@Query("tocId") tocId: String): Flowable<ChapterListKdResult>
 
@@ -75,18 +80,35 @@ interface KuaiDuNetApi {
      * 小说更新
      */
     @GET("http://api.gdugm.cn/book/update")
-    fun getBookUpdate(@Query("id") id:String):Flowable<List<BookUpdateKdResult>>
+    fun getBookUpdate(@Query("id") id: String): Flowable<List<BookUpdateKdResult>>
 
     /**
      * 搜索模糊匹配
      */
     @GET("http://api.wgfgr.cn/search/suggest")
-    fun searchSuggest(@Query("key") key: String):Flowable<SearchSuggestKdResult>
+    fun searchSuggest(@Query("key") key: String): Flowable<SearchSuggestKdResult>
 
     /**
      * 精确求书
      */
     @POST("http://api.wgfgr.cn/bookfeedback")
-    fun getBookFeedback(@Body body: RequestBody):Flowable<String>
+    fun getBookFeedback(@Body body: RequestBody): Flowable<String>
 
+    /**
+     * 分类
+     * 男生/女生/出版
+     */
+    @GET("http://api.gdugm.cn/category/all")
+    fun getCategoryList(): Flowable<List<BookCategoryDataResult>>
+
+    /**
+     * gender  press=出版  female=女生  male=男生
+     * type 热门=1 好评=2 连载=3 完结=4
+     */
+    @GET("http://api.gdugm.cn/book/list")
+    fun getCategoryDetailList(
+        @Query("gender") gender: String, @Query("type") type: Int,
+        @Query("major") major: String,
+        @Query("start") start: Int, @Query("limit") limit: Int
+    ):Flowable<CategoryDetailResult>
 }
