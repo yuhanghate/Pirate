@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
-import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.gyf.immersionbar.ImmersionBar
@@ -15,6 +14,7 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxAppTool
+import com.vondear.rxtool.RxEncryptTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -190,7 +190,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        Flowable.interval(3, 60 * 10, TimeUnit.SECONDS)
+        Flowable.interval(3, 60 * 5, TimeUnit.SECONDS)
             .flatMap { mViewModel.updateChapterToDB() }
             .compose(io_main())
             .compose(bindToLifecycle())
@@ -207,8 +207,13 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
-        mViewModel.updateChapterToDB().compose(bindToLifecycle()).subscribeOn(Schedulers.io())
-            .subscribe({}, {})
+        mViewModel.updateChapterToDB()
+            .compose(bindToLifecycle())
+            .subscribe({
+                Logger.i("")
+            }, {
+                Logger.i("")
+            })
     }
 
 
@@ -325,11 +330,11 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
          */
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk =
-            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(url) + ".apk"
         OkGo.get<File>(url).execute(object :
             com.lzy.okgo.callback.FileCallback(
                 DownloadUtil.PATH_CHALLENGE_VIDEO,
-                MD5Util.md5Encode(url) + ".apk"
+                RxEncryptTool.encryptMD5File2String(url) + ".apk"
             ) {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()

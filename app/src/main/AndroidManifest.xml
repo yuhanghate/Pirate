@@ -103,6 +103,8 @@
         <activity android:name=".ui.store.activity.BookListDetailActivity" />
         <activity android:name=".ui.store.activity.BookCategoryActivity" />
         <activity android:name=".ui.store.activity.CategoryDetailActivity" />
+
+        <service android:name=".service.impl.ReadAloudServiceImpl" />
     </application>
 
 </manifest>

@@ -9,7 +9,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AlertDialog
-import cc.shinichi.library.tool.text.MD5Util
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -18,6 +17,7 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
 import com.vondear.rxtool.RxAppTool
+import com.vondear.rxtool.RxEncryptTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
@@ -401,11 +401,11 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
          */
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk =
-            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + MD5Util.md5Encode(url) + ".apk"
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(url) + ".apk"
         OkGo.get<File>(url).execute(object :
             com.lzy.okgo.callback.FileCallback(
                 DownloadUtil.PATH_CHALLENGE_VIDEO,
-                MD5Util.md5Encode(url) + ".apk"
+                RxEncryptTool.encryptMD5File2String(url) + ".apk"
             ) {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()

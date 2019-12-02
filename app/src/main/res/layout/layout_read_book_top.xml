@@ -3,19 +3,25 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-
-    <RelativeLayout
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
             android:visibility="invisible"
             tools:visibility="visible">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <View
+                android:id="@+id/status_bar_v"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_below="@+id/status_bar_v"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="1dp">
 
@@ -89,5 +95,6 @@
                 android:layout_alignParentBottom="true"
                 android:background="#f2f2f2"
                 android:visibility="invisible" />
-    </RelativeLayout>
+    </LinearLayout>
+
 </layout>

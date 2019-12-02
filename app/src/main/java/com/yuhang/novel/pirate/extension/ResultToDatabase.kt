@@ -431,3 +431,24 @@ fun BookCategoryDataResult.niceCategoryKDEntity(): CategoryKDEntity {
         this.order = obj.order
     }
 }
+
+fun BookInfoKSEntity.niceBooksResult(): BooksResult {
+    val obj = this
+    return BooksResult().apply {
+        this.author = obj.author
+        this.bookName = obj.bookName
+        this.cover = obj.cover
+        this.description = obj.description
+        this.resouce = obj.resouce
+        if (obj.resouce == "KS") {
+            this.typeKd = 2
+            this.typeKs = 1
+            this.bookKsId = obj.bookid
+        } else {
+            this.typeKd = 1
+            this.typeKs = 2
+            this.bookKdId = obj.bookid
+        }
+
+    }
+}

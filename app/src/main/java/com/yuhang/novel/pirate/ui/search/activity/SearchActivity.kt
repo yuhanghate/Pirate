@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
-import com.arlib.floatingsearchview.util.adapter.TextWatcherAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -28,6 +27,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.SearchFeedbackActivity
+import com.yuhang.novel.pirate.widget.TextWatcherAdapter
 
 
 /**

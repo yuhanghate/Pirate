@@ -17,7 +17,6 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.workmanager.NovelDownloadWorker
 import io.reactivex.Flowable
-import retrofit2.Call
 import java.util.*
 
 /**
@@ -95,10 +94,10 @@ class DataRepository(val context: Context) {
     }
 
 
-
     /**
      * 查询数据库书籍章节
      */
+    @Synchronized
     fun queryChapterObjList(bookid: String): List<BookChapterKSEntity> {
         return mDatabase.bookChapterKSDao.queryObj(bookid)
     }
@@ -150,6 +149,7 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
+    @Synchronized
     fun queryBookContent(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }
@@ -341,7 +341,7 @@ class DataRepository(val context: Context) {
      * 清理标签
      */
     fun clearLable(bookid: String) {
-        PreferenceUtil.commitBoolean(bookid.toString(), false)
+        PreferenceUtil.commitBoolean(bookid, false)
     }
 
     /**
@@ -349,8 +349,7 @@ class DataRepository(val context: Context) {
      */
     @SuppressLint("SimpleDateFormat")
     fun isShowUpdateLable(bookid: String): Boolean {
-
-        return PreferenceUtil.getBoolean(bookid.toString(), false)
+        return PreferenceUtil.getBoolean(bookid, false)
     }
 
 
@@ -621,7 +620,7 @@ class DataRepository(val context: Context) {
     /**
      * 开始下载任务
      */
-    fun startWorker(obj: BooksResult):UUID {
+    fun startWorker(obj: BooksResult): UUID {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)//指定设备电池是否不应低于临界阈值
@@ -805,8 +804,8 @@ class DataRepository(val context: Context) {
         progress: Int,
         total: Int,
         cover: String,
-        author:String,
-        uuid:String
+        author: String,
+        uuid: String
     ) {
 
         val entity = getDatabase().bookDownloadDao.query(bookid)
@@ -833,6 +832,7 @@ class DataRepository(val context: Context) {
     /**
      * 删除缓存记录
      */
+    @Synchronized
     fun deleteDownload(bookid: String) {
         getDatabase().bookDownloadDao.deleteDownload(bookid)
     }
@@ -870,7 +870,7 @@ class DataRepository(val context: Context) {
      *
      * 最新发布/本周最热/最多收藏/小编推荐
      */
-    fun getBooksList(gender:String, type:String, pageNum:Int): Flowable<BooksListResult> {
+    fun getBooksList(gender: String, type: String, pageNum: Int): Flowable<BooksListResult> {
         return getKSNetApi().getBooksList(gender, type, pageNum.toString())
     }
 
@@ -879,14 +879,19 @@ class DataRepository(val context: Context) {
      *
      * 起点/纵横/去起/若初/红薯/潇湘/逐浪
      */
-    fun getMoreRankingList(gender:String, type:Int, pageNum:Int):Flowable<MoreRankingResult>{
+    fun getMoreRankingList(gender: String, type: Int, pageNum: Int): Flowable<MoreRankingResult> {
         return getKSNetApi().getMoreRankingList(gender, type, pageNum.toString())
     }
 
     /**
      * 看书神器 排行榜
      */
-    fun getKanShuRankingList(gender:String, type:String, date:String, pageNum:Int): Flowable<KanShuRankingResult> {
+    fun getKanShuRankingList(
+        gender: String,
+        type: String,
+        date: String,
+        pageNum: Int
+    ): Flowable<KanShuRankingResult> {
         return getKSNetApi().getKanShuRankingList(gender, type, date, pageNum)
     }
 
@@ -894,7 +899,7 @@ class DataRepository(val context: Context) {
     /**
      * 书单详情页
      */
-    fun getBookListDetail(id: String):Flowable<ShuDanDetailResult> {
+    fun getBookListDetail(id: String): Flowable<ShuDanDetailResult> {
         return getKSNetApi().getBookListDetail(id)
     }
 
@@ -929,10 +934,10 @@ class DataRepository(val context: Context) {
     /**
      * 快读 插入分类
      */
-    fun insertCategoryList(obj : List<CategoryKDEntity>) {
+    fun insertCategoryList(obj: List<CategoryKDEntity>) {
         if (obj.isEmpty()) return
         getDatabase().categoryKDDao.clear()
-        getDatabase().categoryKDDao.insert(obj = obj )
+        getDatabase().categoryKDDao.insert(obj = obj)
     }
 
     /**
@@ -942,8 +947,8 @@ class DataRepository(val context: Context) {
         gender: String,
         type: Int,
         major: String,
-        pageNum:Int
-    ) :Flowable<CategoryDetailResult> {
+        pageNum: Int
+    ): Flowable<CategoryDetailResult> {
         return getKuaiDuApi().getCategoryDetailList(gender, type, major, pageNum, 50)
     }
 }

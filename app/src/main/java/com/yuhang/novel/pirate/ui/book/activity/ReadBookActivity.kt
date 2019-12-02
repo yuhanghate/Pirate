@@ -30,6 +30,7 @@ import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
 import com.yuhang.novel.pirate.eventbus.UpdateReadHistoryEvent
+import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
@@ -124,6 +125,8 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .navigationBarColorTransform(color)
             .init()
 
+
+
     }
 
     override fun onStatusColor(): Int {
@@ -195,7 +198,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     override fun initView() {
         super.initView()
         initViewModel()
-        initContentViewHeight()
+//        initContentViewHeight()
         initRefreshLayout()
         initRecyclerView()
 
@@ -426,6 +429,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
      * 设置侧滑和内容高度
      */
     private fun initContentViewHeight() {
+
         mBinding.footerV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
 
     }
@@ -596,6 +600,10 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
 
         mBinding.footerV.setBackgroundColor(BookConstant.getPageBackground())
 
+        //头部状态栏
+        val topParams = mBinding.layoutTop.root.layoutParams
+        topParams.height = ImmersionBar.getStatusBarHeight(this) + niceDp2px(61f)
+        mBinding.layoutTop.root.layoutParams = topParams
 
     }
 
@@ -710,6 +718,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             mBinding.recyclerView.adapter = mViewModel.adapter
             mBinding.recyclerView.addOnScrollListener(OnScrollListener(mViewModel.adapter, this))
             mBinding.loading.showLoading()
+            initContentViewHeight()
         } else {
             val linearLayoutManager = WrapContentLinearLayoutManager(this)
             linearLayoutManager.orientation = LinearLayoutManager.VERTICAL

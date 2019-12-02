@@ -133,13 +133,13 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:lifecycle:2.6.0'
 
     //图片缩放库
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+//    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     //广告滑动指示器
-    implementation 'me.relex:circleindicator:2.1.0'
+//    implementation 'me.relex:circleindicator:2.1.0'
 
     //图片选择库
-    implementation 'com.zhihu.android:matisse:0.5.2-beta4'
+//    implementation 'com.zhihu.android:matisse:0.5.2-beta4'
 
     //squareup全家桶
     implementation 'com.squareup.okhttp3:okhttp:3.13.1'
@@ -186,13 +186,13 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     //圆形图片
-    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
     //大图预览,微信下拉关闭效果
-    implementation 'com.github.SherlockGougou:BigImageViewPager:v4_4.0.3'
+//    implementation 'com.github.SherlockGougou:BigImageViewPager:v4_4.0.3'
 
     // 引导页 AndroidX Capable version
-    implementation 'com.github.paolorotolo:appintro:v5.1.0'
+//    implementation 'com.github.paolorotolo:appintro:v5.1.0'
 
     //RecyclerView 分隔线
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
@@ -204,7 +204,7 @@ dependencies {
     // OpenCC to convert Simp. Chinese to Trad. Chinese 繁体字转简体
     implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
     implementation project(path: ':fastscroll')
-    implementation project(path: ':search-view')
+//    implementation project(path: ':search-view')
 
     //取图片颜色
     implementation 'androidx.palette:palette:1.0.0'

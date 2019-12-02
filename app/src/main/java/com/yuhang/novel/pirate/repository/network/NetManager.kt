@@ -124,7 +124,7 @@ class NetManager {
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             )
 
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             //不能代理
             return builder.proxy(Proxy.NO_PROXY).build()
         }

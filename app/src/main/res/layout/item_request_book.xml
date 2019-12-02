@@ -13,7 +13,6 @@
                 android:layout_height="match_parent"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="vertical"
-                app:cardCornerRadius="@dimen/search_view_corner_radius"
                 app:cardUseCompatPadding="true">
 
             <TextView

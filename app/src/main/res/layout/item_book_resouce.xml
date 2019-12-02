@@ -11,7 +11,6 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        app:cardCornerRadius="@dimen/search_view_corner_radius"
         app:cardUseCompatPadding="true">
 
 

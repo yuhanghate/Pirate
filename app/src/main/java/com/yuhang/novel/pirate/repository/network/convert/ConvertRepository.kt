@@ -148,7 +148,7 @@ class ConvertRepository {
     /**
      * 下载内容
      */
-    fun downloadChapterContent(
+    @Synchronized fun downloadChapterContent(
         obj: BooksResult,
         chapter: BookChapterKSEntity
     ): BookContentKSEntity {

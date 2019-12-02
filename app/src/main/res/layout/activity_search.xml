@@ -20,24 +20,6 @@
                 android:focusable="true"
                 android:visibility="gone" />
 
-        <com.arlib.floatingsearchview.FloatingSearchView
-                android:id="@+id/floating_search_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:visibility="gone"
-                app:floatingSearch_backgroundColor="@color/item_color"
-                app:floatingSearch_close_search_on_keyboard_dismiss="false"
-                app:floatingSearch_dimBackground="false"
-                app:floatingSearch_dismissOnOutsideTouch="true"
-                app:floatingSearch_leftActionMode="showHome"
-                app:floatingSearch_menu="@menu/menu_search_view"
-                app:floatingSearch_searchBarMarginLeft="8dp"
-                app:floatingSearch_searchBarMarginRight="8dp"
-                app:floatingSearch_searchBarMarginTop="5dp"
-                app:floatingSearch_searchHint="Search..."
-                app:floatingSearch_showSearchKey="false"
-                app:floatingSearch_suggestionsListAnimDuration="200" />
 
         <LinearLayout
                 android:layout_width="match_parent"

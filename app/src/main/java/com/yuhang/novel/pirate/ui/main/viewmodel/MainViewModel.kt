@@ -118,8 +118,8 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取章节列表
      */
-    private fun getChapterList(bookid: String): Flowable<ChapterListResult> {
-        return mDataRepository.getBookChapterList(bookid)
+    private fun getChapterList(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
+        return mConvertRepository.getChapterList(obj)
     }
 
 
@@ -145,17 +145,16 @@ class MainViewModel : BaseViewModel() {
         return queryCollectionAll()
             .flatMap { Flowable.fromArray(*it.toTypedArray()) }
             .flatMap {
-                getChapterList(it.bookid)
+                getChapterList(it.niceBooksResult())
             }
-            .filter { it.status == 1 }
             .map {
-                val list = it.data.niceBookChapterKSEntity()
-                deleteChapterList(it.data.id)
-
-                insertChapterList(list)
-                return@map list
+                deleteChapterList(it[0].bookId)
+                insertChapterList(it)
+                return@map it
             }.compose(io_main())
     }
+
+
 
     /**
      * 查询所有收藏

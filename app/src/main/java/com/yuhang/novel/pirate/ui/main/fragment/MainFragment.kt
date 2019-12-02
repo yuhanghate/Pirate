@@ -246,27 +246,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         }
     }
 
-    /**
-     * 分享Dialog
-     */
-    private fun showShareDialog() {
-        MaterialDialog(mActivity!!).show {
-            title(text = "温馨提示")
-            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
-            negativeButton(text = "取消")
-            positiveButton(text = "分享", click = object : DialogCallback {
-                override fun invoke(p1: MaterialDialog) {
-                    //获取剪贴板管理器：
-                    val cm = mActivity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                    // 创建普通字符型ClipData
-                    val mClipData = ClipData.newPlainText("Label", "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
-                    // 将ClipData内容放到系统剪贴板里。
-                    cm!!.setPrimaryClip(mClipData)
-                    niceToast("复制成功,可以分享给朋友了")
-                }
-            })
-        }
-    }
 
     /**
      * Item点击事件
@@ -281,8 +260,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
             .subscribe({ReadBookActivity.start(mActivity!!, it!!, isShowLabel)},{})
 
 
-        //延迟1秒刷新.体验更好
-//        Handler().postDelayed({ mViewModel.adapter.notifyDataSetChanged() }, 1000)
 
     }
 
