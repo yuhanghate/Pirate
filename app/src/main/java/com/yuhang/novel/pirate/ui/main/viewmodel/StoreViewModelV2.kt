@@ -14,7 +14,7 @@ class StoreViewModelV2:BaseViewModel() {
 
     var lastTabEntity = 0
 
-    val mTitles: ArrayList<String> = arrayListOf<String>( "男生", "女生","小黄书")
-    val mFragments: ArrayList<BaseFragment<*, *>> = arrayListOf(ManFragment.newInstance(), LadyFragment.newInstance(), SexFragment.newInstance())
+    val mTitles: ArrayList<String> = arrayListOf<String>( "男生", "女生")
+    val mFragments: ArrayList<BaseFragment<*, *>> = arrayListOf(ManFragment.newInstance(), LadyFragment.newInstance())
 
 }

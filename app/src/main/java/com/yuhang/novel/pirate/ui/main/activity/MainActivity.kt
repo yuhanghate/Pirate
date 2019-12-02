@@ -21,6 +21,7 @@ import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
@@ -37,6 +38,7 @@ import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.io.File
+import java.lang.NullPointerException
 import java.util.concurrent.TimeUnit
 
 @RuntimePermissions
@@ -128,7 +130,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                 R.id.tab_me -> {
                     ImmersionBar.with(this)
                         .statusBarView(mBinding.statusBarV)
-                        .statusBarColor(R.color.md_grey_900)
+                        .statusBarColor(R.color.md_grey_f2)
                         .flymeOSStatusBarFontColor(R.color.md_white_1000)
                         .init()
                     showHideFragment(findFragment(MeFragment::class.java))
@@ -143,6 +145,9 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
                     showHideFragment(storeFragmentV2)
                     storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
+                    Flowable.just("").map { throw NullPointerException("") }
+                        .compose(io_main())
+                        .subscribe({},{})
                 }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
@@ -187,7 +192,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     private fun initUpdateChapterList() {
         Flowable.interval(3, 60 * 10, TimeUnit.SECONDS)
             .flatMap { mViewModel.updateChapterToDB() }
-            .subscribeOn(Schedulers.io())
+            .compose(io_main())
             .compose(bindToLifecycle())
             .subscribe({ }, { })
     }

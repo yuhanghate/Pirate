@@ -151,6 +151,9 @@
 }
 -dontnote rx.internal.util.PlatformDependent
 
+-dontwarn java.util.concurrent.Flow*
+-dontwarn io.reactivex.internal.**
+
 # Retrofit, OkHttp, Gson
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }

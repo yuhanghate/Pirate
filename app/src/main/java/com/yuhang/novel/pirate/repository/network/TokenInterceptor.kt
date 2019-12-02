@@ -29,8 +29,7 @@ class TokenInterceptor : Interceptor {
 
         // Request customization: add request headers
 
-
-        return chain?.proceed(originalHttpUrl)!!
+        return chain?.proceed(originalHttpUrl!!)!!
 
     }
 

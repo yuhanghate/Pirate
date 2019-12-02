@@ -154,7 +154,7 @@ class MainViewModel : BaseViewModel() {
 
                 insertChapterList(list)
                 return@map list
-            }
+            }.compose(io_main())
     }
 
     /**

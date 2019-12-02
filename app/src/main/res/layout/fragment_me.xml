@@ -13,7 +13,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/md_grey_900"
+                android:background="@color/md_grey_f2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -87,7 +87,7 @@
                             android:id="@+id/head_cl"
                             android:layout_width="match_parent"
                             android:layout_height="170dp"
-                            android:background="@color/md_grey_900">
+                            android:background="@color/md_grey_f2">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/avatar_civ"
@@ -140,7 +140,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="立即登录"
                                     android:textColor="@color/md_grey_100"
-                                    android:textSize="18sp"
+                                    android:textSize="22sp"
                                     android:textStyle="bold"
                                     />
 

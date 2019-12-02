@@ -29,9 +29,12 @@ import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity;
 import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity;
 import com.yuhang.novel.pirate.repository.database.entity.RankingListEntity;
 import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.TestEntity;
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_13_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_14_16;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_16_17;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_1_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
@@ -66,13 +69,15 @@ public abstract class AppDatabase
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
                             .allowMainThreadQueries()
-                            .addMigrations(Migration_3_4.instance(),
+                            .addMigrations(
+                                    Migration_3_4.instance(),
                                     Migration_4_5.instance(),
                                     Migration_5_6.instance(),
                                     Migration_6_7.instance(),
                                     Migration_13_16.instance(),
-                                    Migration_14_16.instance())
-//                            .fallbackToDestructiveMigration()
+                                    Migration_14_16.instance()
+                            )
+                            .fallbackToDestructiveMigration()
                             .build();
         }
         return INSTANCE;
