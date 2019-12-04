@@ -5,6 +5,7 @@ import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gyf.immersionbar.ImmersionBar
+import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
 import com.vondear.rxtool.RxNetTool
@@ -27,12 +28,14 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
+import com.yuhang.novel.pirate.utils.LogUtils
 import com.yuhang.novel.pirate.widget.pageview.TextPagerView
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
@@ -41,7 +44,7 @@ class ReadBookViewModel : BaseViewModel() {
     val TAG = ReadBookViewModel::class.java.simpleName
     val adapter: ReadBookAdapter by lazy { ReadBookAdapter() }
 
-
+    val log = LogUtils()
     /**
      * 请求参数
      */
@@ -49,7 +52,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 是否收藏
      */
-    var isCollection = false
+    var isCollection = true
 
 
     /**
@@ -90,6 +93,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 根据章节id查询内容
      */
+    @HunterDebug
     fun getBookContent(
         obj: BooksResult,
         chapter: BookChapterKSEntity
@@ -111,18 +115,17 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 最后一次阅读内容或第一章节内容
      */
+    @HunterDebug
     @SuppressLint("CheckResult")
     fun getLastBookContent(obj: BooksResult): Flowable<BookContentKSEntity> {
         return Flowable.just(obj)
             .flatMap {
-
                 //查询上次章节内容
                 val historyEntity =
                     mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
-                if (historyEntity != null) return@flatMap getBookContent(
-                    obj,
-                    getChapterEntity(historyEntity.chapterid)
-                )
+                if (historyEntity != null) {
+                    return@flatMap getBookContent(obj, getChapterEntity(historyEntity.chapterid))
+                }
 
                 //默认返回第一章内容
                 return@flatMap getBookContent(obj, chapterList[0])
@@ -131,11 +134,15 @@ class ReadBookViewModel : BaseViewModel() {
 
     /**
      * 预加载后面章节内容
+     * 后台操作,不影响前台显示
      */
+    @HunterDebug
     @SuppressLint("CheckResult")
     fun preloadBookContents(obj: BooksResult) {
 
         Flowable.just(obj)
+                //延迟2秒,防止加载死锁
+            .delay(10, TimeUnit.SECONDS)
             //查询上次章节内容
             .map {
                 return@map mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
@@ -167,7 +174,9 @@ class ReadBookViewModel : BaseViewModel() {
 
                 return@flatMap Flowable.just("")
 
-            }.compose(io_main()).compose(mActivity?.bindToLifecycle())
+            }
+            .compose(io_main())
+            .compose(mActivity?.bindToLifecycle())
             .subscribe({}, {}, {})
     }
 
@@ -212,6 +221,7 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 章节根据内容分成小页
      */
+    @HunterDebug
     fun getTxtPageList(
         pagerView: TextPagerView,
         obj: BookContentKSEntity
@@ -400,17 +410,20 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 加载章节列表
      */
+    @HunterDebug
     @SuppressLint("CheckResult")
     fun initChapterList(obj: BooksResult, reload: Boolean): Flowable<Unit> {
 
-        return Flowable.just(obj.getBookid())
+        return Flowable.just("")
             .flatMap {
                 //重新从服务器加载
-                if (reload) return@flatMap mConvertRepository.getChapterList(obj).map {
-                    mDataRepository.deleteChapterList(it[0].bookId)
-                    mDataRepository.insertChapterList(it)
-                    it
-                }.compose(io_main())
+                if (reload) {
+                    return@flatMap mConvertRepository.getChapterList(obj).map {
+                        mDataRepository.deleteChapterList(it[0].bookId)
+                        mDataRepository.insertChapterList(it)
+                        it
+                    }.compose(io_main())
+                }
                 //从本地获取
                 val list = mDataRepository.queryChapterObjList(obj.getBookid())
 
@@ -435,6 +448,7 @@ class ReadBookViewModel : BaseViewModel() {
                             }
                         }
                     }
+
                 if (list.isNotEmpty()) return@flatMap Flowable.just(list)
 
                 //从服务器获取
@@ -455,12 +469,15 @@ class ReadBookViewModel : BaseViewModel() {
 
     /**
      * 初始化缓存状态
+     * 后台刷新状态
+     * 不跟前台UI抢资源
      */
+    @HunterDebug
     fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) {
-        //单独查询.懒加载
+        //单独查询.懒加载.防止多线程锁死
         Flowable.just("")
+            .delay(5, TimeUnit.SECONDS)
             .map {
-                val list = arrayListOf<BookChapterKSEntity>()
                 chapterList.forEach {
                     val content = mDataRepository.queryBookContent(it.bookId, it.chapterId)
                     if (content != null) it.hasContent = 1 else it.hasContent = 0

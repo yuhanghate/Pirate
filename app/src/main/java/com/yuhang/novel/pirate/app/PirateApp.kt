@@ -76,7 +76,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         thread { initYouMent() }
         initToken()
         initDownload()
-
+        initStrictModel()
     }
 
     /**

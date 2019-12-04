@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'walle'
+apply plugin: 'hunter-debug'
 
 android {
     compileSdkVersion 29
@@ -12,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 153
-        versionName "1.5.3"
+        versionCode 154
+        versionName "1.5.4"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -89,13 +90,14 @@ walle {
     channelFile = new File("${project.getProjectDir()}/channel")
 }
 
+debugHunterExt {
+    runVariant = 'DEBUG'
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //官方兼容包
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -156,16 +158,6 @@ dependencies {
     implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
     implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.2'
 
-    //    implementation 'com.uber.autodispose:autodispose-android-archcomponents:1.0.0-RC2'
-
-    //    implementation 'com.uber.autodispose:autodispose:1.4.0'
-
-    //    implementation 'com.uber.autodispose:autodispose-lifecycle:1.4.0'
-
-    //    implementation 'com.uber.autodispose:autodispose-android:1.4.0'
-
-    //    implementation 'com.uber.autodispose:autodispose-rxlifecycle:1.4.0'
-
     //序列化
     implementation 'com.google.code.gson:gson:2.8.5'
 
@@ -181,9 +173,6 @@ dependencies {
 
     //自动换行线性布局
     implementation 'com.google.android:flexbox:1.1.0'
-
-    //multidex支持依赖
-    implementation 'com.android.support:multidex:1.0.3'
 
     //圆形图片
     implementation 'de.hdodenhof:circleimageview:3.0.1'
@@ -242,10 +231,6 @@ dependencies {
     //dns解析
     implementation 'com.qiniu:happy-dns:0.2.13'
 
-    //数据库调试工具
-
-    //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-
     //开关
     implementation project(path: ':switch-button')
 
@@ -264,7 +249,6 @@ dependencies {
     implementation project(path: ':FlycoTabLayout')
 
     implementation 'com.liulishuo.filedownloader:library:1.7.7'
-//    implementation'cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0'
 
     //阿里巴巴首页布局
     implementation('com.alibaba.android:vlayout:1.2.8@aar') {
@@ -276,4 +260,8 @@ dependencies {
 
     //圆形头像
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+    //记录方法耗时
+    implementation 'com.quinn.hunter:hunter-debug-library:0.9.6'
+
 }

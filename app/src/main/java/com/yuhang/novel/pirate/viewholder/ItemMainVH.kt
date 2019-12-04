@@ -7,9 +7,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemMainBinding
-import com.yuhang.novel.pirate.extension.niceCoverPic
-import com.yuhang.novel.pirate.extension.niceDp2px
-import com.yuhang.novel.pirate.extension.niceGlideInto
+import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import java.text.SimpleDateFormat
@@ -37,14 +35,10 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
         /**
          * 加载头像
          */
-        val drawable = mContext.getDrawable(com.yuhang.novel.pirate.R.drawable.ic_default_img)
-        val placeholder =
-            RequestOptions().transforms(CenterCrop(), RoundedCorners(mContext.niceDp2px(3f)))
-                .placeholder(drawable)
-                .error(drawable)
         getGlide().load(niceCoverPic(obj.cover))
-            .apply(placeholder)
-            .into(niceGlideInto(mBinding.imageIv))
+            .transition(niceCrossFade())
+            .apply(niceDefaultImageVertical())
+            .into(mBinding.imageIv)
 
         mBinding.btnMore.setOnClickListener {
             getListener<OnClickItemMoreListener>()?.onClickItemMoreListener(

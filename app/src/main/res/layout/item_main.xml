@@ -11,23 +11,32 @@
         android:paddingEnd="15dp">
 
 
-        <com.lid.lib.LabelImageView
-            android:id="@+id/image_iv"
-            android:layout_width="60dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_default_img"
-            app:label_backgroundColor="#FF9800"
-            app:label_distance="10dp"
-            app:label_height="14dp"
-            app:label_orientation="RIGHT_TOP"
-            app:label_text="更新"
-            app:label_textSize="7sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.cardview.widget.CardView
+                android:id="@+id/image_cv"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardUseCompatPadding="true"
+                android:layout_height="wrap_content">
+
+            <com.lid.lib.LabelImageView
+                    android:id="@+id/image_iv"
+                    android:layout_width="60dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_default_img"
+                    app:label_backgroundColor="#FF9800"
+                    app:label_distance="10dp"
+                    app:label_height="14dp"
+                    app:label_orientation="RIGHT_TOP"
+                    app:label_text="更新"
+                    app:label_textSize="7sp"
+                    />
+        </androidx.cardview.widget.CardView>
+
         <!--<ImageView-->
         <!--android:id="@+id/image_iv"-->
         <!--android:layout_width="60dp"-->
@@ -49,7 +58,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_more"
-            app:layout_constraintStart_toEndOf="@+id/image_iv"
+            app:layout_constraintStart_toEndOf="@+id/image_cv"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView

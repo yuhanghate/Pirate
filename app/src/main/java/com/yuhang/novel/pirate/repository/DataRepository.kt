@@ -97,7 +97,6 @@ class DataRepository(val context: Context) {
     /**
      * 查询数据库书籍章节
      */
-    @Synchronized
     fun queryChapterObjList(bookid: String): List<BookChapterKSEntity> {
         return mDatabase.bookChapterKSDao.queryObj(bookid)
     }
@@ -149,7 +148,6 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    @Synchronized
     fun queryBookContent(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.gson.Gson
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.xw.repo.BubbleSeekBar
@@ -43,6 +44,7 @@ import com.yuhang.novel.pirate.ui.book.dialog.DownloadChapterDialog
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListKdActivity
+import com.yuhang.novel.pirate.utils.LogUtils
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.widget.OnScrollListener
 import com.yuhang.novel.pirate.widget.ReadBookTextView
@@ -67,7 +69,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     private var mBackgroundInTransparent: Animation? = null
     private var mBackgroundOutTransparent: Animation? = null
 
-
+    val log = LogUtils()
     private var toggleMenuSwitch = false
 
 
@@ -166,39 +168,39 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         isNext = false
     }
 
-
-    @SuppressLint("CheckResult")
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-
-        this.intent = intent
-        intent ?: return
-        mViewModel.clearData()
-        mViewModel.mBooksResult = getBooksResult()
-        mBinding.loading.showLoading()
-        mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (!TextUtils.isEmpty(getChapterid())) {
-                    //打开指定章节
-                    mViewModel.chapterid = getChapterid()
-                    initDrawerView()
-                    initChapterProgressSeekBar()
-                    netDataChapterContentFromId(getChapterid())
-                    return@subscribe
-                }
-                netDataChatpterContent()
-            }, {
-                mBinding.loading.showError()
-            })
-        mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
-
-    }
+//
+//    @HunterDebug
+//    @SuppressLint("CheckResult")
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+//
+//        this.intent = intent
+//        intent ?: return
+//        mViewModel.clearData()
+//        mViewModel.mBooksResult = getBooksResult()
+//        mBinding.loading.showLoading()
+//        mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
+//            .compose(bindToLifecycle())
+//            .subscribe({
+//                if (!TextUtils.isEmpty(getChapterid())) {
+//                    //打开指定章节
+//                    mViewModel.chapterid = getChapterid()
+//                    initDrawerView()
+//                    initChapterProgressSeekBar()
+//                    netDataChapterContentFromId(getChapterid())
+//                    return@subscribe
+//                }
+//                netDataChatpterContent()
+//            }, {
+//                mBinding.loading.showError()
+//            })
+//        mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
+//
+//    }
 
     override fun initView() {
         super.initView()
         initViewModel()
-//        initContentViewHeight()
         initRefreshLayout()
         initRecyclerView()
 
@@ -206,9 +208,11 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         initBackground()
         resetBackground(BookConstant.getPageColorIndex())
         onClick()
+
     }
 
     @SuppressLint("CheckResult")
+    @HunterDebug
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         //如果获取焦点,并且RecyclerView是第一次加载
@@ -737,7 +741,7 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
     /**
      * 获取小说最近阅读章节内容
      */
-
+    @HunterDebug
     @SuppressLint("CheckResult")
     private fun netDataChatpterContent() {
         mBinding.loading.showLoading()
@@ -745,7 +749,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
             .compose(bindToLifecycle())
             .subscribe({ contentResult ->
                 mBinding.loading.showContent()
-
                 val list = mViewModel.getTxtPageList(mBinding.textPage, contentResult)
                 mViewModel.updateReadHistory(
                     contentResult.chapterId,
@@ -762,7 +765,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                 if (!mBinding.loading.isError) {
                     mBinding.loading.showError()
                 }
-                Logger.t("空白").i("网络加载异常")
             }, {})
     }
 
