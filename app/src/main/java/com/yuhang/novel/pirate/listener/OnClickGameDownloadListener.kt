@@ -27,4 +27,10 @@ interface OnClickGameDownloadListener {
      * 安装
      */
     fun onGameDownloadInstallListener(view:ProgressLayout, obj:GameDataResult, position: Int)
+
+    /**
+     * 按钮点击事件
+     * 不区分状态
+     */
+    fun onGameDownloadListener(obj:GameDataResult, position: Int)
 }

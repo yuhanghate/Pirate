@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
@@ -132,8 +133,10 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     onClick()
                     mBinding.btnLogin.text = "立即登录"
                     mBinding.btnLogin.textSize = 24f
+                    mBinding.loginDescTv.visibility = View.VISIBLE
                 } else {
                     mBinding.btnLogin.text = "随友:${it?.username}"
+                    mBinding.loginDescTv.visibility = View.GONE
                     mBinding.btnLogin.textSize = 18f
                     mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
                     //登录界面

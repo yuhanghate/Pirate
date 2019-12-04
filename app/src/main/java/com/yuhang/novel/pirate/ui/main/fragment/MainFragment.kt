@@ -192,6 +192,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                         mViewModel.deleteCollection(bookid = bookInfoKSEntity.bookid)
                         mViewModel.adapter.getList().remove(bookInfoKSEntity)
                         mViewModel.adapter.notifyDataSetChanged()
+                        initEmptyView()
                     }
                     "置顶" -> {
                         mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 书架置顶")
@@ -300,17 +301,24 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     it.filterNotNull().forEach { list.add(it) }
                     mViewModel.adapter.getList().clear()
                     mViewModel.adapter.setRefersh(list)
-                    if (mViewModel.adapter.getList().isEmpty()) {
-                        mBinding.btnEmpty.visibility = View.VISIBLE
-                    } else {
-                        mBinding.btnEmpty.visibility = View.GONE
-                    }
 
+                    initEmptyView()
                 }, {
                     mBinding.loading.showContent()
                     mViewModel.adapter.setRefersh(arrayListOf())
                     mBinding.refreshLayout.finishRefresh(false)
                 })
+    }
+
+    /**
+     * 去搜索书
+     */
+    private fun initEmptyView() {
+        if (mViewModel.adapter.getList().isEmpty()) {
+            mBinding.btnEmpty.visibility = View.VISIBLE
+        } else {
+            mBinding.btnEmpty.visibility = View.GONE
+        }
     }
 
     /**

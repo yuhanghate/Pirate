@@ -12,8 +12,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 152
-        versionName "1.5.2"
+        versionCode 153
+        versionName "1.5.3"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -263,12 +263,8 @@ dependencies {
 
     implementation project(path: ':FlycoTabLayout')
 
-    // 文件下载
-    implementation 'com.liulishuo.okdownload:okdownload:1.0.7-SNAPSHOT'
-    // 断点续传
-    implementation 'com.liulishuo.okdownload:sqlite:1.0.7-SNAPSHOT'
-    // okhttp支持
-    implementation 'com.liulishuo.okdownload:okhttp:1.0.7-SNAPSHOT'
+    implementation 'com.liulishuo.filedownloader:library:1.7.7'
+//    implementation'cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0'
 
     //阿里巴巴首页布局
     implementation('com.alibaba.android:vlayout:1.2.8@aar') {

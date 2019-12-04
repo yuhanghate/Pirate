@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.extension
 
+import android.app.Service
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.base.BaseViewModel
@@ -28,5 +29,13 @@ fun <T> BaseFragment<*, *>.io_main(): FlowableTransformer<T, T> {
         upstream
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
+}
+
+fun <T> Service.io_main(): FlowableTransformer<T, T> {
+    return FlowableTransformer { upstream ->
+        upstream
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

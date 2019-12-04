@@ -6,15 +6,16 @@ import co.mobiwise.library.ProgressLayoutListener
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.liulishuo.okdownload.StatusUtil
-import com.vondear.rxtool.*
+import com.liulishuo.filedownloader.model.FileDownloadStatus
+import com.vondear.rxtool.RxAppTool
+import com.vondear.rxtool.RxDataTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemGameBinding
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickGameDownloadListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameDataResult
-import java.io.File
+import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
 
 class ItemGameVH(parent: ViewGroup) :
     BaseViewHolder<GameDataResult, ItemGameBinding>(parent, R.layout.item_game),
@@ -28,6 +29,7 @@ class ItemGameVH(parent: ViewGroup) :
 
         mBinding.nameTv.text = obj.name
         mBinding.descTv.text = obj.description
+        mBinding.typeTv.text = "${obj.gameType} | ${RxDataTool.byte2FitSize(obj.size)}"
 
 
         val placeholder =
@@ -39,36 +41,66 @@ class ItemGameVH(parent: ViewGroup) :
             .into(mBinding.avatarIv)
 
         onClick(obj, position)
-        initDownloadStatus(obj)
+        initDownloadStatus(obj, position)
     }
 
     /**
      * 初始化下载按钮状态
      */
-    private fun initDownloadStatus(obj: GameDataResult) {
+    private fun initDownloadStatus(obj: GameDataResult, position: Int) {
 
-        when (StatusUtil.getStatus(obj.task!!)) {
-            StatusUtil.Status.COMPLETED -> mBinding.downloadTv.text = "安装"
-            StatusUtil.Status.IDLE -> {
-                mBinding.downloadTv.text = "下载"
+        when (DownloadServiceImpl.getDownloadStatus(obj.downloadUrl)) {
+           FileDownloadStatus.INVALID_STATUS ->  {
+               mBinding.downloadTv.text = "下载"
+               mBinding.progressLayout.stop()
+           }
+            FileDownloadStatus.error ->  {
+                mBinding.downloadTv.text = "重试"
+                mBinding.progressLayout.stop()
             }
-            StatusUtil.Status.RUNNING -> {
+            FileDownloadStatus.progress ->  {
                 mBinding.downloadTv.text = "暂停"
+                mBinding.progressLayout.start()
             }
-            StatusUtil.Status.PENDING -> {
+            FileDownloadStatus.completed ->  {
+                mBinding.downloadTv.text = "安装"
+                mBinding.progressLayout.cancel()
+            }
+            FileDownloadStatus.paused ->  {
+                mBinding.downloadTv.text = "继续"
+                mBinding.progressLayout.stop()
+            }
+            FileDownloadStatus.pending ->  {
                 mBinding.downloadTv.text = "暂停"
-            }
-            //任务完成,判断文件是否存在
-            StatusUtil.Status.UNKNOWN -> {
-                val path = RxFileTool.getCacheFolder(mContext).absolutePath+File.separator+"${RxTool.Md5(obj.downloadUrl)}.apk"
-                if (RxFileTool.isFileExists(path)) {
-                    mBinding.downloadTv.text = "安装"
-                } else {
-                    //没有文件就下载
-                    mBinding.downloadTv.text = "下载"
-                }
+                mBinding.progressLayout.start()
             }
         }
+
+//        obj.task?.also {
+//            when (StatusUtil.getStatus(it)) {
+//                StatusUtil.Status.COMPLETED -> mBinding.downloadTv.text = "安装"
+//                StatusUtil.Status.IDLE -> {
+//                    mBinding.downloadTv.text = "下载"
+//                }
+//                StatusUtil.Status.RUNNING -> {
+//                    mBinding.downloadTv.text = "暂停"
+//                }
+//                StatusUtil.Status.PENDING -> {
+//                    mBinding.downloadTv.text = "暂停"
+//                }
+//                //任务完成,判断文件是否存在
+//                StatusUtil.Status.UNKNOWN -> {
+//                    val path = RxFileTool.getCacheFolder(mContext).absolutePath+File.separator+"${RxTool.Md5(obj.downloadUrl)}.apk"
+//                    if (RxFileTool.isFileExists(path)) {
+//                        mBinding.downloadTv.text = "安装"
+//                    } else {
+//                        //没有文件就下载
+//                        mBinding.downloadTv.text = "下载"
+//                    }
+//                }
+//            }
+//        }
+
         if (RxAppTool.isInstallApp(mContext, obj.packageName)) {
             mBinding.downloadTv.text = "打开"
         }
@@ -81,38 +113,7 @@ class ItemGameVH(parent: ViewGroup) :
     private fun onClick(obj: GameDataResult, position: Int) {
         mBinding.progressLayout.setProgressLayoutListener(this, obj)
         mBinding.downloadTv.setOnClickListener {
-            when (mBinding.downloadTv.text.toString()) {
-                "下载" -> {
-                    mBinding.downloadTv.text = "暂停"
-                    getListener<OnClickGameDownloadListener>()?.onGameDownloadStartListener(
-                        mBinding.progressLayout,
-                        obj,
-                        position
-                    )
-                }
-                "暂停" -> {
-                    mBinding.downloadTv.text = "下载"
-                    getListener<OnClickGameDownloadListener>()?.onGameDownloadPauseListener(
-                        mBinding.progressLayout,
-                        obj,
-                        position
-                    )
-                }
-                "安装" -> {
-                    getListener<OnClickGameDownloadListener>()?.onGameDownloadInstallListener(
-                        mBinding.progressLayout,
-                        obj,
-                        position
-                    )
-                }
-                "打开" -> {
-                    getListener<OnClickGameDownloadListener>()?.onGameDownloadOpenListener(
-                        mBinding.progressLayout,
-                        obj,
-                        position
-                    )
-                }
-            }
+            getListener<OnClickGameDownloadListener>()?.onGameDownloadListener(obj, position)
         }
     }
 
@@ -129,11 +130,5 @@ class ItemGameVH(parent: ViewGroup) :
             mBinding.downloadTv.text = "打开"
         }
 
-        val length = obj.task?.file?.length()?:0
-        if (length > 0) {
-            mBinding.typeTv.text = "${obj.gameType} | ${RxDataTool.byte2FitSize(length)}"
-        } else {
-            mBinding.typeTv.text = obj.gameType
-        }
     }
 }

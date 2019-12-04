@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.pirate.result
 
-import com.liulishuo.okdownload.DownloadTask
+import com.google.gson.annotations.Expose
+import com.liulishuo.filedownloader.DownloadTask
 
 class GameDataResult {
 
@@ -42,5 +43,6 @@ class GameDataResult {
     /**
      * 下载任务
      */
-    var task:DownloadTask? = null
+//    @Expose
+//    var task: DownloadTask? = null
 }

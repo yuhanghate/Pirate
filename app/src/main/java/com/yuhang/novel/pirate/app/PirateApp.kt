@@ -6,6 +6,8 @@ import android.app.Application
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
+import com.liulishuo.filedownloader.FileDownloader
+import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection
 import com.meituan.android.walle.WalleChannelReader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -73,8 +75,23 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initLog()
         thread { initYouMent() }
         initToken()
+        initDownload()
 
+    }
 
+    /**
+     * 下载配置
+     */
+    private fun initDownload() {
+        FileDownloader.setupOnApplicationOnCreate(this)
+            .connectionCreator(
+                FileDownloadUrlConnection.Creator(
+                    FileDownloadUrlConnection.Configuration()
+                        .connectTimeout(15000) // set connection timeout.
+                        .readTimeout(15000) // set read timeout.
+                )
+            )
+            .commit()
     }
 
     /**
