@@ -6,11 +6,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration_16_17 : Migration(16, 17) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        //分类表
-        database.execSQL("CREATE TABLE `TestEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NUll, `testName` TEXT NOT NULL, `testCode` INTEGER NOT NULL)")
-
-        //后台下载表
-//        database.execSQL("CREATE TABLE IF NOT EXISTS `BookDownloadEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bookName` TEXT NOT NULL, `progress` INTEGER NOT NULL, `total` INTEGER NOT NULL, `resouce` TEXT NOT NULL, `bookId` TEXT NOT NULL, `cover` TEXT NOT NULL, `author` TEXT NOT NULL, `uuid` TEXT NOT NULL)")
+        //章节表增加索引
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_BookChapterKSEntity_bookId` ON `BookChapterKSEntity` (`bookId`)")
+        //内容表增加索引
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_BookContentKSEntity_bookId` ON `BookContentKSEntity` (`bookId`)")
     }
 
 

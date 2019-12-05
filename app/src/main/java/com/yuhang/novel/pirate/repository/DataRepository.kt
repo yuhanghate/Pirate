@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.*
 import com.google.gson.Gson
+import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.extension.niceBody
 import com.yuhang.novel.pirate.extension.niceDir
@@ -97,6 +98,7 @@ class DataRepository(val context: Context) {
     /**
      * 查询数据库书籍章节
      */
+    @HunterDebug
     fun queryChapterObjList(bookid: String): List<BookChapterKSEntity> {
         return mDatabase.bookChapterKSDao.queryObj(bookid)
     }
@@ -104,6 +106,7 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库书籍章节
      */
+    @HunterDebug
     fun insertChapterList(list: List<BookChapterKSEntity>) {
         mDatabase.bookChapterKSDao.insert(list)
     }
@@ -111,6 +114,7 @@ class DataRepository(val context: Context) {
     /**
      * 删除数据库书籍对应的章节列表
      */
+    @HunterDebug
     fun deleteChapterList(bookid: String) {
         mDatabase.bookChapterKSDao.delete(bookid)
     }
@@ -118,6 +122,7 @@ class DataRepository(val context: Context) {
     /**
      * 更新章节内容
      */
+    @HunterDebug
     fun updateChapter(obj: BookChapterKSEntity) {
         mDatabase.bookChapterKSDao.update(obj)
     }
@@ -125,6 +130,7 @@ class DataRepository(val context: Context) {
     /**
      * 从数据库查询当前id对应的书籍信息
      */
+    @HunterDebug
     fun queryBookInfo(bookid: String): BookInfoKSEntity? {
         return mDatabase.bookInfoKSDao.query(bookid)
     }
@@ -132,6 +138,7 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库书籍信息
      */
+    @HunterDebug
     fun insertBookInfo(obj: BookInfoKSEntity) {
         mDatabase.bookInfoKSDao.insert(obj)
     }
@@ -139,6 +146,7 @@ class DataRepository(val context: Context) {
     /**
      * 更新数据库书籍信息
      */
+    @HunterDebug
     fun updateBookInfo(obj: BookInfoKSEntity) {
         //更新标签
         updateLable(obj.bookid, obj.lastChapterName)
@@ -148,6 +156,7 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
+    @HunterDebug
     fun queryBookContent(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }
@@ -155,6 +164,7 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库章节内容
      */
+    @HunterDebug
     @Synchronized
     fun insertBookContent(obj: BookContentKSEntity): BookContentKSEntity {
         val contentObj = queryBookContentObj(obj.bookId, obj.chapterId)
@@ -174,6 +184,7 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
+    @HunterDebug
     fun queryBookContentObj(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.queryObj(bookid, chapterid)
     }
@@ -182,6 +193,7 @@ class DataRepository(val context: Context) {
     /**
      * 查询搜索记录记录
      */
+    @HunterDebug
     fun querySearchHistoryList(): List<SearchHistoryKSEntity?> {
         return mDatabase.searchHistoryKSDao.query()
     }
@@ -189,6 +201,7 @@ class DataRepository(val context: Context) {
     /**
      * 插入历史记录
      */
+    @HunterDebug
     fun insertSearchHistory(obj: SearchHistoryKSEntity) {
         return mDatabase.searchHistoryKSDao.insert(obj)
     }
@@ -196,29 +209,17 @@ class DataRepository(val context: Context) {
     /**
      * 删除历史记录
      */
+    @HunterDebug
     fun deleteSearchHistory(obj: SearchHistoryKSEntity) {
         return mDatabase.searchHistoryKSDao.delete(obj)
     }
 
     /**
-     * 清空历史记录
-     */
-    fun clearSearchHistory() {
-        mDatabase.searchHistoryKSDao.clear()
-    }
-
-    /**
      * 搜索历史记录
      */
+    @HunterDebug
     fun querySearchHisotry(keyword: String): SearchHistoryKSEntity? {
         return mDatabase.searchHistoryKSDao.query(keyword)
-    }
-
-    /**
-     * 根据关键字匹配模糊匹配取5个
-     */
-    fun queryListHisotry(keyword: String): List<SearchHistoryKSEntity?> {
-        return mDatabase.searchHistoryKSDao.queryList(keyword)
     }
 
     /**
@@ -242,21 +243,16 @@ class DataRepository(val context: Context) {
     /**
      * 查询书箱
      */
+    @HunterDebug
     fun queryCollection(bookid: String): BookCollectionKSEntity? {
         return mDatabase.bookCollectionKSDao.query(bookid)
 
     }
 
     /**
-     * 查询所有收藏的书箱
-     */
-    fun queryCollectionAll(): List<BookCollectionKSEntity?> {
-        return mDatabase.bookCollectionKSDao.queryAll()
-    }
-
-    /**
      * 删除收藏
      */
+    @HunterDebug
     fun deleteCollection(bookid: String) {
         mDatabase.bookCollectionKSDao.delete(bookid)
     }
@@ -294,6 +290,7 @@ class DataRepository(val context: Context) {
     /**
      * 获取最近浏览的小说
      */
+    @HunterDebug
     fun queryReadHistoryList(pageNum: Int): List<BookInfoKSEntity?> {
         return getDatabase().bookInfoKSDao.queryReadHistoryList(pageNum)
     }
@@ -313,15 +310,9 @@ class DataRepository(val context: Context) {
     /**
      * 根据小说id查询最近阅读章节
      */
+    @HunterDebug
     fun queryLastOpenChapter(bookid: String): BookContentKSEntity? {
         return getDatabase().bookContentKSDao.queryLastOpenChapter(bookid)
-    }
-
-    /**
-     * 获取第一章节id
-     */
-    fun queryFirstChapterid(bookid: String): String {
-        return getDatabase().bookChapterKSDao.queryFirstChapterid(bookid)
     }
 
     /**
@@ -611,6 +602,7 @@ class DataRepository(val context: Context) {
     /**
      * 获取最近阅读记录
      */
+    @HunterDebug
     fun queryBookReadHistoryEntity(bookid: String): BookReadHistoryEntity? {
         return getDatabase().bookReadHistoryDao.queryLastChanpterEntity(bookid)
     }
@@ -911,13 +903,15 @@ class DataRepository(val context: Context) {
     /**
      * 快读 男生分类
      */
+    @HunterDebug
     fun queryCategoryMan(): List<CategoryKDEntity> {
         return getDatabase().categoryKDDao.queryMan()
     }
 
     /**
      * 快读 女生分类
-     */
+     */@HunterDebug
+
     fun queryCategoryLady(): List<CategoryKDEntity> {
         return getDatabase().categoryKDDao.queryLady()
     }
@@ -925,6 +919,7 @@ class DataRepository(val context: Context) {
     /**
      * 快读 出版分类
      */
+    @HunterDebug
     fun queryCategoryPress(): List<CategoryKDEntity> {
         return getDatabase().categoryKDDao.queryPress()
     }

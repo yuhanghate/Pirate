@@ -53,7 +53,7 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
         UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class,
         PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class,
         CategoryKDEntity.class},
-        version = 16, exportSchema = false)
+        version = 17, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -75,7 +75,8 @@ public abstract class AppDatabase
                                     Migration_5_6.instance(),
                                     Migration_6_7.instance(),
                                     Migration_13_16.instance(),
-                                    Migration_14_16.instance()
+                                    Migration_14_16.instance(),
+                                    Migration_16_17.instance()
                             )
                             .fallbackToDestructiveMigration()
                             .build();

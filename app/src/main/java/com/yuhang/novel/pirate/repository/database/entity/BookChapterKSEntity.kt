@@ -2,12 +2,13 @@ package com.yuhang.novel.pirate.repository.database.entity
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
  * 小说章节
  */
-@Entity
+@Entity(indices = [Index(value = ["bookId"])])
 class BookChapterKSEntity{
   @PrimaryKey(autoGenerate = true)
   var id: Int = 0

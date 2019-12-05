@@ -57,6 +57,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
 
     override fun onCreate() {
+//        initStrictModel()
         mInstance = this
         super.onCreate()
         initAppcation()
@@ -76,7 +77,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         thread { initYouMent() }
         initToken()
         initDownload()
-        initStrictModel()
     }
 
     /**
@@ -102,10 +102,11 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
+                    .detectDiskReads()// 检测在UI线程读磁盘操作
+                    .detectDiskWrites()// 检测在UI线程写磁盘操作
+                    .detectCustomSlowCalls()//监测自定义运行缓慢函数
                     .detectAll()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
+                    .penaltyLog()//写入日志
                     .build()
             )
 
@@ -113,6 +114,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
                 StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
+                    .detectActivityLeaks()
                     .penaltyLog()
                     .penaltyDeath()
                     .build()

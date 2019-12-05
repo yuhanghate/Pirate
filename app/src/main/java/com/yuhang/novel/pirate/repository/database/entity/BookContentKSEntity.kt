@@ -2,11 +2,12 @@ package com.yuhang.novel.pirate.repository.database.entity
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.yuhang.novel.pirate.widget.pageview.TextPageBean
 import com.yuhang.novel.pirate.widget.pageview.TxtPage
 
-@Entity
+@Entity(indices = [Index(value = ["bookId"])])
 class BookContentKSEntity {
 
     @PrimaryKey(autoGenerate = true)
