@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -14,6 +15,7 @@ import com.yuhang.novel.pirate.databinding.ActivityResouceListKdBinding
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceListKdViewModel
 
 /**
@@ -54,11 +56,24 @@ class ResouceListKdActivity :
         onClick()
     }
 
+    override fun initStatusTool() {
+        val windows = PreferenceUtil.getString("page_color", "#F6EFDD")
+        ImmersionBar.with(this)
+            .statusBarView(mBinding.statusBarV)
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarColor(windows)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
+            .navigationBarColor(windows)
+            .init()
+    }
+
     /**
      * 背景
      */
     private fun initBackground() {
-        window.navigationBarColor = BookConstant.getPageBackground()
+//        window.navigationBarColor = BookConstant.getPageBackground()
+        mBinding.toolbarAbl.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
     }
 

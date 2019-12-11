@@ -38,6 +38,11 @@ class UserEntity {
     var token :String = ""
 
     /**
+     * 是否会员
+     */
+    var isVip : Boolean = false
+
+    /**
      * 最后登陆时间
      */
     var lastTime:Date  = Date()

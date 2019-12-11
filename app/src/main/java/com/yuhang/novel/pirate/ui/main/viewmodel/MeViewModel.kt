@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import com.vondear.rxtool.RxDeviceTool
 import com.yuhang.novel.pirate.base.BaseViewModel
+import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import io.reactivex.Flowable
@@ -79,6 +80,14 @@ class MeViewModel : BaseViewModel() {
         //注意这个是8.0新API
         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,  Uri.parse("package:" + mFragment?.activity?.packageName))
         mFragment?.activity?.startActivityForResult(intent, 10086)
+    }
+
+    /**
+     * 查询配置
+     */
+    fun queryConfig(): Flowable<ConfigEntity> {
+        return Flowable.just("")
+            .map { mDataRepository.queryConfig() }
     }
 
 

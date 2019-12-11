@@ -13,20 +13,7 @@ interface OnClickGameDownloadListener {
      */
     fun onGameDownloadStartListener(view:ProgressLayout, obj:GameDataResult, position:Int)
 
-    /**
-     * 点击暂停
-     */
-    fun onGameDownloadPauseListener(view:ProgressLayout, obj:GameDataResult, position: Int)
 
-    /**
-     * 点击打开
-     */
-    fun onGameDownloadOpenListener(view:ProgressLayout, obj:GameDataResult, position: Int)
-
-    /**
-     * 安装
-     */
-    fun onGameDownloadInstallListener(view:ProgressLayout, obj:GameDataResult, position: Int)
 
     /**
      * 按钮点击事件

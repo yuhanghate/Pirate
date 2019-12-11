@@ -44,7 +44,7 @@ interface KanShuNetApi {
      * dirId = (bookId - 后三位) + 1
      * bookId: 书本id
      */
-    @Headers("Cache-Control: public, max-age=5")
+    @Headers("Cache-Control: public, max-stale=5")
     @GET("https://infos.jiaston.com/BookFiles/Html/{dirId}/{bookId}/info.html")
     fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
@@ -55,6 +55,7 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
+    @Headers("Cache-Control: public, max-stale=60")
     @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(

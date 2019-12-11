@@ -160,6 +160,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         Handler().postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
 
         initCategory()
+        initConfig()
     }
 
     /**
@@ -167,6 +168,15 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     private fun initCategory() {
         mViewModel.preloadCategory()
+            .compose(bindToLifecycle())
+            .subscribe({},{})
+    }
+
+    /**
+     * 加载配置文件
+     */
+    private fun initConfig() {
+        mViewModel.preloadConfig()
             .compose(bindToLifecycle())
             .subscribe({},{})
     }

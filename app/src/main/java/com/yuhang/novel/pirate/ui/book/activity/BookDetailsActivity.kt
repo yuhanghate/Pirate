@@ -3,18 +3,15 @@ package com.yuhang.novel.pirate.ui.book.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.github.aakira.expandablelayout.Utils
 import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
@@ -37,7 +34,6 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.SystemUtil
-import jp.wasabeef.glide.transformations.BlurTransformation
 import org.greenrobot.eventbus.EventBus
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -212,8 +208,16 @@ class BookDetailsActivity :
                 mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "移出书架")
                 removeCollection()
             } else {
+
+                //是否会员
+                if (mViewModel.queryCollectionAll().size > 20 && !mViewModel.isVip()) {
+                    niceToast("超过20本小说请开通会员哦~")
+                    return@setOnClickListener
+                }
                 mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "加入书架")
                 addCollection()
+
+
             }
         }
 
@@ -223,6 +227,11 @@ class BookDetailsActivity :
             //阅读界面需要等章节列表全部加载完成
             if (mViewModel.chapterList.isEmpty()) {
                 showProgressbar("努力获取章节列表...", true)
+                return@setOnClickListener
+            }
+            //是否会员
+            if (mViewModel.queryDownloadAll().size > 20 && !mViewModel.isVip()) {
+                niceToast("超过20本小说请开通会员哦~")
                 return@setOnClickListener
             }
             mViewModel.downloadBook(getBookResult())
@@ -240,7 +249,8 @@ class BookDetailsActivity :
                 GlidePalette.with(obj.cover.niceCoverPic())
                     .use(BitmapPalette.Profile.MUTED_DARK)
                     .crossfade(true)
-                    .intoBackground(mBinding.includeToobarHeadOpen.bgCoverIv))
+                    .intoBackground(mBinding.includeToobarHeadOpen.bgCoverIv)
+            )
             .into(mBinding.includeToobarHeadOpen.coverIv)
 //        Glide.with(this).load(obj.cover.niceCoverPic())
 //            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
@@ -445,7 +455,7 @@ class BookDetailsActivity :
      */
     @SuppressLint("CheckResult")
     private fun addCollection() {
-        val bookid = mViewModel.entity?.bookid ?: return
+        mViewModel.entity?.bookid ?: return
         mViewModel.postCollection(getBookResult())
         mViewModel.insertCollection(getBookResult())
             .compose(bindToLifecycle())

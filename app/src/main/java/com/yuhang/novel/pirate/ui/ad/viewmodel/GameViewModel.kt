@@ -8,51 +8,26 @@ import androidx.annotation.RequiresApi
 import co.mobiwise.library.ProgressLayout
 import com.vondear.rxtool.RxFileTool
 import com.yuhang.novel.pirate.base.BaseViewModel
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameDataResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameRecommentResult
 import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
 import com.yuhang.novel.pirate.ui.ad.adapter.GameAdapter
+import io.reactivex.Flowable
 
 class GameViewModel : BaseViewModel() {
 
     val adapter: GameAdapter by lazy { GameAdapter() }
 
     val objList by lazy { hashMapOf<String, Int>() }
-    /**
-     * 下载view
-     */
-    val progressView by lazy { hashMapOf<String, ProgressLayout>() }
 
-    fun getTestData(): List<GameDataResult> {
-        val list = arrayListOf<GameDataResult>()
-//        list.add(GameDataResult().apply {
-//            this.name = "克鲁赛德战记"
-//            this.image = "https://img.tapimg.com/market/lcs/8d47be91bf3e1a672f281a6615f3765a_360.png"
-//            this.gameType = "动作类游戏"
-//            this.size = 123432493
-//            this.description = "可勾起回忆的复古的像素风格"
-//            this.downloadUrl = "http://cqaostd.redbeancorp.com/cq2/com.nhnst.SKCQCN.otaku_REAL03_4.20.0.CK_level2.apk"
-//            this.packageName = "com.nhnst.SKCQCN.otaku"
-//        })
-        list.add(GameDataResult().apply {
-            this.name = "战国幻武"
-            this.image = "https://img.tapimg.com/market/lcs/03f1fd1285ac27142b6322cc0cb7ef15_360.png"
-            this.gameType = "策略类游戏"
-            this.size = 509000179
-            this.description = "体验不一样的战场"
-            this.downloadUrl = "http://gncn.comicocn.com/otaku_2019_1202_1837_V7.24.apk"
-            this.packageName = "com.Otaku.dazhanguowuyu"
-        })
-//        list.add(GameDataResult().apply {
-//            this.name = "欢乐魏蜀吴"
-//            this.image = "https://img.tapimg.com/market/icons/bac029492cc43c00ebb22a30fe92bcfd_360.png"
-//            this.gameType = "动作类游戏"
-//            this.size = 156432493
-//            this.description = "最强三国志RPG游戏"
-//            this.downloadUrl = "http://ksaostd.redbeancorp.com/apk/com.nhnst.KSCN.otaku_v2.36.2_REAL01_1000000052_level2.apk"
-//            this.packageName = "com.nhnst.KSCN.otaku"
-//        })
-        return list
+
+    /**
+     * 获取游戏推荐列表
+     */
+    fun getGameRecommentList(pageNum:Int): Flowable<GameRecommentResult> {
+        return mDataRepository.getGameRecommentList(pageNum).compose(io_main())
     }
 
     /**
@@ -60,20 +35,7 @@ class GameViewModel : BaseViewModel() {
      */
     fun createTask(list : List<GameDataResult>):List<GameDataResult> {
         list.forEachIndexed { index, gameDataResult ->
-            objList.put(gameDataResult.downloadUrl, index)
-//            val task = DownloadTask.Builder(gameDataResult.downloadUrl, RxFileTool.getCacheFolder(mActivity))
-//                .setFilename("${RxTool.Md5(gameDataResult.downloadUrl)}.apk")
-//                // the minimal interval millisecond for callback progress
-//                .setMinIntervalMillisCallbackProcess(300)
-//                // do re-download even if the task has already been completed in the past.
-//                .setPassIfAlreadyCompleted(false)
-//                .setAutoCallbackToUIThread(true)
-//                .setSyncBufferSize(65536)
-//                .setFlushBufferSize(16384)
-//                .build()
-//            task.tag = gameDataResult.downloadUrl
-//            objList[gameDataResult.downloadUrl] = index
-//            gameDataResult.task = task
+            objList[gameDataResult.downloadUrl] = index
         }
         return list
     }

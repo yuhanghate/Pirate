@@ -18,7 +18,7 @@ interface KuaiDuNetApi {
     /**
      * 书籍详情页
      */
-    @Headers("Cache-Control: public, max-age=3")
+    @Headers("Cache-Control: public, max-stale=5")
     @GET("http://api.wgfgr.cn/book/info")
     fun getBookDetails(@Query("bookId") bookId: String): Flowable<BookDetailsKdResult>
 
@@ -31,40 +31,35 @@ interface KuaiDuNetApi {
     /**
      * 作者所有作品
      */
-    @Headers("Cache-Control: public, max-age=60")
+    @Headers("Cache-Control: public, max-stale=60")
     @GET("http://api.wgfgr.cn/book/accurate-search")
     fun getAuthorBookAll(@QueryMap map: Map<String, String>): Flowable<AuthorBooksKdResult>
 
     /**
      * 章节目录
      */
-    @Headers("Cache-Control: public, max-age=60")
+    @Headers("Cache-Control: public, max-stale=60")
     @GET("http://api.wgfgr.cn/toc/mix")
     fun getChapterList(@Query("bookId") bookId: String): Flowable<ChapterListKdResult>
 
     /**
      * 获取内容
+     * path一定要自己编码,不然请求速度很慢
      */
-    @Headers(
-        value = [
-            "Content-Type: application/json;charset=gbk",
-            "Accept: */*",
-            "Cache-Control: public, max-age=60"
-        ]
-    )
     @GET("http://chapter.baihangsou.cn/chapter/{link}")
-    fun getResouceContent(@Path("link") link: String): Flowable<ContentKdResult>
+    fun getResouceContent(@Path("link", encoded = true) link: String): Flowable<ContentKdResult>
 
     /**
      * 下载章节内容
+     * path一定要自己编码,不然请求速度很慢
      */
     @GET("http://chapter.baihangsou.cn/chapter/{link}")
-    fun downloadChapterContent(@Path("link") link: String): Call<ContentKdResult>
+    fun downloadChapterContent(@Path("link", encoded = true) link: String): Call<ContentKdResult>
 
     /**
      * 书本源列表
      */
-    @Headers("Cache-Control: public, max-age=60")
+    @Headers("Cache-Control: public, max-stale=60")
     @GET("http://api.wgfgr.cn/toc/list")
     fun getResouceList(@Query("bookId") bookId: String): Flowable<List<ResouceListKdResult>>
 
@@ -72,7 +67,7 @@ interface KuaiDuNetApi {
     /**
      * 第三方源目录列表
      */
-    @Headers("Cache-Control: public, max-age=60")
+    @Headers("Cache-Control: public, max-stale=60")
     @GET("http://api.wgfgr.cn/chapter/list")
     fun getResouceChapterList(@Query("tocId") tocId: String): Flowable<ChapterListKdResult>
 

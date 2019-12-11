@@ -6,6 +6,7 @@ import androidx.work.*
 import com.google.gson.Gson
 import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceBody
 import com.yuhang.novel.pirate.extension.niceDir
 import com.yuhang.novel.pirate.repository.database.AppDatabase
@@ -246,7 +247,13 @@ class DataRepository(val context: Context) {
     @HunterDebug
     fun queryCollection(bookid: String): BookCollectionKSEntity? {
         return mDatabase.bookCollectionKSDao.query(bookid)
+    }
 
+    /**
+     * 查询所有收藏书籍
+     */
+    fun queryCollectionAll(): List<BookCollectionKSEntity> {
+        return mDatabase.bookCollectionKSDao.queryAll()
     }
 
     /**
@@ -566,7 +573,13 @@ class DataRepository(val context: Context) {
                 )
                 return@map map
             }
-            .flatMap { getNetApi().updateReadHistory(niceBody(it)) }
+            .flatMap {
+                //没登陆返回空
+                if (PirateApp.getInstance().getToken().isEmpty()) {
+                    return@flatMap Flowable.empty<StatusResult>()
+                }
+                getNetApi().updateReadHistory(niceBody(it))
+            }
 
     }
 
@@ -626,7 +639,7 @@ class DataRepository(val context: Context) {
             .build()
 
 
-        val enqueue = WorkManager.getInstance().enqueue(request)
+        WorkManager.getInstance().enqueue(request)
         return request.id
     }
 
@@ -910,7 +923,8 @@ class DataRepository(val context: Context) {
 
     /**
      * 快读 女生分类
-     */@HunterDebug
+     */
+    @HunterDebug
 
     fun queryCategoryLady(): List<CategoryKDEntity> {
         return getDatabase().categoryKDDao.queryLady()
@@ -943,5 +957,33 @@ class DataRepository(val context: Context) {
         pageNum: Int
     ): Flowable<CategoryDetailResult> {
         return getKuaiDuApi().getCategoryDetailList(gender, type, major, pageNum, 50)
+    }
+
+    /**
+     * 获取游戏推荐
+     */
+    fun getGameRecommentList(pageNum: Int): Flowable<GameRecommentResult> {
+        return getNetApi().getGameRecommentList(pageNum, 20)
+    }
+
+    /**
+     * 获取配置文件
+     */
+    fun getAppConfig(): Flowable<AppConfigResult> {
+        return getNetApi().getAppConfig()
+    }
+
+    /**
+     * 查询配置
+     */
+    fun queryConfig(): ConfigEntity {
+        return getDatabase().configDao.query()
+    }
+
+    /**
+     * 保存配置文件
+     */
+    fun insertConfig(obj: ConfigEntity) {
+        getDatabase().configDao.insert(obj)
     }
 }

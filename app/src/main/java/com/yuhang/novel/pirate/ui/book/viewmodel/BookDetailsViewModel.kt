@@ -6,9 +6,7 @@ import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
-import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.BookCollectionKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
+import com.yuhang.novel.pirate.repository.database.entity.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BookDetailsDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import io.reactivex.Flowable
@@ -118,7 +116,35 @@ class BookDetailsViewModel : BaseViewModel() {
      */
     fun queryCollection(bookid: String): BookCollectionKSEntity? {
         return mDataRepository.queryCollection(bookid)
+    }
 
+    /**
+     * 查询书籍
+     */
+    fun queryCollectionAll(): List<BookCollectionKSEntity> {
+        return mDataRepository.queryCollectionAll()
+    }
+
+    /**
+     * 查询下载书籍
+     */
+    fun queryDownloadAll(): List<BookDownloadEntity> {
+        return mDataRepository.queryDownloadBooks()
+    }
+
+    /**
+     * 查询配置文件
+     */
+    fun isVip(): Boolean {
+        //是否开启会员模式
+        if (!mDataRepository.queryConfig().isOpenVip) {
+            return true
+        }
+        //不是会员
+        if (mDataRepository.getLastUser()?.isVip == null) {
+            return false
+        }
+        return mDataRepository.getLastUser()?.isVip!!
     }
 
     /**

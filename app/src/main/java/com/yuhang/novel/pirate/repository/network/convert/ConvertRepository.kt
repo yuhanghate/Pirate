@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.convert
 
 import com.google.gson.Gson
+import com.vondear.rxtool.RxEncodeTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
@@ -12,6 +13,8 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.SearchSuggestResult
 import io.reactivex.Flowable
 import org.joda.time.DateTime
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 class ConvertRepository {
 
@@ -129,7 +132,7 @@ class ConvertRepository {
                 }
             }
             obj.isKuaiDu() -> {
-                mKuaiDuNetApi.getResouceContent(chapter.chapterId)
+                mKuaiDuNetApi.getResouceContent(RxEncodeTool.urlEncode(chapter.chapterId))
                     .map {
                         BookContentKSEntity().apply {
                             this.chapterId = chapter.chapterId
@@ -170,7 +173,7 @@ class ConvertRepository {
             }
             obj.isKuaiDu() -> {
                 val content =
-                    mKuaiDuNetApi.downloadChapterContent(chapter.chapterId).execute().body()
+                    mKuaiDuNetApi.downloadChapterContent(RxEncodeTool.urlEncode(chapter.chapterId)).execute().body()
                 return BookContentKSEntity().apply {
                     this.chapterId = chapter.chapterId
                     this.content = content?.chapter?.body!!

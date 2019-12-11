@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.gyf.immersionbar.ImmersionBar
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -14,6 +15,7 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceChapterListViewModel
 import java.util.logging.Handler
@@ -63,6 +65,18 @@ class ResouceChapterListActivity :
         initBackgroud()
     }
 
+    override fun initStatusTool() {
+        val windows = PreferenceUtil.getString("page_color", "#F6EFDD")
+        ImmersionBar.with(this)
+            .statusBarView(mBinding.statusBarV)
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarColor(windows)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
+            .navigationBarColor(windows)
+            .init()
+    }
+
     override fun initRecyclerView() {
         super.initRecyclerView()
         mViewModel.adapter
@@ -77,7 +91,8 @@ class ResouceChapterListActivity :
 
     private fun initBackgroud() {
         //navigateion状态栏颜色
-        window.navigationBarColor = BookConstant.getPageBackground()
+//        window.navigationBarColor = BookConstant.getPageBackground()
+        mBinding.toolbarAbl.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
     }
 

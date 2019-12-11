@@ -14,6 +14,7 @@ import com.yuhang.novel.pirate.repository.database.dao.BookInfoKSDao;
 import com.yuhang.novel.pirate.repository.database.dao.BookReadHistoryDao;
 import com.yuhang.novel.pirate.repository.database.dao.BookResouceTypeKDDao;
 import com.yuhang.novel.pirate.repository.database.dao.CategoryKDDao;
+import com.yuhang.novel.pirate.repository.database.dao.ConfigDao;
 import com.yuhang.novel.pirate.repository.database.dao.PushMessageDao;
 import com.yuhang.novel.pirate.repository.database.dao.RankingListDao;
 import com.yuhang.novel.pirate.repository.database.dao.SearchHistoryKSDao;
@@ -26,6 +27,7 @@ import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity;
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity;
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity;
 import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity;
+import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity;
 import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity;
 import com.yuhang.novel.pirate.repository.database.entity.RankingListEntity;
 import com.yuhang.novel.pirate.repository.database.entity.SearchHistoryKSEntity;
@@ -34,11 +36,14 @@ import com.yuhang.novel.pirate.repository.database.entity.UserEntity;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_13_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_14_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_16_17;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_17_18;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_18_19;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_1_16;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.AppConfigResult;
 
 
 /**
@@ -52,8 +57,8 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
         SearchHistoryKSEntity.class, BookChapterKSEntity.class, BookContentKSEntity.class,
         UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class,
         PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class,
-        CategoryKDEntity.class},
-        version = 17, exportSchema = false)
+        CategoryKDEntity.class, ConfigEntity.class},
+        version = 19, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -76,7 +81,9 @@ public abstract class AppDatabase
                                     Migration_6_7.instance(),
                                     Migration_13_16.instance(),
                                     Migration_14_16.instance(),
-                                    Migration_16_17.instance()
+                                    Migration_16_17.instance(),
+                                    Migration_17_18.instance(),
+                                    Migration_18_19.instance()
                             )
                             .fallbackToDestructiveMigration()
                             .build();
@@ -166,5 +173,11 @@ public abstract class AppDatabase
      * @return
      */
     public abstract CategoryKDDao getCategoryKDDao();
+
+    /**
+     * 获取配置
+     * @return
+     */
+    public abstract ConfigDao getConfigDao();
 
 }

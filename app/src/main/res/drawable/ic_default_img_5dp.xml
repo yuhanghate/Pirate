@@ -6,18 +6,13 @@
   <!-- 填充的颜色 -->
   <solid android:color="@color/md_grey_200" />
 
-  <!-- 边框的颜色和粗细 -->
-  <stroke
-      android:width="1dp"
-      android:color="@color/md_grey_200"
-      />
 
   <size
       android:height="80dp"
       android:width="60dp" />
   <!-- android:radius 圆角的半径 -->
   <corners
-      android:radius="6dp"
+      android:radius="5dp"
       />
 
 </shape>

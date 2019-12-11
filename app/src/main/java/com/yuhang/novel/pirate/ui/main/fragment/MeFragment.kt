@@ -126,6 +126,17 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             mBinding.subjectModeIv.setImageResource(R.drawable.ic_moon)
         }
 
+        //控制游戏显示或隐藏
+        mViewModel.queryConfig()
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it.showGameRecommended) {
+                    mBinding.gamesCl.visibility = View.VISIBLE
+                } else {
+                    mBinding.gamesCl.visibility = View.GONE
+                }
+            }, {})
+
         mViewModel.getUserInfo()
             .compose(bindToLifecycle())
             .subscribe({
@@ -332,7 +343,6 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     }
 
 
-
     /**
      * 版本升级
      */
@@ -404,7 +414,9 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
          */
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk =
-            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(url) + ".apk"
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(
+                url
+            ) + ".apk"
         OkGo.get<File>(url).execute(object :
             com.lzy.okgo.callback.FileCallback(
                 DownloadUtil.PATH_CHALLENGE_VIDEO,

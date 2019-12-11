@@ -22,7 +22,7 @@ interface BookCollectionKSDao {
      * 查询所有收藏记录
      */
     @Query("select * from bookcollectionksentity as c group by c.bookid order by c.time desc")
-    fun queryAll():List<BookCollectionKSEntity?>
+    fun queryAll():List<BookCollectionKSEntity>
 
     /**
      * 删除收藏时间

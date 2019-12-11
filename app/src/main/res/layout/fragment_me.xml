@@ -276,7 +276,7 @@
                             android:id="@+id/games_cl"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:background="@drawable/bg_material_item"
                             android:clickable="true"
                             android:focusable="true">

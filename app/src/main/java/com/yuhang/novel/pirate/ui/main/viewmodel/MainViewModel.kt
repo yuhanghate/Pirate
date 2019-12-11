@@ -13,14 +13,13 @@ import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
-import com.yuhang.novel.pirate.extension.niceBookChapterKSEntity
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceCategoryKDEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
+import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.AppConfigResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
@@ -155,7 +154,6 @@ class MainViewModel : BaseViewModel() {
     }
 
 
-
     /**
      * 查询所有收藏
      */
@@ -207,7 +205,7 @@ class MainViewModel : BaseViewModel() {
 
                 mDataRepository.deleteNetCollect(
                     bookid,
-                    mDataRepository.queryCollection(bookid)?.resouce?:""
+                    mDataRepository.queryCollection(bookid)?.resouce ?: ""
                 )
                     .compose(io_main())
                     .compose(mFragment?.bindToLifecycle())
@@ -273,7 +271,7 @@ class MainViewModel : BaseViewModel() {
      * true:有
      * false:没有
      */
-    fun installProcess():Boolean {
+    fun installProcess(): Boolean {
         var haveInstallPermission = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //先获取是否有安装未知来源应用的权限
@@ -293,14 +291,17 @@ class MainViewModel : BaseViewModel() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun startInstallPermissionSettingActivity() {
         //注意这个是8.0新API
-        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,  Uri.parse("package:" + mActivity?.packageName))
+        val intent = Intent(
+            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+            Uri.parse("package:" + mActivity?.packageName)
+        )
         mActivity?.startActivityForResult(intent, 10086)
     }
 
     /**
      * 是否检测版本
      */
-    fun isShowVersionDialog():Boolean {
+    fun isShowVersionDialog(): Boolean {
         val millis = System.currentTimeMillis()
         val lastTime = PreferenceUtil.getLong("version_update", millis)
         val b = lastTime - millis > MAX_TIME_VERSION
@@ -335,6 +336,21 @@ class MainViewModel : BaseViewModel() {
         return mDataRepository.getCategoryList()
             .map { it.map { it.niceCategoryKDEntity() }.toList() }
             .map { mDataRepository.insertCategoryList(it) }
+            .compose(io_main())
+    }
+
+    /**
+     * 加载配置
+     */
+    fun preloadConfig(): Flowable<AppConfigResult> {
+        return mDataRepository.getAppConfig()
+            .map {
+                mDataRepository.insertConfig(ConfigEntity().apply {
+                    this.showGameRecommended = it.data.isShowGameRecommended
+                    this.showSexBook = it.data.isShowSexBook
+                })
+                it
+            }
             .compose(io_main())
     }
 }

@@ -40,17 +40,6 @@ interface NetApi {
     fun checkVersion(@Query("versionName") versionName: String): Flowable<VersionResult>
 
     /**
-     * 下载apk文件
-     *
-     * @param fileUrl
-     * @return
-     */
-    @Streaming //大文件时要加不然会OOM
-    @GET
-    fun downloadFile(@Url fileUrl: String): retrofit2.Call<ResponseBody>
-
-
-    /**
      * 删除收藏
      */
     @DELETE("/api/m/book/collection/delete")
@@ -127,4 +116,17 @@ interface NetApi {
      */
     @POST("/api/m/book/books/search/bookid/ks")
     fun getBooksSearch(@Body body: RequestBody):Flowable<BookSearchKdResult>
+
+    /**
+     * 获取游戏推荐
+     */
+    @Headers("Cache-Control: public, max-stale=86400")
+    @GET("/api/m/ad/game/recomment")
+    fun getGameRecommentList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int):Flowable<GameRecommentResult>
+
+    /**
+     * 获取配置文件
+     */
+    @POST("/api/m/user/config")
+    fun getAppConfig():Flowable<AppConfigResult>
 }
