@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.kanshu.result;
 
+import com.yuhang.novel.pirate.repository.database.entity.StoreEntity;
+
 import java.util.List;
 
 public class StoreManResult {
@@ -13,7 +15,7 @@ public class StoreManResult {
 
     private int status;
     private String info;
-    private List<DataBean> data;
+    private List<StoreEntity> data;
 
     public int getStatus() {
         return status;
@@ -31,11 +33,11 @@ public class StoreManResult {
         this.info = info;
     }
 
-    public List<DataBean> getData() {
+    public List<StoreEntity> getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(List<StoreEntity> data) {
         this.data = data;
     }
 
@@ -48,9 +50,7 @@ public class StoreManResult {
          */
 
         private String Category;
-        private BookListBean BookList;
         private List<BooksKSResult> Books;
-        private List<CategoriesBean> Categories;
 
         public String getCategory() {
             return Category;
@@ -58,14 +58,6 @@ public class StoreManResult {
 
         public void setCategory(String Category) {
             this.Category = Category;
-        }
-
-        public BookListBean getBookList() {
-            return BookList;
-        }
-
-        public void setBookList(BookListBean BookList) {
-            this.BookList = BookList;
         }
 
         public List<BooksKSResult> getBooks() {
@@ -76,164 +68,6 @@ public class StoreManResult {
             this.Books = Books;
         }
 
-        public List<CategoriesBean> getCategories() {
-            return Categories;
-        }
 
-        public void setCategories(List<CategoriesBean> Categories) {
-            this.Categories = Categories;
-        }
-
-        public static class BookListBean {
-            /**
-             * ImgUrl : https://imgapi.jiaston.com/shudan/images/36047.jpg
-             * ListId : 36047
-             * Title : 奇葩主角的上下五千年
-             * Description : 唐尧虞舜夏商周，春秋战国…今天穿越哪个朝代呢？好难选啊！
-             */
-
-            private String ImgUrl;
-            private int ListId;
-            private String Title;
-            private String Description;
-
-            public String getImgUrl() {
-                return ImgUrl;
-            }
-
-            public void setImgUrl(String ImgUrl) {
-                this.ImgUrl = ImgUrl;
-            }
-
-            public int getListId() {
-                return ListId;
-            }
-
-            public void setListId(int ListId) {
-                this.ListId = ListId;
-            }
-
-            public String getTitle() {
-                return Title;
-            }
-
-            public void setTitle(String Title) {
-                this.Title = Title;
-            }
-
-            public String getDescription() {
-                return Description;
-            }
-
-            public void setDescription(String Description) {
-                this.Description = Description;
-            }
-        }
-
-        public static class BooksBean {
-            /**
-             * Id : 484844
-             * Name : 神秘生物异闻录
-             * Author : 莫道梦魂遥
-             * Img : shenmishengwuyiwenlu.jpg
-             * Desc : 现代社会各地出现了神秘生物的踪迹，并且这些神秘生物袭击人类，造成了各种灾祸案件。
-
-             自年幼起，简清和便目睹父母死于巨蛇口中。为了调查真相，他加入了除祟师凌云起开设的“有间事务所”，在解决一桩桩离奇的案件后，当年的真相也逐步浮出水面……
-
-             官方书友群：256821343，欢迎来切磋！
-             * CName : 都市言情
-             * Score : 6.0
-             */
-
-            private int Id;
-            private String Name;
-            private String Author;
-            private String Img;
-            private String Desc;
-            private String CName;
-            private String Score;
-
-            public int getId() {
-                return Id;
-            }
-
-            public void setId(int Id) {
-                this.Id = Id;
-            }
-
-            public String getName() {
-                return Name;
-            }
-
-            public void setName(String Name) {
-                this.Name = Name;
-            }
-
-            public String getAuthor() {
-                return Author;
-            }
-
-            public void setAuthor(String Author) {
-                this.Author = Author;
-            }
-
-            public String getImg() {
-                return Img;
-            }
-
-            public void setImg(String Img) {
-                this.Img = Img;
-            }
-
-            public String getDesc() {
-                return Desc;
-            }
-
-            public void setDesc(String Desc) {
-                this.Desc = Desc;
-            }
-
-            public String getCName() {
-                return CName;
-            }
-
-            public void setCName(String CName) {
-                this.CName = CName;
-            }
-
-            public String getScore() {
-                return Score;
-            }
-
-            public void setScore(String Score) {
-                this.Score = Score;
-            }
-        }
-
-        public static class CategoriesBean {
-            /**
-             * CategoryName : 玄幻奇幻
-             * CategoryId : 1
-             */
-
-            private String CategoryName;
-            private int CategoryId;
-
-            public String getCategoryName() {
-                return CategoryName;
-            }
-
-            public void setCategoryName(String CategoryName) {
-                this.CategoryName = CategoryName;
-            }
-
-            public int getCategoryId() {
-                return CategoryId;
-            }
-
-            public void setCategoryId(int CategoryId) {
-                this.CategoryId = CategoryId;
-            }
-        }
     }
 }

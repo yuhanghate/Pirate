@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.kanshu.result;
 
+import com.yuhang.novel.pirate.repository.database.entity.ShuDanEntity;
+
 import java.util.List;
 
 public class BooksListResult {
@@ -12,7 +14,7 @@ public class BooksListResult {
 
     private int status;
     private String info;
-    private List<BooksListDataResult> data;
+    private List<ShuDanEntity> data;
 
     public int getStatus() {
         return status;
@@ -30,11 +32,11 @@ public class BooksListResult {
         this.info = info;
     }
 
-    public List<BooksListDataResult> getData() {
+    public List<ShuDanEntity> getData() {
         return data;
     }
 
-    public void setData(List<BooksListDataResult> data) {
+    public void setData(List<ShuDanEntity> data) {
         this.data = data;
     }
 

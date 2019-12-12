@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.kanshu.result;
 
 import com.google.gson.annotations.SerializedName;
+import com.yuhang.novel.pirate.repository.database.entity.StoreRankingEntity;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class StoreRankingResult {
 
     private int status;
     private String info;
-    private DataBean data;
+    private StoreRankingEntity data;
 
     public int getStatus() {
         return status;
@@ -32,69 +33,12 @@ public class StoreRankingResult {
         this.info = info;
     }
 
-    public DataBean getData() {
+    public StoreRankingEntity getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
+    public void setData(StoreRankingEntity data) {
         this.data = data;
     }
 
-    public static class DataBean {
-        private List<BooksKSResult> hot;
-        private List<BooksKSResult> over;
-        private List<BooksKSResult> commend;
-        private List<BooksKSResult> collect;
-        @SerializedName("new")
-        private List<BooksKSResult> newX;
-        private List<BooksKSResult> vote;
-
-        public List<BooksKSResult> getHot() {
-            return hot;
-        }
-
-        public void setHot(List<BooksKSResult> hot) {
-            this.hot = hot;
-        }
-
-        public List<BooksKSResult> getOver() {
-            return over;
-        }
-
-        public void setOver(List<BooksKSResult> over) {
-            this.over = over;
-        }
-
-        public List<BooksKSResult> getCommend() {
-            return commend;
-        }
-
-        public void setCommend(List<BooksKSResult> commend) {
-            this.commend = commend;
-        }
-
-        public List<BooksKSResult> getCollect() {
-            return collect;
-        }
-
-        public void setCollect(List<BooksKSResult> collect) {
-            this.collect = collect;
-        }
-
-        public List<BooksKSResult> getNewX() {
-            return newX;
-        }
-
-        public void setNewX(List<BooksKSResult> newX) {
-            this.newX = newX;
-        }
-
-        public List<BooksKSResult> getVote() {
-            return vote;
-        }
-
-        public void setVote(List<BooksKSResult> vote) {
-            this.vote = vote;
-        }
-    }
 }

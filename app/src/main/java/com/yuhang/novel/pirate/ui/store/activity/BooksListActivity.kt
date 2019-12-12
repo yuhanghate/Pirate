@@ -12,6 +12,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBooksListBinding
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.ShuDanEntity
 import com.yuhang.novel.pirate.ui.store.adapter.BooksListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.BooksListViewModel
 
@@ -65,11 +66,27 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
         onClick()
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.queryBooksKSEntity(
+            mBinding.layoutToolbar.titleTv.text.toString(),
+            getGender(), getType()
+        ).compose(bindToLifecycle())
+            .subscribe({
+
+                if (it.isEmpty()) {
+                    mBinding.refreshLayout.autoRefresh()
+                    return@subscribe
+                }
+                buildRecylerView(it)
+            }, { mBinding.refreshLayout.autoRefresh() })
+    }
+
     override fun initRefreshLayout() {
         super.initRefreshLayout()
 
         mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
-        mBinding.refreshLayout.autoRefresh()
+//        mBinding.refreshLayout.autoRefresh()
     }
 
     override fun initRecyclerView() {
@@ -103,24 +120,15 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
      */
     override fun onRefresh(refreshLayout: RefreshLayout) {
         PAGE_NUM = 1
-        mViewModel.getBooksList(getGender(), getType(), PAGE_NUM)
+        mViewModel.getBooksList(
+            mBinding.layoutToolbar.titleTv.text.toString(),
+            getGender(),
+            getType(),
+            PAGE_NUM
+        )
             .compose(bindToLifecycle())
             .subscribe({
-
-                mViewModel.adapter.clear()
-                mViewModel.list.clear()
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = BooksListAdapter()
-                    .setListener(this)
-                    .initData(it.data)
-
-                mViewModel.list.addAll(it.data)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
+                buildRecylerView(it.data)
                 mBinding.refreshLayout.finishRefresh()
             }, {
                 mBinding.refreshLayout.finishRefresh()
@@ -132,7 +140,12 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
      */
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
-        mViewModel.getBooksList(getGender(), getType(), PAGE_NUM)
+        mViewModel.getBooksList(
+            mBinding.layoutToolbar.titleTv.text.toString(),
+            getGender(),
+            getType(),
+            PAGE_NUM
+        )
             .compose(bindToLifecycle())
             .subscribe({
 
@@ -146,6 +159,23 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
             }, {
                 mBinding.refreshLayout.finishLoadMore()
             })
+    }
+
+    private fun buildRecylerView(list: List<ShuDanEntity>) {
+        mViewModel.adapter.clear()
+        mViewModel.list.clear()
+        val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+
+        val adapter = BooksListAdapter()
+            .setListener(this)
+            .initData(list)
+
+        mViewModel.list.addAll(list)
+
+        adapters.add(adapter.toAdapter())
+
+        mViewModel.adapter.addAdapters(adapters)
+        mBinding.recyclerview.requestLayout()
     }
 
     /**

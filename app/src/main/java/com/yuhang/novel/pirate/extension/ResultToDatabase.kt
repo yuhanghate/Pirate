@@ -452,3 +452,35 @@ fun BookInfoKSEntity.niceBooksResult(): BooksResult {
 
     }
 }
+
+fun BooksKSResult.niceBooksKSEntity(): BooksKSEntity {
+    val obj = this
+    return BooksKSEntity().apply {
+        this.Author = obj.Author
+        this.BookStatus = obj.BookStatus
+        this.CName = obj.CName
+        this.Desc = obj.Desc
+        this.bookId = obj.Id
+        this.Img = obj.Img
+        this.LastChapter = obj.LastChapter
+        this.LastChapterId = obj.LastChapterId
+        this.Name = obj.Name
+        this.Score = obj.Score
+    }
+}
+
+fun BooksKSEntity.niceBooksKSResult(): BooksKSResult {
+    val obj = this
+    return BooksKSResult().apply {
+        this.Author = obj.Author
+        this.BookStatus = obj.BookStatus
+        this.CName = obj.CName
+        this.Desc = obj.Desc
+        this.Id = obj.bookId
+        this.Img = obj.Img
+        this.LastChapter = obj.LastChapter
+        this.LastChapterId = obj.LastChapterId
+        this.Name = obj.Name
+        this.Score = obj.Score
+    }
+}

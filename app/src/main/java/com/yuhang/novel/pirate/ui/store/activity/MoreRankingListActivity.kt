@@ -73,6 +73,20 @@ class MoreRankingListActivity :
         onClick()
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.queryMoreRankingList(getName(), getGender(), getType())
+            .compose(bindToLifecycle())
+            .subscribe({
+                if (it.isEmpty()) {
+                    mBinding.refreshLayout.autoRefresh()
+                    return@subscribe
+                }
+
+                biuldRecylerView(it)
+            },{mBinding.refreshLayout.autoRefresh()})
+    }
+
     private fun onClick() {
         mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
         //置顶
@@ -88,7 +102,7 @@ class MoreRankingListActivity :
     override fun initRefreshLayout() {
         super.initRefreshLayout()
         mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
-        mBinding.refreshLayout.autoRefresh()
+//        mBinding.refreshLayout.autoRefresh()
     }
 
     override fun initRecyclerView() {
@@ -104,24 +118,14 @@ class MoreRankingListActivity :
     override fun onRefresh(refreshLayout: RefreshLayout) {
         PAGE_NUM = 1
 
-        mViewModel.getMoreRankingList(getGender(), getType(), PAGE_NUM)
+        mViewModel.getMoreRankingList(getName(), getGender(), getType(), PAGE_NUM)
             .compose(bindToLifecycle())
             .subscribe({
                 if (!it.data.isHasNext) {
                     mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                 }
 
-                mViewModel.adapter.clear()
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
+                biuldRecylerView(it.data.bookList)
                 mBinding.refreshLayout.finishRefresh()
 
             },{
@@ -132,7 +136,7 @@ class MoreRankingListActivity :
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM ++
 
-        mViewModel.getMoreRankingList(getGender(), getType(), PAGE_NUM)
+        mViewModel.getMoreRankingList(getName(), getGender(), getType(), PAGE_NUM)
             .compose(bindToLifecycle())
             .subscribe({
                 if (!it.data.isHasNext) {
@@ -148,6 +152,20 @@ class MoreRankingListActivity :
             },{
                 mBinding.refreshLayout.finishLoadMore()
             })
+    }
+
+    private fun biuldRecylerView(list:List<BooksKSResult>) {
+        mViewModel.adapter.clear()
+        val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+
+        val adapter = MoreRankingListAdapter()
+            .setListener(this)
+            .initData(list)
+
+        adapters.add(adapter.toAdapter())
+
+        mViewModel.adapter.addAdapters(adapters)
+        mBinding.recyclerview.requestLayout()
     }
 
     /**

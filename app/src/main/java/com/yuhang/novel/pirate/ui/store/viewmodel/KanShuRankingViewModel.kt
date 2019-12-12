@@ -18,19 +18,22 @@ class KanShuRankingViewModel : BaseViewModel() {
 
     var fragments: ArrayList<BaseFragment<*, *>>? = null
 
-    fun getFragments(gender: String, type: String): ArrayList<BaseFragment<*, *>> {
+    fun getFragments(gender: String, type: String, name:String): ArrayList<BaseFragment<*, *>> {
         if (fragments == null) {
             fragments = arrayListOf(
                 WeekRankingFragment.newInstance().apply {
                     this.gender = gender
                     this.type = type
+                    this.name = name
                 }, MonthRankingFragment.newInstance().apply {
                     this.gender = gender
                     this.type = type
+                    this.name = name
                 },
                 TotalRankingFragment.newInstance().apply {
                     this.gender = gender
                     this.type = type
+                    this.name = name
                 }
             )
 

@@ -81,7 +81,7 @@ class KanShuRankingActivity :
      */
     private fun initTabLayoutView() {
         val pagerAdapter =
-            ViewPagerAdapter(supportFragmentManager, mViewModel.mTitles, mViewModel.getFragments(getGender(), getType()))
+            ViewPagerAdapter(supportFragmentManager, mViewModel.mTitles, mViewModel.getFragments(getGender(), getType(), getName()))
         mBinding.tablayout.setOnTabSelectListener(this)
         mBinding.viewPager.addOnPageChangeListener(this)
         mBinding.viewPager.adapter = pagerAdapter
@@ -95,7 +95,7 @@ class KanShuRankingActivity :
      * 刷新 + 置顶
      */
     override fun onTabReselect(position: Int) {
-        when (val fragment = mViewModel.getFragments(getGender(), getType())[position]) {
+        when (val fragment = mViewModel.getFragments(getGender(), getType(), getName())[position]) {
             is WeekRankingFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,

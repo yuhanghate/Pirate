@@ -4,9 +4,9 @@ import com.alibaba.android.vlayout.DelegateAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
+import com.yuhang.novel.pirate.repository.database.entity.StoreEntity
+import com.yuhang.novel.pirate.repository.database.entity.StoreRankingEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreManResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreRankingResult
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
 import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
@@ -16,12 +16,14 @@ import kotlin.properties.Delegates
 /**
  * 女生
  */
-class LadyViewModel:BaseViewModel() {
+class LadyViewModel : BaseViewModel() {
 
-    var adapter : DelegateAdapter by Delegates.notNull()
+    var adapter: DelegateAdapter by Delegates.notNull()
 
-    val titleList = hashMapOf("热门连载" to "女生畅销书", "火热新书" to "热门新书",
-        "重磅推荐" to "主编推荐", "完本精选" to "完本精品")
+    val titleList = hashMapOf(
+        "热门连载" to "女生畅销书", "火热新书" to "热门新书",
+        "重磅推荐" to "主编推荐", "完本精选" to "完本精品"
+    )
 
     val rankingMap = hashMapOf<String, String>(
         "女生畅销书" to KanShuRankingActivity.TYPE_HOT,
@@ -33,22 +35,22 @@ class LadyViewModel:BaseViewModel() {
     /**
      * 热门连载
      */
-    val hotList:ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
+    val hotList: ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
 
     /**
      * 火热新书
      */
-    val newList:ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
+    val newList: ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
 
     /**
      * 重磅推荐
      */
-    val recommendList:ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
+    val recommendList: ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
 
     /**
      * 完本精选
      */
-    val goodList:ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
+    val goodList: ArrayList<BooksKSResult> by lazy { arrayListOf<BooksKSResult>() }
 
     /**
      * 榜单
@@ -60,34 +62,66 @@ class LadyViewModel:BaseViewModel() {
      */
     val list = arrayListOf<RankingModel>()
 
+
+    /**
+     * 获取本地精选
+     */
+    fun queryStoreMan(): Flowable<List<StoreEntity>> {
+        return Flowable.just("")
+            .map { mDataRepository.queryStoreEntity("lady") }
+            .compose(io_main())
+    }
+
+    /**
+     * 本地查询  书城 -> 榜单 -> 女生
+     */
+    fun queryStoreRankingMan(): Flowable<StoreRankingEntity?> {
+        return Flowable.just("")
+            .map {
+                mDataRepository.queryStoreRanking("lady")
+                    ?: return@map StoreRankingEntity()
+            }
+            .compose(io_main())
+    }
+
+
     /**
      * 获取精选
      */
-    fun getStoreMan(): Flowable<StoreManResult> {
-        return mDataRepository.getStoreLady().compose(io_main())
+    fun getStoreMan(): Flowable<List<StoreEntity>> {
+        return mDataRepository.getStoreMan().map {
+            it.data.forEach { obj -> obj.apply { this.genderType = "lady" } }
+            mDataRepository.deleteStoreEntity("lady")
+            mDataRepository.insertStoreEntity(it.data)
+            it.data
+        }.compose(io_main())
     }
 
     /**
      * 书城 -> 榜单 -> 女生
      */
-    fun getStoreRankingMan(): Flowable<StoreRankingResult> {
-        return mDataRepository.getStoreRankingLady().compose(io_main())
+    fun getStoreRankingMan(): Flowable<StoreRankingEntity> {
+        return mDataRepository.getStoreRankingLady().map {
+            it.data.apply { this.genderType = "lady" }
+            mDataRepository.insertStoreRanking(it.data)
+            it.data
+        }.compose(io_main())
     }
 
     /**
      * 分解类型
      */
-    fun buildBook(list: List<StoreManResult.DataBean>) {
+    fun buildBook(list: List<StoreEntity>) {
         hotList.clear()
         newList.clear()
         recommendList.clear()
         goodList.clear()
         list.forEach {
-            when (it.category) {
-                "热门连载" -> hotList.addAll(it.books)
-                "火热新书" -> newList.addAll(it.books)
-                "重磅推荐" -> recommendList.addAll(it.books)
-                "完本精选" -> goodList.addAll(it.books)
+            when (it.Category) {
+                "热门连载" -> hotList.addAll(it.Books)
+                "火热新书" -> newList.addAll(it.Books)
+                "重磅推荐" -> recommendList.addAll(it.Books)
+                "完本精选" -> goodList.addAll(it.Books)
             }
         }
     }
@@ -95,14 +129,56 @@ class LadyViewModel:BaseViewModel() {
     /**
      * 男生榜单
      */
-    fun buildRanking(obj: StoreRankingResult.DataBean) {
+    fun buildRanking(obj: StoreRankingEntity) {
         rankingList.clear()
-        rankingList.add(StoreRankingModel(name = "女生热读榜", list = obj.hot, desc = "优质精品好书新鲜出炉!", background = R.color.md_pink_300))
-        rankingList.add(StoreRankingModel(name = "完本榜", list = obj.over, desc = "不用等更了,喜欢的都有", background = R.color.md_purple_300))
-        rankingList.add(StoreRankingModel(name = "收藏榜", list = obj.commend, desc = "火热好书", background = R.color.md_deep_orange_300))
-        rankingList.add(StoreRankingModel(name = "潜力榜", list = obj.newX, desc = "更多好书等你来~", background = R.color.md_light_blue_300))
-        rankingList.add(StoreRankingModel(name = "好评榜", list = obj.vote, desc = "超多好评,万人追更!", background = R.color.md_blue_300))
-        rankingList.add(StoreRankingModel(name = "人气榜", list = obj.collect, desc = "超强人气,等待阅读", background = R.color.md_green_300))
+        rankingList.add(
+            StoreRankingModel(
+                name = "女生热读榜",
+                list = obj.hot,
+                desc = "优质精品好书新鲜出炉!",
+                background = R.color.md_pink_300
+            )
+        )
+        rankingList.add(
+            StoreRankingModel(
+                name = "完本榜",
+                list = obj.over,
+                desc = "不用等更了,喜欢的都有",
+                background = R.color.md_purple_300
+            )
+        )
+        rankingList.add(
+            StoreRankingModel(
+                name = "收藏榜",
+                list = obj.commend,
+                desc = "火热好书",
+                background = R.color.md_deep_orange_300
+            )
+        )
+        rankingList.add(
+            StoreRankingModel(
+                name = "潜力榜",
+                list = obj.newX,
+                desc = "更多好书等你来~",
+                background = R.color.md_light_blue_300
+            )
+        )
+        rankingList.add(
+            StoreRankingModel(
+                name = "好评榜",
+                list = obj.vote,
+                desc = "超多好评,万人追更!",
+                background = R.color.md_blue_300
+            )
+        )
+        rankingList.add(
+            StoreRankingModel(
+                name = "人气榜",
+                list = obj.collect,
+                desc = "超强人气,等待阅读",
+                background = R.color.md_green_300
+            )
+        )
     }
 
     /**

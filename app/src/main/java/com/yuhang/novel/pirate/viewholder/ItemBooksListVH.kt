@@ -7,12 +7,13 @@ import com.yuhang.novel.pirate.databinding.ItemBooksListBinding
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceCrossFade
 import com.yuhang.novel.pirate.extension.niceDefaultImageVertical
+import com.yuhang.novel.pirate.repository.database.entity.ShuDanEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksListDataResult
 
-class ItemBooksListVH(parent:ViewGroup):BaseViewHolder<BooksListDataResult, ItemBooksListBinding>(parent, R.layout.item_books_list) {
+class ItemBooksListVH(parent:ViewGroup):BaseViewHolder<ShuDanEntity, ItemBooksListBinding>(parent, R.layout.item_books_list) {
 
-    override fun onBindViewHolder(obj: BooksListDataResult, position: Int) {
+    override fun onBindViewHolder(obj: ShuDanEntity, position: Int) {
         super.onBindViewHolder(obj, position)
 
         mBinding.nameTv.text = obj.Title

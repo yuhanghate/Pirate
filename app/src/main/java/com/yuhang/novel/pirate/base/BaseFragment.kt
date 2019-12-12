@@ -52,6 +52,7 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
                 .get(getViewModelClass())
             mViewModel.mFragment = this
             initView()
+            initData()
         }
 
 
@@ -114,6 +115,10 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
      * 初始化View
      */
     open fun initView() {
+
+    }
+
+    open fun initData(){
 
     }
 

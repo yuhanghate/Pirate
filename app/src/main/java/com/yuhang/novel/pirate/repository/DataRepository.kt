@@ -986,4 +986,84 @@ class DataRepository(val context: Context) {
     fun insertConfig(obj: ConfigEntity) {
         getDatabase().configDao.insert(obj)
     }
+
+    /**
+     * 保存看书神器 排行榜
+     */
+    fun insertStoreRanking(obj: StoreRankingEntity) {
+        getDatabase().storeRankingDao.insert(obj)
+    }
+
+    /**
+     * 查询看书神器 排行榜
+     */
+    @HunterDebug
+    fun queryStoreRanking(genderType: String):StoreRankingEntity? {
+        return getDatabase().storeRankingDao.query(genderType)
+    }
+
+    /**
+     * 看书神器 保存书城列表
+     */
+    fun insertStoreEntity(obj: List<StoreEntity>) {
+        getDatabase().storeDao.insert(obj)
+    }
+
+    /**
+     * 看书神器 查看看书列表
+     */
+    @HunterDebug
+    fun queryStoreEntity(genderType: String): List<StoreEntity> {
+        return getDatabase().storeDao.query(genderType)
+    }
+
+    /**
+     * 看书神器 删除书城列表
+     */
+    fun deleteStoreEntity(genderType: String) {
+        getDatabase().storeDao.delete(genderType)
+    }
+
+    /**
+     * 查询 书城 -> 点击更多
+     */
+    fun queryBooksKSEntity(name:String, gender: String, type: String, date: String = ""): List<BooksKSEntity> {
+        return getDatabase().booksKSDao.query(gender = gender, toobarName = name, type = type, date = date)
+    }
+
+    /**
+     * 删除 书城 -> 点击更多
+     */
+    fun deleteBooksKSEntity(name: String, gender: String, type: String, date: String = "") {
+        getDatabase().booksKSDao.delete(gender = gender, toobarName = name, type = type, date = date)
+    }
+
+    /**
+     * 保存 书城 -> 点击更多
+     * 保存 书城 -> 书单
+     */
+    fun insertBooksKSEntity(obj: List<BooksKSEntity>) {
+        getDatabase().booksKSDao.insert(obj)
+    }
+
+    /**
+     * 查询 书城 -> 书单
+     */
+    fun queryShuDanEntity(name: String, gender: String, type: String):List<ShuDanEntity> {
+        return getDatabase().shuDanDao.query(gender = gender, name = name, type = type)
+    }
+
+    /**
+     * 删除 书城 -> 书单
+     */
+    fun deleteShuDanEntity(name: String, gender: String, type: String) {
+        return getDatabase().shuDanDao.delete(gender = gender, name = name, type = type)
+    }
+
+    /**
+     * 保存 书城 -> 书单
+     */
+    fun insertShuDanEntity(list: List<ShuDanEntity>) {
+        getDatabase().shuDanDao.insert(list)
+    }
 }

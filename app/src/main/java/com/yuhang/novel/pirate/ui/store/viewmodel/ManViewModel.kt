@@ -4,9 +4,9 @@ import com.alibaba.android.vlayout.DelegateAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
+import com.yuhang.novel.pirate.repository.database.entity.StoreEntity
+import com.yuhang.novel.pirate.repository.database.entity.StoreRankingEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreManResult
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.StoreRankingResult
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
 import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
@@ -61,34 +61,64 @@ class ManViewModel : BaseViewModel() {
      */
     val list = arrayListOf<RankingModel>()
 
+
+    /**
+     * 获取本地精选
+     */
+    fun queryStoreMan(): Flowable<List<StoreEntity>> {
+        return Flowable.just("")
+            .map { mDataRepository.queryStoreEntity("man") }
+    }
+
+    /**
+     * 本地查询  书城 -> 榜单 -> 男生
+     */
+    fun queryStoreRankingMan(): Flowable<StoreRankingEntity> {
+        return Flowable.just("")
+            .map {
+                mDataRepository.queryStoreRanking("man")
+                    ?: return@map StoreRankingEntity()
+            }
+            .compose(io_main())
+    }
+
     /**
      * 获取精选
      */
-    fun getStoreMan(): Flowable<StoreManResult> {
-        return mDataRepository.getStoreMan().compose(io_main())
+    fun getStoreMan(): Flowable<List<StoreEntity>> {
+        return mDataRepository.getStoreMan().map {
+            it.data.forEach { obj -> obj.genderType = "man" }
+            mDataRepository.deleteStoreEntity("man")
+            mDataRepository.insertStoreEntity(it.data)
+            it.data
+        }.compose(io_main())
     }
 
     /**
      * 书城 -> 榜单 -> 男生
      */
-    fun getStoreRankingMan(): Flowable<StoreRankingResult> {
-        return mDataRepository.getStoreRankingMan().compose(io_main())
+    fun getStoreRankingMan(): Flowable<StoreRankingEntity> {
+        return mDataRepository.getStoreRankingLady().map {
+            it.data.apply { this.genderType = "man" }
+            mDataRepository.insertStoreRanking(it.data)
+            it.data
+        }.compose(io_main())
     }
 
     /**
      * 分解类型
      */
-    fun buildBook(list: List<StoreManResult.DataBean>) {
+    fun buildBook(list: List<StoreEntity>) {
         hotList.clear()
         newList.clear()
         recommendList.clear()
         goodList.clear()
         list.forEach {
-            when (it.category) {
-                "热门连载" -> hotList.addAll(it.books)
-                "火热新书" -> newList.addAll(it.books)
-                "重磅推荐" -> recommendList.addAll(it.books)
-                "完本精选" -> goodList.addAll(it.books)
+            when (it.Category) {
+                "热门连载" -> hotList.addAll(it.Books)
+                "火热新书" -> newList.addAll(it.Books)
+                "重磅推荐" -> recommendList.addAll(it.Books)
+                "完本精选" -> goodList.addAll(it.Books)
             }
         }
     }
@@ -96,7 +126,7 @@ class ManViewModel : BaseViewModel() {
     /**
      * 男生榜单
      */
-    fun buildRanking(obj: StoreRankingResult.DataBean) {
+    fun buildRanking(obj: StoreRankingEntity) {
         rankingList.clear()
         rankingList.add(
             StoreRankingModel(

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.hunter.library.debug.HunterDebug
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import com.trello.rxlifecycle2.android.FragmentEvent
@@ -15,6 +16,7 @@ import com.yuhang.novel.pirate.listener.OnClickBookListener
 import com.yuhang.novel.pirate.listener.OnClickBooksListListener
 import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListener
+import com.yuhang.novel.pirate.repository.database.entity.StoreEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.common.adapter.VlayoutColumn3Adapter
@@ -57,7 +59,29 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
         super.initRefreshLayout()
         mBinding.refreshLayout.setOnRefreshListener(this)
         mBinding.refreshLayout.setEnableLoadMore(false)
-        mBinding.refreshLayout.autoRefresh()
+//        mBinding.refreshLayout.autoRefresh()
+//        onRefresh(mBinding.refreshLayout)
+    }
+
+    override fun initData() {
+//        mBinding.progressView.show()
+        mViewModel.queryStoreRankingMan()
+            .flatMap {
+                mViewModel.buildRanking(it)
+                return@flatMap mViewModel.queryStoreMan()
+            }
+            .compose(bindUntilEvent(FragmentEvent.DESTROY))
+            .subscribe({
+                mBinding.progressView.hide()
+                if (it.isEmpty()) {
+                    mBinding.refreshLayout.autoRefresh()
+                    return@subscribe
+                }
+                buildRecylerView(it)
+            }, {
+                mBinding.progressView.hide()
+                mBinding.refreshLayout.autoRefresh()
+            })
     }
 
     override fun initRecyclerView() {
@@ -85,68 +109,74 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
         PAGE_NUM = 1
         mViewModel.getStoreRankingMan()
             .flatMap {
-                mViewModel.buildRanking(it.data)
+                mViewModel.buildRanking(it)
                 mViewModel.getStoreMan()
             }
             .compose(bindUntilEvent(FragmentEvent.DESTROY))
             .subscribe({
 
-                mViewModel.adapter.clear()
-
-                mViewModel.buildBook(it.data)
-
-                //最新发布/本周最热/最多收藏/小编推荐
-                val headerAdapter = StoreHeaderAdapter()
-                    .setListener(this)
-                    .initData("")
-
-
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-                adapters.add(headerAdapter.toAdapter())
-
-                //分隔线
-                adapters.add(getLineAdapter(10))
-
-                adapters.add(getTitleAndMoreAdapter("热门连载"))
-                adapters.add(getColumn3Adapter(mViewModel.hotList))
-
-                //分隔线 粗
-                adapters.add(getBoldLineAdapter())
-
-                //正版网站排行榜 标题
-                adapters.add(getTitleNomoreAdapter("排行榜", R.drawable.ic_ranking_title_flag))
-
-                //正版网站排行榜  内容
-                adapters.add(getMoreRankingAdapter(mViewModel.getRankingModelList()))
-
-                //分隔线 粗
-                adapters.add(getBoldLineAdapter())
-
-
-                adapters.add(getTitleAndMoreAdapter("重磅推荐"))
-                adapters.add(getColumn3Adapter(mViewModel.recommendList))
-
-
-                //榜单
-                adapters.add(getRankingAdapter())
-
-                adapters.add(getTitleAndMoreAdapter("火热新书"))
-                adapters.add(getColumn3Adapter(mViewModel.newList))
-
-                //分隔线
-                adapters.add(getLineAdapter(10))
-
-                adapters.add(getTitleAndMoreAdapter("完本精选"))
-                adapters.add(getColumn3Adapter(mViewModel.goodList))
-
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
+                buildRecylerView(it)
                 mBinding.refreshLayout.finishRefresh()
 
             }, {
                 mBinding.refreshLayout.finishRefresh()
             })
+    }
+
+    /**
+     * 组装Adapter
+     */
+    private fun buildRecylerView(list:List<StoreEntity>) {
+        mViewModel.adapter.clear()
+        mViewModel.buildBook(list)
+
+        //最新发布/本周最热/最多收藏/小编推荐
+        val headerAdapter = StoreHeaderAdapter()
+            .setListener(this)
+            .initData("")
+
+
+        val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+        adapters.add(headerAdapter.toAdapter())
+
+        //分隔线
+        adapters.add(getLineAdapter(10))
+
+        adapters.add(getTitleAndMoreAdapter("热门连载"))
+        adapters.add(getColumn3Adapter(mViewModel.hotList))
+
+        //分隔线 粗
+        adapters.add(getBoldLineAdapter())
+
+        //正版网站排行榜 标题
+        adapters.add(getTitleNomoreAdapter("排行榜", R.drawable.ic_ranking_title_flag))
+
+        //正版网站排行榜  内容
+        adapters.add(getMoreRankingAdapter(mViewModel.getRankingModelList()))
+
+        //分隔线 粗
+        adapters.add(getBoldLineAdapter())
+
+
+        adapters.add(getTitleAndMoreAdapter("重磅推荐"))
+        adapters.add(getColumn3Adapter(mViewModel.recommendList))
+
+
+        //榜单
+        adapters.add(getRankingAdapter())
+
+        adapters.add(getTitleAndMoreAdapter("火热新书"))
+        adapters.add(getColumn3Adapter(mViewModel.newList))
+
+        //分隔线
+        adapters.add(getLineAdapter(10))
+
+        adapters.add(getTitleAndMoreAdapter("完本精选"))
+        adapters.add(getColumn3Adapter(mViewModel.goodList))
+
+
+        mViewModel.adapter.addAdapters(adapters)
+        mBinding.recyclerview.requestLayout()
     }
 
     /**

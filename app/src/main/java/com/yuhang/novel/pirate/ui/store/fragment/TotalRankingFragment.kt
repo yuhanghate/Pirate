@@ -28,6 +28,9 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
     //类型
     var type: String = ""
 
+    //标题名称
+    var name:String = ""
+
     var PAGE_NUM = 1
 
     companion object {
@@ -49,7 +52,32 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
     override fun initRefreshLayout() {
         super.initRefreshLayout()
         mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
-        mBinding.refreshLayout.autoRefresh()
+//        mBinding.refreshLayout.autoRefresh()
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.queryKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL)
+            .compose(bindToLifecycle())
+            .subscribe({
+
+                if (it.isEmpty()) {
+                    mBinding.refreshLayout.autoRefresh()
+                    return@subscribe
+                }
+
+                mViewModel.adapter.clear()
+                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+
+                val adapter = MoreRankingListAdapter()
+                    .setListener(this)
+                    .initData(it)
+
+                adapters.add(adapter.toAdapter())
+
+                mViewModel.adapter.addAdapters(adapters)
+                mBinding.recyclerview.requestLayout()
+            },{})
     }
 
     override fun initRecyclerView() {
@@ -64,7 +92,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
     override fun onRefresh(refreshLayout: RefreshLayout) {
 
         PAGE_NUM = 1
-        mViewModel.getKanShuRanking(gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
+        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
             .compose(bindToLifecycle())
             .subscribe({
 
@@ -91,7 +119,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
 
-        mViewModel.getKanShuRanking(gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
+        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
             .compose(bindToLifecycle())
             .subscribe({
                 if (!it.data.isHasNext) {
