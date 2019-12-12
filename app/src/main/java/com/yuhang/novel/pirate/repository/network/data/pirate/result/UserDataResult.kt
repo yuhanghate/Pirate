@@ -12,5 +12,6 @@ data class UserDataResult(
     val id: String,
     val tel: String,
     val token: String,
-    val username: String
+    val username: String,
+    val isVip : Boolean = false
 )

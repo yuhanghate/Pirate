@@ -348,6 +348,7 @@ class MainViewModel : BaseViewModel() {
                 mDataRepository.insertConfig(ConfigEntity().apply {
                     this.showGameRecommended = it.data.isShowGameRecommended
                     this.showSexBook = it.data.isShowSexBook
+                    this.isOpenVip = it.data.isOpenVip
                 })
                 it
             }

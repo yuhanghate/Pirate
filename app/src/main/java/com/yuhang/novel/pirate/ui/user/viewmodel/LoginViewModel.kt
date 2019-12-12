@@ -55,34 +55,6 @@ class LoginViewModel : BaseViewModel() {
         return true
     }
 
-    /**
-     * 保存帐号信息
-     */
-    fun saveAccount(userResult: UserResult) {
-        thread {
-
-            val userDataResult = userResult.data
-            val user = mDataRepository.queryUser(userDataResult.username)
-
-            if (user == null) {
-                //插入帐号
-                val userEntity = UserEntity()
-                BeanPropertiesUtil.copyProperties(userDataResult, userEntity)
-                userEntity.uid = userDataResult.id
-                userEntity.lastTime = Date()
-
-
-                PirateApp.getInstance().setToken(userEntity.token)
-                mDataRepository.insert(userEntity)
-            } else {
-                //更新帐号
-                user.token = userDataResult.token
-                user.lastTime = Date()
-            }
-
-            EventBus.getDefault().postSticky(userResult)
-        }
-    }
 
     /**
      * 同步本地收藏数据到服务器

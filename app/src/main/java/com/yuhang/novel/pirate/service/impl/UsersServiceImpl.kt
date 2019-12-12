@@ -102,6 +102,7 @@ class UsersServiceImpl : UsersService {
                     BeanPropertiesUtil.copyProperties(userDataResult, userEntity)
                     userEntity.uid = userDataResult.id
                     userEntity.lastTime = Date()
+                    userEntity.isVip = userDataResult.isVip
 
 
                     PirateApp.getInstance().setToken(userEntity.token)

@@ -44,6 +44,7 @@ public class AppConfigResult {
 
         private boolean showGameRecommended;
         private boolean showSexBook;
+        private boolean isOpenVip;
 
         public boolean isShowGameRecommended() {
             return showGameRecommended;
@@ -59,6 +60,14 @@ public class AppConfigResult {
 
         public void setShowSexBook(boolean showSexBook) {
             this.showSexBook = showSexBook;
+        }
+
+        public boolean isOpenVip() {
+            return isOpenVip;
+        }
+
+        public void setOpenVip(boolean openVip) {
+            isOpenVip = openVip;
         }
     }
 }
