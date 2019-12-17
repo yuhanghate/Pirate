@@ -13,6 +13,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
+import com.trello.rxlifecycle2.android.ActivityEvent
 import com.vondear.rxtool.RxAppTool
 import com.vondear.rxtool.RxEncryptTool
 import com.yuhang.novel.pirate.R
@@ -200,10 +201,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        Flowable.interval(3, 60 * 5, TimeUnit.SECONDS)
+        Flowable.interval(1, 60 * 5, TimeUnit.SECONDS)
             .flatMap { mViewModel.updateChapterToDB() }
             .compose(io_main())
-            .compose(bindToLifecycle())
+            .compose(bindUntilEvent(ActivityEvent.DESTROY))
             .subscribe({ }, { })
     }
 
@@ -218,7 +219,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
         mViewModel.updateChapterToDB()
-            .compose(bindToLifecycle())
+            .compose(bindUntilEvent(ActivityEvent.DESTROY))
             .subscribe({
                 Logger.i("")
             }, {

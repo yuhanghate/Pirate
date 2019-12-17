@@ -13,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 155
-        versionName "1.5.5"
+        versionCode 157
+        versionName "1.5.7"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -266,5 +266,9 @@ dependencies {
 
     //记录方法耗时
     implementation 'com.quinn.hunter:hunter-debug-library:0.9.6'
+
+    //开发工具面板
+    debugApi 'com.didichuxing.doraemonkit:doraemonkit:2.0.1'
+    releaseApi 'com.didichuxing.doraemonkit:doraemonkit-no-op:2.0.2'
 
 }

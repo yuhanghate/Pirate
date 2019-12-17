@@ -15,12 +15,14 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
+import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
 import com.yuhang.novel.pirate.eventbus.*
+import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -254,6 +256,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
         val isShowLabel = obj.isShowLabel
+//        val isShowLabel  = true
         obj.isShowLabel = false
 
         mViewModel.queryCollection(obj.bookid)
@@ -343,6 +346,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     mViewModel.adapter.setRefersh(list)
                     mBinding.refreshLayout.finishRefresh(false)
                 }, {
+
+                    //新标题的章节进行刷新
+                    mViewModel.updateChapterToDB()
+                        .compose(io_main())
+                        .compose(bindUntilEvent(FragmentEvent.DESTROY))
+                        .subscribe({},{})
 
                     netLocalData()
                     PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
