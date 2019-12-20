@@ -13,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 157
-        versionName "1.5.7"
+        versionCode 159
+        versionName "1.5.9"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true

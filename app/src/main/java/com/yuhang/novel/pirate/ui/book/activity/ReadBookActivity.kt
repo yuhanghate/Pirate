@@ -168,43 +168,44 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
         isNext = false
     }
 
-//
-//    @HunterDebug
-//    @SuppressLint("CheckResult")
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//
-//        this.intent = intent
-//        intent ?: return
-//        mViewModel.clearData()
-//        mViewModel.mBooksResult = getBooksResult()
-//        mBinding.loading.showLoading()
-//        mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
-//            .compose(bindToLifecycle())
-//            .subscribe({
-//                if (!TextUtils.isEmpty(getChapterid())) {
-//                    //打开指定章节
-//                    mViewModel.chapterid = getChapterid()
-//                    initDrawerView()
-//                    initChapterProgressSeekBar()
-//                    netDataChapterContentFromId(getChapterid())
-//                    return@subscribe
-//                }
-//                netDataChatpterContent()
-//            }, {
-//                mBinding.loading.showError()
-//            })
-//        mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
-//
-//    }
+
+    @HunterDebug
+    @SuppressLint("CheckResult")
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        this.intent = intent
+        intent ?: return
+        mViewModel.clearData()
+        mViewModel.mBooksResult = getBooksResult()
+        mBinding.loading.showLoading()
+        mViewModel.initChapterList(mViewModel.mBooksResult!!, getInitChapter())
+            .compose(bindToLifecycle())
+            .subscribe({
+                initDrawerView()
+                initFontSeekBar()
+                initChapterProgressSeekBar()
+                mViewModel.setCacheChapter(fragment)
+                mViewModel.preloadBookContents(mViewModel.mBooksResult!!)
+                if (!TextUtils.isEmpty(getChapterid())) {
+                    //打开指定章节
+                    mViewModel.chapterid = getChapterid()
+                    netDataChapterContentFromId(getChapterid())
+                    return@subscribe
+                }
+                //打开最近章节
+                netDataChatpterContent()
+            }, {
+                mBinding.loading.showError()
+            })
+
+    }
 
     override fun initView() {
         super.initView()
         initViewModel()
         initRefreshLayout()
         initRecyclerView()
-
-
         initBackground()
         resetBackground(BookConstant.getPageColorIndex())
         onClick()
@@ -235,7 +236,6 @@ class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel
                         return@subscribe
                     }
                     //打开最近章节
-
                     netDataChatpterContent()
 
 

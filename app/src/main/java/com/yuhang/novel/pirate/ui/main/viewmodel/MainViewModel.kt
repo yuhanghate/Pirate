@@ -32,9 +32,9 @@ import kotlin.concurrent.thread
 class MainViewModel : BaseViewModel() {
 
     /**
-     * 更新检测时间10天
+     * 更新检测时间3天
      */
-    val MAX_TIME_VERSION = 1000 * 60 * 60 * 24 * 10
+    val MAX_TIME_VERSION = 1000 * 60 * 60 * 24 * 3
 
     /**
      * 更新检测时间8天
@@ -304,7 +304,7 @@ class MainViewModel : BaseViewModel() {
     fun isShowVersionDialog(): Boolean {
         val millis = System.currentTimeMillis()
         val lastTime = PreferenceUtil.getLong("version_update", millis)
-        val b = lastTime - millis > MAX_TIME_VERSION
+        val b = Math.abs(lastTime - millis) > MAX_TIME_VERSION
         //第一次或者超过最大时间弹出版本检测
         if (lastTime == millis || b) {
             PreferenceUtil.commitLong("version_update", millis)

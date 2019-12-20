@@ -106,7 +106,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         EventBus.getDefault().register(this)
         onClick()
         initUserInfoView()
-        checkVersionWithPermissionCheck()
+//        checkVersionWithPermissionCheck()
     }
 
     /**

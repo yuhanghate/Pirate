@@ -33,13 +33,11 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import io.reactivex.Flowable
-import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.io.File
-import java.lang.NullPointerException
 import java.util.concurrent.TimeUnit
 
 @RuntimePermissions
@@ -148,7 +146,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
                     Flowable.just("").map { throw NullPointerException("") }
                         .compose(io_main())
-                        .subscribe({},{})
+                        .subscribe({}, {})
                 }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }
@@ -170,7 +168,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     private fun initCategory() {
         mViewModel.preloadCategory()
             .compose(bindToLifecycle())
-            .subscribe({},{})
+            .subscribe({}, {})
     }
 
     /**
@@ -179,7 +177,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     private fun initConfig() {
         mViewModel.preloadConfig()
             .compose(bindToLifecycle())
-            .subscribe({},{})
+            .subscribe({}, {})
     }
 
     /**
@@ -242,8 +240,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      * 版本升级
      */
     @NeedsPermission(
-        Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_PHONE_STATE
+        Manifest.permission.INTERNET,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_NETWORK_STATE,
+        Manifest.permission.READ_PHONE_STATE
     )
     fun checkVersion() {
         if (mViewModel.isShowVersionDialog()) {
@@ -253,7 +253,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     if (it.update == "Yes") {
                         showVersionUpdateDialog(it)
                     }
-                }, {})
+                }, {
+                    Logger.i("")
+
+                })
         }
 
     }
@@ -341,7 +344,9 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
          */
         val url = "${NetURL.HOST_RESOUCE}${result.apkFileUrl}"
         val outputApk =
-            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(url) + ".apk"
+            DownloadUtil.PATH_CHALLENGE_VIDEO + File.separator + RxEncryptTool.encryptMD5File2String(
+                url
+            ) + ".apk"
         OkGo.get<File>(url).execute(object :
             com.lzy.okgo.callback.FileCallback(
                 DownloadUtil.PATH_CHALLENGE_VIDEO,
