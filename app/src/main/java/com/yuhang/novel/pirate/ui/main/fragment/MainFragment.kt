@@ -33,6 +33,7 @@ import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
+import com.yuhang.novel.pirate.ui.main.dialog.MainDialog
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import org.greenrobot.eventbus.Subscribe
@@ -155,60 +156,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     /**
      * Item长按事件
      */
-    override fun onClickItemLongListener(
-            view: View,
-            position: Int
-    ) {
+    override fun onClickItemLongListener(view: View,position: Int) {
         val bookInfoKSEntity = mViewModel.adapter.getObj(position)
 
-        val myItems: ArrayList<String>
-        myItems = if (bookInfoKSEntity.stickTime > 0) {
-            arrayListOf("书籍详情", "目录书摘", "删除", "取消置顶")
-        } else {
-            arrayListOf("书籍详情", "目录书摘", "删除", "置顶")
-        }
-
-        MaterialDialog(activity!!).show {
-            listItems(items = myItems, selection = { dialog, index, text ->
-                when (text) {
-                    "书籍详情" -> {
-                        mViewModel.queryCollection(bookInfoKSEntity.bookid)
-                            .compose(bindToLifecycle())
-                            .subscribe({
-                                mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS, "主页 -> 书箱详情")
-                                BookDetailsActivity.start(mActivity!!, it!!)
-                            },{})
-
-                    }
-                    "目录书摘" -> {
-                        mViewModel.queryCollection(bookInfoKSEntity.bookid)
-                            .compose(bindToLifecycle())
-                            .subscribe({
-                                mViewModel.onUMEvent(mActivity!!,UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER,"主页 -> 目录书箱")
-                                ChapterListActivity.start(mActivity!!, it!!)
-                            },{})
-
-                    }
-                    "删除" -> {
-                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DELETE, "主页 -> 从书架删除收藏")
-                        mViewModel.deleteCollection(bookid = bookInfoKSEntity.bookid)
-                        mViewModel.adapter.getList().remove(bookInfoKSEntity)
-                        mViewModel.adapter.notifyDataSetChanged()
-                        initEmptyView()
-                    }
-                    "置顶" -> {
-                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 书架置顶")
-                        mViewModel.updateStickTime(bookInfoKSEntity.bookid)
-                        netLocalData()
-                    }
-                    "取消置顶" ->{
-                        mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_TOP, "主页 -> 取消置顶")
-                        mViewModel.updateBookInfoClearStickTime(bookInfoKSEntity.bookid)
-                        netLocalData()
-                    }
-                }
-            })
-        }
+        MainDialog(this, mViewModel, bookInfoKSEntity).show()
     }
 
 
@@ -292,7 +243,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     /**
      * 从本地数据库加载书架数据
      */
-    private fun netLocalData() {
+    fun netLocalData() {
         mViewModel.getBookInfoListLocal()
                 .compose(bindToLifecycle())
                 .subscribe({
@@ -316,7 +267,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     /**
      * 去搜索书
      */
-    private fun initEmptyView() {
+    fun initEmptyView() {
         if (mViewModel.adapter.getList().isEmpty()) {
             mBinding.btnEmpty.visibility = View.VISIBLE
         } else {

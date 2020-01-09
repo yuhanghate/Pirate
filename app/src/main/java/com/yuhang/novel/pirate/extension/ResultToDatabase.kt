@@ -246,12 +246,12 @@ fun SearchDataKdResult.niceBooksResult(): BooksResult {
 fun AuthorBooksDataKdResult.niceBooksResult(): BooksResult {
     val obj = this
     return BooksResult().apply {
-        this.author = obj.author
+        this.author = obj.author ?: ""
         this.bookKdId = obj._id
-        this.bookName = obj.title
-        this.cover = obj.cover
-        this.description = obj.longIntro
-        this.kind = obj.minorCate
+        this.bookName = obj.title ?: ""
+        this.cover = obj.cover ?: ""
+        this.description = obj.longIntro ?: ""
+        this.kind = obj.minorCate ?: ""
         this.resouce = "KD"
         this.typeKd = 1
         this.typeKs = 2
@@ -276,7 +276,7 @@ fun BooksKSResult.niceBooksResult(): BooksResult {
  */
 fun CollectionDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity? {
     val obj = this
-    if (obj.resouceType != "KD" ||  TextUtils.isEmpty(obj.tocId)) return null
+    if (obj.resouceType != "KD" || TextUtils.isEmpty(obj.tocId)) return null
     return BookResouceTypeKDEntity().apply {
         if (obj.resouceType == "KD") {
             this.bookid = obj.bookid
@@ -290,7 +290,7 @@ fun CollectionDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity?
 
 fun ReadHistoryDataResult.niceBookResouceTypeKDEntity(): BookResouceTypeKDEntity? {
     val obj = this
-    if (obj.resouceType != "KD" ||  TextUtils.isEmpty(obj.tocId)) return null
+    if (obj.resouceType != "KD" || TextUtils.isEmpty(obj.tocId)) return null
     return BookResouceTypeKDEntity().apply {
         if (obj.resouceType == "KD") {
             this.bookid = obj.bookid

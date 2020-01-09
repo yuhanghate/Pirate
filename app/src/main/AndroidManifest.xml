@@ -48,9 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-                android:name=".ui.appintro.activity.IntroActivity"
-                android:theme="@style/AppIntroTheme" />
         <activity android:name=".ui.webview.activity.WebViewActivity" />
         <activity
                 android:name=".ui.main.activity.MainActivity"

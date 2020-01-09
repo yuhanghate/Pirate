@@ -63,7 +63,10 @@ class MainViewModel : BaseViewModel() {
     @SuppressLint("CheckResult")
     fun getBookDetailsList(): Flowable<BookInfoKSEntity?> {
         return queryCollectionAll()
-            .flatMap { Flowable.fromArray(* it.toTypedArray()) }
+            .flatMap {
+
+                Flowable.fromArray(* it.toTypedArray())
+            }
             .flatMap {
                 //网络可用加载服务器数据
                 if (RxNetTool.isAvailable(mFragment?.context)) {

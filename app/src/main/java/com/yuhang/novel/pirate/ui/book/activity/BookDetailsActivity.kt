@@ -17,6 +17,7 @@ import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
+import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -118,34 +119,44 @@ class BookDetailsActivity :
 
     }
 
-    private fun initToolbarHeight() {
-        mBinding.statusBarV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
+    override fun initStatusTool() {
+        ImmersionBar.with(this)
+            .statusBarView(mBinding.statusBarV)
+            .navigationBarColor(R.color.md_white_1000)
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
+            .init()
     }
 
-    override fun initStatusTool() {
-        StatusBarUtil.setTranslucentForCoordinatorLayout(
-            this,
-            StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
-        )
+    private fun initToolbarHeight() {
+//        mBinding.statusBarV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
     }
+
+//    override fun initStatusTool() {
+//        StatusBarUtil.setTranslucentForCoordinatorLayout(
+//            this,
+//            StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
+//        )
+//    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            if (SystemUtil.getDeviceBrand() == "Meizu") {
-                layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
-            } else {
-                layoutParams.height =
-                    StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(
-                        this
-                    )
-            }
+//            val layoutParams = LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT
+//            )
+//            if (SystemUtil.getDeviceBrand() == "Meizu") {
+//                layoutParams.height = StatusBarUtil.getNavigationBarSize(this).y
+//            } else {
+//                layoutParams.height =
+//                    StatusBarUtil.getNavigationBarSize(this).y - StatusBarUtil.getStatusBarHeight(
+//                        this
+//                    )
+//            }
 
-            mBinding.tabNavigationBar.layoutParams = layoutParams
+//            mBinding.tabNavigationBar.layoutParams = layoutParams
 
         }
     }
