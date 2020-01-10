@@ -3,7 +3,7 @@ package com.yuhang.novel.pirate.repository.network
 object NetURL {
 
 
-    var type = NetType.DEVELOP
+    var type = NetType.MASTER
 //    var type = NetType.MASTER
 
 
