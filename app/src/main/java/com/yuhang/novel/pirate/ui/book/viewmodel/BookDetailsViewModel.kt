@@ -66,30 +66,18 @@ class BookDetailsViewModel : BaseViewModel() {
     fun postCollection(obj: BooksResult) {
         if (TextUtils.isEmpty(PirateApp.getInstance().getToken()) || entity == null) return
         Flowable.just(obj.getBookid())
-
             .flatMap {
                 entity?.let {
-                    mDataRepository.addCollection(
-                        bookid = it.bookid,
-                        bookName = it.bookName,
-                        author = it.author,
-                        cover = it.cover,
-                        description = it.description,
-                        bookStatus = it.bookStatus,
-                        classifyName = it.classifyName,
-                        resouceType = obj.getType()
+                    mDataRepository.addCollection(bookid = it.bookid,bookName = it.bookName,
+                        author = it.author,cover = it.cover,description = it.description,
+                        bookStatus = it.bookStatus,classifyName = it.classifyName,resouceType = obj.getType()
                     )
                 }
 
             }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .compose(io_main())
             .compose(mActivity?.bindToLifecycle())
-            .subscribe({
-                Logger.i("")
-            }, {
-                Logger.i("")
-            })
+            .subscribe({}, {})
     }
 
     /**

@@ -94,16 +94,19 @@ class ReadBookViewModel : BaseViewModel() {
      * 根据章节id查询内容
      */
     @HunterDebug
-    fun getBookContent(
-        obj: BooksResult,
-        chapter: BookChapterKSEntity
+    fun getBookContent(obj: BooksResult,chapter: BookChapterKSEntity, isCache: Boolean = true
     ): Flowable<BookContentKSEntity> {
 
         return Flowable.just(chapter).flatMap {
             //返回本地数据
             val contentKSEntity =
                 mDataRepository.queryBookContent(mBooksResult?.getBookid()!!, it.chapterId)
-            if (contentKSEntity != null) return@flatMap Flowable.just(contentKSEntity)
+
+            val lastEntity = chapterList.last()
+            //如果本地有缓存并且缓存不是最后一章
+            //有些章节会出现处理中的内容,进行强制刷新
+            //可以手动指定是否缓存
+            if (contentKSEntity != null &&  (contentKSEntity.chapterId != lastEntity.chapterId || isCache)) return@flatMap Flowable.just(contentKSEntity)
 
             //返回服务器数据
             return@flatMap mConvertRepository.getChapterContent(obj, it)
@@ -114,17 +117,20 @@ class ReadBookViewModel : BaseViewModel() {
 
     /**
      * 最后一次阅读内容或第一章节内容
+     * 可以手动进行强制刷新,不读缓存
      */
     @HunterDebug
     @SuppressLint("CheckResult")
-    fun getLastBookContent(obj: BooksResult): Flowable<BookContentKSEntity> {
+    fun getLastBookContent(obj: BooksResult, isCache:Boolean = true): Flowable<BookContentKSEntity> {
         return Flowable.just(obj)
             .flatMap {
                 //查询上次章节内容
                 val historyEntity =
                     mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
+
+
                 if (historyEntity != null) {
-                    return@flatMap getBookContent(obj, getChapterEntity(historyEntity.chapterid))
+                    return@flatMap getBookContent(obj, getChapterEntity(historyEntity.chapterid), isCache)
                 }
 
                 //默认返回第一章内容

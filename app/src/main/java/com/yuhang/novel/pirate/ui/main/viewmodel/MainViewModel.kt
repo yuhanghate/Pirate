@@ -60,40 +60,76 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取所有书本详情
      */
-    @SuppressLint("CheckResult")
-    fun getBookDetailsList(): Flowable<BookInfoKSEntity?> {
-        return queryCollectionAll()
-            .flatMap {
+//    @SuppressLint("CheckResult")
+//    fun getBookDetailsList(): Flowable<BookInfoKSEntity?> {
+//        return queryCollectionAll()
+//            .flatMap {
+//
+//                Flowable.fromArray(* it.toTypedArray())
+//            }
+//            .flatMap {
+//                //网络可用加载服务器数据
+//                if (RxNetTool.isAvailable(mFragment?.context)) {
+//                    return@flatMap mConvertRepository.updateBook(it, it.resouce)
+//                }
+//                return@flatMap Flowable.just(it)
+//
+//            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}.compose(io_main())
+//    }
 
-                Flowable.fromArray(* it.toTypedArray())
+    /**
+     * 收藏列表 快读源
+     */
+    fun getBookDetailsListKD(): Flowable<BookInfoKSEntity> {
+        return Flowable.just("")
+            .flatMap {
+                val list = mDataRepository.queryCollectionKD()
+
+                if (!RxNetTool.isAvailable(PirateApp.getInstance()) || list.isEmpty()) {
+                    return@flatMap Flowable.fromIterable(list)
+                }
+                val sb = StringBuilder()
+                list.forEach { sb.append(it.bookid).append(",") }
+                sb.deleteCharAt(sb.length - 1)
+                return@flatMap mConvertRepository.updateBookKD(sb.toString())
+            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}
+    }
+
+    /**
+     * 收藏列表 看书源
+     */
+    fun getBookDetailsListKS(): Flowable<BookInfoKSEntity> {
+        return Flowable.just("")
+            .flatMap {
+                val list = mDataRepository.queryCollectionKS()
+                return@flatMap Flowable.fromIterable(list)
             }
             .flatMap {
-                //网络可用加载服务器数据
-                if (RxNetTool.isAvailable(mFragment?.context)) {
-                    return@flatMap mConvertRepository.updateBook(it, it.resouce)
+                if (RxNetTool.isAvailable(PirateApp.getInstance())) {
+                    return@flatMap mConvertRepository.updateBookKS(it.bookid)
                 }
                 return@flatMap Flowable.just(it)
+            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}
+    }
 
+    /**
+     * 更新书籍信息
+     */
+    private fun updateBookInfo(obj: BookInfoKSEntity): BookInfoKSEntity {
+        val bookInfo = queryBookInfo(obj.bookid)
+        return if (bookInfo == null) {
+            //书籍信息插入本地
+            insertBookInfo(obj)
+            queryBookInfo(obj.bookid)!!
+        } else {
+            //更新本地数据
+            //有置顶的时候,才更新数据.最新数据有更新也会刷新
+            if (bookInfo.stickTime > 0 || bookInfo.lastChapterName != obj.lastChapterName) {
+                bookInfo.lastChapterName = obj.lastChapterName
+                mDataRepository.updateBookInfo(bookInfo)
             }
-            .flatMap {
-                val bookInfo = queryBookInfo(it.bookid)
-
-                if (bookInfo == null) {
-                    //书籍信息插入本地
-                    insertBookInfo(it)
-                    return@flatMap Flowable.just(queryBookInfo(it.bookid))
-                } else {
-                    //更新本地数据
-                    //有置顶的时候,才更新数据.最新数据有更新也会刷新
-                    if (bookInfo.stickTime > 0 || bookInfo.lastChapterName != it.lastChapterName) {
-                        it.id = bookInfo.id
-                        it.stickTime = bookInfo.stickTime
-                        it.resouce = bookInfo.resouce
-                        updateBookInfo(it)
-                    }
-                    return@flatMap Flowable.just(it)
-                }
-            }.compose(io_main())
+            obj
+        }
     }
 
     /**
@@ -110,12 +146,6 @@ class MainViewModel : BaseViewModel() {
         mDataRepository.insertBookInfo(obj)
     }
 
-    /**
-     * 更新本地书籍信息
-     */
-    private fun updateBookInfo(obj: BookInfoKSEntity) {
-        mDataRepository.updateBookInfo(obj)
-    }
 
     /**
      * 获取章节列表

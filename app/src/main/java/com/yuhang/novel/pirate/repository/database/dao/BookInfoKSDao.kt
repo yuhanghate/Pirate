@@ -47,10 +47,20 @@ interface BookInfoKSDao {
     /**
      * 查询所有收藏的书本信息
      */
-    @Query("select * from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid group by c.bookid order by info.stickTime DESC, info.lastReadTime DESC ")
+    @Query("select info.* from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid group by c.bookid order by info.stickTime DESC, info.lastReadTime DESC ")
     fun queryCollectionAll(): List<BookInfoKSEntity?>
 
+    /**
+     * 查询所有收藏的书  看书源
+     */
+    @Query("select info.* from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid  and info.resouce = 'KS' group by c.bookid order by info.stickTime DESC, info.lastReadTime DESC ")
+    fun queryCollectionKS():List<BookInfoKSEntity>
 
+    /**
+     * 查询所有收藏的书 快读源
+     */
+    @Query("select info.* from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid  and info.resouce = 'KD' group by c.bookid order by info.stickTime DESC, info.lastReadTime DESC ")
+    fun queryCollectionKD():List<BookInfoKSEntity>
 
     /**
      * 查询阅读记录的书本信息

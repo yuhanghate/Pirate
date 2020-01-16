@@ -89,7 +89,7 @@ class LadyViewModel : BaseViewModel() {
      * 获取精选
      */
     fun getStoreMan(): Flowable<List<StoreEntity>> {
-        return mDataRepository.getStoreMan().map {
+        return mDataRepository.getStoreLady().map {
             it.data.forEach { obj -> obj.apply { this.genderType = "lady" } }
             mDataRepository.deleteStoreEntity("lady")
             mDataRepository.insertStoreEntity(it.data)

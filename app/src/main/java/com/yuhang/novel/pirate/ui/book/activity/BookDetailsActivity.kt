@@ -35,6 +35,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import com.yuhang.novel.pirate.utils.StatusBarUtil
 import com.yuhang.novel.pirate.utils.SystemUtil
+import com.yuhang.novel.pirate.widget.BookDetailsHeaderView
 import org.greenrobot.eventbus.EventBus
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -48,23 +49,7 @@ class BookDetailsActivity :
     BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
     AppBarLayout.OnOffsetChangedListener {
 
-    /**
-     * 标题行为
-     */
-    enum class TitleEvent {
 
-        ENTER_START, //进入动画开始
-        ENTER_END,  //进入动画结束
-        EXIT_START, //退出动画开始
-        EXIT_END, //退出动画结束
-        DEFAULT //默认
-    }
-
-
-    /**
-     * 是否显示标题动画
-     */
-    private var animationEvent = TitleEvent.DEFAULT
 
     /**
      * 立即阅读
@@ -115,7 +100,6 @@ class BookDetailsActivity :
                 }
             }
         }, {})
-        initToolbarHeight()
 
     }
 
@@ -129,16 +113,6 @@ class BookDetailsActivity :
             .init()
     }
 
-    private fun initToolbarHeight() {
-//        mBinding.statusBarV.layoutParams.height = StatusBarUtil.getStatusBarHeight(this)
-    }
-
-//    override fun initStatusTool() {
-//        StatusBarUtil.setTranslucentForCoordinatorLayout(
-//            this,
-//            StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA
-//        )
-//    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -263,9 +237,6 @@ class BookDetailsActivity :
                     .intoBackground(mBinding.includeToobarHeadOpen.bgCoverIv)
             )
             .into(mBinding.includeToobarHeadOpen.coverIv)
-//        Glide.with(this).load(obj.cover.niceCoverPic())
-//            .apply(bitmapTransform(BlurTransformation(20, 5) as Transformation<Bitmap>))
-//            .into(mBinding.includeToobarHeadOpen.bgCoverIv)
 
         val details = mBinding.layoutBookDetails
         details.statusTv.setText("状态   ${obj.bookStatus}", null)
@@ -308,67 +279,7 @@ class BookDetailsActivity :
      */
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         appBarLayout ?: return
-        //垂直方向偏移量
-        val offset = abs(verticalOffset).toFloat();
-        //最大偏移距离
-        val scrollRange = appBarLayout.totalScrollRange.toFloat()
-
-        val alpha4 = (scrollRange - offset) / scrollRange
-        Logger.i("offset = $offset scrollRange = $scrollRange  alpha4 = $alpha4")
-
-        if (scrollRange - offset == 0f) {
-
-            //滑入标题动画
-            animationEvent = TitleEvent.ENTER_START
-            mBinding.includeToolbarOpen.root.visibility = View.INVISIBLE
-            mBinding.includeToolbarClose.root.visibility = View.VISIBLE
-
-            mBinding.includeToolbarClose.titleCloseTv.visibility = View.VISIBLE
-            mBinding.includeToolbarClose.backCloseIv.visibility = View.VISIBLE
-
-            val animationIn = AnimationUtils.loadAnimation(this, R.anim.slide_book_details_in)
-            animationIn.interpolator =
-                Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
-            mBinding.includeToolbarClose.titleCloseTv.startAnimation(animationIn)
-            Handler().postDelayed({
-                mBinding.includeToolbarClose.titleCloseTv.visibility = View.VISIBLE
-                animationEvent = TitleEvent.ENTER_END
-            }, 500)
-
-        } else if (animationEvent == TitleEvent.ENTER_END) {
-
-            //标题滑出动画
-            animationEvent = TitleEvent.EXIT_START
-            mBinding.includeToolbarClose.root.visibility = View.VISIBLE
-            val animationOut = AnimationUtils.loadAnimation(this, R.anim.slide_book_details_out)
-            animationOut.interpolator =
-                Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR) as Interpolator
-            animationOut.fillAfter = true
-            mBinding.includeToolbarClose.titleCloseTv.startAnimation(animationOut)
-            Handler().postDelayed({
-                //                mBinding.includeToolbarClose.titleCloseTv.visibility = View.INVISIBLE
-                animationEvent = TitleEvent.EXIT_END
-            }, 600)
-        } else if (animationEvent == TitleEvent.DEFAULT || animationEvent == TitleEvent.EXIT_END) {
-            animationEvent = TitleEvent.DEFAULT
-            mBinding.includeToolbarClose.root.visibility = View.VISIBLE
-        }
-
-        Logger.t("offset").i("alpha=$alpha4")
-
-        mBinding.includeToolbarClose.backCloseIv.alpha = 1 - alpha4
-        mBinding.includeToolbarOpen.root.alpha = alpha4
-        mBinding.statusBarV.alpha = 1 - alpha4
-        mBinding.includeToolbarClose.root.alpha = 1 - alpha4
-
-        if (offset == 0f) {
-            //打开
-            mBinding.includeToolbarClose.root.visibility = View.INVISIBLE
-            mBinding.includeToolbarOpen.root.visibility = View.VISIBLE
-            mBinding.includeToolbarOpen.root.alpha = 1f
-            mBinding.statusBarV.visibility = View.VISIBLE
-        }
-
+        BookDetailsHeaderView(this, mViewModel).initHederView(appBarLayout, verticalOffset)
     }
 
     /**

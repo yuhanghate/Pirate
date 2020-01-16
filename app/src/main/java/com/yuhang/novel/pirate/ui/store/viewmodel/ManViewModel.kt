@@ -98,7 +98,7 @@ class ManViewModel : BaseViewModel() {
      * 书城 -> 榜单 -> 男生
      */
     fun getStoreRankingMan(): Flowable<StoreRankingEntity> {
-        return mDataRepository.getStoreRankingLady().map {
+        return mDataRepository.getStoreRankingMan().map {
             it.data.apply { this.genderType = "man" }
             mDataRepository.insertStoreRanking(it.data)
             it.data

@@ -131,7 +131,6 @@ class DataRepository(val context: Context) {
     /**
      * 从数据库查询当前id对应的书籍信息
      */
-    @HunterDebug
     fun queryBookInfo(bookid: String): BookInfoKSEntity? {
         return mDatabase.bookInfoKSDao.query(bookid)
     }
@@ -139,7 +138,6 @@ class DataRepository(val context: Context) {
     /**
      * 插入数据库书籍信息
      */
-    @HunterDebug
     fun insertBookInfo(obj: BookInfoKSEntity) {
         mDatabase.bookInfoKSDao.insert(obj)
     }
@@ -147,7 +145,6 @@ class DataRepository(val context: Context) {
     /**
      * 更新数据库书籍信息
      */
-    @HunterDebug
     fun updateBookInfo(obj: BookInfoKSEntity) {
         //更新标签
         updateLable(obj.bookid, obj.lastChapterName)
@@ -157,7 +154,6 @@ class DataRepository(val context: Context) {
     /**
      * 数据库查询章节内容
      */
-    @HunterDebug
     fun queryBookContent(bookid: String, chapterid: String): BookContentKSEntity? {
         return mDatabase.bookContentKSDao.query(bookid, chapterid)
     }
@@ -1065,5 +1061,19 @@ class DataRepository(val context: Context) {
      */
     fun insertShuDanEntity(list: List<ShuDanEntity>) {
         getDatabase().shuDanDao.insert(list)
+    }
+
+    /**
+     * 查询收藏列表  看书源
+     */
+    fun queryCollectionKS(): List<BookInfoKSEntity> {
+        return getDatabase().bookInfoKSDao.queryCollectionKS()
+    }
+
+    /**
+     * 查询收藏列表  快读源
+     */
+    fun queryCollectionKD(): List<BookInfoKSEntity> {
+        return getDatabase().bookInfoKSDao.queryCollectionKD()
     }
 }

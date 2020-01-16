@@ -131,25 +131,16 @@ public class TextPagerView extends ReadBookTextView {
     public TextPagerView(Context context) {
         super(context);
         setWillNotDraw(false);
-//        init();
-//        setUpTextParams(getTextSize());
     }
 
     public TextPagerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        init();
-//        setUpTextParams(getTextSize());
     }
 
     public TextPagerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-//        init();
-//        setUpTextParams(getTextSize());
     }
 
-//    public TextPagerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-//        super(context, attrs, defStyleAttr, defStyleRes);
-//    }
 
     @Override
     protected void onLayout(boolean b, int left, int top, int right, int bottom) {
@@ -197,22 +188,10 @@ public class TextPagerView extends ReadBookTextView {
      * 获取内容显示位置的大小
      */
     private void resetVisibleWidthAndHeight() {
-//        int realHeight = StatusBarUtil.getRealHeight(getContext());
-//        int navigationbar = StatusBarUtil.getNavigationBarSize(getContext()).y;
         mVisibleWidth = mDisplayWidth - mMarginWidthStart - mMarginWidthEnd - getPaddingStart() - getPaddingEnd();
         mVisibleHeight = mDisplayHeight - mMarginHeightTop - mMarginHeightButton - getPaddingTop() - getPaddingBottom();
     }
 
-
-    private void initData() {
-        // 初始化参数
-        mMarginWidthStart = ScreenUtils.dpToPx(15);
-        mMarginWidthEnd = ScreenUtils.dpToPx(15);
-        mMarginHeightTop = ScreenUtils.dpToPx(0);
-        mMarginHeightButton = ScreenUtils.dpToPx(0);
-
-        mMarginWidth = mMarginWidthStart + mMarginWidthEnd + getPaddingStart() + getPaddingEnd();
-    }
 
     /**
      * 作用：设置与文字相关的参数
@@ -711,20 +690,8 @@ public class TextPagerView extends ReadBookTextView {
     }
 
 
-    /**
-     * 生成内容列表
-     *
-     * @return
-     */
-    public List<TxtPage> build() {
-//        initData();
-        initPaint();
-        setUpTextParams(getTextSize());
-        return loadPages(mContent);
-    }
 
     public List<TextPageBean> build2() {
-//        initData();
         initPaint();
         setUpTextParams(getTextSize());
         return loadPages2(mContent);
@@ -734,7 +701,6 @@ public class TextPagerView extends ReadBookTextView {
      * 初始化参数
      */
     public void init() {
-//        initData();
         initPaint();
         setUpTextParams(getTextSize());
     }

@@ -271,6 +271,25 @@ class ConvertRepository {
     }
 
     /**
+     * 主页小说刷新 快读源
+     */
+    fun updateBookKD(bookids: String):Flowable<BookInfoKSEntity> {
+        return mKuaiDuNetApi.getBookUpdate(bookids)
+            .flatMap { Flowable.fromIterable(it) }
+            .map { it.niceBookInfoKSEntity() }
+    }
+
+    /**
+     * 主页小说刷新 看书源
+     */
+    fun updateBookKS(bookid: String): Flowable<BookInfoKSEntity> {
+        return mKanShuNetApi.getBookDetails(
+            dirId = niceDir(bookid),
+            bookId = bookid.toLong()
+        ).map { it.data.niceBookInfoKSEntity() }
+    }
+
+    /**
      * 搜索模糊匹配
      */
     fun searchSuggest(keyword: String): Flowable<List<SearchSuggestResult>> {

@@ -6,8 +6,6 @@ import android.app.Application
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
-import com.didichuxing.doraemonkit.DoraemonKit
-import com.didichuxing.doraemonkit.kit.IKit
 import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection
 import com.meituan.android.walle.WalleChannelReader
@@ -23,13 +21,11 @@ import com.umeng.message.PushAgent
 import com.yuhang.novel.pirate.BuildConfig
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.constant.ConfigConstant
-import com.yuhang.novel.pirate.dokit.KitDemo
 import com.yuhang.novel.pirate.push.PushUmengMessageHandler
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
 import me.yokeyword.fragmentation.Fragmentation
-import java.util.*
 import kotlin.concurrent.thread
 
 
@@ -81,20 +77,6 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         thread { initYouMent() }
         initToken()
         initDownload()
-//        initDidi()
-    }
-
-    /**
-     * 滴滴工具检测
-     */
-    private fun initDidi() {
-        val kits: MutableList<IKit> = ArrayList()
-//        kits.add(KitDemo())
-        DoraemonKit.install(this, kits)
-
-        //严格检查模式
-        //严格检查模式
-        StrictMode.enableDefaults()
     }
 
     /**

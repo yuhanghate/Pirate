@@ -93,6 +93,7 @@ fun BookDetailsDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.lastChapterName = obj.LastChapter
         this.bookStatus = obj.BookStatus
         this.classifyName = obj.CName
+        this.resouce = "KS"
     }
 }
 
@@ -203,6 +204,7 @@ fun BookDetailsKdResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.lastChapterName = obj.lastChapter
         this.bookStatus = if (obj.isSerial) "连载" else "完结"
         this.classifyName = obj.cat
+        this.resouce = "KD"
     }
 }
 
@@ -366,6 +368,7 @@ fun BookUpdateKdResult.niceBookInfoKSEntity(): BookInfoKSEntity {
         this.author = obj.author
         this.lastChapterName = obj.lastChapter
         this.lastTime = DateTime(obj.updated).millis
+        this.resouce = "KD"
     }
 }
 
@@ -484,3 +487,4 @@ fun BooksKSEntity.niceBooksKSResult(): BooksKSResult {
         this.Score = obj.Score
     }
 }
+
