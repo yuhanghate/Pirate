@@ -18,4 +18,9 @@ interface StoreRankingDao {
     @Query("select * from storerankingentity where genderType = :genderType order by id desc limit 1")
     fun query(genderType: String): StoreRankingEntity?
 
+    /**
+     * 清空数据
+     */
+    @Query("delete from storerankingentity where genderType = :genderType")
+    fun clean(genderType: String)
 }

@@ -102,10 +102,10 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
         PAGE_NUM = 1
-        mViewModel.getStoreRankingMan()
+        mViewModel.getStoreRankingLady()
             .flatMap {
                 mViewModel.buildRanking(it)
-                mViewModel.getStoreMan()
+                mViewModel.getStoreLady()
             }
             .compose(bindUntilEvent(FragmentEvent.DESTROY))
             .subscribe({

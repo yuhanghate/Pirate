@@ -88,7 +88,7 @@ class LadyViewModel : BaseViewModel() {
     /**
      * 获取精选
      */
-    fun getStoreMan(): Flowable<List<StoreEntity>> {
+    fun getStoreLady(): Flowable<List<StoreEntity>> {
         return mDataRepository.getStoreLady().map {
             it.data.forEach { obj -> obj.apply { this.genderType = "lady" } }
             mDataRepository.deleteStoreEntity("lady")
@@ -100,9 +100,10 @@ class LadyViewModel : BaseViewModel() {
     /**
      * 书城 -> 榜单 -> 女生
      */
-    fun getStoreRankingMan(): Flowable<StoreRankingEntity> {
+    fun getStoreRankingLady(): Flowable<StoreRankingEntity> {
         return mDataRepository.getStoreRankingLady().map {
             it.data.apply { this.genderType = "lady" }
+            mDataRepository.cleanStoreRanking("lady")
             mDataRepository.insertStoreRanking(it.data)
             it.data
         }.compose(io_main())

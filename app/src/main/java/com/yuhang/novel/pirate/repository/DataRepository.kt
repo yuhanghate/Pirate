@@ -991,6 +991,13 @@ class DataRepository(val context: Context) {
     }
 
     /**
+     * 清空书城记录
+     */
+    fun cleanStoreRanking(genderType: String) {
+        getDatabase().storeRankingDao.clean(genderType)
+    }
+
+    /**
      * 查询看书神器 排行榜
      */
     @HunterDebug
@@ -1075,5 +1082,12 @@ class DataRepository(val context: Context) {
      */
     fun queryCollectionKD(): List<BookInfoKSEntity> {
         return getDatabase().bookInfoKSDao.queryCollectionKD()
+    }
+
+    /**
+     * 获取所有收藏的连载列表
+     */
+    fun queryCollectionAllSerial(): List<BookInfoKSEntity> {
+        return getDatabase().bookInfoKSDao.queryCollectionAllSerial()
     }
 }

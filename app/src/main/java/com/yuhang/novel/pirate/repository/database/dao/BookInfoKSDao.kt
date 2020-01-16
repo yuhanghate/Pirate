@@ -63,6 +63,12 @@ interface BookInfoKSDao {
     fun queryCollectionKD():List<BookInfoKSEntity>
 
     /**
+     * 查询所有连载的收藏
+     */
+    @Query("select info.* from bookinfoksentity info, bookcollectionksentity c where info.bookid = c.bookid and info.bookStatus != '完结' group by c.bookid order by info.stickTime DESC, info.lastReadTime DESC")
+    fun queryCollectionAllSerial():List<BookInfoKSEntity>
+
+    /**
      * 查询阅读记录的书本信息
      */
     @Query("select * from bookinfoksentity as info where info.bookid in (select h.bookid from bookreadhistoryentity as h group by h.bookid order by h.lastReadTime desc limit 20 offset :pageNum)")

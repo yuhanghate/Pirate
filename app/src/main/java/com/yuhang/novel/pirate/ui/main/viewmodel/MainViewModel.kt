@@ -173,9 +173,9 @@ class MainViewModel : BaseViewModel() {
      * 从服务器更新书籍章节到本地
      */
     fun updateChapterToDB(): Flowable<List<BookChapterKSEntity>> {
-        Logger.i("updateChapterToDB ====> ")
-        return queryCollectionAll()
-            .flatMap { Flowable.fromArray(*it.toTypedArray()) }
+        return Flowable.just("")
+            .map { mDataRepository.queryCollectionAllSerial() }
+            .flatMap { Flowable.fromIterable(it) }
             .flatMap {
                 getChapterList(it.niceBooksResult())
             }
