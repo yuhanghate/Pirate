@@ -30,7 +30,6 @@ class ItemReadBookVH(parent: ViewGroup) :
         mBinding.contentTv.onClickCenterListener = getListener()
 
 
-//        mBinding.contentTv.setPadding(0, ImmersionBar.getStatusBarHeight(mContext as Activity), 0, 0)
         val margin = mContext.niceDp2px(20f)
         mBinding.contentTv.textSize = BookConstant.getPageTextSize()
         mBinding.contentTv.setTitle(obj.textPageBean?.chapterName)

@@ -1090,4 +1090,12 @@ class DataRepository(val context: Context) {
     fun queryCollectionAllSerial(): List<BookInfoKSEntity> {
         return getDatabase().bookInfoKSDao.queryCollectionAllSerial()
     }
+
+    /**
+     * 随机获取小黄书列表
+     */
+    fun getBookSexList(pageNum:Int): Flowable<ChapterSexResult> {
+        val map = hashMapOf<String, Int>("limit" to pageNum)
+        return getNetApi().getBookSexList(niceBody(map))
+    }
 }

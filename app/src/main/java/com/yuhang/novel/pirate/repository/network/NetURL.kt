@@ -3,8 +3,8 @@ package com.yuhang.novel.pirate.repository.network
 object NetURL {
 
 
+//    var type = NetType.DEVELOP
     var type = NetType.MASTER
-//    var type = NetType.MASTER
 
 
     //后台API调用接口

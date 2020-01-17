@@ -3,8 +3,10 @@
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/list_divider_color"
             android:orientation="vertical">
 
 
@@ -13,6 +15,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="120dp"
+                android:visibility="gone"
                 android:drawableTop="@drawable/ic_not_open"
                 android:drawablePadding="45dp"
                 android:gravity="center"
@@ -21,6 +24,21 @@
                 android:textColor="@color/secondary_text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:paddingTop="5dp"
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/item_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
 
     </RelativeLayout>
 </layout>

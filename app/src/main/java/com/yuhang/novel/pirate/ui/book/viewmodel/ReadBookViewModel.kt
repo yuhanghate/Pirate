@@ -41,7 +41,6 @@ import kotlin.concurrent.thread
 
 class ReadBookViewModel : BaseViewModel() {
 
-    val TAG = ReadBookViewModel::class.java.simpleName
     val adapter: ReadBookAdapter by lazy { ReadBookAdapter() }
 
     val log = LogUtils()

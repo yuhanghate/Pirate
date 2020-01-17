@@ -129,4 +129,22 @@ interface NetApi {
      */
     @POST("/api/m/user/config")
     fun getAppConfig():Flowable<AppConfigResult>
+
+    /**
+     * 随机获取小黄书列表
+     */
+    @POST("/api/m/book/books/sex/rand/list")
+    fun getBookSexList(@Body body: RequestBody):Flowable<ChapterSexResult>
+
+    /**
+     * 小黄书章节
+     */
+    @POST("/api/m/book/books/sex/chapter/list")
+    fun getBookSexChapter(@Body body: RequestBody)
+
+    /**
+     * 小黄书内容
+     */
+    @POST("/api/m/book/books/sex/content")
+    fun getBookSexContent(@Body body: RequestBody)
 }

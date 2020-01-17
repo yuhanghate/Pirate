@@ -52,6 +52,7 @@ class BookContentKSEntity {
     /**
      * KS:看书
      * KD:快读
+     * SEX:小黄书
      */
     var resouce : String = "KS"
 

@@ -46,6 +46,7 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_16_17;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_17_18;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_18_19;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_19_20;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_20_21;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
@@ -65,7 +66,7 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
         PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class,
         CategoryKDEntity.class, ConfigEntity.class, StoreRankingEntity.class, StoreEntity.class,
         BooksKSEntity.class, ShuDanEntity.class},
-        version = 20, exportSchema = false)
+        version = 21, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -91,7 +92,8 @@ public abstract class AppDatabase
                                     Migration_16_17.instance(),
                                     Migration_17_18.instance(),
                                     Migration_18_19.instance(),
-                                    Migration_19_20.instance()
+                                    Migration_19_20.instance(),
+                                    Migration_20_21.instance()
                             )
                             .fallbackToDestructiveMigration()
                             .build();

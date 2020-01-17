@@ -43,7 +43,6 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
             ItemReadBookFinishVH(parent)
         }
 
-//        return ItemReadBookVH(parent)
     }
 
 

@@ -101,13 +101,10 @@ class MoreRankingListActivity :
 
     override fun initRefreshLayout() {
         super.initRefreshLayout()
-        mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
-//        mBinding.refreshLayout.autoRefresh()
     }
 
     override fun initRecyclerView() {
         super.initRecyclerView()
-//        addOnScrollListener(mBinding.recyclerview)
         val layoutManager = VirtualLayoutManager(this)
         mBinding.recyclerview.layoutManager = layoutManager
         mViewModel.adapter = DelegateAdapter(layoutManager, true)
