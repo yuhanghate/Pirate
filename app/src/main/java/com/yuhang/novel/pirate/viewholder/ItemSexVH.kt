@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemSexBinding
-import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.ChapterSexDataResult
 
 class ItemSexVH(parent:ViewGroup):BaseViewHolder<ChapterSexDataResult, ItemSexBinding>(parent, R.layout.item_sex) {

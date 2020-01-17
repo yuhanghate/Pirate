@@ -308,7 +308,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun showShareDialog() {
         MaterialDialog(mActivity!!).show {
             title(text = "温馨提示")
-            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7")
+            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com")
             negativeButton(text = "取消", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_NO, "分享应用 -> 点击取消")
@@ -323,7 +323,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     // 创建普通字符型ClipData
                     val mClipData = ClipData.newPlainText(
                         "Label",
-                        "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7"
+                        "我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com"
                     )
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
@@ -332,7 +332,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     textIntent.type = "text/plain"
                     textIntent.putExtra(
                         Intent.EXTRA_TEXT,
-                        "我正在用随便看书APP看免费百万本小说。下载地址 https://fir.im/a9u7"
+                        "我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com"
                     )
                     startActivity(Intent.createChooser(textIntent, "温馨提示"))
 
