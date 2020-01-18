@@ -19,9 +19,11 @@ import com.yuhang.novel.pirate.repository.database.dao.ConfigDao;
 import com.yuhang.novel.pirate.repository.database.dao.PushMessageDao;
 import com.yuhang.novel.pirate.repository.database.dao.RankingListDao;
 import com.yuhang.novel.pirate.repository.database.dao.SearchHistoryKSDao;
+import com.yuhang.novel.pirate.repository.database.dao.SexBooksDao;
 import com.yuhang.novel.pirate.repository.database.dao.ShuDanDao;
 import com.yuhang.novel.pirate.repository.database.dao.StoreDao;
 import com.yuhang.novel.pirate.repository.database.entity.BooksKSEntity;
+import com.yuhang.novel.pirate.repository.database.entity.SexBooksEntity;
 import com.yuhang.novel.pirate.repository.database.entity.ShuDanEntity;
 import com.yuhang.novel.pirate.repository.database.entity.StoreEntity;
 import com.yuhang.novel.pirate.repository.database.dao.StoreRankingDao;
@@ -47,6 +49,8 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_17_18;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_18_19;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_19_20;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_20_21;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_21_22;
+import com.yuhang.novel.pirate.repository.database.migration.Migration_22_23;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_3_4;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_4_5;
 import com.yuhang.novel.pirate.repository.database.migration.Migration_5_6;
@@ -65,8 +69,8 @@ import com.yuhang.novel.pirate.repository.database.migration.Migration_6_7;
         UserEntity.class, RankingListEntity.class, BookReadHistoryEntity.class,
         PushMessageEntity.class, BookResouceTypeKDEntity.class, BookDownloadEntity.class,
         CategoryKDEntity.class, ConfigEntity.class, StoreRankingEntity.class, StoreEntity.class,
-        BooksKSEntity.class, ShuDanEntity.class},
-        version = 21, exportSchema = false)
+        BooksKSEntity.class, ShuDanEntity.class, SexBooksEntity.class},
+        version = 23, exportSchema = false)
 @TypeConverters({ConvertersFactory.class})
 public abstract class AppDatabase
         extends RoomDatabase {
@@ -93,7 +97,9 @@ public abstract class AppDatabase
                                     Migration_17_18.instance(),
                                     Migration_18_19.instance(),
                                     Migration_19_20.instance(),
-                                    Migration_20_21.instance()
+                                    Migration_20_21.instance(),
+                                    Migration_21_22.instance(),
+                                    Migration_22_23.instance()
                             )
                             .fallbackToDestructiveMigration()
                             .build();
@@ -216,5 +222,11 @@ public abstract class AppDatabase
      * @return
      */
     public abstract ShuDanDao getShuDanDao();
+
+    /**
+     * 小黄书列表
+     * @return
+     */
+    public abstract SexBooksDao getSexBooksDao();
 
 }

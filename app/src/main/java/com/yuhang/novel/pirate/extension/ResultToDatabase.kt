@@ -8,9 +8,7 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListDataResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.CollectionDataResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.ReadHistoryDataResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
 import org.joda.time.DateTime
 import java.util.*
@@ -488,3 +486,91 @@ fun BooksKSEntity.niceBooksKSResult(): BooksKSResult {
     }
 }
 
+fun ChapterSexDataResult.niceBooksResult(): BooksResult {
+    val obj = this
+    return BooksResult().apply {
+        this.author = obj.author
+        this.bookSexId = obj.bookId.toString()
+        this.bookName = obj.bookName
+        this.cover = ""
+        this.description = obj.description
+        this.kind = ""
+        this.resouce = "SEX"
+        this.typeKd = 2
+        this.typeKs = 2
+    }
+}
+
+
+fun ChapterSexDataResult.niceBooksKSResult(): BooksKSResult {
+    val obj = this
+    return BooksKSResult().apply {
+        this.Author = obj.author
+        this.Id = obj.bookId.toString()
+        this.Name = obj.bookName
+        this.Desc = obj.description
+    }
+}
+
+
+fun SexChapterResult.DataBean.ListBean.niceBookChapterKSEntity(): BookChapterKSEntity {
+    val obj = this
+    return BookChapterKSEntity().apply {
+        bookId = obj.bookId.toString()
+        chapterId = obj.chapterId.toString()
+        name = obj.chapterName
+        resouce = "SEX"
+    }
+}
+
+fun SexContentResult.DataBean.niceBookContentKSEntity(): BookContentKSEntity {
+    val obj = this
+    return BookContentKSEntity().apply {
+        chapterName = obj.chapterName
+        bookId = obj.bookId.toString()
+        content = obj.content
+        chapterId = obj.chapterId.toString()
+        resouce = "SEX"
+        lastContentPosition = 0
+    }
+}
+
+fun ContentKdResult.niceBookContentKSEntity(result: BooksResult, chapter:BookChapterKSEntity): BookContentKSEntity {
+    val obj = this
+    return BookContentKSEntity().apply {
+        this.chapterId = chapter.chapterId
+        this.content = obj.chapter.body!!
+        this.bookId = result.bookKsId
+        this.lastContentPosition = 0
+        this.chapterName = chapter.name
+        this.resouce = result.resouce
+    }
+}
+
+fun ContentResult.niceBookContentKSEntity(obj: BooksResult, chapter:BookChapterKSEntity): BookContentKSEntity {
+    val obj2 = this
+    return BookContentKSEntity().apply {
+        this.chapterId = chapter.chapterId
+        this.content = obj2.data.content
+        this.bookId = obj.bookKsId
+        this.lastContentPosition = 0
+        this.chapterName = obj2.data.cname
+        this.resouce = obj.resouce
+    }
+}
+
+
+fun SexBooksEntity.niceBooksResult(): BooksResult {
+    val obj = this
+    return BooksResult().apply {
+        this.author = obj.author
+        this.bookSexId = obj.bookId.toString()
+        this.bookName = obj.bookName
+        this.cover = ""
+        this.description = obj.description
+        this.kind = ""
+        this.resouce = "SEX"
+        this.typeKd = 2
+        this.typeKs = 2
+    }
+}

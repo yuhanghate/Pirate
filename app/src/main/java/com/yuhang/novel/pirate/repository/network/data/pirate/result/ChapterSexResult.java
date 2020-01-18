@@ -1,5 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.data.pirate.result;
 
+import com.yuhang.novel.pirate.repository.database.entity.SexBooksEntity;
+
 import java.util.List;
 
 public class ChapterSexResult {
@@ -12,7 +14,7 @@ public class ChapterSexResult {
 
     private int code;
     private String msg;
-    private List<ChapterSexDataResult> data;
+    private List<SexBooksEntity> data;
 
     public int getCode() {
         return code;
@@ -30,11 +32,11 @@ public class ChapterSexResult {
         this.msg = msg;
     }
 
-    public List<ChapterSexDataResult> getData() {
+    public List<SexBooksEntity> getData() {
         return data;
     }
 
-    public void setData(List<ChapterSexDataResult> data) {
+    public void setData(List<SexBooksEntity> data) {
         this.data = data;
     }
 

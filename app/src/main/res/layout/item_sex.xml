@@ -46,6 +46,7 @@
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/ic_sex_flag"
                             android:drawablePadding="5dp"
+                            android:visibility="gone"
                             android:gravity="center_vertical"
                             android:scaleType="centerInside"
                             android:textColor="@color/md_orange_700"

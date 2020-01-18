@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class ReadBookViewModel : BaseViewModel() {
+open class ReadBookViewModel : BaseViewModel() {
 
     val adapter: ReadBookAdapter by lazy { ReadBookAdapter() }
 
@@ -92,7 +92,6 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 根据章节id查询内容
      */
-    @HunterDebug
     fun getBookContent(obj: BooksResult,chapter: BookChapterKSEntity, isCache: Boolean = true
     ): Flowable<BookContentKSEntity> {
 
@@ -415,7 +414,6 @@ class ReadBookViewModel : BaseViewModel() {
     /**
      * 加载章节列表
      */
-    @HunterDebug
     @SuppressLint("CheckResult")
     fun initChapterList(obj: BooksResult, reload: Boolean): Flowable<Unit> {
 

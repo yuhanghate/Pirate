@@ -51,18 +51,18 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
      */
     private fun initTabLayoutView() {
         val pagerAdapter =
-            ViewPagerAdapter(childFragmentManager, mViewModel.mTitles, mViewModel.mFragments)
+            ViewPagerAdapter(childFragmentManager, mViewModel.getTitles(), mViewModel.getFragments())
         mBinding.tablayout.setOnTabSelectListener(this)
         mBinding.viewPager.addOnPageChangeListener(this)
         mBinding.viewPager.adapter = pagerAdapter
-        mBinding.tablayout.setViewPager(mBinding.viewPager, mViewModel.mTitles.toTypedArray())
+        mBinding.tablayout.setViewPager(mBinding.viewPager, mViewModel.getTitles().toTypedArray())
         onTabSelect(mViewModel.lastTabEntity)
         mBinding.tablayout.currentTab = 0
     }
 
 
     override fun onTabReselect(position: Int) {
-        when (val fragment = mViewModel.mFragments[position]) {
+        when (val fragment = mViewModel.getFragments()[position]) {
             is ManFragment -> onTopRecyclerView(
                 fragment.mBinding.refreshLayout,
                 fragment.mBinding.recyclerview,

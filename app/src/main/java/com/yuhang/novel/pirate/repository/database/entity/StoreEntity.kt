@@ -15,7 +15,7 @@ class StoreEntity {
     var Books : List<BooksKSResult> = arrayListOf()
 
     /**
-     * 男生/女生  类型
+     * 男生/女生/小黄书  类型
      */
     var genderType:String = "man"
 }

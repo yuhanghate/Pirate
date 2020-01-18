@@ -140,11 +140,11 @@ interface NetApi {
      * 小黄书章节
      */
     @POST("/api/m/book/books/sex/chapter/list")
-    fun getBookSexChapter(@Body body: RequestBody)
+    fun getBookSexChapter(@Body body: RequestBody):Flowable<SexChapterResult>
 
     /**
      * 小黄书内容
      */
     @POST("/api/m/book/books/sex/content")
-    fun getBookSexContent(@Body body: RequestBody)
+    fun getBookSexContent(@Body body: RequestBody):Flowable<SexContentResult>
 }

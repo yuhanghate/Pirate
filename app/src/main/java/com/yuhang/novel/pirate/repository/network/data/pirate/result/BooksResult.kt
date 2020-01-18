@@ -70,13 +70,23 @@ class BooksResult {
     var lastTime :Long = 0
 
     /**
+     * 小黄书id
+     */
+    var bookSexId :String = ""
+
+    /**
      * 获取书本id
      */
     fun getBookid(): String {
-        if (resouce == "KS" && typeKs == 1) {
+        if (resouce == "SEX") {//小黄书
+            return bookSexId
+        }
+
+        if (resouce == "KS" && typeKs == 1) {//看书
             return bookKsId
         }
-        if (resouce == "KD" && typeKd == 1) {
+
+        if (resouce == "KD" && typeKd == 1) {//快读
             return bookKdId
         }
         if (typeKs == 1) {
@@ -86,6 +96,16 @@ class BooksResult {
             return bookKdId
         }
         return ""
+    }
+
+    /**
+     * 是否小黄书
+     */
+    fun isSex(): Boolean {
+        if (resouce == "SEX") {
+            return true
+        }
+        return false
     }
 
     /**

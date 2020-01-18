@@ -45,7 +45,7 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 书籍阅读
  */
-class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel>(),
+open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookViewModel>(),
     ReadBookTextView.OnClickCenterListener, ReadBookTextView.OnClickNextListener,
     ReadBookTextView.OnClickPreviousListener, OnClickChapterItemListener, OnRefreshLoadMoreListener,
     OnPageIndexListener {

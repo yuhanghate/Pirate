@@ -178,7 +178,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     /**
      * 获取ViewModel类型
      */
-    private fun getViewModelClass(): Class<out VM> {
+    open fun getViewModelClass(): Class<out VM> {
         return (this::class.java.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<out VM>
     }
 

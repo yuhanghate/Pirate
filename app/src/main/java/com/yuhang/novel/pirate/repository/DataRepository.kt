@@ -1098,4 +1098,25 @@ class DataRepository(val context: Context) {
         val map = hashMapOf<String, Int>("limit" to pageNum)
         return getNetApi().getBookSexList(niceBody(map))
     }
+
+    /**
+     * 插入小黄书
+     */
+    fun insert(list: List<SexBooksEntity>) {
+        getDatabase().sexBooksDao.insert(list)
+    }
+
+    /**
+     * 删除小黄书列表
+     */
+    fun cleanSexBooksEntity() {
+        getDatabase().sexBooksDao.clean()
+    }
+
+    /**
+     * 获取小黄书列表
+     */
+    fun querySexBooksEntityAll() :List<SexBooksEntity>{
+        return getDatabase().sexBooksDao.queryAll()
+    }
 }
