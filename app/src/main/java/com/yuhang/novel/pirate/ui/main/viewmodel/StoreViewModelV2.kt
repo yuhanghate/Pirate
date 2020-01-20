@@ -14,12 +14,8 @@ class StoreViewModelV2 : BaseViewModel() {
 
     var lastTabEntity = 0
 
-    val mTitles: ArrayList<String> = arrayListOf<String>("男生", "女生", "小黄书")
-    val mFragments: ArrayList<BaseFragment<*, *>> = arrayListOf(
-        ManFragment.newInstance(),
-        LadyFragment.newInstance(),
-        SexFragment.newInstance()
-    )
+    val mTitles: ArrayList<String> = arrayListOf<String>()
+    val mFragments: ArrayList<BaseFragment<*, *>> = arrayListOf()
 
     /**
      * 获取标题
@@ -29,8 +25,10 @@ class StoreViewModelV2 : BaseViewModel() {
         val lastUser = mDataRepository.getLastUser()?.isVip
         if (lastUser == null || !lastUser) {
             mTitles.addAll(arrayListOf<String>("男生", "女生"))
+        } else {
+            mTitles.addAll(arrayListOf<String>("男生", "女生", "小黄书"))
         }
-        mTitles.addAll(arrayListOf<String>("男生", "女生", "小黄书"))
+
         return mTitles
     }
 
@@ -40,10 +38,12 @@ class StoreViewModelV2 : BaseViewModel() {
         if (lastUser == null || !lastUser) {
             mFragments.add(ManFragment.newInstance())
             mFragments.add(LadyFragment.newInstance())
+        } else {
+            mFragments.add(ManFragment.newInstance())
+            mFragments.add(LadyFragment.newInstance())
+            mFragments.add(SexFragment.newInstance())
         }
-        mFragments.add(ManFragment.newInstance())
-        mFragments.add(LadyFragment.newInstance())
-        mFragments.add(SexFragment.newInstance())
+
         return mFragments
     }
 

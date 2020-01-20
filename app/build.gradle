@@ -13,8 +13,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 164
-        versionName "1.6.4"
+        versionCode 165
+        versionName "1.6.5"
 
         renderscriptTargetApi 29
         renderscriptSupportModeEnabled true
@@ -145,7 +145,7 @@ dependencies {
 //    implementation 'com.zhihu.android:matisse:0.5.2-beta4'
 
     //squareup全家桶
-    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
@@ -210,8 +210,8 @@ dependencies {
     implementation 'com.lzy.net:okgo:3.0.4'
 
     //Fragment库
-    implementation 'me.yokeyword:fragmentationx:1.0.1'
-    implementation 'me.yokeyword:fragmentationx-swipeback:1.0.1'
+    implementation 'me.yokeyword:fragmentationx:1.0.2'
+    implementation 'me.yokeyword:fragmentationx-swipeback:1.0.2'
 
     //进度条
     implementation project(path: ':bubbleseekbar')

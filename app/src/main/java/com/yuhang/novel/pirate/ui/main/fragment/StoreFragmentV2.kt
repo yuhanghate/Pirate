@@ -14,6 +14,7 @@ import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.ui.store.activity.BookCategoryActivity
 import com.yuhang.novel.pirate.ui.store.fragment.LadyFragment
 import com.yuhang.novel.pirate.ui.store.fragment.ManFragment
+import com.yuhang.novel.pirate.ui.store.fragment.SexFragment
 
 /**
  * 书城 v2
@@ -73,6 +74,9 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
                 fragment.mBinding.recyclerview,
                 -1
             )
+            is SexFragment -> onTopRecyclerView(fragment.mBinding.refreshLayout,
+                fragment.mBinding.recyclerview,
+                -1)
         }
     }
 

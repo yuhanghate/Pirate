@@ -58,26 +58,6 @@ class MainViewModel : BaseViewModel() {
 
 
     /**
-     * 获取所有书本详情
-     */
-//    @SuppressLint("CheckResult")
-//    fun getBookDetailsList(): Flowable<BookInfoKSEntity?> {
-//        return queryCollectionAll()
-//            .flatMap {
-//
-//                Flowable.fromArray(* it.toTypedArray())
-//            }
-//            .flatMap {
-//                //网络可用加载服务器数据
-//                if (RxNetTool.isAvailable(mFragment?.context)) {
-//                    return@flatMap mConvertRepository.updateBook(it, it.resouce)
-//                }
-//                return@flatMap Flowable.just(it)
-//
-//            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}.compose(io_main())
-//    }
-
-    /**
      * 收藏列表 快读源
      */
     fun getBookDetailsListKD(): Flowable<BookInfoKSEntity> {

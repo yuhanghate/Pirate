@@ -142,7 +142,6 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
     }
 
 
-    @HunterDebug
     @SuppressLint("CheckResult")
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -186,7 +185,6 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
     }
 
     @SuppressLint("CheckResult")
-    @HunterDebug
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         //如果获取焦点,并且RecyclerView是第一次加载

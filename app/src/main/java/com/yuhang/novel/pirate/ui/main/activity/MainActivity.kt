@@ -18,6 +18,7 @@ import com.vondear.rxtool.RxAppTool
 import com.vondear.rxtool.RxEncryptTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
@@ -144,9 +145,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
                     showHideFragment(storeFragmentV2)
                     storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
-                    Flowable.just("").map { throw NullPointerException("") }
-                        .compose(io_main())
-                        .subscribe({}, {})
                 }
                 R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
             }

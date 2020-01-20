@@ -338,8 +338,8 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         BGAKeyboardUtil.closeKeyboard(this)
         finish()
         this.overridePendingTransition(
-            R.anim.bga_sbl_activity_backward_enter,
-            R.anim.bga_sbl_activity_backward_exit
+            R.anim.activity_in_enter,
+            R.anim.activity_in_exit
         )
     }
 

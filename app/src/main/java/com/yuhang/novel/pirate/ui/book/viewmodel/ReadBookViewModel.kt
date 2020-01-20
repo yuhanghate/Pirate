@@ -117,7 +117,6 @@ open class ReadBookViewModel : BaseViewModel() {
      * 最后一次阅读内容或第一章节内容
      * 可以手动进行强制刷新,不读缓存
      */
-    @HunterDebug
     @SuppressLint("CheckResult")
     fun getLastBookContent(obj: BooksResult, isCache:Boolean = true): Flowable<BookContentKSEntity> {
         return Flowable.just(obj)
@@ -140,7 +139,6 @@ open class ReadBookViewModel : BaseViewModel() {
      * 预加载后面章节内容
      * 后台操作,不影响前台显示
      */
-    @HunterDebug
     @SuppressLint("CheckResult")
     fun preloadBookContents(obj: BooksResult) {
 
@@ -225,7 +223,6 @@ open class ReadBookViewModel : BaseViewModel() {
     /**
      * 章节根据内容分成小页
      */
-    @HunterDebug
     fun getTxtPageList(
         pagerView: TextPagerView,
         obj: BookContentKSEntity
@@ -475,7 +472,6 @@ open class ReadBookViewModel : BaseViewModel() {
      * 后台刷新状态
      * 不跟前台UI抢资源
      */
-    @HunterDebug
     fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) {
         //单独查询.懒加载.防止多线程锁死
         Flowable.just("")

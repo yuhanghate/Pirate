@@ -14,8 +14,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.trello.rxlifecycle2.LifecycleProvider
@@ -319,7 +319,7 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
         position: Int
     ) {
 
-        val manager = recyclerView.layoutManager as? VirtualLayoutManager
+        val manager = recyclerView.layoutManager as? LinearLayoutManager
         val firstItem = manager?.findFirstVisibleItemPosition()
         //刷新
         if (firstItem == 0) {
