@@ -121,11 +121,11 @@ dependencies {
     implementation 'com.orhanobut:logger:2.2.0'
 
     //Activity 滑动返回
-    implementation 'cn.bingoogolapple:bga-swipebacklayout:1.2.0@aar'
+//    implementation 'cn.bingoogolapple:bga-swipebacklayout:1.2.0@aar'
 
     //下拉刷新,上拉加载
-    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-11'
-    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-11'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
 
     //权限申请
     implementation 'org.permissionsdispatcher:permissionsdispatcher:4.3.1'
@@ -227,7 +227,7 @@ dependencies {
     implementation 'com.umeng.umsdk:push:6.0.1'
 
     //分享
-    implementation 'gdut.bsx:share2:0.9.0'
+//    implementation 'gdut.bsx:share2:0.9.0'
 
     //dns解析
     implementation 'com.qiniu:happy-dns:0.2.13'
@@ -269,5 +269,8 @@ dependencies {
     //开发工具面板
 //    debugApi 'com.didichuxing.doraemonkit:doraemonkit:2.0.1'
 //    releaseApi 'com.didichuxing.doraemonkit:doraemonkit-no-op:2.0.2'
+
+    //动画库
+    implementation 'com.airbnb.android:lottie:3.3.1'
 
 }

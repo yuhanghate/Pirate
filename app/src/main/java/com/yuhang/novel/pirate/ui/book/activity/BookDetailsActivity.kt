@@ -106,6 +106,7 @@ class BookDetailsActivity :
     override fun initStatusTool() {
         ImmersionBar.with(this)
             .statusBarView(mBinding.statusBarV)
+            .transparentStatusBar()
             .navigationBarColor(R.color.md_white_1000)
             .flymeOSStatusBarFontColor(R.color.primary_text)
             .statusBarDarkFont(true)

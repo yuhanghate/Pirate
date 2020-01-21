@@ -17,7 +17,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import cn.bingoogolapple.swipebacklayout.BGAKeyboardUtil
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
@@ -335,7 +334,7 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     }
 
     override fun onBackPressedSupport() {
-        BGAKeyboardUtil.closeKeyboard(this)
+//        BGAKeyboardUtil.closeKeyboard(this)
         finish()
         this.overridePendingTransition(
             R.anim.activity_in_enter,

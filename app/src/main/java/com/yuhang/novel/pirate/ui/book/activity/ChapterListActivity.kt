@@ -63,8 +63,13 @@ class ChapterListActivity :
 
     override fun initStatusTool() {
         ImmersionBar.with(this)
-            .statusBarColor(BookConstant.getPageBackgroundString())
-            .fitsSystemWindows(true)
+            .statusBarView(mBinding.statusBarV)
+//            .statusBarColor(BookConstant.getPageBackgroundString())
+            .statusBarColorTransform(BookConstant.getPageBackgroundString())
+            .navigationBarColor(BookConstant.getPageBackgroundString())
+            .flymeOSStatusBarFontColor(R.color.primary_text)
+            .statusBarDarkFont(true)
+            .autoDarkModeEnable(true)
             .init()
     }
 
@@ -78,8 +83,9 @@ class ChapterListActivity :
 
     private fun initBackgroud() {
         //navigateion状态栏颜色
-        window.navigationBarColor = BookConstant.getPageBackground()
-        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+//        window.navigationBarColor = BookConstant.getPageBackground()
+//        mBinding.root.setBackgroundColor(BookConstant.getPageBackground())
+        mBinding.statusBarV.setBackgroundColor(BookConstant.getPageBackground())
         mBinding.toolbar.setBackgroundColor(BookConstant.getPageBackground())
         if (BookConstant.getPageColorIndex() == 3) {
             mBinding.backCloseIv.setImageResource(R.drawable.btn_back_white)

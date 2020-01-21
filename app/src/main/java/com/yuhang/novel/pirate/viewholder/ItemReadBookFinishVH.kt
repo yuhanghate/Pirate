@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.viewholder
 
+import android.view.View
 import android.view.ViewGroup
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
@@ -20,6 +21,7 @@ class ItemReadBookFinishVH(parent: ViewGroup) :
     override fun onBindViewHolder(obj: BookContentKSEntity, position: Int) {
         super.onBindViewHolder(obj, position)
 
+        mBinding.loading.visibility = View.VISIBLE
         if (!obj.hasNext) {
             mBinding.loading.showContent()
         } else {
