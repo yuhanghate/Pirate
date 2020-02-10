@@ -18,6 +18,11 @@ object BookConstant {
     const val VOLUME_STATUS = "VOLUME_STATUS"
 
     /**
+     * 全屏翻下页
+     */
+    const val CLICK_NEXT_PAGE = "CLICK_NEXT_PAGE"
+
+    /**
      * 文字转换
      * 简体 > 繁体
      *

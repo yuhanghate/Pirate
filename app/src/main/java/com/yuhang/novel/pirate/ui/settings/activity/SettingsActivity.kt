@@ -91,6 +91,9 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
             mPageTimeList,
             PreferenceUtil.getInt(ConfigConstant.PAGE_TIME, ConfigConstant.PAGE_TIME_SHOW)
         )
+        mBinding.btnNextPage.isChecked =
+            PreferenceUtil.getBoolean(BookConstant.CLICK_NEXT_PAGE, false)
+
     }
 
     /**
@@ -188,6 +191,11 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         //使用音量键翻页
         mBinding.btnVolume.setOnCheckedChangeListener { _, status ->
             PreferenceUtil.commitBoolean(BookConstant.VOLUME_STATUS, status)
+        }
+
+        //全屏翻下页
+        mBinding.btnNextPage.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtil.commitBoolean(BookConstant.CLICK_NEXT_PAGE, isChecked)
         }
 
         //意见反馈

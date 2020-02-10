@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background_gray"
+            android:orientation="vertical">
+
+        <include layout="@layout/layout_toolbar2" />
+
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:id="@+id/btn_clear"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="清除缓存"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/size_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableEnd="@drawable/ic_item_right"
+                            android:drawablePadding="8dp"
+                            android:gravity="center"
+                            android:text="0MB"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:id="@+id/btn_market"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="给个好评"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableEnd="@drawable/ic_item_right"
+                            android:drawablePadding="8dp"
+                            android:gravity="center"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:id="@+id/btn_disclaimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_disclaimer"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="免责申明"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_item_right" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:id="@+id/feedback_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_disclaimer"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="意见反馈"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_item_right" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:id="@+id/btn_note_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_disclaimer"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="功能介绍"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_item_right" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:id="@+id/btn_privacy"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_disclaimer"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="隐私条款"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_item_right" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:id="@+id/btn_version"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="false"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="20dp">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_version"
+                            android:visibility="gone" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingStart="15dp"
+                            android:text="版本号"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/version_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="8dp"
+                            android:gravity="center"
+                            android:paddingEnd="24dp"
+                            android:text="0MB"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+</layout>

@@ -6,6 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.yuhang.novel.pirate.constant.BookConstant;
+import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil;
+
 public class ReadBookTextView extends AppCompatTextView {
 
     // 用于记录点击事件
@@ -20,6 +23,11 @@ public class ReadBookTextView extends AppCompatTextView {
     private OnClickCenterListener mOnClickCenterListener;
 
     private int mPosition;
+
+    /**
+     * 是否全屏翻下页
+     */
+    private boolean isNextPage = PreferenceUtil.getBoolean(BookConstant.CLICK_NEXT_PAGE, false);
 
     public ReadBookTextView(Context context) {
         super(context);
@@ -72,6 +80,13 @@ public class ReadBookTextView extends AppCompatTextView {
                     onClickNext();
                     return true;
                 } else if (x <= screenWidth / 2) {
+
+                    //设置全屏翻下页
+                    if (isNextPage) {
+                        //点击下一页
+                        onClickNext();
+                        return true;
+                    }
                     //点击上一页
                     onClickPrevious();
                     return true;

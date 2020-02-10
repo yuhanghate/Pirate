@@ -283,13 +283,47 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="15dp"
                             android:lineSpacingMultiplier="1.1"
-                            android:text="使用音量键翻页"
+                            android:text="音量键翻页"
                             android:textColor="@color/primary_text"
                             android:textSize="16sp" />
 
 
                     <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/btn_volume"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            app:kswAnimationDuration="200"
+                            app:kswBackDrawable="@drawable/ios_back_drawable"
+                            app:kswThumbDrawable="@drawable/ksw_md_thumb"
+                            app:kswThumbMargin="-10dp"
+                            app:kswThumbRangeRatio="1.4" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_material_item"
+                        android:paddingStart="15dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:lineSpacingMultiplier="1.1"
+                            android:text="全屏点击翻下页"
+                            android:textColor="@color/primary_text"
+                            android:textSize="16sp" />
+
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/btn_next_page"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
