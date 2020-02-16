@@ -9,10 +9,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemStoreRankingChildBinding
-import com.yuhang.novel.pirate.extension.niceCoverPic
-import com.yuhang.novel.pirate.extension.niceCrossFade
-import com.yuhang.novel.pirate.extension.niceDefaultImageVertical
-import com.yuhang.novel.pirate.extension.niceGlideInto
+import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.listener.OnClickBookListener
 import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
@@ -37,15 +34,15 @@ class ItemStoreRankingChildVH(parent:ViewGroup):BaseViewHolder<StoreRankingModel
 
         mBinding.headerLl.setBackgroundResource(obj.background)
 
-        mBinding.item1Cl.setOnClickListener { clickBook(it, position, obj.list[0]) }
-        mBinding.item2Cl.setOnClickListener { clickBook(it, position, obj.list[1]) }
-        mBinding.item3Cl.setOnClickListener { clickBook(it, position, obj.list[2]) }
+        mBinding.item1Cl.clickWithTrigger { clickBook(it, position, obj.list[0]) }
+        mBinding.item2Cl.clickWithTrigger { clickBook(it, position, obj.list[1]) }
+        mBinding.item3Cl.clickWithTrigger { clickBook(it, position, obj.list[2]) }
 
-        mBinding.cover1Iv.setOnClickListener { clickBook(it, position, obj.list[0]) }
-        mBinding.cover2Iv.setOnClickListener { clickBook(it, position, obj.list[1]) }
-        mBinding.cover3Iv.setOnClickListener { clickBook(it, position, obj.list[2]) }
+        mBinding.cover1Iv.clickWithTrigger { clickBook(it, position, obj.list[0]) }
+        mBinding.cover2Iv.clickWithTrigger { clickBook(it, position, obj.list[1]) }
+        mBinding.cover3Iv.clickWithTrigger { clickBook(it, position, obj.list[2]) }
 
-        mBinding.moreLl.setOnClickListener {
+        mBinding.moreLl.clickWithTrigger {
             getListener<OnClickItemStoreTitleMoreListener>()?.onClickItemStoreTitleMoreListener(itemView, obj.name, position)
         }
 

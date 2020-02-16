@@ -7,6 +7,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityUpdatePasswordBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
@@ -41,8 +42,8 @@ class UpdatePasswordActivity : BaseActivity<ActivityUpdatePasswordBinding, Updat
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
-        mBinding.btnCommit.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
+        mBinding.btnCommit.clickWithTrigger {
             if (mViewModel.checkParams(mBinding.mobileEt, mBinding.passwordEt, mBinding.passwordAgainEt)) {
 
                 showProgressbar("加载中...")

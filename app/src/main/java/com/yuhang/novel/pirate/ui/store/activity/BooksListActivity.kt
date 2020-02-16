@@ -11,6 +11,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBooksListBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.ShuDanEntity
 import com.yuhang.novel.pirate.ui.store.adapter.BooksListAdapter
@@ -98,9 +99,9 @@ class BooksListActivity : BaseSwipeBackActivity<ActivityBooksListBinding, BooksL
     }
 
     private fun onClick() {
-        mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.layoutToolbar.btnBack.clickWithTrigger { onBackPressedSupport() }
         //置顶
-        mBinding.layoutToolbar.toolbar.setOnClickListener {
+        mBinding.layoutToolbar.toolbar.clickWithTrigger {
             onTopRecyclerView(
                 mBinding.refreshLayout,
                 mBinding.recyclerview,

@@ -14,6 +14,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookListDetailBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBooksKSResult
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceCoverPic
@@ -87,10 +88,10 @@ class BookListDetailActivity :
     }
 
     private fun onClick() {
-        mBinding.includeToolbarClose.backCloseIv.setOnClickListener { onBackPressedSupport() }
-        mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressedSupport() }
+        mBinding.includeToolbarClose.backCloseIv.clickWithTrigger { onBackPressedSupport() }
+        mBinding.includeToolbarOpen.backOpenIv.clickWithTrigger { onBackPressedSupport() }
         //置顶
-        mBinding.includeToolbarClose.root.setOnClickListener {
+        mBinding.includeToolbarClose.root.clickWithTrigger {
             onTopRecyclerView(mBinding.recyclerview, 50)
         }
     }

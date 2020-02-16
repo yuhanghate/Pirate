@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.yuhang.novel.pirate.R
@@ -12,6 +13,7 @@ import com.yuhang.novel.pirate.base.ViewPagerAdapter
 import com.yuhang.novel.pirate.databinding.ActivityKanshuRankingBinding
 import com.yuhang.novel.pirate.ui.store.fragment.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.KanShuRankingViewModel
+import me.yokeyword.fragmentation.SwipeBackLayout
 
 /**
  * 看书神器 排行榜
@@ -63,10 +65,13 @@ class KanShuRankingActivity :
         return R.layout.activity_kanshu_ranking
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setEdgeLevel(SwipeBackLayout.EdgeLevel.MIN)
+    }
+
     override fun initView() {
         super.initView()
-
-
         onClick()
         initTabLayoutView()
         mBinding.titleTv.text = getName()

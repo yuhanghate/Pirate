@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemCategoryBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickCategoryListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
@@ -30,7 +31,7 @@ class ItemCategoryVH(parent: ViewGroup) :
         mBinding.nameTv.text = obj.majorCate
         mBinding.countTv.text = getBookCount(obj)
 
-        mBinding.itemLl.setOnClickListener { getListener<OnClickCategoryListener>()?.onClickCategoryListener(obj, position) }
+        mBinding.itemLl.clickWithTrigger { getListener<OnClickCategoryListener>()?.onClickCategoryListener(obj, position) }
 
 
     }

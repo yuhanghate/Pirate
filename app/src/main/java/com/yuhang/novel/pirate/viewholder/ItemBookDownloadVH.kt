@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemBookDownloadBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceGlideInto
@@ -47,7 +48,7 @@ class ItemBookDownloadVH(parent: ViewGroup) :
             .into(niceGlideInto(mBinding.coverIv))
 
 
-        mBinding.btnProgress.setOnClickListener {
+        mBinding.btnProgress.clickWithTrigger {
             getListener<OnClickItemListener>()?.onClickItemListener(it, position)
         }
     }

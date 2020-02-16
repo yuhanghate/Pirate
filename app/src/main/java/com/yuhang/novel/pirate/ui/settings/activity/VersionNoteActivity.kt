@@ -5,6 +5,7 @@ import android.content.Intent
 import br.tiagohm.markdownview.css.styles.Github
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityVersionNoteBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.settings.viewmodel.VersionNoteViewModel
 
 
@@ -37,6 +38,6 @@ class VersionNoteActivity : BaseSwipeBackActivity<ActivityVersionNoteBinding, Ve
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 }

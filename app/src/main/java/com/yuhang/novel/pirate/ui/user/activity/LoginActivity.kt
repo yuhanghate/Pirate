@@ -9,6 +9,7 @@ import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityLoginBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.service.UsersService
@@ -49,13 +50,13 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnCommit.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressed() }
+        mBinding.btnCommit.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_LOGIN, "点击登录")
             netLogin()
         }
-        mBinding.btnRegister.setOnClickListener { RegisterActivity.start(this) }
-        mBinding.forgetTv.setOnClickListener { ForgetMailActivity.start(this) }
+        mBinding.btnRegister.clickWithTrigger { RegisterActivity.start(this) }
+        mBinding.forgetTv.clickWithTrigger { ForgetMailActivity.start(this) }
     }
 
     /**

@@ -7,6 +7,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.databinding.ActivityForgetMailBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.user.viewmodel.ForgetMailViewModel
@@ -33,8 +34,8 @@ class ForgetMailActivity:BaseActivity<ActivityForgetMailBinding, ForgetMailViewM
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
-        mBinding.btnNext.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
+        mBinding.btnNext.clickWithTrigger {
             if (mViewModel.checkParams(mBinding)) {
                 val email = mBinding.mailEt.text.toString()
                 showProgressbar("检测用户是否存在...")

@@ -12,6 +12,7 @@ import com.vondear.rxtool.RxDataTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemGameBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceCrossFade
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickGameDownloadListener
@@ -90,7 +91,7 @@ class ItemGameVH(parent: ViewGroup) :
      */
     private fun onClick(obj: GameDataResult, position: Int) {
         mBinding.progressLayout.setProgressLayoutListener(this, obj)
-        mBinding.downloadTv.setOnClickListener {
+        mBinding.downloadTv.clickWithTrigger {
             getListener<OnClickGameDownloadListener>()?.onGameDownloadListener(obj, position)
         }
     }

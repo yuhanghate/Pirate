@@ -25,12 +25,12 @@ class LaunchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         ImmersionBar.with(this)
-//            .transparentStatusBar()
-//            .hideBar(BarHide.FLAG_HIDE_BAR)
             .fullScreen(true)
             .init()
 
         super.onCreate(savedInstanceState)
+
+        AppManagerUtils.getAppManager().addActivity(this)
 
 
         startActivity(Intent(this, MainActivity::class.java))

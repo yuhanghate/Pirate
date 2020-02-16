@@ -10,6 +10,7 @@ import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityRegisterBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.user.viewmodel.RegisterViewModel
 import com.yuhang.novel.pirate.utils.AppManagerUtils
@@ -38,8 +39,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnCommit.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressed() }
+        mBinding.btnCommit.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_REGISTER, "点击注册")
             netRegister()
         }

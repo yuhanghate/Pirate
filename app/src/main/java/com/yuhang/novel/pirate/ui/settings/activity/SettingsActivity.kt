@@ -19,6 +19,7 @@ import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySettingsBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.settings.viewmodel.SettingsViewModel
 import com.yuhang.novel.pirate.utils.GlideCacheUtil
@@ -124,32 +125,32 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
     private fun onClick() {
         mBinding.pageTypeEll.setInterpolator(mInterpolator)
         mBinding.pageTimeEll.setInterpolator(mInterpolator)
-        mBinding.btnBack.setOnClickListener { onBackPressed() }
-        mBinding.btnPrivacy.setOnClickListener { PrivacyActivity.start(this) }
-        mBinding.btnNoteLl.setOnClickListener { VersionNoteActivity.start(this) }
-        mBinding.btnLogout.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressed() }
+        mBinding.btnPrivacy.clickWithTrigger { PrivacyActivity.start(this) }
+        mBinding.btnNoteLl.clickWithTrigger { VersionNoteActivity.start(this) }
+        mBinding.btnLogout.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLICK_LOGOUT, "设置 -> 退出登录")
             mViewModel.logout()
         }
-        mBinding.btnDisclaimer.setOnClickListener {
+        mBinding.btnDisclaimer.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_DISCLAIMER, "设置 -> 免责声明")
             DisclaimerActivity.start(this)
         }
-        mBinding.btnClear.setOnClickListener {
+        mBinding.btnClear.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_CLEAN_CACHE, "设置 -> 清除缓存")
             clear()
         }
-        mBinding.pageTypeLl.setOnClickListener {
+        mBinding.pageTypeLl.clickWithTrigger {
             expandedItemRightView(mBinding.pageTypeIv, mBinding.pageTypeEll.isExpanded)
             mBinding.pageTypeEll.toggle()
         }
-        mBinding.pageTimeLl.setOnClickListener {
+        mBinding.pageTimeLl.clickWithTrigger {
             expandedItemRightView(mBinding.pageTimeIv, mBinding.pageTimeEll.isExpanded)
             mBinding.pageTimeEll.toggle()
         }
 
         //翻页方式
-        mBinding.pageVerticalLl.setOnClickListener {
+        mBinding.pageVerticalLl.clickWithTrigger {
 
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_PAGE_MODEL, "上下翻页")
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_VERTICAL)
@@ -157,7 +158,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
             mBinding.pageTypeTv.text = mPageTypeTitle[ConfigConstant.PAGE_TYPE_VERTICAL]
             PirateApp.getInstance().setPageType(ConfigConstant.PAGE_TYPE_VERTICAL)
         }
-        mBinding.pageHorizontalLl.setOnClickListener {
+        mBinding.pageHorizontalLl.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_SETTINGS_PAGE_MODEL, "左右翻页")
             resetRadioButton(mPageTypeList, ConfigConstant.PAGE_TYPE_HORIZONTAL)
             PreferenceUtil.commitInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
@@ -166,7 +167,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         }
 
         //阅读界面显示
-        mBinding.pageTimeShowLl.setOnClickListener {
+        mBinding.pageTimeShowLl.clickWithTrigger {
             mViewModel.onUMEvent(
                 this,
                 UMConstant.TYPE_SETTINGS_READ_MODEL,
@@ -176,7 +177,7 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
             resetRadioButton(mPageTimeList, ConfigConstant.PAGE_TIME_SHOW)
             mBinding.pageTimeTv.text = mPageTimeTitle[ConfigConstant.PAGE_TIME_SHOW]
         }
-        mBinding.pageTimeHideLl.setOnClickListener {
+        mBinding.pageTimeHideLl.clickWithTrigger {
             mViewModel.onUMEvent(
                 this,
                 UMConstant.TYPE_SETTINGS_READ_MODEL,
@@ -199,13 +200,13 @@ class SettingsActivity : BaseSwipeBackActivity<ActivitySettingsBinding, Settings
         }
 
         //意见反馈
-        mBinding.feedbackLl.setOnClickListener {
+        mBinding.feedbackLl.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_ME_CLICK_FEEDBACK, "我的 -> 意见反馈")
             mViewModel.sendEmail()
         }
 
         //去应用市场评分
-        mBinding.btnMarket.setOnClickListener {
+        mBinding.btnMarket.clickWithTrigger {
             try {
                 val uri: Uri = Uri.parse("market://details?id=$packageName")
                 val intent = Intent(Intent.ACTION_VIEW, uri)

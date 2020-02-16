@@ -20,8 +20,6 @@ abstract class BaseSwipeBackActivity<D : ViewDataBinding, VM : BaseViewModel> : 
         super.onCreate(savedInstanceState)
         mDelegate.onCreate(savedInstanceState)
         swipeBackLayout.setEdgeOrientation(SwipeBackLayout.EDGE_LEFT)
-//        swipeBackLayout.setParallaxOffset(0.0f - 1.0f) // （类iOS）滑动退出视觉差，默认0.3 fragment有效, activity无效
-//        swipeBackLayout.addSwipeListener(this)
         setEdgeLevel(SwipeBackLayout.EdgeLevel.MED)
     }
 

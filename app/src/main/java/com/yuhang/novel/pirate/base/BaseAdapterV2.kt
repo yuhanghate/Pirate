@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.base
 
+import android.os.SystemClock
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.databinding.ViewDataBinding
@@ -8,11 +9,15 @@ import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.base.BaseAdapter
 import com.yuhang.novel.pirate.base.BaseViewHolder
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 
 abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T, ViewDataBinding>>() {
+
+    private var mLastClickTime: Long = 0
 
     /**
      * 点击事件
@@ -85,7 +90,15 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
 
 
         //设置Item点击事件
-        holder.itemView.setOnClickListener {
+        holder.itemView.clickWithTrigger {
+//            //防止双击
+//            if (SystemClock.elapsedRealtime() - mLastClickTime < 700){
+//                return@setOnClickListener
+//            }
+//            mLastClickTime = SystemClock.elapsedRealtime()
+
+            Logger.t("Double_Click").i("Item 点击事件")
+
             (mListener as? OnClickItemListener)?.onClickItemListener(it, position)
         }
 

@@ -13,6 +13,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookDownloadBinding
 import com.yuhang.novel.pirate.eventbus.DownloadEvent
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBookResult
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnBookDownloadListener
@@ -61,7 +62,7 @@ class BookDownloadActivity :
     override fun initView() {
         super.initView()
         initRecyclerView()
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 
     override fun initRecyclerView() {

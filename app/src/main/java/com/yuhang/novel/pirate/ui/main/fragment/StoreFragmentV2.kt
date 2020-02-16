@@ -8,6 +8,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.base.ViewPagerAdapter
 import com.yuhang.novel.pirate.databinding.FragmentStoreV2Binding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModelV2
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
@@ -40,11 +41,11 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
 
     private fun onClick() {
         //搜索
-        mBinding.searchLl.setOnClickListener { SearchActivity.start(mActivity!!) }
+        mBinding.searchLl.clickWithTrigger { SearchActivity.start(mActivity!!) }
         //帮助与问题
-        mBinding.helpIv.setOnClickListener { ProblemActivity.start(mActivity!!) }
+        mBinding.helpIv.clickWithTrigger { ProblemActivity.start(mActivity!!) }
         //分类
-        mBinding.categoryTv.setOnClickListener { BookCategoryActivity.start(mActivity!!) }
+        mBinding.categoryTv.clickWithTrigger { BookCategoryActivity.start(mActivity!!) }
     }
 
     /**

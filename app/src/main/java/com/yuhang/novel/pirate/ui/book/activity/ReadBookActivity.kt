@@ -22,6 +22,7 @@ import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
 import com.yuhang.novel.pirate.eventbus.UpdateReadHistoryEvent
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
@@ -279,12 +280,12 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
 
     @SuppressLint("WrongConstant")
     private fun onClick() {
-        mBinding.bgShadow.setOnClickListener { mReadBookView.toggleMenu() }
-        mBinding.layoutTop.backIv.setOnClickListener {
+        mBinding.bgShadow.clickWithTrigger { mReadBookView.toggleMenu() }
+        mBinding.layoutTop.backIv.clickWithTrigger {
             mReadBookView.toggleMenu()
             super.onBackPressed()
         }
-        mBinding.layoutButton.chapterDirTv.setOnClickListener {
+        mBinding.layoutButton.chapterDirTv.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_READ_CLICK_DIR_CHANPTER, "阅读页 -> 点击阅读目录")
             fragment?.resetBackground()
             mReadBookView.toggleMenu()
@@ -292,10 +293,10 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             fragment?.setCurrentReadItem(mViewModel.chapterid)
         }
 
-        mBinding.loading.setOnClickListener { mReadBookView.toggleMenu() }
+        mBinding.loading.clickWithTrigger { mReadBookView.toggleMenu() }
 
         //刷新页面
-        mBinding.layoutTop.refreshTv.setOnClickListener {
+        mBinding.layoutTop.refreshTv.clickWithTrigger {
             mViewModel.onUMEvent(
                 this,
                 UMConstant.TYPE_READ_CLICK_REFRESH,
@@ -315,24 +316,24 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
 
         }
 
-        mBinding.layoutButton.pageBg1.setOnClickListener {
+        mBinding.layoutButton.pageBg1.clickWithTrigger {
             mReadBookView.resetBackground(0)
             mViewModel.adapter.notifyDataSetChanged()
         }
-        mBinding.layoutButton.pageBg2.setOnClickListener {
+        mBinding.layoutButton.pageBg2.clickWithTrigger {
             mReadBookView.resetBackground(1)
             mViewModel.adapter.notifyDataSetChanged()
         }
-        mBinding.layoutButton.pageBg3.setOnClickListener {
+        mBinding.layoutButton.pageBg3.clickWithTrigger {
             mReadBookView.resetBackground(2)
             mViewModel.adapter.notifyDataSetChanged()
         }
-        mBinding.layoutButton.pageBg4.setOnClickListener {
+        mBinding.layoutButton.pageBg4.clickWithTrigger {
             mReadBookView.resetBackground(3)
             mViewModel.adapter.notifyDataSetChanged()
         }
 
-        mBinding.layoutButton.contentBackgroundTv.setOnClickListener {
+        mBinding.layoutButton.contentBackgroundTv.clickWithTrigger {
             mBinding.layoutButton.colorLl.visibility = View.VISIBLE
             mBinding.layoutButton.fontLl.visibility = View.GONE
             mBinding.layoutButton.chapterProgressLl.visibility = View.GONE
@@ -340,14 +341,14 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
 
 
         //字体大小
-        mBinding.layoutButton.fontTv.setOnClickListener {
+        mBinding.layoutButton.fontTv.clickWithTrigger {
             mBinding.layoutButton.fontLl.visibility = View.VISIBLE
             mBinding.layoutButton.colorLl.visibility = View.GONE
             mBinding.layoutButton.chapterProgressLl.visibility = View.GONE
         }
 
         //进度
-        mBinding.layoutButton.chapterProgressTv.setOnClickListener {
+        mBinding.layoutButton.chapterProgressTv.clickWithTrigger {
             mBinding.layoutButton.chapterProgressLl.visibility = View.VISIBLE
             mBinding.layoutButton.colorLl.visibility = View.GONE
             mBinding.layoutButton.fontLl.visibility = View.GONE
@@ -358,7 +359,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
         mBinding.loading.setRetryListener { netDataChatpterContent(isCache = false) }
 
         //换源
-        mBinding.layoutTop.resouceTv.setOnClickListener {
+        mBinding.layoutTop.resouceTv.clickWithTrigger {
             mReadBookView.toggleMenu()
             ResouceListKdActivity.start(
                 this,
@@ -368,25 +369,25 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
         }
 
         //上一章
-        mBinding.layoutButton.btnPreviousChapter.setOnClickListener {
+        mBinding.layoutButton.btnPreviousChapter.clickWithTrigger {
             if (mViewModel.hasPreviousPage(mViewModel.chapterid)) {
                 netDataChapterContentFromId(mViewModel.getPreviousPage(mViewModel.chapterid).chapterId)
-                return@setOnClickListener
+                return@clickWithTrigger
             }
             niceToast("没有上一页了")
         }
 
         //下一章
-        mBinding.layoutButton.btnNextChapter.setOnClickListener {
+        mBinding.layoutButton.btnNextChapter.clickWithTrigger {
             if (mViewModel.hasNextPage(mViewModel.chapterid)) {
                 netDataChapterContentFromId(mViewModel.getNextPage(mViewModel.chapterid).chapterId)
-                return@setOnClickListener
+                return@clickWithTrigger
             }
             niceToast("最后一页了")
         }
 
         //下载
-        mBinding.layoutTop.downloadTv.setOnClickListener { downloadBook() }
+        mBinding.layoutTop.downloadTv.clickWithTrigger { downloadBook() }
     }
 
     /**

@@ -8,6 +8,7 @@ import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookCategoryBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickCategoryListener
 import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
 import com.yuhang.novel.pirate.ui.store.adapter.CategoryAdapter
@@ -40,7 +41,7 @@ class BookCategoryActivity :
     }
 
     private fun onClick() {
-        mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.layoutToolbar.btnBack.clickWithTrigger { onBackPressedSupport() }
         mBinding.layoutToolbar.titleTv.text = "选择分类"
     }
 

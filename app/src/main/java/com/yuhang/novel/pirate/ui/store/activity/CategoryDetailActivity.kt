@@ -4,20 +4,24 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.base.ViewPagerAdapter
 import com.yuhang.novel.pirate.databinding.ActivityCategoryDetailBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.store.fragment.CategoryDetailFragment
 import com.yuhang.novel.pirate.ui.store.viewmodel.CategoryDetailViewModel
+import me.yokeyword.fragmentation.SwipeBackLayout
 
 /**
  * 分类详情页
  */
 class CategoryDetailActivity :
-    BaseActivity<ActivityCategoryDetailBinding, CategoryDetailViewModel>(),
+    BaseSwipeBackActivity<ActivityCategoryDetailBinding, CategoryDetailViewModel>(),
     OnTabSelectListener, ViewPager.OnPageChangeListener {
 
 
@@ -39,6 +43,11 @@ class CategoryDetailActivity :
         return R.layout.activity_category_detail
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setEdgeLevel(SwipeBackLayout.EdgeLevel.MIN)
+    }
+
     override fun initView() {
         super.initView()
         mBinding.titleTv.text = getMajor()
@@ -47,7 +56,7 @@ class CategoryDetailActivity :
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 
     /**

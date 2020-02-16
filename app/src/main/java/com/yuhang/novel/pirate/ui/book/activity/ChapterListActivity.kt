@@ -13,6 +13,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityChapterListBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
@@ -123,7 +124,7 @@ class ChapterListActivity :
     }
 
     private fun onClick() {
-        mBinding.backCloseIv.setOnClickListener { onBackPressed() }
+        mBinding.backCloseIv.clickWithTrigger { onBackPressed() }
     }
 
     /**

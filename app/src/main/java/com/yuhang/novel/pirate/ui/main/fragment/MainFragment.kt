@@ -18,6 +18,7 @@ import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
 import com.yuhang.novel.pirate.eventbus.*
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -88,15 +89,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-
             if (isLogin) {
                 isLogin = false
                 netLocalData()
             }
-
         }
     }
-
 
     /**
      * 刷新
@@ -124,26 +122,26 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * 点击事件
      */
     private fun onClick() {
-        mBinding.btnMore.setOnClickListener {
+        mBinding.btnMore.clickWithTrigger {
             showPopupMenu(
                 mBinding.btnMore,
                 R.menu.menu_main,
                 itemListener = this
             )
         }
-        mBinding.btnSearch.setOnClickListener {
+        mBinding.btnSearch.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
             SearchActivity.start(mActivity!!)
         }
 
         //空白页面
-        mBinding.btnEmpty.setOnClickListener {
+        mBinding.btnEmpty.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_MAIN_CLICK_SEARCH, "主页 -> 点击搜索")
             SearchActivity.start(mActivity!!)
         }
 
         //重要提示
-        mBinding.btnPrompt.setOnClickListener { showTipdialog() }
+        mBinding.btnPrompt.clickWithTrigger { showTipdialog() }
     }
 
     /**
@@ -169,15 +167,9 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
             //下载管理
-            R.id.download -> {
-                BookDownloadActivity.start(mActivity!!)
-            }
-
+            R.id.download -> BookDownloadActivity.start(mActivity!!)
             //公告
-            R.id.tip -> {
-                showTipdialog()
-            }
-
+            R.id.tip -> showTipdialog()
         }
         return true
     }
@@ -301,32 +293,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                 netLocalData()
                 PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
             })
-//        mViewModel.getBookDetailsList()
-//            .compose(bindToLifecycle())
-//            .subscribe({
-//                it?.let { bookindo ->
-//                    list.forEach {
-//                        if (it.bookid == bookindo.bookid) {
-//                            return@subscribe
-//                        }
-//                    }
-//                    list.add(it)
-//                }
-//            }, {
-//                mBinding.loading.showContent()
-//                mViewModel.adapter.setRefersh(list)
-//                mBinding.refreshLayout.finishRefresh(false)
-//            }, {
-//
-//                //新标题的章节进行刷新
-//                mViewModel.updateChapterToDB()
-//                    .compose(io_main())
-//                    .compose(bindUntilEvent(FragmentEvent.DESTROY))
-//                    .subscribe({}, {})
-//
-//                netLocalData()
-//                PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
-//            })
     }
 
     /**

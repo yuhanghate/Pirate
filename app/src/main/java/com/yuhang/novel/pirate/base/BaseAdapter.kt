@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -166,13 +167,13 @@ abstract class BaseAdapter<T : Any> : RecyclerView.Adapter<BaseViewHolder<T, Vie
      */
     override fun onBindViewHolder(holder: BaseViewHolder<T, ViewDataBinding>, position: Int) {
         //设置Item点击事件
-        holder.itemView.setOnClickListener {
+        holder.itemView.clickWithTrigger {
 
-            //防止双击
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 700){
-                return@setOnClickListener
-            }
-            mLastClickTime = SystemClock.elapsedRealtime()
+//            //防止双击
+//            if (SystemClock.elapsedRealtime() - mLastClickTime < 700){
+//                return@setOnClickListener
+//            }
+//            mLastClickTime = SystemClock.elapsedRealtime()
 
 
             lastClickItemPosition = position

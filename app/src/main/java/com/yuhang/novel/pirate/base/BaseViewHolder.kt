@@ -57,6 +57,5 @@ abstract class BaseViewHolder<in T : Any, out D : ViewDataBinding>(
      */
     fun <listener> getListener():listener?{
         return mListener as? listener
-
     }
 }

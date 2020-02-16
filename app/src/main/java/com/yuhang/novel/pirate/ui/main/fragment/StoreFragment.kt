@@ -19,6 +19,7 @@ import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookKSConstant
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
@@ -121,26 +122,26 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     }
 
     private fun onClick() {
-        mBinding.filterIv.setOnClickListener { setFileterView() }
-        mBinding.filterV.setOnClickListener { setFileterView() }
+        mBinding.filterIv.clickWithTrigger { setFileterView() }
+        mBinding.filterV.clickWithTrigger { setFileterView() }
         mBinding.filterLl.visibility = View.GONE
 
 
-        mBinding.genderManCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
-        mBinding.genderLadyCl.setOnClickListener { setClickItem(it as ConstraintLayout, genderList) }
+        mBinding.genderManCl.clickWithTrigger { setClickItem(it as ConstraintLayout, genderList) }
+        mBinding.genderLadyCl.clickWithTrigger { setClickItem(it as ConstraintLayout, genderList) }
 
-        mBinding.typeHotCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
-        mBinding.typeCommendCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
-        mBinding.typeOverCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
-        mBinding.typeCollectCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
-        mBinding.typeNewCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
-        mBinding.typeVoteCl.setOnClickListener { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeHotCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeCommendCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeOverCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeCollectCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeNewCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
+        mBinding.typeVoteCl.clickWithTrigger { setClickItem(it as ConstraintLayout, typeList) }
 
-        mBinding.dateWeekCl.setOnClickListener { setClickItem(it as ConstraintLayout, dateList) }
-        mBinding.dateMonthCl.setOnClickListener { setClickItem(it as ConstraintLayout, dateList) }
-        mBinding.dateTotalCl.setOnClickListener { setClickItem(it as ConstraintLayout, dateList) }
+        mBinding.dateWeekCl.clickWithTrigger { setClickItem(it as ConstraintLayout, dateList) }
+        mBinding.dateMonthCl.clickWithTrigger { setClickItem(it as ConstraintLayout, dateList) }
+        mBinding.dateTotalCl.clickWithTrigger { setClickItem(it as ConstraintLayout, dateList) }
 
-        mBinding.btnReset.setOnClickListener {
+        mBinding.btnReset.clickWithTrigger {
             mViewModel.gender = "man"
             mViewModel.type = "hot"
             mViewModel.date = "week"
@@ -150,7 +151,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
                 initFilterView()
             }, DURATION * 3)
         }
-        mBinding.btnCommit.setOnClickListener {
+        mBinding.btnCommit.clickWithTrigger {
             setFileterView()
             Handler().postDelayed({
                 mBinding.refreshLayout.autoRefresh()
@@ -168,7 +169,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         }))
 
         //帮助与问题
-        mBinding.helpIv.setOnClickListener { ProblemActivity.start(mActivity!!) }
+        mBinding.helpIv.clickWithTrigger { ProblemActivity.start(mActivity!!) }
 
     }
 

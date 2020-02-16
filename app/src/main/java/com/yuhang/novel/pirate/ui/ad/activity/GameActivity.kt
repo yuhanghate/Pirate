@@ -13,6 +13,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseDownloadBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityGameBinding
 import com.yuhang.novel.pirate.eventbus.DownloadStatusEvent
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickGameDownloadListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
@@ -81,7 +82,7 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 
 

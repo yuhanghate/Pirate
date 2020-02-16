@@ -7,6 +7,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityProblemNoteBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.settings.viewmodel.ProblemViewModel
 
 /**
@@ -37,6 +38,6 @@ class ProblemActivity :BaseSwipeBackActivity<ActivityProblemNoteBinding, Problem
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 }

@@ -7,6 +7,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityDisclaimerBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.settings.viewmodel.DisclaimerViewModel
 
 /**
@@ -32,7 +33,7 @@ class DisclaimerActivity :BaseSwipeBackActivity<ActivityDisclaimerBinding, Discl
 
     private fun onClick() {
 
-        mBinding.btnBack.setOnClickListener { onBackPressed() }
+        mBinding.btnBack.clickWithTrigger { onBackPressed() }
     }
 
     override fun onResume() {

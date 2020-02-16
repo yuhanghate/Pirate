@@ -10,6 +10,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityMoreRankingListBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
@@ -88,9 +89,9 @@ class MoreRankingListActivity :
     }
 
     private fun onClick() {
-        mBinding.layoutToolbar.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.layoutToolbar.btnBack.clickWithTrigger { onBackPressedSupport() }
         //置顶
-        mBinding.layoutToolbar.toolbar.setOnClickListener {
+        mBinding.layoutToolbar.toolbar.clickWithTrigger {
             onTopRecyclerView(
                 mBinding.refreshLayout,
                 mBinding.recyclerview,
@@ -101,6 +102,7 @@ class MoreRankingListActivity :
 
     override fun initRefreshLayout() {
         super.initRefreshLayout()
+        mBinding.refreshLayout.setOnRefreshLoadMoreListener(this)
     }
 
     override fun initRecyclerView() {

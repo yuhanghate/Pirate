@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemMoreRankingListBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceCrossFade
 import com.yuhang.novel.pirate.extension.niceDefaultImageVertical
@@ -27,6 +28,6 @@ class ItemMoreRankingListVH(parent:ViewGroup):BaseViewHolder<BooksKSResult, Item
             .transition(niceCrossFade())
             .into(mBinding.coverIv)
 
-        mBinding.root.setOnClickListener { getListener<OnClickMoreRankingListListener>()?.onClickMoreRankingListListener(obj, position) }
+        mBinding.root.clickWithTrigger { getListener<OnClickMoreRankingListListener>()?.onClickMoreRankingListListener(obj, position) }
     }
 }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import com.yuhang.novel.pirate.base.BaseAdapter
 import com.yuhang.novel.pirate.base.BaseViewHolder
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
@@ -63,7 +64,7 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
 
     override fun onBindViewHolder(holder: BaseViewHolder<BookContentKSEntity, ViewDataBinding>, position: Int) {
         //设置Item点击事件
-        holder.itemView.setOnClickListener {
+        holder.itemView.clickWithTrigger {
             lastClickItemPosition = position
 
             (mListener as? OnClickItemListener)?.onClickItemListener(it, position)

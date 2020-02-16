@@ -20,6 +20,7 @@ import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivitySearchBinding
 import com.yuhang.novel.pirate.databinding.LayoutSearchHistoryBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickSearchSuggestListener
@@ -77,10 +78,10 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     }
 
     private fun onClick() {
-        mBinding.btnResouce.setOnClickListener { showResouceDialog() }
+        mBinding.btnResouce.clickWithTrigger { showResouceDialog() }
         mBinding.searchEt.setOnEditorActionListener(this)
-        mBinding.btnCancel.setOnClickListener { onBackPressedSupport() }
-        mBinding.btnClear.setOnClickListener{mBinding.searchEt.setText("", null)}
+        mBinding.btnCancel.clickWithTrigger { onBackPressedSupport() }
+        mBinding.btnClear.clickWithTrigger{mBinding.searchEt.setText("", null)}
         mBinding.searchEt.addTextChangedListener(object : TextWatcherAdapter() {
             override fun afterTextChanged(s: Editable?) {
                 super.afterTextChanged(s)
@@ -203,7 +204,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     private fun createHistoryTag(keyword: String) :View{
         val binding = LayoutSearchHistoryBinding.inflate(LayoutInflater.from(this))
         binding.contentTv.text = keyword
-        binding.contentTv.setOnClickListener {
+        binding.contentTv.clickWithTrigger {
             mViewModel.searchSuggestStr = keyword
             mBinding.searchEt.setText(keyword, null)
             mBinding.searchEt.setSelection(keyword.length)

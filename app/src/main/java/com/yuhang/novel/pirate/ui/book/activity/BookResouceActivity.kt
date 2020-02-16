@@ -8,6 +8,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityBookResouceBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookResouceViewModel
 
 /**
@@ -35,7 +36,7 @@ class BookResouceActivity : BaseSwipeBackActivity<ActivityBookResouceBinding, Bo
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 
     override fun initRefreshLayout() {

@@ -27,6 +27,7 @@ import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.FragmentMeBinding
 import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
@@ -150,10 +151,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     mBinding.loginDescTv.visibility = View.GONE
                     mBinding.btnLogin.textSize = 18f
                     mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
-                    //登录界面
-                    mBinding.btnLogin.setOnClickListener { }
-                    //登录
-                    mBinding.avatarCiv.setOnClickListener { }
+
                 }
 
             }, {
@@ -165,12 +163,12 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
     private fun onClick() {
         //分享
-        mBinding.shareCl.setOnClickListener {
+        mBinding.shareCl.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_APP_SHARE, "我的 -> 分享应用")
             showShareDialog()
         }
         //最新浏览
-        mBinding.historyCl.setOnClickListener {
+        mBinding.historyCl.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_HISTORY, "我的 -> 最近浏览")
             if (PirateApp.getInstance().getToken().isEmpty()) {
                 showHistoryDialog()
@@ -179,13 +177,13 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             }
         }
         //登录界面
-        mBinding.btnLogin.setOnClickListener {
+        mBinding.btnLogin.clickWithTrigger {
             LoginActivity.start(mActivity!!)
         }
         //登录
-        mBinding.avatarCiv.setOnClickListener { LoginActivity.start(mActivity!!) }
+        mBinding.avatarCiv.clickWithTrigger { LoginActivity.start(mActivity!!) }
         //检测版本更新
-        mBinding.checkVersionCl.setOnClickListener {
+        mBinding.checkVersionCl.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_VERSION_CHECK, "我的 -> 检测升级")
             isInitView = true
             if (mViewModel.installProcess()) {
@@ -194,32 +192,32 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         }
         //设置
-        mBinding.settingsCl.setOnClickListener {
+        mBinding.settingsCl.clickWithTrigger {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_SETTINGS, "我的 -> 设置")
             SettingsActivity.start(mActivity!!)
         }
 
-        mBinding.modelCl.setOnClickListener {
+        mBinding.modelCl.clickWithTrigger {
             resetModel()
         }
 
         //微信公众号
-        mBinding.wechatCl.setOnClickListener {
+        mBinding.wechatCl.clickWithTrigger {
 
             showWechatDialog()
         }
 
         //发起添加QQ群
-        mBinding.qqCl.setOnClickListener { joinQQGroup("mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9") }
+        mBinding.qqCl.clickWithTrigger { joinQQGroup("mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9") }
 
         //帮助与问题
-        mBinding.problemCl.setOnClickListener { ProblemActivity.start(mActivity!!) }
+        mBinding.problemCl.clickWithTrigger { ProblemActivity.start(mActivity!!) }
 
         //缓存管理
-        mBinding.downloadCl.setOnClickListener { BookDownloadActivity.start(mActivity!!) }
+        mBinding.downloadCl.clickWithTrigger { BookDownloadActivity.start(mActivity!!) }
 
         //游戏推荐
-        mBinding.gamesCl.setOnClickListener { GameActivity.start(mActivity!!) }
+        mBinding.gamesCl.clickWithTrigger { GameActivity.start(mActivity!!) }
 
     }
 

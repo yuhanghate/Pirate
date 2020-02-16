@@ -40,7 +40,7 @@ class ItemMainVH(parent: ViewGroup) : BaseViewHolder<BookInfoKSEntity, ItemMainB
             .apply(niceDefaultImageVertical())
             .into(mBinding.imageIv)
 
-        mBinding.btnMore.setOnClickListener {
+        mBinding.btnMore.clickWithTrigger {
             getListener<OnClickItemMoreListener>()?.onClickItemMoreListener(
                 it, position
             )

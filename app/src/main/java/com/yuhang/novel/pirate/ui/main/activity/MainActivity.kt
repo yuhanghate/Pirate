@@ -27,11 +27,13 @@ import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.ui.launch.activity.LaunchActivity
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.fragment.MeFragment
 import com.yuhang.novel.pirate.ui.main.fragment.StoreFragmentV2
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
+import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import io.reactivex.Flowable
 import org.greenrobot.eventbus.Subscribe
@@ -158,6 +160,8 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         initCategory()
         initConfig()
+
+        AppManagerUtils.getAppManager().finishActivity(LaunchActivity::class.java)
     }
 
     /**

@@ -5,6 +5,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemStoreTitleMoreBinding
 import com.yuhang.novel.pirate.databinding.ItemStoreTitleNomoreBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemStoreTitleMoreListener
 
 class ItemStoreTitleMoreVH(parent:ViewGroup):BaseViewHolder<String, ItemStoreTitleMoreBinding>(parent, R.layout.item_store_title_more) {
@@ -13,6 +14,6 @@ class ItemStoreTitleMoreVH(parent:ViewGroup):BaseViewHolder<String, ItemStoreTit
         super.onBindViewHolder(obj, position)
         mBinding.titleTv.text = obj
 
-        mBinding.moreLl.setOnClickListener { getListener<OnClickItemStoreTitleMoreListener>()?.onClickItemStoreTitleMoreListener(it, obj, position) }
+        mBinding.moreLl.clickWithTrigger { getListener<OnClickItemStoreTitleMoreListener>()?.onClickItemStoreTitleMoreListener(it, obj, position) }
     }
 }

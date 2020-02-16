@@ -17,6 +17,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.FragmentDrawerlayoutLeftBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
@@ -99,9 +100,9 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     }
 
     private fun onClick() {
-        mBinding.itemDrawerHeader.sortIv.setOnClickListener {
+        mBinding.itemDrawerHeader.sortIv.clickWithTrigger {
             if (mViewModel.adapter.getList().size == 0) {
-                return@setOnClickListener
+                return@clickWithTrigger
             }
 
             if (sortStatus) {

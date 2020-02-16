@@ -12,6 +12,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityResouceListKdBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
@@ -103,7 +104,7 @@ class ResouceListKdActivity :
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
     }
 
     /**

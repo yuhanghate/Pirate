@@ -8,6 +8,7 @@ import com.vondear.rxtool.RxKeyboardTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityForgetBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.user.viewmodel.ForgetViewModel
@@ -55,12 +56,12 @@ class ForgetActivity : BaseActivity<ActivityForgetBinding, ForgetViewModel>() {
 
     @SuppressLint("CheckResult")
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
-        mBinding.btnCode.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
+        mBinding.btnCode.clickWithTrigger {
             RxKeyboardTool.showSoftInput(this, mBinding.codeEt)
             initData()
         }
-        mBinding.btnNext.setOnClickListener {
+        mBinding.btnNext.clickWithTrigger {
             if (mViewModel.checkParams(mBinding)) {
                 showProgressbar("请等待...")
                 mViewModel.checkEmailCode(mBinding)

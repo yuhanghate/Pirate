@@ -85,6 +85,10 @@ class MainViewModel : BaseViewModel() {
                 return@flatMap Flowable.fromIterable(list)
             }
             .flatMap {
+                if (it.bookStatus == "完结") {
+                    //不刷新完结小说
+                    return@flatMap Flowable.just(it)
+                }
                 if (RxNetTool.isAvailable(PirateApp.getInstance())) {
                     return@flatMap mConvertRepository.updateBookKS(it.bookid)
                 }

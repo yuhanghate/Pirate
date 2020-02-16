@@ -55,8 +55,7 @@
 
         </activity>
         <activity
-                android:name=".ui.book.activity.ReadBookActivity"
-                android:launchMode="singleTask" />
+                android:name=".ui.book.activity.ReadBookActivity"/>
         <activity android:name=".ui.search.activity.SearchActivity" />
         <activity android:name=".ui.book.activity.BookDetailsActivity" />
         <activity android:name=".ui.book.activity.ChapterListActivity" />
@@ -86,15 +85,12 @@
         <activity android:name=".ui.settings.activity.ProblemActivity" />
         <activity android:name=".ui.book.activity.BookResouceActivity" />
         <activity
-                android:name=".ui.resouce.activity.ResouceListKdActivity"
-                android:launchMode="singleTask" />
+                android:name=".ui.resouce.activity.ResouceListKdActivity" />
         <activity
-                android:name=".ui.resouce.activity.ResouceChapterListActivity"
-                android:launchMode="singleTask" />
+                android:name=".ui.resouce.activity.ResouceChapterListActivity"/>
         <activity android:name=".ui.settings.activity.SearchFeedbackActivity" />
         <activity android:name=".ui.download.activity.BookDownloadActivity" />
-        <activity android:name=".ui.ad.activity.GameActivity"
-                android:launchMode="singleTask"/>
+        <activity android:name=".ui.ad.activity.GameActivity"/>
         <activity android:name=".ui.store.activity.BooksListActivity" />
         <activity android:name=".ui.store.activity.MoreRankingListActivity" />
         <activity android:name=".ui.store.activity.KanShuRankingActivity" />

@@ -27,6 +27,7 @@ import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookItemBin
 import com.yuhang.novel.pirate.databinding.LayoutBookDetailsAuthorAllBookLineBinding
 import com.yuhang.novel.pirate.eventbus.RemoveCollectionEvent
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceCoverPic
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.extension.niceToast
@@ -174,20 +175,21 @@ class BookDetailsActivity :
      */
     private fun onClick() {
         mBinding.appBar.addOnOffsetChangedListener(this)
-        mBinding.includeToolbarClose.backCloseIv.setOnClickListener { onBackPressed() }
-        mBinding.includeToolbarOpen.backOpenIv.setOnClickListener { onBackPressed() }
-        mBinding.openReadBookTv.setOnClickListener {
+        mBinding.includeToolbarClose.backCloseIv.clickWithTrigger { onBackPressed() }
+        mBinding.includeToolbarOpen.backOpenIv.clickWithTrigger { onBackPressed() }
+        mBinding.openReadBookTv.clickWithTrigger {
 
             clickOpenRead = true
             //阅读界面需要等章节列表全部加载完成
             if (mViewModel.chapterList.isEmpty()) {
                 showProgressbar("努力获取章节列表...", true)
-                return@setOnClickListener
+                return@clickWithTrigger
             }
             mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_READ, "立即阅读")
             ReadBookActivity.start(this, getBookResult(), false)
         }
-        mBinding.addBookrackTv.setOnClickListener {
+
+        mBinding.addBookrackTv.clickWithTrigger {
 
             //            showDialogCollection(mViewModel.isCollection)
             if (mViewModel.isCollection) {
@@ -198,7 +200,7 @@ class BookDetailsActivity :
                 //是否会员
                 if (mViewModel.queryCollectionAll().size > 20 && !mViewModel.isVip()) {
                     niceToast("超过20本小说请开通会员哦~")
-                    return@setOnClickListener
+                    return@clickWithTrigger
                 }
                 mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "加入书架")
                 addCollection()
@@ -208,17 +210,17 @@ class BookDetailsActivity :
         }
 
         //全本缓存
-        mBinding.downloadTv.setOnClickListener {
+        mBinding.downloadTv.clickWithTrigger {
             clickDownloadBook = true
             //阅读界面需要等章节列表全部加载完成
             if (mViewModel.chapterList.isEmpty()) {
                 showProgressbar("努力获取章节列表...", true)
-                return@setOnClickListener
+                return@clickWithTrigger
             }
             //是否会员
             if (mViewModel.queryDownloadAll().size > 20 && !mViewModel.isVip()) {
                 niceToast("超过20本小说请开通会员哦~")
-                return@setOnClickListener
+                return@clickWithTrigger
             }
             mViewModel.downloadBook(getBookResult())
             niceToast("已加入缓存队列")
@@ -349,7 +351,7 @@ class BookDetailsActivity :
                 val lineBinding = LayoutBookDetailsAuthorAllBookLineBinding.inflate(layoutInflater)
 
                 //点击跳转作者相关详情
-                itemBinding.itemLl.setOnClickListener {
+                itemBinding.itemLl.clickWithTrigger {
                     mViewModel.onUMEvent(
                         this,
                         UMConstant.TYPE_DETAILS_CLICK_AUTHOR_OTHER_BOOK,

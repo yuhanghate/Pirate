@@ -99,14 +99,14 @@ debugHunterExt {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
 
     //官方兼容包
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc03'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
-    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'android.arch.work:work-runtime:1.0.1'
 
@@ -181,8 +181,6 @@ dependencies {
     //大图预览,微信下拉关闭效果
 //    implementation 'com.github.SherlockGougou:BigImageViewPager:v4_4.0.3'
 
-    // 引导页 AndroidX Capable version
-//    implementation 'com.github.paolorotolo:appintro:v5.1.0'
 
     //RecyclerView 分隔线
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
@@ -194,7 +192,6 @@ dependencies {
     // OpenCC to convert Simp. Chinese to Trad. Chinese 繁体字转简体
     implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
     implementation project(path: ':fastscroll')
-//    implementation project(path: ':search-view')
 
     //取图片颜色
     implementation 'androidx.palette:palette:1.0.0'

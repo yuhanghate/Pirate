@@ -35,8 +35,8 @@ class ItemVlayoutColumn3VH(parent: ViewGroup) :
             .transition(niceCrossFade())
             .into(mBinding.coverIv)
 
-        mBinding.root.setOnClickListener { clickBook(it, position, obj) }
-        mBinding.coverIv.setOnClickListener { clickBook(it, position, obj) }
+        mBinding.root.clickWithTrigger { clickBook(it, position, obj) }
+        mBinding.coverIv.clickWithTrigger { clickBook(it, position, obj) }
     }
 
     private fun clickBook(view: View, position: Int, obj: BooksKSResult) {

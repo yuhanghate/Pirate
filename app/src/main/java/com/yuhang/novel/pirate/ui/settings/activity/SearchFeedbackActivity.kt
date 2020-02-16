@@ -6,6 +6,7 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.databinding.ActivitySearchFeedbackBinding
+import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.settings.viewmodel.SearchFeedbackViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
@@ -34,8 +35,8 @@ class SearchFeedbackActivity :
     }
 
     private fun onClick() {
-        mBinding.btnBack.setOnClickListener { onBackPressedSupport() }
-        mBinding.btnCommit.setOnClickListener {
+        mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
+        mBinding.btnCommit.clickWithTrigger {
             //如果未登陆,请登陆以后求书
             if (PirateApp.getInstance().getToken().isEmpty()) {
                 LoginActivity.start(this)
