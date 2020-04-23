@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.book.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
@@ -82,14 +83,14 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
         /**
          * 根据章节跳转
          */
-        fun start(context: Activity, obj: BooksResult, chapterid: String = "") {
+        fun start(context: Context, obj: BooksResult, chapterid: String = "") {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOKS_RESULT, obj.toJson())
             intent.putExtra(CHAPTERID, chapterid)
             startIntent(context, intent)
         }
 
-        fun start(context: Activity, obj: BooksResult, initChapter: Boolean = false) {
+        fun start(context: Context, obj: BooksResult, initChapter: Boolean = false) {
             val intent = Intent(context, ReadBookActivity::class.java)
             intent.putExtra(BOOKS_RESULT, obj.toJson())
             intent.putExtra(IS_INIT_CHAPTER, initChapter)

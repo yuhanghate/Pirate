@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.base
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.TypedArray
@@ -43,10 +44,11 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
         /**
          * 打开Activity,自定义动画
          */
-        fun startIntent(activity: Activity, intent: Intent) {
+        fun startIntent(activity: Context, intent: Intent) {
             activity.startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_in_left)
-
+            if (activity is Activity) {
+                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_in_left)
+            }
         }
     }
 

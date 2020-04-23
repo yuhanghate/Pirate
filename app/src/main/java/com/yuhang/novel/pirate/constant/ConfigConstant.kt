@@ -2,6 +2,8 @@ package com.yuhang.novel.pirate.constant
 
 object ConfigConstant {
 
+    const val App = "PIRATE"
+
     /**
      * 友盟统计app_key
      */
