@@ -1,7 +1,7 @@
 package com.yuhang.novel.pirate.ui.store.adapter
 
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.GridLayoutHelper
 import com.yuhang.novel.pirate.app.PirateApp
@@ -15,7 +15,7 @@ class CategoryAdapter : BaseAdapterV2<CategoryKDEntity>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<CategoryKDEntity, ViewDataBinding> {
+    ): BaseViewHolder<CategoryKDEntity, *> {
         return ItemCategoryVH(parent)
     }
 

@@ -1,7 +1,6 @@
 package com.yuhang.novel.pirate.ui.book.adapter
 
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import com.yuhang.novel.pirate.base.BaseAdapter
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
@@ -16,11 +15,11 @@ class DrawerlayoutLeftAdapter:BaseAdapter<BookChapterKSEntity>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<BookChapterKSEntity, ViewDataBinding> {
+    ): BaseViewHolder<BookChapterKSEntity, *> {
         return ItemDrawerLayoutLeftVH(parent)
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<BookChapterKSEntity, ViewDataBinding>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<BookChapterKSEntity, *>, position: Int) {
         if (holder is ItemDrawerLayoutLeftVH) {
             holder.chapterid = chapterid
         }

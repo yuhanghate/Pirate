@@ -1,219 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background"
+        android:orientation="vertical">
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <View
+            android:id="@+id/bg_shadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/window_background"
+            android:background="#4D000000"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-
-        <View
-                android:id="@+id/bg_shadow"
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#4D000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone" />
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/actionbar_color">
 
+            <LinearLayout
+                    android:id="@+id/btn_resouce"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|start"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/actionbar_color">
-
-                <LinearLayout
-                        android:id="@+id/btn_resouce"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical|start"
-                        android:orientation="horizontal"
-                        android:paddingStart="15dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/ic_down_flag" />
-
-                    <TextView
-                            android:id="@+id/resouce_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="5dp"
-                            android:text="追书"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="13sp" />
-                </LinearLayout>
-
+                <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_down_flag" />
 
                 <TextView
-                        android:id="@+id/btn_cancel"
+                        android:id="@+id/resouce_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        android:background="@drawable/bg_material_20dp"
-                        android:text="取消"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="5dp"
+                        android:text="追书"
                         android:textColor="@color/secondary_text"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:textSize="13sp" />
+            </LinearLayout>
 
 
-                <LinearLayout
+            <TextView
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/bg_material_20dp"
+                    android:text="取消"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_search_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
+                    app:layout_constraintStart_toEndOf="@+id/btn_resouce"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                        android:id="@+id/search_et"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="start|center_vertical"
+                        android:hint="搜索书名或作者"
+                        android:imeOptions="actionSearch"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/primary_text"
+                        android:textColorHint="#ff999999"
+                        android:textSize="14sp" />
+
+                <ImageView
+                        android:id="@+id/btn_clear"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="@drawable/bg_search_content"
-                        android:orientation="horizontal"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
-                        app:layout_constraintStart_toEndOf="@+id/btn_resouce"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:src="@drawable/btn_search_close"
+                        android:visibility="gone" />
+            </LinearLayout>
 
-                    <EditText
-                            android:id="@+id/search_et"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:gravity="start|center_vertical"
-                            android:hint="搜索书名或作者"
-                            android:imeOptions="actionSearch"
-                            android:lines="1"
-                            android:singleLine="true"
-                            android:textColor="@color/primary_text"
-                            android:textColorHint="#ff999999"
-                            android:textSize="14sp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <ImageView
-                            android:id="@+id/btn_clear"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="10dp"
-                            android:src="@drawable/btn_search_close"
-                            android:visibility="gone" />
-                </LinearLayout>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <View
+
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EEEEEE" />
-
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                    <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="15dp"
-                            android:paddingTop="15dp"
-                            android:paddingEnd="15dp">
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="历史搜索"
-                                android:textColor="@color/primary_text" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:background="@drawable/bg_material_20dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:text="清空历史"
-                                android:textColor="@color/secondary_text"
-                                android:textSize="15sp" />
-                    </RelativeLayout>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                            android:id="@+id/flexboxLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            app:alignContent="flex_start"
-                            app:alignItems="flex_start"
-                            app:flexDirection="row"
-                            app:flexWrap="wrap"
-                            app:justifyContent="flex_start"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:showDivider="beginning|middle|end" />
-                </LinearLayout>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/window_background"
-                        android:clipToPadding="false"
-                        android:paddingStart="10dp"
-                        android:paddingTop="15dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="20dp"
-                        android:visibility="gone"
-                        tools:listitem="@layout/item_search" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/search_suggest_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone"
-                        android:background="@color/window_background"
-                        tools:listitem="@layout/item_search_suggest" />
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                 <RelativeLayout
-                        android:id="@+id/progress_rl"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/window_background"
-                        android:visibility="gone">
+                        android:layout_height="wrap_content"
+                        android:paddingStart="15dp"
+                        android:paddingTop="15dp"
+                        android:paddingEnd="15dp">
 
-                    <androidx.core.widget.ContentLoadingProgressBar
-                            android:id="@+id/progress_view"
-                            style="?android:attr/progressBarStyleLarge"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_centerInParent="true" />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:text="历史搜索"
+                            android:textColor="@color/primary_text" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/bg_material_20dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="清空历史"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="15sp" />
                 </RelativeLayout>
 
+                <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/flexboxLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        app:alignContent="flex_start"
+                        app:alignItems="flex_start"
+                        app:flexDirection="row"
+                        app:flexWrap="wrap"
+                        app:justifyContent="flex_start"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:showDivider="beginning|middle|end" />
+            </LinearLayout>
 
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/window_background"
+                    android:clipToPadding="false"
+                    android:paddingStart="10dp"
+                    android:paddingTop="15dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_search" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_suggest_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/window_background"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_search_suggest" />
+
+
+            <RelativeLayout
+                    android:id="@+id/progress_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/window_background"
+                    android:visibility="gone">
+
+                <androidx.core.widget.ContentLoadingProgressBar
+                        android:id="@+id/progress_view"
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerInParent="true" />
             </RelativeLayout>
 
-        </LinearLayout>
-    </RelativeLayout>
-</layout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>

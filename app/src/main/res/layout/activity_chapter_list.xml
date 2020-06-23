@@ -1,104 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <LinearLayout
+            <View
+                    android:id="@+id/status_bar_v"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="0dp"
+                    android:background="@color/window_background"
+                    android:visibility="visible" />
 
-                <View
-                        android:id="@+id/status_bar_v"
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize">
+
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:background="@color/window_background"
-                        android:visibility="visible" />
+                        android:layout_height="?attr/actionBarSize"
+                        android:orientation="vertical">
 
-                <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize">
+                    <ImageView
+                            android:id="@+id/back_close_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/bg_material_20dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/btn_back_black" />
 
-                    <RelativeLayout
+
+                    <TextView
+                            android:id="@+id/title_close_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="8dp"
+                            android:lines="1"
+                            android:maxLength="10"
+                            android:text="章节目录"
+                            android:textColor="@color/primary_text"
+                            android:textSize="17sp"
+                            android:visibility="visible" />
+
+                    <View
+                            android:id="@+id/bg_toolbar_close"
                             android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize"
-                            android:orientation="vertical">
-
-                        <ImageView
-                                android:id="@+id/back_close_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="15dp"
-                                android:background="@drawable/bg_material_20dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:scaleType="centerInside"
-                                android:src="@drawable/btn_back_black" />
+                            android:layout_height="match_parent" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
 
 
-                        <TextView
-                                android:id="@+id/title_close_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="8dp"
-                                android:lines="1"
-                                android:maxLength="10"
-                                android:text="章节目录"
-                                android:textColor="@color/primary_text"
-                                android:textSize="17sp"
-                                android:visibility="visible" />
-
-                        <View
-                                android:id="@+id/bg_toolbar_close"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-                    </RelativeLayout>
-                </androidx.appcompat.widget.Toolbar>
-            </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-        </com.google.android.material.appbar.AppBarLayout>
+    <RelativeLayout
+            android:id="@+id/content_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-
-        <RelativeLayout
-                android:id="@+id/content_rl"
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_drawerlayout_left" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:listitem="@layout/item_drawerlayout_left" />
+        <com.futuremind.recyclerviewfastscroll.FastScroller
+                android:id="@+id/fastscroll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                app:fastscroll__handleColor="#bfbfbf" />
 
-            <com.futuremind.recyclerviewfastscroll.FastScroller
-                    android:id="@+id/fastscroll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="vertical"
-                    app:fastscroll__handleColor="#bfbfbf" />
+        <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progress_view"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true" />
+    </RelativeLayout>
 
-            <androidx.core.widget.ContentLoadingProgressBar
-                    android:id="@+id/progress_view"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerInParent="true" />
-        </RelativeLayout>
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

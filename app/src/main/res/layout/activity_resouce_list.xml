@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent">
-
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionbar_color">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -22,85 +20,85 @@
                 android:background="@drawable/bg_material_20dp"
                 android:src="@drawable/btn_back_black" />
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/btn_back"
                 android:layout_centerVertical="true"
-                android:text="书源列表"
                 android:layout_marginStart="20dp"
+                android:layout_toEndOf="@+id/btn_back"
+                android:text="书源列表"
                 android:textColor="@color/primary_text"
                 android:textSize="18sp" />
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+        <RelativeLayout
                 android:id="@+id/tab_rl"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
+                android:layout_height="70dp"
                 android:background="@color/window_background"
-                android:layout_height="70dp">
+                app:layout_constraintBottom_toBottomOf="parent">
 
-                <View
+            <View
                     android:layout_width="match_parent"
-                    android:background="@color/divider"
-                    android:layout_height="1dp" />
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
 
-                <TextView
+            <TextView
                     android:layout_width="wrap_content"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="16sp"
-                    android:text="建议使用6个\n过多会影响搜索速度"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="20dp"
-                    android:layout_height="wrap_content" />
+                    android:text="建议使用6个\n过多会影响搜索速度"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="16sp" />
 
-                <TextView
+            <TextView
                     android:id="@+id/btn_commit"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="15dp"
-                    android:text="确定"
+                    android:background="@drawable/bg_material_item_red_round_color300"
                     android:clickable="false"
                     android:focusable="true"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
                     android:paddingStart="20dp"
+                    android:paddingTop="8dp"
                     android:paddingEnd="20dp"
-                    android:textSize="17sp"
+                    android:paddingBottom="8dp"
+                    android:text="确定"
                     android:textColor="@color/window_background"
-                    android:background="@drawable/bg_material_item_red_round_color300"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
+                    android:textSize="17sp" />
+        </RelativeLayout>
 
-            <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
                 android:id="@+id/refreshLayout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/tab_rl"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
-                <androidx.recyclerview.widget.RecyclerView
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/tab_rl"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview"
-                    android:paddingTop="6dp"
-                    android:clipToPadding="false"
-                    android:background="@color/md_grey_200"
-                    tools:listitem="@layout/item_book_resouce"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="match_parent"
+                    android:background="@color/md_grey_200"
+                    android:clipToPadding="false"
+                    android:paddingTop="6dp"
+                    tools:listitem="@layout/item_book_resouce" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </LinearLayout>
-</layout>
+</LinearLayout>

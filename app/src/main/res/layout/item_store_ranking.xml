@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/divider"
+        android:orientation="vertical"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
+    <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/divider"
-            android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
-
-
-        <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                tools:listitem="@layout/item_store_ranking_child" />
-    </LinearLayout>
-</layout>
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_store_ranking_child" />
+</LinearLayout>

@@ -1,12 +1,12 @@
 package com.yuhang.novel.pirate.base
 
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 
 
 /**
  * 下载基类
  */
-abstract class BaseDownloadBackActivity<D : ViewDataBinding, VM : BaseViewModel> :
+abstract class BaseDownloadBackActivity<D : ViewBinding, VM : BaseViewModel> :
     BaseSwipeBackActivity<D, VM>()
      {
 

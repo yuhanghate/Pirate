@@ -1,21 +1,16 @@
 package com.yuhang.novel.pirate.base
 
-import android.os.SystemClock
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
 import com.orhanobut.logger.Logger
-import com.yuhang.novel.pirate.base.BaseAdapter
-import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 
-abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T, ViewDataBinding>>() {
+abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T,*>>() {
 
     private var mLastClickTime: Long = 0
 
@@ -40,7 +35,10 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
      * 尺寸参数
      */
     var layoutParams: ViewGroup.LayoutParams =
-            VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        VirtualLayoutManager.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
 
     /**
      * 获取列表
@@ -50,12 +48,12 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
     /**
      * 初始化数据
      */
-    open fun initData(list: List<T>):BaseAdapterV2<T> {
+    open fun initData(list: List<T>): BaseAdapterV2<T> {
         mList.addAll(list)
         return this
     }
 
-    fun setRefresh(list: List<T>):BaseAdapterV2<T> {
+    fun setRefresh(list: List<T>): BaseAdapterV2<T> {
         mList.clear()
         mList.addAll(list)
         return this
@@ -69,7 +67,7 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
     /**
      * 初始化数据
      */
-    open fun initData(obj: T):BaseAdapterV2<T> {
+    open fun initData(obj: T): BaseAdapterV2<T> {
         mList.addAll(arrayListOf(obj))
         return this
     }
@@ -85,18 +83,16 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
     /**
      * 绑定ViewHolder
      */
-    override fun onBindViewHolder(holder: BaseViewHolder<T, ViewDataBinding>, position: Int) {
-        holder.itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    override fun onBindViewHolder(holder: BaseViewHolder<T,*>, position: Int) {
+        holder.itemView.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
 
 
         //设置Item点击事件
         holder.itemView.clickWithTrigger {
 //            //防止双击
-//            if (SystemClock.elapsedRealtime() - mLastClickTime < 700){
-//                return@setOnClickListener
-//            }
-//            mLastClickTime = SystemClock.elapsedRealtime()
-
             Logger.t("Double_Click").i("Item 点击事件")
 
             (mListener as? OnClickItemListener)?.onClickItemListener(it, position)
@@ -144,7 +140,7 @@ abstract class BaseAdapterV2<T : Any> : DelegateAdapter.Adapter<BaseViewHolder<T
         return this
     }
 
-    fun toAdapter():DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
+    fun toAdapter(): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
         return this as DelegateAdapter.Adapter<RecyclerView.ViewHolder>
     }
 

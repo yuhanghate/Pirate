@@ -55,10 +55,11 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures{
+//        dataBinding = true
+        // for vi ew binding :
+        viewBinding = true
     }
-
 
     androidExtensions {
         experimental = true

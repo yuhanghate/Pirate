@@ -1,75 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <View
+            android:id="@+id/status_bar_v"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-        <View
-                android:id="@+id/status_bar_v"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/toolbar_abl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize">
-
-                <ImageView
-                        android:id="@+id/btn_back"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp"
-                        android:background="@drawable/bg_material_20dp"
-                        android:src="@drawable/btn_back_black" />
-
-                <TextView
-                        android:id="@+id/title_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="章节"
-                        android:textColor="@color/primary_text"
-                        android:textSize="18sp" />
-            </RelativeLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-
+    <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/toolbar_abl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="?attr/actionBarSize">
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    tools:listitem="@layout/item_drawerlayout_left"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-
-            <com.futuremind.recyclerviewfastscroll.FastScroller
-                    android:id="@+id/fastscroll"
+            <ImageView
+                    android:id="@+id/btn_back"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="vertical"
-                    app:fastscroll__handleColor="#bfbfbf" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/bg_material_20dp"
+                    android:src="@drawable/btn_back_black" />
 
-            <androidx.core.widget.ContentLoadingProgressBar
-                    android:id="@+id/progress_view"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerInParent="true" />
+            <TextView
+                    android:id="@+id/title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="章节"
+                    android:textColor="@color/primary_text"
+                    android:textSize="18sp" />
         </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    </LinearLayout>
-</layout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_drawerlayout_left" />
+
+
+        <com.futuremind.recyclerviewfastscroll.FastScroller
+                android:id="@+id/fastscroll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                app:fastscroll__handleColor="#bfbfbf" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progress_view"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+</LinearLayout>

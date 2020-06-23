@@ -1,7 +1,7 @@
 package com.yuhang.novel.pirate.ui.store.adapter
 
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
 import com.yuhang.novel.pirate.app.PirateApp
@@ -19,7 +19,7 @@ class StoreTitleNomoreAdapter : BaseAdapterV2<TitleNomoreModel>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<TitleNomoreModel, ViewDataBinding> {
+    ): BaseViewHolder<TitleNomoreModel, *> {
         return ItemStoreTitleNomoreVH(parent)
     }
 

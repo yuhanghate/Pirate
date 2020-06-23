@@ -1,623 +1,618 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background"
+        android:orientation="vertical">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/window_background"
-            android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/md_grey_f2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/md_grey_f2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="  "
-                        android:textColor="@color/primary_text"
-                        android:textSize="18sp" />
-
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-
-                </LinearLayout>
-
-
-            </RelativeLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-                android:id="@+id/refreshLayout"
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:srlHeaderHeight="150dp"
-                app:srlHeaderMaxDragRate="1">
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
             <TextView
-                    android:id="@+id/header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="  "
+                    android:textColor="@color/primary_text"
+                    android:textSize="18sp" />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:srlHeaderHeight="150dp"
+            app:srlHeaderMaxDragRate="1">
+
+        <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#555"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="5dp"
+                android:padding="20dp"
+                android:text="做好一件事情很难\n我们选择努力\n\n随便看书 更快 更流畅"
+                android:textColor="#aaa"
+                android:textSize="16sp"
+                app:layout_srlBackgroundColor="#555"
+                app:layout_srlSpinnerStyle="FixedBehind" />
+
+
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#555"
-                    android:gravity="center_horizontal"
-                    android:lineSpacingExtra="5dp"
-                    android:padding="20dp"
-                    android:text="做好一件事情很难\n我们选择努力\n\n随便看书 更快 更流畅"
-                    android:textColor="#aaa"
-                    android:textSize="16sp"
-                    app:layout_srlBackgroundColor="#555"
-                    app:layout_srlSpinnerStyle="FixedBehind" />
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
 
-
-            <androidx.core.widget.NestedScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/head_cl"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:paddingBottom="20dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/head_cl"
-                            android:layout_width="match_parent"
-                            android:layout_height="170dp"
-                            android:background="@color/md_grey_f2">
+                        android:layout_height="170dp"
+                        android:background="@color/md_grey_f2">
 
 
-                        <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
-
-
-
-                            <com.airbnb.lottie.LottieAnimationView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginEnd="-40dp"
-                                    app:lottie_autoPlay="true"
-                                    app:lottie_fileName="lottie/11903-snow-fall-with-gifts.json"
-                                    app:lottie_loop="true" />
-
-                            <com.airbnb.lottie.LottieAnimationView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentStart="true"
-                                    android:scaleType="fitCenter"
-                                    app:lottie_autoPlay="true"
-                                    app:lottie_fileName="lottie/lf30_editor_W9Pwgo.json"
-                                    app:lottie_loop="true" />
-
-                            <com.airbnb.lottie.LottieAnimationView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:scaleType="fitCenter"
-                                    app:lottie_autoPlay="true"
-                                    app:lottie_fileName="lottie/santa_stop_here.json"
-                                    app:lottie_loop="false" />
-                        </RelativeLayout>
-
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/avatar_civ"
-                                android:layout_width="78dp"
-                                android:layout_height="78dp"
-                                android:layout_marginStart="30dp"
-                                android:layout_marginTop="20dp"
-                                android:elevation="6dp"
-                                android:src="#cdcdcd"
-                                app:civ_border_color="@color/md_grey_100"
-                                app:civ_border_width="2dp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-
-                        <ImageView
-                                android:id="@+id/avatar_iv"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:elevation="6dp"
-                                android:src="@drawable/ic_default_avatar"
-                                app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
-                                app:layout_constraintEnd_toEndOf="@+id/avatar_civ"
-                                app:layout_constraintStart_toStartOf="@+id/avatar_civ"
-                                app:layout_constraintTop_toTopOf="@+id/avatar_civ" />
-
-                        <ImageView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:elevation="6dp"
-                                android:scaleType="centerInside"
-                                android:src="@drawable/ic_avatar_camera"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
-                                app:layout_constraintEnd_toEndOf="@+id/avatar_civ" />
-
-
-                        <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
-                                app:layout_constraintStart_toEndOf="@+id/avatar_civ"
-                                app:layout_constraintTop_toTopOf="@+id/avatar_civ">
-
-                            <TextView
-                                    android:id="@+id/btn_login"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="立即登录"
-                                    android:textColor="@color/md_grey_100"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
-
-
-                            <TextView
-                                    android:id="@+id/login_desc_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:text="登录更安全,可同步书籍"
-                                    android:textColor="@color/md_grey_100"
-                                    android:textSize="12sp" />
-                        </LinearLayout>
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/check_version_cl"
+                    <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
 
-                                android:id="@+id/notication_iv"
+                        <com.airbnb.lottie.LottieAnimationView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_notication"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="-40dp"
+                                app:lottie_autoPlay="true"
+                                app:lottie_fileName="lottie/11903-snow-fall-with-gifts.json"
+                                app:lottie_loop="true" />
 
-                        <TextView
+                        <com.airbnb.lottie.LottieAnimationView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="检测升级"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/notication_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_alignParentStart="true"
+                                android:scaleType="fitCenter"
+                                app:lottie_autoPlay="true"
+                                app:lottie_fileName="lottie/lf30_editor_W9Pwgo.json"
+                                app:lottie_loop="true" />
 
-                        <TextView
-                                android:id="@+id/version_name_tv"
+                        <com.airbnb.lottie.LottieAnimationView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="20dp"
-                                android:text="最新"
-                                android:textColor="@color/secondary_text"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                android:layout_alignParentEnd="true"
+                                android:scaleType="fitCenter"
+                                app:lottie_autoPlay="true"
+                                app:lottie_fileName="lottie/santa_stop_here.json"
+                                app:lottie_loop="false" />
+                    </RelativeLayout>
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/history_cl"
-                            android:layout_width="match_parent"
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/avatar_civ"
+                            android:layout_width="78dp"
+                            android:layout_height="78dp"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="20dp"
+                            android:elevation="6dp"
+                            android:src="#cdcdcd"
+                            app:civ_border_color="@color/md_grey_100"
+                            app:civ_border_width="2dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <ImageView
+                            android:id="@+id/avatar_iv"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:elevation="6dp"
+                            android:src="@drawable/ic_default_avatar"
+                            app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
+                            app:layout_constraintEnd_toEndOf="@+id/avatar_civ"
+                            app:layout_constraintStart_toStartOf="@+id/avatar_civ"
+                            app:layout_constraintTop_toTopOf="@+id/avatar_civ" />
+
+                    <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:elevation="6dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_avatar_camera"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
+                            app:layout_constraintEnd_toEndOf="@+id/avatar_civ" />
+
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
-
-                        <ImageView
-
-                                android:id="@+id/history_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_history"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                            android:layout_marginStart="15dp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
+                            app:layout_constraintStart_toEndOf="@+id/avatar_civ"
+                            app:layout_constraintTop_toTopOf="@+id/avatar_civ">
 
                         <TextView
+                                android:id="@+id/btn_login"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="最近浏览"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/history_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                android:text="立即登录"
+                                android:textColor="@color/md_grey_100"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/download_cl"
-                            android:layout_width="match_parent"
+
+                        <TextView
+                                android:id="@+id/login_desc_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="登录更安全,可同步书籍"
+                                android:textColor="@color/md_grey_100"
+                                android:textSize="12sp" />
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/check_version_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/notication_iv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
-
-                        <ImageView
-
-                                android:id="@+id/download_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_download_manger"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="下载管理"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/download_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/games_cl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:visibility="gone">
-
-                        <ImageView
-
-                                android:id="@+id/games_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_games"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="游戏推荐"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/games_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/bookrack_cl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:visibility="gone">
-
-                        <ImageView
-
-                                android:id="@+id/bookrack_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_bookrack"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="我的书单"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/bookrack_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="20dp"
-                                android:text="凡人修仙传仙界篇"
-                                android:textColor="@color/secondary_text"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2px"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_notication"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="检测升级"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/notication_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/version_name_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginBottom="15dp" />
+                            android:text="最新"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/share_cl"
-                            android:layout_width="match_parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/history_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/history_iv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_history"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-
-                                android:id="@+id/share_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_share"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:id="@+id/share_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="分享应用"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/share_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/wechat_cl"
-                            android:layout_width="match_parent"
+                    <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:visibility="gone">
+                            android:layout_marginStart="15dp"
+                            android:text="最近浏览"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/history_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/download_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                                android:id="@+id/wechat_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_wechat"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
 
-                        <TextView
-                                android:id="@+id/wechat_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="官方微信群"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/wechat_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/qq_cl"
-                            android:layout_width="match_parent"
+                            android:id="@+id/download_iv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_download_manger"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-
-                                android:id="@+id/qq_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_qq_group"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:id="@+id/qq_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="QQ交流群 (764214448)"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/qq_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/problem_cl"
-                            android:layout_width="match_parent"
+                    <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:visibility="gone">
+                            android:layout_marginStart="15dp"
+                            android:text="下载管理"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/download_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/games_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone">
 
-                                android:id="@+id/problem_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_problem"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
 
-                        <TextView
-                                android:id="@+id/problem_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="帮助与问题"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/problem_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/model_cl"
-                            android:layout_width="match_parent"
+                            android:id="@+id/games_iv"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_games"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-
-                                android:id="@+id/subject_mode_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_moon"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="夜间模式"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/subject_mode_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/settings_cl"
-                            android:layout_width="match_parent"
+                    <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_material_item"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:layout_marginStart="15dp"
+                            android:text="游戏推荐"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/games_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/bookrack_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone">
 
-                                android:id="@+id/settings_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/ic_settings"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
 
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:text="设置"
-                                android:textColor="@color/primary_text"
-                                android:textSize="15sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/settings_iv"
-                                app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:id="@+id/bookrack_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_bookrack"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="我的书单"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/bookrack_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:text="凡人修仙传仙界篇"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2px"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="15dp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/share_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/share_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_share"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/share_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="分享应用"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/share_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/wechat_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone">
+
+                    <ImageView
+
+                            android:id="@+id/wechat_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_wechat"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/wechat_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="官方微信群"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/wechat_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/qq_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/qq_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_qq_group"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/qq_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="QQ交流群 (764214448)"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/qq_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/problem_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone">
+
+                    <ImageView
+
+                            android:id="@+id/problem_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_problem"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/problem_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="帮助与问题"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/problem_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <Button
-                android:id="@+id/me_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="我的"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
-</layout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/model_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/subject_mode_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_moon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="夜间模式"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/subject_mode_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/settings_cl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_material_item"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                    <ImageView
+
+                            android:id="@+id/settings_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/ic_settings"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:text="设置"
+                            android:textColor="@color/primary_text"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/settings_iv"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+
+    <Button
+            android:id="@+id/me_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="我的"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+</LinearLayout>

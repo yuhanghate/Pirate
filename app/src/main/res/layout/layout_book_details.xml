@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-    <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/window_background"
         android:orientation="vertical">
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -17,18 +14,18 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
 
-            <TextView
+        <TextView
                 android:id="@+id/author_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:text="忘语"
-                android:textStyle="bold"
                 android:textColor="@color/primary_dark"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
-            <TextView
+        <TextView
                 android:id="@+id/status_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,9 +34,9 @@
                 android:text="状态: 连载"
                 android:textColor="@color/secondary_text"
                 android:textSize="13sp" />
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <TextView
+    <TextView
             android:id="@+id/title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +47,7 @@
             android:textColor="@color/primary_text"
             android:textSize="18sp" />
 
-        <TextView
+    <TextView
             android:id="@+id/desc_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,19 +58,19 @@
             android:textColor="@color/secondary_text"
             android:textSize="14sp" />
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/list_divider_color" />
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -81,7 +78,7 @@
                 android:textColor="@color/secondary_text"
                 android:textSize="14sp" />
 
-            <TextView
+        <TextView
                 android:id="@+id/book_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,43 +86,43 @@
                 android:text="武侠仙侠"
                 android:textColor="@color/primary_text"
                 android:textSize="14sp" />
-        </LinearLayout>
+    </LinearLayout>
 
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/list_divider_color" />
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:orientation="horizontal">
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="目录"
                 android:textColor="@color/secondary_text"
                 android:textSize="14sp" />
 
-            <LinearLayout
+        <LinearLayout
                 android:id="@+id/chapter_list_ll"
                 android:layout_width="match_parent"
-                android:background="@drawable/bg_material_item"
-                android:clickable="true"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
+                android:background="@drawable/bg_material_item"
+                android:clickable="true"
+                android:focusable="true"
                 android:orientation="vertical"
-                android:focusable="true">
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
 
-                <TextView
+            <TextView
                     android:id="@+id/chapter_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -134,7 +131,7 @@
                     android:textColor="@color/primary_text"
                     android:textSize="13sp" />
 
-                <TextView
+            <TextView
                     android:id="@+id/time_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -143,16 +140,16 @@
                     android:text="7/6/2019 5:06:55 PM"
                     android:textColor="@color/primary_text"
                     android:textSize="13sp" />
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginTop="15dp"
             android:background="@color/divider" />
 
-        <TextView
+    <TextView
             android:id="@+id/author_all_book_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,16 +160,16 @@
             android:textSize="14sp" />
 
 
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/author_all_book_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
             android:layout_marginTop="30dp"
+            android:layout_marginBottom="100dp"
             android:orientation="vertical">
 
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -182,7 +179,7 @@
                 android:focusable="true"
                 android:orientation="horizontal">
 
-                <ImageView
+            <ImageView
                     android:layout_width="30dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
@@ -193,7 +190,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -205,7 +202,7 @@
                     app:layout_constraintStart_toEndOf="@+id/image_iv"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -214,7 +211,7 @@
                         android:textColor="@color/primary_text"
                         android:textSize="14sp" />
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -224,11 +221,11 @@
                         android:textColor="@color/secondary_text"
                         android:textSize="12sp" />
 
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
 
-            <View
+        <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
@@ -236,7 +233,7 @@
                 android:background="@color/list_divider_color" />
 
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -246,7 +243,7 @@
                 android:focusable="true"
                 android:orientation="horizontal">
 
-                <ImageView
+            <ImageView
                     android:layout_width="30dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
@@ -257,7 +254,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -269,7 +266,7 @@
                     app:layout_constraintStart_toEndOf="@+id/image_iv"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -278,7 +275,7 @@
                         android:textColor="@color/primary_text"
                         android:textSize="14sp" />
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -288,17 +285,17 @@
                         android:textColor="@color/secondary_text"
                         android:textSize="12sp" />
 
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
-            <View
+        <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@color/list_divider_color" />
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -308,7 +305,7 @@
                 android:focusable="true"
                 android:orientation="horizontal">
 
-                <ImageView
+            <ImageView
                     android:layout_width="30dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
@@ -319,7 +316,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -331,7 +328,7 @@
                     app:layout_constraintStart_toEndOf="@+id/image_iv"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -340,7 +337,7 @@
                         android:textColor="@color/primary_text"
                         android:textSize="14sp" />
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -350,28 +347,28 @@
                         android:textColor="@color/secondary_text"
                         android:textSize="12sp" />
 
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
-            <View
+        <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@color/list_divider_color" />
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/bg_details_author_book"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="horizontal">
 
-                <ImageView
+            <ImageView
                     android:layout_width="30dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
@@ -382,7 +379,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -394,7 +391,7 @@
                     app:layout_constraintStart_toEndOf="@+id/image_iv"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -403,7 +400,7 @@
                         android:textColor="@color/primary_text"
                         android:textSize="14sp" />
 
-                    <TextView
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -413,8 +410,7 @@
                         android:textColor="@color/secondary_text"
                         android:textSize="12sp" />
 
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</layout>
+</LinearLayout>

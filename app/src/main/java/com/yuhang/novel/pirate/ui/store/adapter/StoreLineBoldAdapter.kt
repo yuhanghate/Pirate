@@ -1,7 +1,7 @@
 package com.yuhang.novel.pirate.ui.store.adapter
 
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper
 import com.yuhang.novel.pirate.base.BaseAdapterV2
@@ -17,7 +17,7 @@ class StoreLineBoldAdapter : BaseAdapterV2<LineModel>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<LineModel, ViewDataBinding> {
+    ): BaseViewHolder<LineModel, *> {
         return ItemStoreBoldLineVH(parent)
     }
 

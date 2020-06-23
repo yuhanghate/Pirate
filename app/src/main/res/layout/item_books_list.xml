@@ -1,113 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@drawable/bg_material_item"
+            android:paddingStart="20dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="15dp">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cover_cv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_material_item"
-                android:paddingStart="20dp"
-                android:paddingTop="15dp"
-                android:paddingEnd="20dp"
-                android:paddingBottom="15dp">
-
-            <androidx.cardview.widget.CardView
-                    android:id="@+id/cover_cv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                        android:id="@+id/cover_iv"
-                        android:layout_width="75dp"
-                        android:layout_height="100dp"
-                        android:background="@drawable/ic_default_img2"
-                        android:scaleType="fitXY"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-            </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/cover_cv"
-                    app:layout_constraintTop_toTopOf="@+id/cover_cv">
-
-                <TextView
-                        android:id="@+id/name_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp"
-                        android:maxLines="2"
-                        android:ellipsize="end"
-                        android:textStyle="bold"
-                        tools:text="凡人修仙传" />
-
-                <TextView
-                        android:id="@+id/desc_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:maxLines="2"
-                        android:ellipsize="end"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="12sp"
-                        tools:text="精品同人,第一次推书" />
-
-
-            </LinearLayout>
-
-            <TextView
-                    android:id="@+id/book_count_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="5dp"
-                    android:maxLines="2"
-                    android:textColor="@color/md_orange_400"
-                    android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/cover_cv"
-                    app:layout_constraintStart_toEndOf="@+id/cover_cv"
-                    tools:text="共20本" />
+                android:layout_alignParentStart="true"
+                app:cardCornerRadius="5dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                    android:id="@+id/cover_iv"
+                    android:layout_width="75dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/ic_default_img2"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cover_cv"
+                app:layout_constraintTop_toTopOf="@+id/cover_cv">
+
+            <TextView
+                    android:id="@+id/name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="5dp"
-                    android:src="@drawable/ic_book_reading"
-                    app:layout_constraintBottom_toBottomOf="@+id/book_count_tv"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/book_count_tv" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/primary_text"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="凡人修仙传" />
 
-        <View
-                android:layout_width="match_parent"
-                android:background="@color/divider"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="20dp"
-                android:layout_height="1dp" />
-    </LinearLayout>
-</layout>
+            <TextView
+                    android:id="@+id/desc_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="12sp"
+                    tools:text="精品同人,第一次推书" />
+
+
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/book_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:maxLines="2"
+                android:textColor="@color/md_orange_400"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@+id/cover_cv"
+                app:layout_constraintStart_toEndOf="@+id/cover_cv"
+                tools:text="共20本" />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_book_reading"
+                app:layout_constraintBottom_toBottomOf="@+id/book_count_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/book_count_tv" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/divider" />
+</LinearLayout>

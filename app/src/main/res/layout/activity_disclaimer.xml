@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -23,30 +20,30 @@
                 android:focusable="true"
                 android:src="@drawable/btn_back_black" />
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="免责申明"
                 android:textColor="@color/primary_text"
                 android:textSize="18sp" />
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#f4f4f4" />
 
-        <androidx.core.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="15dp"
-                android:lineSpacingMultiplier="1.4"
                 android:letterSpacing="0.01"
+                android:lineSpacingMultiplier="1.4"
+                android:paddingStart="15dp"
                 android:paddingTop="20dp"
                 android:paddingEnd="15dp"
                 android:paddingBottom="20dp"
@@ -61,7 +58,6 @@
         随便看书鼓励广大小说爱好者通过随便看书发现优秀网络小说以及提供商，并建议阅读正版图书，任何单位或个人认为通过随便看书搜索链接到的第三方的网页内容有可能涉嫌侵犯其信息网络传播权，应该及时向随便看书提出书面权利通知，并提供身份证明、权属证明及详细侵权情况证明。随便看书在收到上述法律文件后，将会依法尽快断开相关链接内容。\n\n"
                 android:textColor="@color/primary_text"
                 android:textSize="15sp" />
-        </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</layout>
+</LinearLayout>

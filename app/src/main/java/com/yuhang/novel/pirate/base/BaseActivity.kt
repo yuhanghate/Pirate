@@ -10,14 +10,13 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.util.TimingLogger
-import android.view.LayoutInflater
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import by.kirich1409.viewbindingdelegate.internal.ActivityViewBinder
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
@@ -33,7 +32,7 @@ import java.io.IOException
 import java.lang.reflect.ParameterizedType
 
 
-abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivity() {
+abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() {
     lateinit var mBinding: D
     lateinit var mViewModel: VM
 
@@ -145,8 +144,17 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
      * 异步加载Activity内容
      */
     private fun initLayoutInflater() {
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(this), onLayoutId(), null, false)
-        setContentView(mBinding.root)
+        if (::mBinding.isInitialized) {
+            setContentView(mBinding.root)
+        }
+
+        val type = javaClass.genericSuperclass
+        if (type is ParameterizedType) {
+            val clazz = type.actualTypeArguments[0] as Class<D>
+            val activityViewBinder = ActivityViewBinder(clazz)
+            mBinding = activityViewBinder.bind(layoutInflater.inflate(onLayoutId(), null, false))
+            setContentView(mBinding.root)
+        }
     }
 
     /**
@@ -171,7 +179,6 @@ abstract class BaseActivity<D : ViewDataBinding, VM : BaseViewModel> : RxActivit
     }
 
     override fun onDestroy() {
-        mBinding.unbind()
         super.onDestroy()
     }
 

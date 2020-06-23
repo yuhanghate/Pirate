@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:background="@color/item_color"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/item_color">
 
 
-            <androidx.appcompat.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:contentInsetLeft="0dp"
@@ -24,13 +21,13 @@
                 app:layout_collapseMode="pin">
 
 
-                <RelativeLayout
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/item_color"
                     android:orientation="vertical">
 
-                    <ImageView
+                <ImageView
                         android:id="@+id/back_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -41,7 +38,7 @@
                         android:src="@drawable/btn_back_black" />
 
 
-                    <TextView
+                <TextView
                         android:id="@+id/title_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -54,25 +51,24 @@
                         android:textSize="17sp"
                         android:visibility="visible" />
 
-                </RelativeLayout>
+            </RelativeLayout>
 
-            </androidx.appcompat.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
 
-        </com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                tools:listitem="@layout/item_read_history"
-                android:paddingTop="15dp" />
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-    </LinearLayout>
-</layout>
+                android:paddingTop="15dp"
+                tools:listitem="@layout/item_read_history" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>

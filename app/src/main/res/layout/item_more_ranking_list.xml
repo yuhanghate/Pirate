@@ -1,146 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_material_item"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_material_item"
-            android:orientation="vertical"
-            android:paddingTop="20dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
-
-            <androidx.cardview.widget.CardView
-                    android:id="@+id/cover_cv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                        android:id="@+id/cover_iv"
-                        android:layout_width="75dp"
-                        android:layout_height="100dp"
-                        android:background="@drawable/ic_default_img2"
-                        android:scaleType="fitXY"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-            </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/cover_cv"
-                    app:layout_constraintTop_toTopOf="@+id/cover_cv">
-
-                <TextView
-                        android:id="@+id/name_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="凡人修仙传" />
-
-                <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
-
-                    <TextView
-                            android:id="@+id/sub_title_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="11sp"
-                            tools:text="玄幻奇幻 | 连载" />
-
-                    <TextView
-                            android:id="@+id/score_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="5dp"
-                            android:drawableStart="@drawable/ic_score"
-                            android:drawablePadding="6dp"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/md_orange_400"
-                            android:textSize="12sp"
-                            tools:text="9.2分" />
-                </RelativeLayout>
-
-
-                <TextView
-                        android:id="@+id/author_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="11sp"
-                        tools:text="爱潜水的乌贼" />
-
-                <TextView
-                        android:id="@+id/chapter_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="13sp"
-                        tools:text="第一百五十六章 驱虎吞狼" />
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <TextView
-                android:id="@+id/desc_tv"
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cover_cv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="6dp"
-                android:ellipsize="end"
-                android:lineSpacingMultiplier="1.1"
-                android:maxLines="3"
-                android:textColor="@color/secondary_text"
-                android:textSize="13sp"
-                tools:text="内容简介: 蒸汽与机械的浪潮中，谁能触及非凡？历史和黑暗的迷雾里，又是谁在耳语？我从诡秘中醒来，睁眼看见这个世界：枪械，大炮，巨舰，飞空艇，差分机；魔药，占卜，诅咒，倒吊人，封印物……光明依旧照耀，神秘从未远离，这是一段“愚者”的传说。" />
+                android:layout_alignParentStart="true"
+                app:cardCornerRadius="5dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@color/divider"
-                android:visibility="visible" />
-    </LinearLayout>
-</layout>
+            <ImageView
+                    android:id="@+id/cover_iv"
+                    android:layout_width="75dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/ic_default_img2"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cover_cv"
+                app:layout_constraintTop_toTopOf="@+id/cover_cv">
+
+            <TextView
+                    android:id="@+id/name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/primary_text"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="凡人修仙传" />
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                <TextView
+                        android:id="@+id/sub_title_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="11sp"
+                        tools:text="玄幻奇幻 | 连载" />
+
+                <TextView
+                        android:id="@+id/score_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:drawableStart="@drawable/ic_score"
+                        android:drawablePadding="6dp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/md_orange_400"
+                        android:textSize="12sp"
+                        tools:text="9.2分" />
+            </RelativeLayout>
+
+
+            <TextView
+                    android:id="@+id/author_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="11sp"
+                    tools:text="爱潜水的乌贼" />
+
+            <TextView
+                    android:id="@+id/chapter_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="13sp"
+                    tools:text="第一百五十六章 驱虎吞狼" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+            android:id="@+id/desc_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="20dp"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.1"
+            android:maxLines="3"
+            android:textColor="@color/secondary_text"
+            android:textSize="13sp"
+            tools:text="内容简介: 蒸汽与机械的浪潮中，谁能触及非凡？历史和黑暗的迷雾里，又是谁在耳语？我从诡秘中醒来，睁眼看见这个世界：枪械，大炮，巨舰，飞空艇，差分机；魔药，占卜，诅咒，倒吊人，封印物……光明依旧照耀，神秘从未远离，这是一段“愚者”的传说。" />
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/divider"
+            android:visibility="visible" />
+</LinearLayout>

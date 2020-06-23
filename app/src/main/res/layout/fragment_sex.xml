@@ -1,44 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/list_divider_color"
+        android:orientation="vertical">
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="120dp"
+            android:drawableTop="@drawable/ic_not_open"
+            android:drawablePadding="45dp"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.3"
+            android:text="正在开发中\n敬请期待!"
+            android:textColor="@color/secondary_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/list_divider_color"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="120dp"
-                android:visibility="gone"
-                android:drawableTop="@drawable/ic_not_open"
-                android:drawablePadding="45dp"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.3"
-                android:text="正在开发中\n敬请期待!"
-                android:textColor="@color/secondary_text"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-                android:id="@+id/refreshLayout"
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview"
-                    android:paddingTop="5dp"
-                    android:clipToPadding="false"
-                    tools:listitem="@layout/item_sex"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="5dp"
+                tools:listitem="@layout/item_sex" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

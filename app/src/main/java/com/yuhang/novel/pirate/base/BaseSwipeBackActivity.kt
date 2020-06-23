@@ -1,13 +1,13 @@
 package com.yuhang.novel.pirate.base
 
 import android.os.Bundle
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import me.yokeyword.fragmentation.SwipeBackLayout
 import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity
 import me.yokeyword.fragmentation_swipeback.core.SwipeBackActivityDelegate
 
 
-abstract class BaseSwipeBackActivity<D : ViewDataBinding, VM : BaseViewModel> : BaseActivity<D, VM>(),
+abstract class BaseSwipeBackActivity<D : ViewBinding, VM : BaseViewModel> : BaseActivity<D, VM>(),
     ISwipeBackActivity {
 
     //    lateinit var mSwipeBackHelper: BGASwipeBackHelper

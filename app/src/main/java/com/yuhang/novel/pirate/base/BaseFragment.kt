@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import by.kirich1409.viewbindingdelegate.internal.FragmentViewBinder
 import com.bumptech.glide.Glide
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.trello.rxlifecycle2.LifecycleProvider
@@ -25,7 +25,7 @@ import com.yuhang.novel.pirate.widget.TopSmoothScroller
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragment(),
+abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
     LifecycleProvider<FragmentEvent> {
 
     var mActivity: BaseActivity<*, *>? = null
@@ -63,27 +63,23 @@ abstract class BaseFragment<D : ViewDataBinding, VM : BaseViewModel> : RxFragmen
     }
 
     private fun initContentView(container: ViewGroup?): View {
+
         if (::mBinding.isInitialized) {
-//      mBinding.notifyChange()
             return mBinding.root
         }
 
-
-
         container?.setBackgroundResource(android.R.color.transparent)
 
-        val params = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
 
-        mBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(mActivity), onLayoutId(), container,
-            false
-        )
+        val view  =  layoutInflater.inflate(onLayoutId(), null, false)
+        val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        view.layoutParams = params
 
-        mBinding.root.layoutParams = params
-
+        //利用反射，调用指定ViewBinding中的inflate方法填充视图
+        val type = javaClass.genericSuperclass
+        val clazz = (type as ParameterizedType).actualTypeArguments[0] as Class<D>
+        val fragmentViewBinder = FragmentViewBinder(clazz)
+        mBinding = fragmentViewBinder.bind(view)
         return mBinding.root
     }
 

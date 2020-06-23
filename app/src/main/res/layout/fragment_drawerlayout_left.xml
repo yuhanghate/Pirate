@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -10,32 +7,33 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include
+    <include
             android:id="@+id/item_drawer_header"
             layout="@layout/item_drawer_header" />
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#8a8a8a" />
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
+
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/item_drawerlayout_left" />
-            <com.futuremind.recyclerviewfastscroll.FastScroller
+
+        <com.futuremind.recyclerviewfastscroll.FastScroller
                 android:id="@+id/fastscroll"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                app:fastscroll__handleColor="@color/md_blue_grey_200"
-                android:layout_alignParentEnd="true"/>
-        </RelativeLayout>
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                app:fastscroll__handleColor="@color/md_blue_grey_200" />
+    </RelativeLayout>
 
 
-    </LinearLayout>
-</layout>
+</LinearLayout>

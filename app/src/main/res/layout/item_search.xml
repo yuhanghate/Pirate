@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,7 +8,7 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="8dp">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -19,13 +17,13 @@
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/conver_iv"
                 android:layout_width="60dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_default_img" />
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -33,7 +31,7 @@
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical">
 
-                <TextView
+            <TextView
                     android:id="@+id/title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -43,7 +41,7 @@
                     android:textColor="@color/primary_text"
                     android:textSize="15sp" />
 
-                <TextView
+            <TextView
                     android:id="@+id/title_tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,7 +52,7 @@
                     android:textColor="@color/secondary_text"
                     android:textSize="11sp" />
 
-                <TextView
+            <TextView
                     android:id="@+id/desc_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +62,6 @@
                     android:text="凡人修仙传最新章节列：小说《凡人修仙传》忘语/著,凡人修仙传全文阅读一个普通山村小子，偶然下进入到当地江湖小门派，成了一名记名弟子。他以这样身份，如何在门派中立足,如何以平庸的资质进入到修仙者的行列，从而......"
                     android:textColor="@color/secondary_text"
                     android:textSize="12sp" />
-            </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</layout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

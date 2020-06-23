@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionbar_color">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -21,30 +18,30 @@
                 android:background="@drawable/bg_material_20dp"
                 android:src="@drawable/btn_back_black" />
 
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="隐私条款"
                 android:textColor="@color/primary_text"
                 android:textSize="18sp" />
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider" />
 
-        <androidx.core.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -54,13 +51,12 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <TextView
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="15dp"
                     android:text="@string/content_privacy" />
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</layout>
+</LinearLayout>

@@ -1,7 +1,6 @@
 package com.yuhang.novel.pirate.ui.common.adapter
 
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.GridLayoutHelper
 import com.yuhang.novel.pirate.app.PirateApp
@@ -16,7 +15,7 @@ import com.yuhang.novel.pirate.viewholder.ItemVlayoutColumn3VH
  */
 class VlayoutColumn3Adapter:BaseAdapterV2<BooksKSResult>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<BooksKSResult, ViewDataBinding> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<BooksKSResult, *> {
         return ItemVlayoutColumn3VH(parent)
     }
 

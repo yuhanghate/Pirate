@@ -2,14 +2,12 @@ package com.yuhang.novel.pirate.ui.book.adapter
 
 import android.view.SoundEffectConstants
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import com.yuhang.novel.pirate.base.BaseAdapter
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
-import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ContentDataResult
 import com.yuhang.novel.pirate.viewholder.ItemReadBookFinishVH
 import com.yuhang.novel.pirate.viewholder.ItemReadBookVH
 
@@ -37,7 +35,7 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseViewHolder<BookContentKSEntity, ViewDataBinding> {
+    ): BaseViewHolder<BookContentKSEntity, *> {
         return if (viewType == TYPE_CONTENT) {
             ItemReadBookVH(parent)
         } else {
@@ -62,7 +60,7 @@ class ReadBookAdapter : BaseAdapter<BookContentKSEntity>() {
     }
 
 
-    override fun onBindViewHolder(holder: BaseViewHolder<BookContentKSEntity, ViewDataBinding>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<BookContentKSEntity, *>, position: Int) {
         //设置Item点击事件
         holder.itemView.clickWithTrigger {
             lastClickItemPosition = position
