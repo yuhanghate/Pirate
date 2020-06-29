@@ -13,10 +13,11 @@ import android.util.TimingLogger
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import by.kirich1409.viewbindingdelegate.internal.ActivityViewBinder
+import com.yuhang.novel.pirate.viewbinding.ActivityViewBinder
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
@@ -135,7 +136,7 @@ abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() 
      * 初始化ViewModel
      */
     private fun initViewModel() {
-        mViewModel = ViewModelProviders.of(this).get(getViewModelClass())
+        mViewModel = ViewModelProvider(this).get(getViewModelClass())
         mViewModel.mActivity = this
     }
 

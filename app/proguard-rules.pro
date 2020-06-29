@@ -226,6 +226,10 @@
 -keep class com.yuhang.novel.pirate.repository.** { *; }
 -keep interface com.yuhang.novel.pirate.repository.** { *; }
 
+-dontwarn  com.yuhang.novel.pirate.databinding.**
+-keep class com.yuhang.novel.pirate.databinding.** { *; }
+-keep interface com.yuhang.novel.pirate.databinding.** { *; }
+
 -dontwarn  com.arlib.floatingsearchview.**
 -keep class com.arlib.floatingsearchview.** { *; }
 -keep interface com.arlib.floatingsearchview.** { *; }

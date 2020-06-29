@@ -1,6 +1,5 @@
-package by.kirich1409.viewbindingdelegate.internal
+package com.yuhang.novel.pirate.viewbinding
 
-import android.app.Activity
 import android.view.View
 import androidx.annotation.RestrictTo
 import androidx.viewbinding.ViewBinding
