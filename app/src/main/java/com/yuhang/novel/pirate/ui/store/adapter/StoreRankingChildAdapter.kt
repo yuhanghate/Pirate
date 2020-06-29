@@ -17,6 +17,7 @@ class StoreRankingChildAdapter:com.yuhang.novel.pirate.base.BaseAdapter<StoreRan
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+        vh.initBinding()
         vh.mBinding.root.layoutParams = lp
         return vh
     }

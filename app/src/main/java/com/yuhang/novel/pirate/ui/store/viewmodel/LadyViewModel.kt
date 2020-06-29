@@ -128,7 +128,7 @@ class LadyViewModel : BaseViewModel() {
     }
 
     /**
-     * 男生榜单
+     * 女生榜单
      */
     fun buildRanking(obj: StoreRankingEntity) {
         rankingList.clear()
@@ -138,47 +138,52 @@ class LadyViewModel : BaseViewModel() {
                 list = obj.hot,
                 desc = "优质精品好书新鲜出炉!",
                 background = R.color.md_pink_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_HOT }
         )
+
         rankingList.add(
             StoreRankingModel(
                 name = "完本榜",
                 list = obj.over,
                 desc = "不用等更了,喜欢的都有",
                 background = R.color.md_purple_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_OVER }
         )
+
         rankingList.add(
             StoreRankingModel(
                 name = "收藏榜",
                 list = obj.commend,
                 desc = "火热好书",
                 background = R.color.md_deep_orange_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_COMMEND }
         )
+
         rankingList.add(
             StoreRankingModel(
                 name = "潜力榜",
                 list = obj.newX,
                 desc = "更多好书等你来~",
                 background = R.color.md_light_blue_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_NEW }
         )
+
         rankingList.add(
             StoreRankingModel(
                 name = "好评榜",
                 list = obj.vote,
                 desc = "超多好评,万人追更!",
                 background = R.color.md_blue_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_COLLECT }
         )
+
         rankingList.add(
             StoreRankingModel(
                 name = "人气榜",
                 list = obj.collect,
                 desc = "超强人气,等待阅读",
                 background = R.color.md_green_300
-            )
+            ).apply { rankingMap[name] = KanShuRankingActivity.TYPE_VOTE }
         )
     }
 

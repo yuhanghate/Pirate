@@ -5,11 +5,11 @@ import android.content.Intent
 import android.view.View
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
+import com.yuhang.novel.pirate.databinding.ActivityReadBookBinding
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 
 class SexReadBookActivity : ReadBookActivity() {
-
     companion object {
         fun start(context: Activity, obj: BooksResult) {
             val intent = Intent(context, SexReadBookActivity::class.java)
@@ -24,7 +24,12 @@ class SexReadBookActivity : ReadBookActivity() {
     }
 
 
+    override fun onViewBinding() {
+        super.onViewBinding()
+        mBinding = ActivityReadBookBinding.inflate(layoutInflater, null, false)
+    }
     override fun initView() {
+
         super.initView()
         mBinding.layoutTop.downloadTv.visibility = View.GONE
         mBinding.layoutTop.resouceTv.visibility = View.GONE

@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.base
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,12 +30,17 @@ abstract class BaseViewHolder<in T : Any, D : ViewBinding>(
     /**
      * 初始化ViewBinding
      */
-    private fun  initBinding(){
+    fun  initBinding(){
+        if (::mBinding.isInitialized) {
+            return
+        }
         val type = javaClass.genericSuperclass
         if (type is ParameterizedType) {
             val clazz = type.actualTypeArguments[1] as Class<D>
             val method = clazz.getMethod("bind", View::class.java)
             mBinding = method.invoke(null, itemView) as D
+        } else {
+            Log.i("","")
         }
     }
 
@@ -49,6 +55,7 @@ abstract class BaseViewHolder<in T : Any, D : ViewBinding>(
             else -> Glide.with(mContext)
         }
     }
+
 
     /**
      * view绑定

@@ -33,7 +33,7 @@ import java.lang.reflect.ParameterizedType
 
 
 abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() {
-    lateinit var mBinding: D
+    open lateinit var mBinding: D
     lateinit var mViewModel: VM
 
     lateinit var mProgressbar: ProgressDialog
@@ -154,7 +154,17 @@ abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() 
             val activityViewBinder = ActivityViewBinder(clazz)
             mBinding = activityViewBinder.bind(layoutInflater.inflate(onLayoutId(), null, false))
             setContentView(mBinding.root)
+        } else {
+            onViewBinding()
+            setContentView(mBinding.root)
         }
+    }
+
+    /**
+     * 手动加载ViewBinding
+     */
+    open fun  onViewBinding() {
+
     }
 
     /**
