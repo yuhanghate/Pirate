@@ -107,6 +107,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         EventBus.getDefault().register(this)
         onClick()
         initUserInfoView()
+        mBinding.refreshLayout.setEnableLoadMore(false)
 //        checkVersionWithPermissionCheck()
     }
 
@@ -148,7 +149,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     mBinding.loginDescTv.visibility = View.VISIBLE
                 } else {
                     mBinding.btnLogin.text = "鉴黄师"
-                    mBinding.loginDescTv.visibility = View.GONE
+//                    mBinding.loginDescTv.visibility = View.GONE
                     mBinding.btnLogin.textSize = 18f
                     mBinding.avatarCiv.setImageResource(R.mipmap.ic_login_avatar)
 

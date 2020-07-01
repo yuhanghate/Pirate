@@ -10,7 +10,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/window_background"
+            android:background="@color/md_white_1000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -85,8 +85,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/head_cl"
                         android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:background="@color/window_background">
+                        android:layout_height="270dp"
+                        android:background="@color/md_white_1000">
 
 
                     <RelativeLayout
@@ -182,13 +182,52 @@
                                 android:textSize="14sp" />
                     </LinearLayout>
 
+                    <androidx.cardview.widget.CardView
+                            android:layout_width="330dp"
+                            android:layout_height="120dp"
+                            app:cardBackgroundColor="@color/md_white_1000"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginBottom="20dp"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="5dp" >
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary_text"
+                                android:drawableTop="@drawable/ic_vip"
+                                android:drawablePadding="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center"
+                                android:layout_marginStart="15dp"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:text="开通Vip会员\n" />
+
+                        <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="35dp"
+                                android:textSize="12dp"
+                                android:gravity="center"
+                                android:layout_gravity="end|center_vertical"
+                                android:clickable="true"
+                                android:background="@drawable/bg_material_item_yellow_round"
+                                android:textColor="@color/md_white_1000"
+                                android:layout_marginEnd="20dp"
+                                android:text="充值" />
+
+                    </androidx.cardview.widget.CardView>
+
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="15dp"
                         android:background="@color/divider" />
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/check_version_cl"
@@ -388,6 +427,7 @@
                         android:layout_height="2px"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="15dp"
+                        android:visibility="gone"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="15dp" />
 
@@ -597,8 +637,6 @@
                             app:layout_constraintStart_toEndOf="@+id/settings_iv"
                             app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
