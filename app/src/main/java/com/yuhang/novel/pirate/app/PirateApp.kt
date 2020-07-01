@@ -12,8 +12,9 @@ import com.meituan.android.walle.WalleChannelReader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import com.scwang.smartrefresh.header.MaterialHeader
+import com.scwang.smartrefresh.header.*
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
@@ -231,8 +232,13 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
     private fun initRefreshLayout() {
         //设置全局的Header构建器
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout ->
-            MaterialHeader(context).setColorSchemeResources(R.color.primary)//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
+            val storeHouseHeader = StoreHouseHeader(context)
+            storeHouseHeader.initWithString("refresh")
+        }
+
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
+            ClassicsFooter(context).setDrawableSize(20f)
         }
     }
 

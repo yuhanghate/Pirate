@@ -128,15 +128,15 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
 
         //控制游戏显示或隐藏
-        mViewModel.queryConfig()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.showGameRecommended) {
-                    mBinding.gamesCl.visibility = View.VISIBLE
-                } else {
-                    mBinding.gamesCl.visibility = View.GONE
-                }
-            }, {})
+//        mViewModel.queryConfig()
+//            .compose(bindToLifecycle())
+//            .subscribe({
+//                if (it.showGameRecommended) {
+//                    mBinding.gamesCl.visibility = View.VISIBLE
+//                } else {
+//                    mBinding.gamesCl.visibility = View.GONE
+//                }
+//            }, {})
 
         mViewModel.getUserInfo()
             .compose(bindToLifecycle())
@@ -147,10 +147,10 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     mBinding.btnLogin.textSize = 24f
                     mBinding.loginDescTv.visibility = View.VISIBLE
                 } else {
-                    mBinding.btnLogin.text = "随友:${it?.username}"
+                    mBinding.btnLogin.text = "鉴黄师"
                     mBinding.loginDescTv.visibility = View.GONE
                     mBinding.btnLogin.textSize = 18f
-                    mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                    mBinding.avatarCiv.setImageResource(R.mipmap.ic_login_avatar)
 
                 }
 
@@ -208,7 +208,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         }
 
         //发起添加QQ群
-        mBinding.qqCl.clickWithTrigger { joinQQGroup("mzgZcP9d4kxXSalbfHSTyn89Q2grCtE9") }
+        mBinding.qqCl.clickWithTrigger { joinQQGroup("mzgZcP9d4xXSalbfHSTyn89Q2grCtE9") }
 
         //帮助与问题
         mBinding.problemCl.clickWithTrigger { ProblemActivity.start(mActivity!!) }
@@ -306,7 +306,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     private fun showShareDialog() {
         MaterialDialog(mActivity!!).show {
             title(text = "温馨提示")
-            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com")
+            message(text = "链接复制成功,请分享给您的好友.发送给好友的复制内容是:\n\r \n\r我正在用抖阴小说App。下载地址 http://www.baidu.com")
             negativeButton(text = "取消", click = object : DialogCallback {
                 override fun invoke(p1: MaterialDialog) {
                     mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_SHARE_APP_NO, "分享应用 -> 点击取消")
@@ -321,7 +321,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     // 创建普通字符型ClipData
                     val mClipData = ClipData.newPlainText(
                         "Label",
-                        "我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com"
+                        "我正在用抖阴小说App。下载地址 http://www.baidu.com"
                     )
                     // 将ClipData内容放到系统剪贴板里。
                     cm!!.setPrimaryClip(mClipData)
@@ -330,7 +330,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     textIntent.type = "text/plain"
                     textIntent.putExtra(
                         Intent.EXTRA_TEXT,
-                        "我正在用随便看书APP看免费百万本小说。下载地址 http://www.suibiankanshu.com"
+                        "我正在用抖阴小说App。下载地址 http://www.baidu.com"
                     )
                     startActivity(Intent.createChooser(textIntent, "温馨提示"))
 
@@ -463,7 +463,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun showUpdateCollectDialog() {
-        showProgressbar(message = "正在同步大量数据\n请不要切换出APP并耐心等待..")
+        showProgressbar(message = "加载中")
 
         //从服务器下载收藏
         mUsersService.updateCollectionToLocal()

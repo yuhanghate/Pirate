@@ -10,6 +10,7 @@ import com.yuhang.novel.pirate.databinding.FragmentSexBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.activity.SexReadBookActivity
 import com.yuhang.novel.pirate.ui.store.viewmodel.SexViewModel
 
@@ -88,5 +89,6 @@ class SexFragment : BaseFragment<FragmentSexBinding, SexViewModel>(), OnRefreshL
     override fun onClickItemListener(view: View, position: Int) {
         val obj = mViewModel.adapter.getObj(position)
         SexReadBookActivity.start(mActivity!!, obj.niceBooksResult())
+//        ReadBookActivity.start(mActivity!!,obj.niceBooksResult(), true)
     }
 }

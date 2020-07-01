@@ -165,7 +165,7 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
 //                adapters.add(getLineAdapter(10))
 
         //榜单
-        adapters.add(getRankingAdapter())
+//        adapters.add(getRankingAdapter())
 
         adapters.add(getTitleAndMoreAdapter("火热新书"))
         adapters.add(getColumn3Adapter(mViewModel.newList))

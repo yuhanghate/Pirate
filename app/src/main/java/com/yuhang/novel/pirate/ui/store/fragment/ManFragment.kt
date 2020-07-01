@@ -163,7 +163,7 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
 
 
         //榜单
-        adapters.add(getRankingAdapter())
+//        adapters.add(getRankingAdapter())
 
         adapters.add(getTitleAndMoreAdapter("火热新书"))
         adapters.add(getColumn3Adapter(mViewModel.newList))

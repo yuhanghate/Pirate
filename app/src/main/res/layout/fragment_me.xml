@@ -10,7 +10,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/md_grey_f2"
+            android:background="@color/window_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -53,8 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:srlHeaderHeight="150dp"
-            app:srlHeaderMaxDragRate="1">
+            app:srlHeaderHeight="0dp"
+            app:srlHeaderMaxDragRate="0">
 
         <TextView
                 android:id="@+id/header"
@@ -64,6 +64,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="5dp"
                 android:padding="20dp"
+                android:visibility="gone"
                 android:text="做好一件事情很难\n我们选择努力\n\n随便看书 更快 更流畅"
                 android:textColor="#aaa"
                 android:textSize="16sp"
@@ -85,13 +86,14 @@
                         android:id="@+id/head_cl"
                         android:layout_width="match_parent"
                         android:layout_height="170dp"
-                        android:background="@color/md_grey_f2">
+                        android:background="@color/window_background">
 
 
                     <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
 
@@ -131,24 +133,14 @@
                             android:layout_height="78dp"
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="20dp"
-                            android:elevation="6dp"
-                            android:src="#cdcdcd"
+                            android:elevation="2dp"
+                            android:src="@mipmap/ic_unlogin_avatar"
                             app:civ_border_color="@color/md_grey_100"
                             app:civ_border_width="2dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <ImageView
-                            android:id="@+id/avatar_iv"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:elevation="6dp"
-                            android:src="@drawable/ic_default_avatar"
-                            app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
-                            app:layout_constraintEnd_toEndOf="@+id/avatar_civ"
-                            app:layout_constraintStart_toStartOf="@+id/avatar_civ"
-                            app:layout_constraintTop_toTopOf="@+id/avatar_civ" />
 
                     <ImageView
                             android:layout_width="36dp"
@@ -164,7 +156,7 @@
                     <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="20dp"
                             android:orientation="vertical"
                             app:layout_constraintBottom_toBottomOf="@+id/avatar_civ"
                             app:layout_constraintStart_toEndOf="@+id/avatar_civ"
@@ -174,8 +166,8 @@
                                 android:id="@+id/btn_login"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="立即登录"
-                                android:textColor="@color/md_grey_100"
+                                android:text="登录"
+                                android:textColor="@color/primary_text"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
 
@@ -185,15 +177,19 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="登录更安全,可同步书籍"
-                                android:textColor="@color/md_grey_100"
-                                android:textSize="12sp" />
+                                android:text="开通会员 看小说"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="14sp" />
                     </LinearLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider" />
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/check_version_cl"
                         android:layout_width="match_parent"
@@ -220,7 +216,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="检测升级"
+                            android:text="版本更新"
                             android:textColor="@color/primary_text"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -232,7 +228,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:text="最新"
+                            android:text=""
                             android:textColor="@color/secondary_text"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -265,7 +261,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="最近浏览"
+                            android:text="历史记录"
                             android:textColor="@color/primary_text"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -277,6 +273,7 @@
                         android:id="@+id/download_cl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:clickable="true"
                         android:focusable="true">
@@ -420,7 +417,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="分享应用"
+                            android:text="分享"
                             android:textColor="@color/primary_text"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -467,6 +464,7 @@
                         android:id="@+id/qq_cl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:clickable="true"
                         android:focusable="true">
@@ -489,7 +487,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="QQ交流群 (764214448)"
+                            android:text="QQ交流群 ()"
                             android:textColor="@color/primary_text"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -537,6 +535,7 @@
                         android:id="@+id/model_cl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:clickable="true"
                         android:focusable="true">

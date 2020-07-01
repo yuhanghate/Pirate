@@ -40,7 +40,6 @@ class SexReadBookActivity : ReadBookActivity() {
             //如果上下切换栏显示就隐藏起来
             mReadBookView.toggleMenu()
         } else {
-//            BGAKeyboardUtil.closeKeyboard(this)
             finish()
             this.overridePendingTransition(
                 R.anim.activity_in_enter,

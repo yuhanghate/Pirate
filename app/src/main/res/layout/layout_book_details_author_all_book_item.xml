@@ -9,8 +9,8 @@
             android:id="@+id/item_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:paddingStart="15dp"
             android:background="@drawable/bg_details_author_book"
             android:clickable="true"
             android:focusable="true"
@@ -18,8 +18,8 @@
 
         <ImageView
                 android:id="@+id/cover_iv"
-                android:layout_width="30dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="60dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"

@@ -388,7 +388,8 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                        android:paddingEnd="20dp"
+                        android:visibility="gone">
 
                     <ImageView
                             android:layout_width="wrap_content"
@@ -425,7 +426,8 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingStart="15dp"
-                        android:paddingEnd="20dp">
+                        android:paddingEnd="20dp"
+                        android:visibility="gone">
 
                     <ImageView
                             android:layout_width="wrap_content"
@@ -455,6 +457,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginTop="1dp"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -488,6 +491,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginTop="1dp"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -522,6 +526,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginTop="1dp"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -556,6 +561,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginTop="1dp"
+                        android:visibility="gone"
                         android:background="@drawable/bg_material_item"
                         android:clickable="false"
                         android:gravity="center_vertical"

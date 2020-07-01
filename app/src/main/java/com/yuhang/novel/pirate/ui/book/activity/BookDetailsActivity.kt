@@ -348,7 +348,7 @@ class BookDetailsActivity :
                     .into(itemBinding.coverIv)
 
                 //分隔线
-                val lineBinding = LayoutBookDetailsAuthorAllBookLineBinding.inflate(layoutInflater)
+//                val lineBinding = LayoutBookDetailsAuthorAllBookLineBinding.inflate(layoutInflater)
 
                 //点击跳转作者相关详情
                 itemBinding.itemLl.clickWithTrigger {
@@ -366,7 +366,7 @@ class BookDetailsActivity :
                 }
 
                 details.authorAllBookLl.addView(itemBinding.root)
-                details.authorAllBookLl.addView(lineBinding.root)
+//                details.authorAllBookLl.addView(lineBinding.root)
 
             }
         }

@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.main.fragment
 
 import android.annotation.SuppressLint
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -168,8 +169,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
         when (item?.itemId) {
             //下载管理
             R.id.download -> BookDownloadActivity.start(mActivity!!)
-            //公告
-            R.id.tip -> showTipdialog()
         }
         return true
     }
@@ -263,6 +262,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     fun initEmptyView() {
         if (mViewModel.adapter.getList().isEmpty()) {
             mBinding.btnEmpty.visibility = View.VISIBLE
+
         } else {
             mBinding.btnEmpty.visibility = View.GONE
         }
