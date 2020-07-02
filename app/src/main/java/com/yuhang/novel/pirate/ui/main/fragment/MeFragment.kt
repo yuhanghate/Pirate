@@ -41,6 +41,7 @@ import com.yuhang.novel.pirate.ui.book.activity.ReadHistoryActivity
 import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
 import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
+import com.yuhang.novel.pirate.ui.payment.activity.PaymentActivity
 import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
@@ -219,6 +220,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         //游戏推荐
         mBinding.gamesCl.clickWithTrigger { GameActivity.start(mActivity!!) }
+        //充值会员
+        mBinding.paymentTv.clickWithTrigger { PaymentActivity.start(mActivity!!) }
 
     }
 

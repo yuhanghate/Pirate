@@ -98,6 +98,7 @@
         <activity android:name=".ui.store.activity.BookCategoryActivity" />
         <activity android:name=".ui.store.activity.CategoryDetailActivity" />
         <activity android:name=".ui.book.activity.SexReadBookActivity" />
+        <activity android:name=".ui.payment.activity.PaymentActivity" />
 
         <service android:name=".service.impl.ReadAloudServiceImpl" />
         <service

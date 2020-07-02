@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/actionbar_color">
+
+        <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/bg_material_20dp"
+                android:src="@drawable/btn_back_black" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="支付"
+                android:textColor="@color/primary_text"
+                android:textSize="18sp" />
+    </RelativeLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="30dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="当前选择"
+                    android:textColor="#ff999999"
+                    android:textSize="14sp" />
+
+
+            <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingTop="20dp"
+                        android:paddingEnd="30dp"
+                        android:paddingBottom="20dp">
+
+                    <LinearLayout
+                            android:id="@+id/btn_product_48"
+                            android:layout_width="130dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/bg_payment_selected"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:tag="48">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="8dp"
+                                android:text="3个月"
+                                android:textColor="#616161"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:text="¥48.00"
+                                    android:textColor="#FF7B06"
+                                    android:textSize="23sp"
+                                    android:textStyle="bold" />
+
+                            <TextView
+                                    android:id="@+id/amount_48_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="¥88"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:id="@+id/btn_product_96"
+                            android:layout_width="130dp"
+                            android:layout_height="150dp"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/bg_payment_normal"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:tag="96">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="8dp"
+                                android:text="1年"
+                                android:textColor="#616161"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:text="¥96.00"
+                                    android:textColor="#FF7B06"
+                                    android:textSize="23sp"
+                                    android:textStyle="bold" />
+
+                            <TextView
+                                    android:id="@+id/amount_96_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="¥158"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="18sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:id="@+id/btn_product_198"
+                            android:layout_width="130dp"
+                            android:layout_height="150dp"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/bg_payment_normal"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:tag="198">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="8dp"
+                                android:text="3年"
+                                android:textColor="#616161"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:text="¥198.00"
+                                    android:textColor="#FF7B06"
+                                    android:textSize="23sp"
+                                    android:textStyle="bold" />
+
+                            <TextView
+                                    android:id="@+id/amount_198_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="¥368"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="18sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:id="@+id/btn_product_298"
+                            android:layout_width="130dp"
+                            android:layout_height="150dp"
+                            android:layout_marginStart="15dp"
+                            android:background="@drawable/bg_payment_normal"
+                            android:orientation="vertical"
+                            android:tag="298">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal|top"
+                                android:layout_marginTop="30dp"
+                                android:drawableStart="@drawable/ic_vip3"
+                                android:drawablePadding="8dp"
+                                android:text="永久会员"
+                                android:textColor="#616161"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:text="¥298.00"
+                                    android:textColor="#FF7B06"
+                                    android:textSize="23sp"
+                                    android:textStyle="bold" />
+
+                            <TextView
+                                    android:id="@+id/amount_298_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="¥1288"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="18sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:text="选择支付方式"
+                    android:textColor="#ff999999"
+                    android:textSize="14sp" />
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/bg_payment_alipay">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                    <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_alipay" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:text="支付宝支付"
+                            android:textColor="#ff3e3e3e"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                </LinearLayout>
+
+                <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="40dp"
+                        android:src="@drawable/ic_payment_alipay" />
+            </RelativeLayout>
+
+
+            <TextView
+                    android:id="@+id/btn_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="58dp"
+                    android:layout_marginTop="160dp"
+                    android:layout_marginEnd="58dp"
+                    android:layout_marginBottom="45dp"
+                    android:background="@drawable/bg_material_item_yellow_round"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="支付 ¥48.00"
+                    android:textColor="@color/md_white_1000"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</LinearLayout>

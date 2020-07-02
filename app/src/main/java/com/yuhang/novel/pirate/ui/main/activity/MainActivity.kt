@@ -132,8 +132,8 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                 R.id.tab_me -> {
                     ImmersionBar.with(this)
                         .statusBarView(mBinding.statusBarV)
-                        .statusBarColor(R.color.md_grey_f2)
-                        .flymeOSStatusBarFontColor(R.color.md_white_1000)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
                         .init()
                     showHideFragment(findFragment(MeFragment::class.java))
                 }
