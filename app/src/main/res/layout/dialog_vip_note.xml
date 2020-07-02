@@ -44,13 +44,14 @@
 
 
             <TextView
+                    android:id="@+id/content_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginTop="25dp"
                     android:textStyle="bold"
-                    android:text="本抖阴为纯商业化运作,氪金极重!产品专注挖坑二十年,极不要脸.充值就一定能看到想看的,体验前务必慎重!\n\n还要啰嗦几句..\n\n本着雁过拨毛的推广原则,我们不想放过任何年龄的用户,决定1-134岁通吃!"
+                    android:text="本产品为纯商业化运作,氪金极重!产品专注挖坑二十年,极不要脸.充值就一定能看到想看的,体验前务必慎重!\n\n还要啰嗦几句..\n\n本着雁过拨毛的推广原则,我们不想放过任何年龄的用户,决定1-134岁通吃!"
                     android:textColor="#ff454545"
                     android:textSize="16sp"
                     />

@@ -62,4 +62,7 @@ class LoginNoteDialog : BaseActivity<DialogLoginNoteBinding, LoginNoteViewModel>
 
         }
     }
+
+    override fun onBackPressedSupport() {
+    }
 }
