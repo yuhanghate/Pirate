@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.book.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
+import com.yuhang.novel.pirate.ui.payment.activity.VipNoteDialog
 import com.yuhang.novel.pirate.utils.LogUtils
 import com.yuhang.novel.pirate.widget.pageview.TextPagerView
 import io.reactivex.Flowable
@@ -563,5 +565,17 @@ open class ReadBookViewModel : BaseViewModel() {
      */
     private fun getPageType(): Int {
         return PirateApp.getInstance().getPageType()
+    }
+
+    /**
+     * 是否开Vip
+     */
+    fun goVipActivity(context: Context, position: Int):Boolean {
+        val vip = mDataRepository.getLastUser()?.isVip ?: false
+        if (position >= 3 && !vip) {
+            VipNoteDialog.start(context)
+            return true
+        }
+        return false
     }
 }

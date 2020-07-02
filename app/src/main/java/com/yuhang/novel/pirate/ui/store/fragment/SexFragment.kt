@@ -2,9 +2,12 @@ package com.yuhang.novel.pirate.ui.store.fragment
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.DialogCallback
+import com.afollestad.materialdialogs.MaterialDialog
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.FragmentSexBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
@@ -13,6 +16,8 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.activity.SexReadBookActivity
 import com.yuhang.novel.pirate.ui.store.viewmodel.SexViewModel
+import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
+import com.yuhang.novel.pirate.ui.user.dialog.LoginNoteDialog
 
 /**
  * 书城 -> 小黄书
@@ -87,8 +92,28 @@ class SexFragment : BaseFragment<FragmentSexBinding, SexViewModel>(), OnRefreshL
      * 阅读界面
      */
     override fun onClickItemListener(view: View, position: Int) {
+
+        if (PirateApp.getInstance().getToken().isEmpty()) {
+            LoginNoteDialog.start(requireContext())
+            return
+        }
         val obj = mViewModel.adapter.getObj(position)
         SexReadBookActivity.start(mActivity!!, obj.niceBooksResult())
-//        ReadBookActivity.start(mActivity!!,obj.niceBooksResult(), true)
+    }
+
+    /**
+     * 去登陆
+     */
+    private fun showLoginDialog() {
+        MaterialDialog(requireContext()).show {
+            title(text = "实诚公告")
+            message(text = "我们在新手期,增加了一段冗长,毫无意义的操作体验,强迫必须登陆!产品的智商也就这个水平了,请大家谅解...")
+            negativeButton(text = "取消")
+            positiveButton(text = "马上登陆", click = object : DialogCallback {
+                override fun invoke(p1: MaterialDialog) {
+                    LoginActivity.start(requireActivity())
+                }
+            })
+        }
     }
 }

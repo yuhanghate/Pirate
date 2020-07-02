@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        tools:context=".ui.user.dialog.LoginNoteDialog"
+        android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="280dp"
+            android:background="@drawable/bg_dialog"
+            android:paddingBottom="25dp"
+            android:minHeight="310dp"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <View
+                        android:layout_width="2dp"
+                        android:layout_height="12dp"
+                        android:background="#F8CF2A" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:text="实诚公告"
+                        android:textColor="#ff666666"
+                        android:textSize="12sp" />
+            </LinearLayout>
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="25dp"
+                    android:textStyle="bold"
+                    android:text="我们在新手期,增加了一段冗长,毫无意义的操作体验,强迫必须登陆!产品的智商也就这个水平了,请大家谅解..."
+                    android:textColor="#ff454545"
+                    android:textSize="16sp"
+                    />
+
+
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/btn_login"
+                android:layout_width="180dp"
+                android:layout_height="42dp"
+                android:textColor="@color/md_grey_100"
+                android:text="立即登陆"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_material_item_yellow_round" />
+
+        <ImageView
+                android:id="@+id/btn_close"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/btn_dialog_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

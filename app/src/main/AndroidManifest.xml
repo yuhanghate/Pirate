@@ -54,8 +54,7 @@
                 android:configChanges="orientation|screenSize|uiMode">
 
         </activity>
-        <activity
-                android:name=".ui.book.activity.ReadBookActivity"/>
+        <activity android:name=".ui.book.activity.ReadBookActivity" />
         <activity android:name=".ui.search.activity.SearchActivity" />
         <activity android:name=".ui.book.activity.BookDetailsActivity" />
         <activity android:name=".ui.book.activity.ChapterListActivity" />
@@ -84,13 +83,11 @@
         <activity android:name=".ui.settings.activity.VersionNoteActivity" />
         <activity android:name=".ui.settings.activity.ProblemActivity" />
         <activity android:name=".ui.book.activity.BookResouceActivity" />
-        <activity
-                android:name=".ui.resouce.activity.ResouceListKdActivity" />
-        <activity
-                android:name=".ui.resouce.activity.ResouceChapterListActivity"/>
+        <activity android:name=".ui.resouce.activity.ResouceListKdActivity" />
+        <activity android:name=".ui.resouce.activity.ResouceChapterListActivity" />
         <activity android:name=".ui.settings.activity.SearchFeedbackActivity" />
         <activity android:name=".ui.download.activity.BookDownloadActivity" />
-        <activity android:name=".ui.ad.activity.GameActivity"/>
+        <activity android:name=".ui.ad.activity.GameActivity" />
         <activity android:name=".ui.store.activity.BooksListActivity" />
         <activity android:name=".ui.store.activity.MoreRankingListActivity" />
         <activity android:name=".ui.store.activity.KanShuRankingActivity" />
@@ -100,6 +97,12 @@
         <activity android:name=".ui.book.activity.SexReadBookActivity" />
         <activity android:name=".ui.payment.activity.PaymentActivity" />
         <activity android:name=".ui.settings.activity.ShareQrcodeActivity" />
+        <activity
+                android:name=".ui.user.dialog.LoginNoteDialog"
+                android:theme="@style/CustomDialog" />
+        <activity
+                android:name=".ui.payment.activity.VipNoteDialog"
+                android:theme="@style/CustomDialog" />
 
         <service android:name=".service.impl.ReadAloudServiceImpl" />
         <service

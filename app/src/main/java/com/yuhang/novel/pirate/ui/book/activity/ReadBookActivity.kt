@@ -17,6 +17,7 @@ import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.yuhang.novel.pirate.R
+import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.ConfigConstant
@@ -34,6 +35,7 @@ import com.yuhang.novel.pirate.ui.book.dialog.BookCollectionDialog
 import com.yuhang.novel.pirate.ui.book.dialog.DownloadChapterDialog
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
+import com.yuhang.novel.pirate.ui.payment.activity.VipNoteDialog
 import com.yuhang.novel.pirate.ui.resouce.activity.ResouceListKdActivity
 import com.yuhang.novel.pirate.utils.LogUtils
 import com.yuhang.novel.pirate.utils.StatusBarUtil
@@ -313,7 +315,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             mReadBookView.toggleMenu()
             Handler().postDelayed({
                 netDataChatpterContent(isCache = false)
-            },500)
+            }, 500)
 
         }
 
@@ -353,7 +355,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             mBinding.layoutButton.chapterProgressLl.visibility = View.VISIBLE
             mBinding.layoutButton.colorLl.visibility = View.GONE
             mBinding.layoutButton.fontLl.visibility = View.GONE
-            mBinding.layoutButton.chapterProgressSb.setProgress(mViewModel.getChapterIndex().toFloat() + 1)
+            mBinding.layoutButton.chapterProgressSb.setProgress(
+                mViewModel.getChapterIndex().toFloat() + 1
+            )
         }
 
         //页面重新刷新
@@ -760,10 +764,17 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
      * 当前滑动的界面角标
      */
     override fun onPageIndexListener(position: Int) {
+        //判断是否vip,非会员看3页
+        if (mViewModel.goVipActivity(this, position)) return
+
         //如果是最后一页.返回.因为是假数据
-        if (mViewModel.adapter.getList().isEmpty() || position == mViewModel.adapter.itemCount - 1 || position < 0) {
+        if (mViewModel.adapter.getList()
+                .isEmpty() || position == mViewModel.adapter.itemCount - 1 || position < 0
+        ) {
             return
         }
+
+
         val obj = mViewModel.adapter.getObj(position)
         mViewModel.chapterid = obj.chapterId
         mViewModel.currentPosition = position
