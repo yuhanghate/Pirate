@@ -44,6 +44,7 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MeViewModel
 import com.yuhang.novel.pirate.ui.payment.activity.PaymentActivity
 import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.ui.settings.activity.SettingsActivity
+import com.yuhang.novel.pirate.ui.settings.activity.ShareQrcodeActivity
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.ImageUtils
@@ -222,7 +223,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         mBinding.gamesCl.clickWithTrigger { GameActivity.start(mActivity!!) }
         //充值会员
         mBinding.paymentTv.clickWithTrigger { PaymentActivity.start(mActivity!!) }
-
+        //二维码
+        mBinding.btnQrCode.clickWithTrigger { ShareQrcodeActivity.start(mActivity!!) }
     }
 
     /****************

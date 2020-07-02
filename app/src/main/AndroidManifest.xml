@@ -99,6 +99,7 @@
         <activity android:name=".ui.store.activity.CategoryDetailActivity" />
         <activity android:name=".ui.book.activity.SexReadBookActivity" />
         <activity android:name=".ui.payment.activity.PaymentActivity" />
+        <activity android:name=".ui.settings.activity.ShareQrcodeActivity" />
 
         <service android:name=".service.impl.ReadAloudServiceImpl" />
         <service

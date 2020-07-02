@@ -48,10 +48,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="50dp"
                     android:text="当前选择"
-                    android:textColor="#ff999999"
-                    android:textSize="14sp" />
+                    android:textColor="@color/secondary_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
 
             <HorizontalScrollView
@@ -64,7 +65,7 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:paddingStart="30dp"
-                        android:paddingTop="20dp"
+                        android:paddingTop="10dp"
                         android:paddingEnd="30dp"
                         android:paddingBottom="20dp">
 
@@ -81,9 +82,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="8dp"
-                                android:text="3个月"
+                                android:text="6个月"
                                 android:textColor="#616161"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold" />
 
                         <LinearLayout
@@ -99,7 +100,7 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:text="¥48.00"
                                     android:textColor="#FF7B06"
                                     android:textSize="23sp"
@@ -111,19 +112,19 @@
                                     android:layout_height="wrap_content"
                                     android:text="¥88"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="18sp" />
+                                    android:textSize="14sp" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                            android:id="@+id/btn_product_96"
+                            android:id="@+id/btn_product_98"
                             android:layout_width="130dp"
                             android:layout_height="150dp"
                             android:layout_marginStart="15dp"
                             android:background="@drawable/bg_payment_normal"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:tag="96">
+                            android:tag="98">
 
                         <TextView
                                 android:layout_width="wrap_content"
@@ -131,7 +132,7 @@
                                 android:drawablePadding="8dp"
                                 android:text="1年"
                                 android:textColor="#616161"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -150,19 +151,19 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
-                                    android:text="¥96.00"
+                                    android:layout_marginTop="10dp"
+                                    android:text="¥98.00"
                                     android:textColor="#FF7B06"
                                     android:textSize="23sp"
                                     android:textStyle="bold" />
 
                             <TextView
-                                    android:id="@+id/amount_96_tv"
+                                    android:id="@+id/amount_98_tv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="¥158"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="18sp" />
+                                    android:textSize="14sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -183,7 +184,7 @@
                                 android:drawablePadding="8dp"
                                 android:text="3年"
                                 android:textColor="#616161"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +203,7 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:text="¥198.00"
                                     android:textColor="#FF7B06"
                                     android:textSize="23sp"
@@ -214,7 +215,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="¥368"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="18sp" />
+                                    android:textSize="14sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -257,7 +258,7 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:text="¥298.00"
                                     android:textColor="#FF7B06"
                                     android:textSize="23sp"
@@ -269,7 +270,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="¥1288"
                                     android:textColor="@color/secondary_text"
-                                    android:textSize="18sp" />
+                                    android:textSize="14sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -284,8 +285,9 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="30dp"
                     android:text="选择支付方式"
-                    android:textColor="#ff999999"
-                    android:textSize="14sp" />
+                    android:textColor="@color/secondary_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             <RelativeLayout
                     android:layout_width="match_parent"

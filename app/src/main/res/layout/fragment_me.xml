@@ -185,6 +185,7 @@
                     </LinearLayout>
 
                     <ImageView
+                            android:id="@+id/btn_qr_code"
                             android:layout_width="56dp"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_qr_code"
