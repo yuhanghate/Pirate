@@ -147,4 +147,10 @@ interface NetApi {
      */
     @POST("/api/m/book/books/sex/content")
     fun getBookSexContent(@Body body: RequestBody):Flowable<SexContentResult>
+
+    /**
+     * 是否vip
+     */
+    @POST("/api/m/user/vip/status")
+    fun getVip():Flowable<VipResult>
 }

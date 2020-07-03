@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import com.orhanobut.logger.Logger
+import com.trello.rxlifecycle2.LifecycleTransformer
 import com.vondear.rxtool.RxDeviceTool
 import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
@@ -22,7 +23,9 @@ import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.AppConfigResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.VipResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
+import com.yuhang.novel.pirate.ui.main.activity.MainActivity
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -370,5 +373,19 @@ class MainViewModel : BaseViewModel() {
                 it
             }
             .compose(io_main())
+    }
+
+    /**
+     * 检查vip
+     */
+    fun goLooperVip() :Flowable<VipResult>{
+        return mDataRepository.getVip().compose(io_main())
+    }
+
+    /**
+     * 更新vip
+     */
+    fun updateVip(isVip: Boolean) {
+        mDataRepository.updateVip(isVip)
     }
 }

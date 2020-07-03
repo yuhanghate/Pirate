@@ -1098,4 +1098,21 @@ class DataRepository(val context: Context) {
     fun querySexBooksEntityAll() :List<SexBooksEntity>{
         return getDatabase().sexBooksDao.queryAll()
     }
+
+    /**
+     * 是否vip
+     */
+    fun getVip(): Flowable<VipResult> {
+        return getNetApi().getVip()
+    }
+
+    /**
+     * 更新vip状态
+     */
+    fun updateVip(isVip:Boolean) {
+        getLastUser()?.let {
+            getDatabase().userDao.updateVip(it.uid,isVip)
+        }
+
+    }
 }

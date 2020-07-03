@@ -117,7 +117,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
      */
     private fun getInitChapter() = intent.getBooleanExtra(IS_INIT_CHAPTER, false)
 
-    private fun getChapterid() = intent.getStringExtra(CHAPTERID)
+    private fun getChapterid() = intent.getStringExtra(CHAPTERID) ?: ""
 
 
     /**

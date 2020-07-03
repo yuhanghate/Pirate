@@ -36,8 +36,8 @@ class CategoryDetailActivity :
         }
     }
 
-    private fun getGender() = intent.getStringExtra(GENDER)
-    private fun getMajor() = intent.getStringExtra(MAJOR)
+    private fun getGender() = intent.getStringExtra(GENDER) ?: ""
+    private fun getMajor() = intent.getStringExtra(MAJOR) ?: ""
 
     override fun onLayoutId(): Int {
         return R.layout.activity_category_detail

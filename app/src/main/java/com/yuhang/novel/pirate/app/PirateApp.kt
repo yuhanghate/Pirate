@@ -75,7 +75,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         initRefreshLayout()
         initFragmentManger()
         initLog()
-        thread { initYouMent() }
+//        thread { initYouMent() }
         initToken()
         initDownload()
     }
@@ -138,63 +138,63 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     /**
      * 友盟统计初始化
      */
-    private fun initYouMent() {
-
-        /**
-         * 设置组件化的Log开关
-         * 参数: boolean 默认为false，如需查看LOG设置为true
-         */
-        if (BuildConfig.DEBUG) {
-            UMConfigure.setLogEnabled(true)
-        }
-
-        /**
-         * 设置日志加密
-         * 参数：boolean 默认为false（不加密）
-         */
-        UMConfigure.setEncryptEnabled(true)
-
-
-        //获取渠道
-        val channel = WalleChannelReader.getChannelInfo(this)?.channel ?: "debug"
-        /**
-         * 初始化common库
-         * 参数1:上下文，不能为空
-         * 参数2:【友盟+】 AppKey
-         * 参数3:【友盟+】 Channel
-         * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
-         * 参数5:Push推送业务的secret
-         */
-        UMConfigure.init(
-            this,
-            ConfigConstant.YOUMENT_KEY,
-            channel,
-            UMConfigure.DEVICE_TYPE_PHONE,
-            ConfigConstant.YOUMENT_PUSH
-        )
-
-
-        // 选用LEGACY_AUTO页面采集模式
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
-
-        // 支持在子进程中统计自定义事件
-        UMConfigure.setProcessEvent(true)
-
-        val mPushAgent = PushAgent.getInstance(this)
-        //注册推送服务，每次调用register方法都会回调该接口
-        mPushAgent.register(object : IUmengRegisterCallback {
-            override fun onSuccess(deviceToken: String) {
-                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
-                Logger.t("UMLog").i("注册成功：deviceToken：-------->  $deviceToken")
-            }
-
-            override fun onFailure(s: String, s1: String) {
-                Logger.t("UMLog").i("注册失败：-------->  s:$s,s1:$s1")
-            }
-        })
-
-        mPushAgent.messageHandler = PushUmengMessageHandler()
-    }
+//    private fun initYouMent() {
+//
+//        /**
+//         * 设置组件化的Log开关
+//         * 参数: boolean 默认为false，如需查看LOG设置为true
+//         */
+//        if (BuildConfig.DEBUG) {
+//            UMConfigure.setLogEnabled(true)
+//        }
+//
+//        /**
+//         * 设置日志加密
+//         * 参数：boolean 默认为false（不加密）
+//         */
+//        UMConfigure.setEncryptEnabled(true)
+//
+//
+//        //获取渠道
+//        val channel = WalleChannelReader.getChannelInfo(this)?.channel ?: "debug"
+//        /**
+//         * 初始化common库
+//         * 参数1:上下文，不能为空
+//         * 参数2:【友盟+】 AppKey
+//         * 参数3:【友盟+】 Channel
+//         * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
+//         * 参数5:Push推送业务的secret
+//         */
+//        UMConfigure.init(
+//            this,
+//            ConfigConstant.YOUMENT_KEY,
+//            channel,
+//            UMConfigure.DEVICE_TYPE_PHONE,
+//            ConfigConstant.YOUMENT_PUSH
+//        )
+//
+//
+//        // 选用LEGACY_AUTO页面采集模式
+//        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
+//
+//        // 支持在子进程中统计自定义事件
+//        UMConfigure.setProcessEvent(true)
+//
+//        val mPushAgent = PushAgent.getInstance(this)
+//        //注册推送服务，每次调用register方法都会回调该接口
+//        mPushAgent.register(object : IUmengRegisterCallback {
+//            override fun onSuccess(deviceToken: String) {
+//                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
+//                Logger.t("UMLog").i("注册成功：deviceToken：-------->  $deviceToken")
+//            }
+//
+//            override fun onFailure(s: String, s1: String) {
+//                Logger.t("UMLog").i("注册失败：-------->  s:$s,s1:$s1")
+//            }
+//        })
+//
+//        mPushAgent.messageHandler = PushUmengMessageHandler()
+//    }
 
 
     /**
@@ -286,26 +286,26 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
     }
 
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity) {
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
+    override fun onActivityDestroyed(activity: Activity) {
         AppManagerUtils.getAppManager().finishActivity(activity)
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         AppManagerUtils.getAppManager().addActivity(activity)
     }
 }

@@ -29,6 +29,12 @@ interface UserDao {
     fun updateLastTime(uid: String, lastTime: Date)
 
     /**
+     * 更新vip
+     */
+    @Query("update userentity set isVip = :vip where uid = :uid")
+    fun updateVip(uid:String, vip:Boolean):Int
+
+    /**
      * 删除用户名
      */
     @Delete

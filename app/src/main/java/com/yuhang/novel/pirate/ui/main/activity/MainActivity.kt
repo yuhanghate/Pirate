@@ -100,6 +100,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         super.initView()
 
 
+        initVip()
         initUpdateChapterList()
         loadMultipleRootFragment(
             R.id.nav_host_fragment,
@@ -163,6 +164,19 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
         AppManagerUtils.getAppManager().finishActivity(LaunchActivity::class.java)
     }
+
+    /**
+     * 初始化vip
+     */
+    private fun initVip() {
+        Flowable.interval(0,12, TimeUnit.HOURS)
+            .flatMap { mViewModel.goLooperVip() }
+            .compose(bindToLifecycle())
+            .subscribe({
+                mViewModel.updateVip(it.data.isVip)
+            },{})
+    }
+
 
     /**
      * 预加载分类数据

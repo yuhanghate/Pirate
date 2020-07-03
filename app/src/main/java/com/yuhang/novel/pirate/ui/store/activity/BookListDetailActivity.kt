@@ -44,7 +44,7 @@ class BookListDetailActivity :
     }
 
     //获取书单id
-    private fun getId() = intent.getStringExtra(ID)
+    private fun getId() = intent.getStringExtra(ID) ?: ""
 
     override fun onLayoutId(): Int {
         return R.layout.activity_book_list_detail
