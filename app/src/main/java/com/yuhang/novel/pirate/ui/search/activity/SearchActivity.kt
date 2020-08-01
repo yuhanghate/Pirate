@@ -247,7 +247,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     private fun showResouceDialog() {
         MaterialDialog(this).show {
-            listItems(items = arrayListOf("追书", "笔趣阁")) { dialog, index, text ->
+            listItems(items = arrayListOf("笔趣阁")) { dialog, index, text ->
                 mBinding.resouceTv.text = text
                 netServiceSearch(mBinding.searchEt.text.toString())
             }

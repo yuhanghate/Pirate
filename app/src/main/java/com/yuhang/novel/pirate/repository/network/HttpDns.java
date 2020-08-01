@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.net.InetAddress.getAllByName;
-import static java.net.InetAddress.getByName;
 
 
 public class HttpDns implements Dns {

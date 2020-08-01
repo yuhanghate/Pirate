@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginStart="5dp"
-                        android:text="追书"
+                        android:text="笔趣阁"
                         android:textColor="@color/secondary_text"
                         android:textSize="13sp" />
             </LinearLayout>

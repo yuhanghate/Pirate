@@ -274,7 +274,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
     private fun netServiceData() {
         val list = arrayListOf<BookInfoKSEntity>()
-        Flowable.merge(mViewModel.getBookDetailsListKD(), mViewModel.getBookDetailsListKS())
+        mViewModel.getBookDetailsListKS()
             .compose(io_main())
             .compose(bindToLifecycle())
             .subscribe({ obj ->

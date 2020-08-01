@@ -37,7 +37,7 @@ class UsersServiceImpl : UsersService {
                 mDataRepository.clearBookInfo()
                 return@map it
             }
-            .flatMap { Flowable.fromArray(*it.data.list.toTypedArray()) }
+            .flatMap { Flowable.fromArray(*it.data.list.filter { it.resouceType != "KD" }.toTypedArray()) }
             .map {
 
                 mDataRepository.insertCollection(it.niceBooksResult())
