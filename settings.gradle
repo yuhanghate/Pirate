@@ -1,1 +1,1 @@
-include ':app', ':bottom-bar', ':empty-layout', ':fastscroll', ':search-view', ':bubbleseekbar', ':expandable-layout', ':switch-button', ':progress-layout', ':FlycoTabLayout', ':glidepalette'
+include ':app', ':bottom-bar', ':empty-layout', ':fastscroll', ':bubbleseekbar', ':expandable-layout', ':switch-button', ':progress-layout', ':FlycoTabLayout', ':glidepalette'

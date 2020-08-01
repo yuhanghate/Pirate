@@ -54,12 +54,12 @@ class KanShuRankingActivity :
     /**
      * 性别
      */
-    private fun getGender() = intent.getStringExtra(GENDER)
+    private fun getGender() = intent.getStringExtra(GENDER)?:""
 
     //类型
-    private fun getType() = intent.getStringExtra(TYPE)
+    private fun getType() = intent.getStringExtra(TYPE)?:""
 
-    private fun getName() = intent.getStringExtra(NAME)
+    private fun getName() = intent.getStringExtra(NAME)?:""
 
     override fun onLayoutId(): Int {
         return R.layout.activity_kanshu_ranking

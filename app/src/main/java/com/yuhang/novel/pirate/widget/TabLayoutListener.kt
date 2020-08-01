@@ -1,12 +1,14 @@
 package com.yuhang.novel.pirate.widget
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.SlidingTabLayout
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModelV2
 
 class TabLayoutListener(val tabLayout: SlidingTabLayout, val viewPager:ViewPager,val vm:StoreViewModelV2?) : OnTabSelectListener {
+    @SuppressLint("ObjectAnimatorBinding")
     override fun onTabSelect(position: Int) {
         (0 until tabLayout.tabCount).forEach {
             val titleView = tabLayout.getTitleView(it)

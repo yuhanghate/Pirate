@@ -59,7 +59,7 @@ class ChapterListActivity :
     /**
      * 小说id
      */
-    private fun getBookid() = intent.getStringExtra(BOOKID)
+    private fun getBookid() = intent.getStringExtra(BOOKID)!!
 
 
     override fun initStatusTool() {

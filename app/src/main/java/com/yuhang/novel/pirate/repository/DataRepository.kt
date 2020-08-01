@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.*
 import com.google.gson.Gson
-import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.niceBody

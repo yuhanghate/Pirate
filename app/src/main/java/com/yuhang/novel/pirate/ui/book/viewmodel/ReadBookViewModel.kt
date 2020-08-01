@@ -5,7 +5,6 @@ import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gyf.immersionbar.ImmersionBar
-import com.hunter.library.debug.HunterDebug
 import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
 import com.vondear.rxtool.RxNetTool
