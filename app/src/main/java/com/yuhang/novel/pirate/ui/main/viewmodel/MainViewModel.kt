@@ -9,6 +9,7 @@ import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import com.tamsiree.rxkit.RxDeviceTool
 import com.tamsiree.rxkit.RxNetTool
+import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
@@ -41,6 +42,21 @@ class MainViewModel : BaseViewModel() {
     val MAX_TIME_LOGIN = 1000 * 60 * 60 * 24 * 8
 
     val adapter: MainAdapter by lazy { MainAdapter() }
+
+    /**
+     * 主页标签
+     */
+    val tabIcons by lazy { listOf(R.drawable.ic_tab_main_normal, R.drawable.ic_tab_store_normal, R.drawable.ic_tab_me_normal) }
+
+    /**
+     * 主页名称
+     */
+    val tabNames by lazy { listOf("主页", "书城", "我的") }
+
+    /**
+     * 当前Fragment角标
+     */
+    var currentIndex = 0
 
     /**
      * 获取本地所有书本详情

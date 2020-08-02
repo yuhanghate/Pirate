@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
@@ -21,6 +22,7 @@ import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
+import com.yuhang.novel.pirate.databinding.LayoutMainTabBinding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
@@ -34,7 +36,14 @@ import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
+import com.yuhang.novel.pirate.utils.evaluate
+import com.yuhang.novel.pirate.utils.getColorCompat
 import io.reactivex.Flowable
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
@@ -108,54 +117,8 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             MeFragment.newInstance()
         )
 
-        mBinding.bottomBar.setOnTabSelectListener {
-
-            when (it) {
-                R.id.tab_main -> {
-                    ImmersionBar.with(this)
-                        .statusBarView(mBinding.statusBarV)
-                        .statusBarColor(R.color.window_background)
-                        .flymeOSStatusBarFontColor(R.color.primary_text)
-                        .init()
-                    showHideFragment(findFragment(MainFragment::class.java))
-                }
-                R.id.tab_store -> {
-                    ImmersionBar.with(this)
-                        .statusBarView(mBinding.statusBarV)
-                        .statusBarColor(R.color.window_background)
-                        .flymeOSStatusBarFontColor(R.color.primary_text)
-                        .init()
-                    startLoginActivity()
-                    showHideFragment(findFragment(StoreFragmentV2::class.java))
-                }
-                R.id.tab_me -> {
-                    ImmersionBar.with(this)
-                        .statusBarView(mBinding.statusBarV)
-                        .statusBarColor(R.color.md_grey_f2)
-                        .flymeOSStatusBarFontColor(R.color.md_white_1000)
-                        .init()
-                    showHideFragment(findFragment(MeFragment::class.java))
-                }
-            }
-        }
-//
-        mBinding.bottomBar.setOnTabReselectListener {
-            when (it) {
-                R.id.tab_main -> showHideFragment(findFragment(MainFragment::class.java))
-                R.id.tab_store -> {
-                    val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
-                    showHideFragment(storeFragmentV2)
-                    storeFragmentV2.onTabReselect(storeFragmentV2.mViewModel.lastTabEntity)
-                }
-                R.id.tab_me -> showHideFragment(findFragment(MeFragment::class.java))
-            }
-        }
-
-        mBinding.bottomBar.getTabAtPosition(intent.getIntExtra("tab_index", 0)).callOnClick()
-
-
-
-        Handler().postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
+        initMagicIndicator()
+        Handler(Looper.getMainLooper()).postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
 
         initCategory()
         initConfig()
@@ -186,7 +149,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     private fun startLoginActivity() {
         if (mViewModel.isShowLoginDialog()) {
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 //第一次安装打开登陆界面
                 LoginActivity.startForResult(this)
             }, 1000 * 2)
@@ -387,5 +350,122 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
             this.result?.let { showVersionUpdateProgress(it) }
 
         }
+    }
+
+    private fun initMagicIndicator() {
+        mBinding.magicIndicator.setBackgroundResource(R.color.window_background)
+        val commonNavigator = CommonNavigator(this)
+        commonNavigator.isAdjustMode = true
+        commonNavigator.adapter = object : CommonNavigatorAdapter() {
+            override fun getCount(): Int {
+                return mViewModel.tabNames.size
+            }
+
+            override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+                val commonPagerTitleView = CommonPagerTitleView(context)
+
+                // load custom layout
+                val inflate = LayoutMainTabBinding.inflate(layoutInflater, null, false)
+                val titleImg = inflate.titleIv
+                val titleText = inflate.titleTv
+                titleImg.setImageResource(mViewModel.tabIcons[index])
+                titleText.text = mViewModel.tabNames[index]
+                commonPagerTitleView.setContentView(inflate.root)
+                commonPagerTitleView.onPagerTitleChangeListener = object :
+                    CommonPagerTitleView.OnPagerTitleChangeListener {
+                    override fun onSelected(index: Int, totalCount: Int) {
+                        onEnter(index, totalCount, 1f, false)
+                    }
+
+
+                    override fun onDeselected(index: Int, totalCount: Int) {
+                        onEnter(index, totalCount, 0f, false)
+                    }
+
+                    override fun onLeave(
+                        index: Int,
+                        totalCount: Int,
+                        leavePercent: Float,
+                        leftToRight: Boolean
+                    ) {
+                        // 1. 颜色变换
+                        val finalColor: Int = evaluate(
+                            leavePercent,
+                            getColorCompat(R.color.primary),
+                            getColorCompat(R.color.md_grey_600)
+
+                        )
+                        titleText.setTextColor(finalColor)
+                        titleImg.drawable.setTint(finalColor)
+
+                    }
+
+                    override fun onEnter(
+                        index: Int,
+                        totalCount: Int,
+                        enterPercent: Float,
+                        leftToRight: Boolean
+                    ) {
+                        val finalColor: Int = evaluate(
+                            enterPercent,
+                            getColorCompat(R.color.md_grey_600),
+                            getColorCompat(R.color.primary)
+                        )
+                        titleText.setTextColor(finalColor)
+                        titleImg.drawable.setTint(finalColor)
+
+                    }
+                }
+                commonPagerTitleView.setOnClickListener { setCurrentFragment(index) }
+                return commonPagerTitleView
+            }
+
+            override fun getIndicator(context: Context): IPagerIndicator? {
+                return null
+            }
+        }
+        mBinding.magicIndicator.navigator = commonNavigator
+    }
+
+    /**
+     * 设置当前Fragment
+     */
+    private fun setCurrentFragment(index: Int) {
+        if (index == mViewModel.currentIndex && index == 1) {//重新选择
+            val storeFragmentV2 = findFragment(StoreFragmentV2::class.java)
+            showHideFragment(storeFragmentV2)
+            storeFragmentV2.onReselectListener()
+        } else {
+            when (index) {
+                0 -> {//主页
+                    ImmersionBar.with(this@MainActivity)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
+                    showHideFragment(findFragment(MainFragment::class.java))
+                }
+                1 -> {//书城
+                    ImmersionBar.with(this@MainActivity)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.window_background)
+                        .flymeOSStatusBarFontColor(R.color.primary_text)
+                        .init()
+                    startLoginActivity()
+                    showHideFragment(findFragment(StoreFragmentV2::class.java))
+                }
+                2 -> {//我的
+                    ImmersionBar.with(this@MainActivity)
+                        .statusBarView(mBinding.statusBarV)
+                        .statusBarColor(R.color.md_grey_f2)
+                        .flymeOSStatusBarFontColor(R.color.md_white_1000)
+                        .init()
+                    showHideFragment(findFragment(MeFragment::class.java))
+                }
+            }
+            mBinding.magicIndicator.navigator.onPageSelected(index)
+        }
+
+        mViewModel.currentIndex = index
     }
 }

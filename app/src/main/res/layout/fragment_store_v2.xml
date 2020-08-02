@@ -122,25 +122,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <com.flyco.tablayout.SlidingTabLayout
-                    android:id="@+id/tablayout"
+            <net.lucode.hackware.magicindicator.MagicIndicator
+                    android:id="@+id/magic_indicator"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="5dp"
-                    android:elevation="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/right_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tl_iconVisible="false"
-                    app:tl_indicator_color="#FF6000"
-                    app:tl_indicator_corner_radius="3dp"
-                    app:tl_indicator_height="4dp"
-                    app:tl_indicator_width="20dp"
-                    app:tl_textBold="SELECT"
-                    app:tl_textSelectColor="#333333"
-                    app:tl_textUnselectColor="#ff999999"
-                    app:tl_textsize="14sp" />
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:layout_height="56dp" />
 
             <View
                     android:layout_width="match_parent"
@@ -151,7 +138,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

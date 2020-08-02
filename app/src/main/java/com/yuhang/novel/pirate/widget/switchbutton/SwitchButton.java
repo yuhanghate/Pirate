@@ -1,4 +1,4 @@
-package com.kyleduo.switchbutton;
+package com.yuhang.novel.pirate.widget.switchbutton;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Parcel;
@@ -23,7 +27,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CompoundButton;
+
 import androidx.core.content.ContextCompat;
+
 import com.yuhang.novel.pirate.R;
 
 
@@ -157,30 +163,30 @@ public class SwitchButton extends CompoundButton {
         int textExtra = 0;
         int textAdjust = 0;
 
-        TypedArray ta = attrs == null ? null : getContext().obtainStyledAttributes(attrs, com.kyleduo.switchbutton.R.styleable.SwitchButton);
+        TypedArray ta = attrs == null ? null : getContext().obtainStyledAttributes(attrs, R.styleable.SwitchButton);
         if (ta != null) {
-            thumbDrawable = ta.getDrawable(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbDrawable);
-            thumbColor = ta.getColorStateList(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbColor);
-            margin = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbMargin, margin);
-            marginLeft = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbMarginLeft, margin);
-            marginRight = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbMarginRight, margin);
-            marginTop = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbMarginTop, margin);
-            marginBottom = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbMarginBottom, margin);
-            thumbWidth = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbWidth, thumbWidth);
-            thumbHeight = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbHeight, thumbHeight);
-            thumbRadius = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbRadius, thumbRadius);
-            backRadius = ta.getDimension(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswBackRadius, backRadius);
-            backDrawable = ta.getDrawable(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswBackDrawable);
-            backColor = ta.getColorStateList(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswBackColor);
-            thumbRangeRatio = ta.getFloat(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswThumbRangeRatio, thumbRangeRatio);
-            animationDuration = ta.getInteger(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswAnimationDuration, animationDuration);
-            fadeBack = ta.getBoolean(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswFadeBack, true);
-            tintColor = ta.getColor(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTintColor, tintColor);
-            textOn = ta.getString(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTextOn);
-            textOff = ta.getString(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTextOff);
-            textThumbInset = ta.getDimensionPixelSize(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTextThumbInset, 0);
-            textExtra = ta.getDimensionPixelSize(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTextExtra, 0);
-            textAdjust = ta.getDimensionPixelSize(com.kyleduo.switchbutton.R.styleable.SwitchButton_kswTextAdjust, 0);
+            thumbDrawable = ta.getDrawable(R.styleable.SwitchButton_kswThumbDrawable);
+            thumbColor = ta.getColorStateList(R.styleable.SwitchButton_kswThumbColor);
+            margin = ta.getDimension(R.styleable.SwitchButton_kswThumbMargin, margin);
+            marginLeft = ta.getDimension(R.styleable.SwitchButton_kswThumbMarginLeft, margin);
+            marginRight = ta.getDimension(R.styleable.SwitchButton_kswThumbMarginRight, margin);
+            marginTop = ta.getDimension(R.styleable.SwitchButton_kswThumbMarginTop, margin);
+            marginBottom = ta.getDimension(R.styleable.SwitchButton_kswThumbMarginBottom, margin);
+            thumbWidth = ta.getDimension(R.styleable.SwitchButton_kswThumbWidth, thumbWidth);
+            thumbHeight = ta.getDimension(R.styleable.SwitchButton_kswThumbHeight, thumbHeight);
+            thumbRadius = ta.getDimension(R.styleable.SwitchButton_kswThumbRadius, thumbRadius);
+            backRadius = ta.getDimension(R.styleable.SwitchButton_kswBackRadius, backRadius);
+            backDrawable = ta.getDrawable(R.styleable.SwitchButton_kswBackDrawable);
+            backColor = ta.getColorStateList(R.styleable.SwitchButton_kswBackColor);
+            thumbRangeRatio = ta.getFloat(R.styleable.SwitchButton_kswThumbRangeRatio, thumbRangeRatio);
+            animationDuration = ta.getInteger(R.styleable.SwitchButton_kswAnimationDuration, animationDuration);
+            fadeBack = ta.getBoolean(R.styleable.SwitchButton_kswFadeBack, true);
+            tintColor = ta.getColor(R.styleable.SwitchButton_kswTintColor, tintColor);
+            textOn = ta.getString(R.styleable.SwitchButton_kswTextOn);
+            textOff = ta.getString(R.styleable.SwitchButton_kswTextOff);
+            textThumbInset = ta.getDimensionPixelSize(R.styleable.SwitchButton_kswTextThumbInset, 0);
+            textExtra = ta.getDimensionPixelSize(R.styleable.SwitchButton_kswTextExtra, 0);
+            textAdjust = ta.getDimensionPixelSize(R.styleable.SwitchButton_kswTextAdjust, 0);
             ta.recycle();
         }
 

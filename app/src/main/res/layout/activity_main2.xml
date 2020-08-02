@@ -7,7 +7,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/bottomBar"
+            android:layout_above="@+id/magicIndicatorLL"
             android:orientation="vertical">
 
         <View
@@ -21,16 +21,22 @@
                 android:layout_height="match_parent" />
     </LinearLayout>
 
-
-    <com.roughike.bottombar.BottomBar
-            android:id="@+id/bottomBar"
+    <LinearLayout
+            android:id="@+id/magicIndicatorLL"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/item_color"
-            app:bb_tabXmlResource="@xml/bottombar_tabs_main"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:orientation="vertical">
+
+        <View
+                android:layout_width="match_parent"
+                android:background="@color/divider"
+                android:layout_height="1dp" />
+
+        <net.lucode.hackware.magicindicator.MagicIndicator
+                android:id="@+id/magicIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="60dp" />
+    </LinearLayout>
 
 </RelativeLayout>

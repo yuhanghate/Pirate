@@ -14,10 +14,13 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.scwang.smartrefresh.header.MaterialHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.tamsiree.rxkit.RxTool
+import com.tamsiree.rxkit.TLog
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
+import com.yuhang.novel.pirate.utils.initContext
 import com.yuhang.novel.pirate.BuildConfig
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.constant.ConfigConstant
@@ -60,6 +63,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 //        initStrictModel()
         mInstance = this
         super.onCreate()
+        initContext(this)
         initAppcation()
         this.registerActivityLifecycleCallbacks(this)
     }
@@ -71,6 +75,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         PreferenceUtil.init(this)
         pageType =
             PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
+        TLog.switchCrashFile(false)
         initRefreshLayout()
         initFragmentManger()
         initLog()

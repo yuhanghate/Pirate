@@ -1,1 +1,1 @@
-include ':app', ':bottom-bar', ':fastscroll', ':switch-button', ':FlycoTabLayout'
+include ':app', ':fastscroll'

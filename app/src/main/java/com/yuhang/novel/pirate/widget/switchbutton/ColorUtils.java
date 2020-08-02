@@ -1,4 +1,4 @@
-package com.kyleduo.switchbutton;
+package com.yuhang.novel.pirate.widget.switchbutton;
 
 import android.content.res.ColorStateList;
 
