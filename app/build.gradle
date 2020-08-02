@@ -12,8 +12,9 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 171
-        versionName "1.7.1"
+        versionCode 172
+        versionName "1.7.2"
+        resConfigs "zh"
 
         renderscriptTargetApi 30
         renderscriptSupportModeEnabled true
@@ -77,7 +78,7 @@ android {
     lintOptions {
         disable 'CheckResult'
     }
-    buildToolsVersion = '29.0.3'
+
 }
 
 //美团打包
