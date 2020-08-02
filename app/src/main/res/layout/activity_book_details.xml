@@ -70,7 +70,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ezy.ui.layout.LoadingLayout
+    <com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout
             android:id="@+id/loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -98,7 +98,7 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ezy.ui.layout.LoadingLayout>
+    </com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout>
 
     <LinearLayout
             android:id="@+id/tab_ll"

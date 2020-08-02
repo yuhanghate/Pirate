@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.vondear.rxtool.RxKeyboardTool
+import com.tamsiree.rxkit.RxKeyboardTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.databinding.ActivityForgetBinding

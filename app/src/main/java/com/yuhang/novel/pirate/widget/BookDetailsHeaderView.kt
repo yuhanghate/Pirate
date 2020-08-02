@@ -4,12 +4,12 @@ import android.os.Handler
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
-import com.github.aakira.expandablelayout.Utils
 import com.google.android.material.appbar.AppBarLayout
 import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
+import com.yuhang.novel.pirate.widget.expandablelayout.Utils
 import kotlin.math.abs
 
 class BookDetailsHeaderView(val activity:BookDetailsActivity, val vm:BookDetailsViewModel) {

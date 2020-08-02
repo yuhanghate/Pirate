@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
-import com.github.florent37.glidepalette.BitmapPalette
-import com.github.florent37.glidepalette.GlidePalette
 import com.google.android.material.appbar.AppBarLayout
 import com.gyf.immersionbar.ImmersionBar
 import com.yuhang.novel.pirate.R
@@ -25,6 +23,8 @@ import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.common.adapter.VlayoutColumn3Adapter
 import com.yuhang.novel.pirate.ui.store.adapter.ShuDanDetailDescAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.BookListDetailViewModel
+import com.yuhang.novel.pirate.widget.glidepalette.BitmapPalette
+import com.yuhang.novel.pirate.widget.glidepalette.GlidePalette
 import kotlin.math.abs
 
 /**

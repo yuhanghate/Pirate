@@ -2,22 +2,16 @@ package com.yuhang.novel.pirate.ui.user.viewmodel
 
 import android.annotation.SuppressLint
 import android.widget.EditText
-import com.vondear.rxtool.RxRegTool
-import com.yuhang.novel.pirate.app.PirateApp
+import com.tamsiree.rxkit.RxRegTool
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
-import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
-import com.yuhang.novel.pirate.utils.BeanPropertiesUtil
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
-import java.util.*
-import kotlin.concurrent.thread
 
 class LoginViewModel : BaseViewModel() {
 
@@ -26,8 +20,8 @@ class LoginViewModel : BaseViewModel() {
      */
     fun login(username: String, password: String): Flowable<UserResult> {
         return mDataRepository.login(username, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     /**
@@ -73,10 +67,11 @@ class LoginViewModel : BaseViewModel() {
                 }
                 Flowable.fromArray(* it.toTypedArray())
             }
-            .flatMap {bookINfoEntity ->
+            .flatMap { bookINfoEntity ->
 
                 //最新记录上传到服务器
-                val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookINfoEntity.bookid)?: return@flatMap Flowable.just(bookINfoEntity)
+                val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookINfoEntity.bookid)
+                    ?: return@flatMap Flowable.just(bookINfoEntity)
                 return@flatMap mDataRepository.updateReadHistory(
                     bookName = bookINfoEntity.bookName,
                     bookid = bookINfoEntity.bookid,

@@ -13,12 +13,11 @@ import com.gyf.immersionbar.ImmersionBar
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
+import com.tamsiree.rxkit.RxAppTool
+import com.tamsiree.rxkit.RxEncryptTool
 import com.trello.rxlifecycle2.android.ActivityEvent
-import com.vondear.rxtool.RxAppTool
-import com.vondear.rxtool.RxEncryptTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
-import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding

@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
+import com.tamsiree.rxkit.RxNetTool
 import com.umeng.analytics.MobclickAgent
-import com.vondear.rxtool.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -435,7 +435,7 @@ open class ReadBookViewModel : BaseViewModel() {
                             if (bookChapterKSEntity.chapterId == entity.chapterid && index >= list.size - 1) {
 
                                 //没有网络,返回本地章节数据
-                                if (RxNetTool.isAvailable(mActivity)) {
+                                if (RxNetTool.isAvailable(mActivity!!)) {
                                     return@flatMap mConvertRepository.getChapterList(obj).map {
                                         mDataRepository.deleteChapterList(it[0].bookId)
                                         mDataRepository.insertChapterList(it)

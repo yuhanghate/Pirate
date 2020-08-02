@@ -95,7 +95,7 @@
 
             </LinearLayout>
 
-            <com.github.aakira.expandablelayout.ExpandableLinearLayout
+            <com.yuhang.novel.pirate.widget.expandablelayout.ExpandableLinearLayout
                     android:id="@+id/page_type_ell"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
 
 
                 </LinearLayout>
-            </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+            </com.yuhang.novel.pirate.widget.expandablelayout.ExpandableLinearLayout>
 
             <LinearLayout
                     android:id="@+id/page_time_ll"
@@ -206,7 +206,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.github.aakira.expandablelayout.ExpandableLinearLayout
+            <com.yuhang.novel.pirate.widget.expandablelayout.ExpandableLinearLayout
                     android:id="@+id/page_time_ell"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -264,7 +264,7 @@
 
 
                 </LinearLayout>
-            </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+            </com.yuhang.novel.pirate.widget.expandablelayout.ExpandableLinearLayout>
 
             <RelativeLayout
                     android:layout_width="match_parent"

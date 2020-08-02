@@ -54,6 +54,7 @@
                             android:background="@drawable/bg_material_20dp"
                             android:clickable="true"
                             android:focusable="true"
+                            android:visibility="gone"
                             android:text="分类"
                             android:textColor="@color/primary_text"
                             android:textSize="15sp"

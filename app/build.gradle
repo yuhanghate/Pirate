@@ -12,10 +12,10 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 170
-        versionName "1.7.0"
+        versionCode 171
+        versionName "1.7.1"
 
-        renderscriptTargetApi 29
+        renderscriptTargetApi 30
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
 
@@ -23,7 +23,6 @@ android {
             //设置支持的so库架构
             abiFilters "arm64-v8a"
         }
-//        applicationIdSuffix = '.dev'
     }
 
 
@@ -170,7 +169,6 @@ dependencies {
 
     //底部Tab栏
     implementation project(path: ':bottom-bar')
-    implementation project(path: ':empty-layout')
 
     // OpenCC to convert Simp. Chinese to Trad. Chinese 繁体字转简体
     implementation 'com.zqc.opencc.android.lib:lib-opencc-android:0.8.0@aar'
@@ -186,26 +184,17 @@ dependencies {
     implementation 'com.github.sephiroth74:android-target-tooltip:2.0.4'
 
     //基础工具库
-    implementation 'com.github.tamsiree.RxTool:RxKit:2.3.9'
+    implementation 'com.github.tamsiree.RxTool:RxKit:2.6.2'
     implementation 'com.lzy.net:okgo:3.0.4'
 
     //Fragment库
     implementation 'me.yokeyword:fragmentationx:1.0.2'
     implementation 'me.yokeyword:fragmentationx-swipeback:1.0.2'
 
-    //进度条
-    implementation project(path: ':bubbleseekbar')
-    implementation project(path: ':expandable-layout')
-
     //美团渠道包
     implementation 'com.meituan.android.walle:library:1.1.6'
 
     //友盟统计
-//    implementation 'com.umeng.umsdk:common:2.2.5'
-//    implementation 'com.umeng.umsdk:utdid:1.5.2'
-//    implementation 'com.umeng.umsdk:analytics:8.1.6'
-//    implementation 'com.umeng.umsdk:push:6.0.5'
-//    implementation 'com.umeng.umsdk:alicloud-httpdns:1.2.5'
     //基础组件库依赖(必须) Push 6.1.0版本必须升级新版本Common SDK
     implementation 'com.umeng.umsdk:common:9.1.0'
     implementation 'com.umeng.umsdk:utdid:1.5.2'
@@ -240,9 +229,6 @@ dependencies {
     //时间格式
     implementation 'joda-time:joda-time:2.10.5'
 
-    //进度条
-    implementation project(path: ':progress-layout')
-
     implementation project(path: ':FlycoTabLayout')
 
     //断点下载
@@ -251,14 +237,8 @@ dependencies {
     //阿里巴巴首页布局
     implementation('com.alibaba.android:vlayout:1.2.8@aar') { transitive = true }
 
-    //图片取色器
-    implementation project(path: ':glidepalette')
-
     //圆形头像
     implementation 'de.hdodenhof:circleimageview:3.0.1'
-
-    //记录方法耗时
-//    implementation 'com.quinn.hunter:hunter-debug-library:0.9.6'
 
     //动画库
     implementation 'com.airbnb.android:lottie:3.3.1'

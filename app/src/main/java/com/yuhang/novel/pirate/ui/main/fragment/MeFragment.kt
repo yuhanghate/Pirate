@@ -17,8 +17,8 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
-import com.vondear.rxtool.RxAppTool
-import com.vondear.rxtool.RxEncryptTool
+import com.tamsiree.rxkit.RxAppTool
+import com.tamsiree.rxkit.RxEncryptTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
@@ -422,7 +422,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             ) {
             override fun onSuccess(response: com.lzy.okgo.model.Response<File>) {
                 dialog?.dismiss()
-                RxAppTool.installApp(mActivity, outputApk)
+                RxAppTool.installApp(requireActivity(), outputApk)
             }
 
             override fun onStart(request: com.lzy.okgo.request.base.Request<File, out com.lzy.okgo.request.base.Request<*, *>>?) {

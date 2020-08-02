@@ -3,18 +3,11 @@ package com.yuhang.novel.pirate.ui.book.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.os.Handler
 import android.view.View
-import android.view.animation.AnimationUtils
-import android.view.animation.Interpolator
-import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.github.aakira.expandablelayout.Utils
-import com.github.florent37.glidepalette.BitmapPalette
-import com.github.florent37.glidepalette.GlidePalette
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -34,12 +27,11 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
-import com.yuhang.novel.pirate.utils.StatusBarUtil
-import com.yuhang.novel.pirate.utils.SystemUtil
 import com.yuhang.novel.pirate.widget.BookDetailsHeaderView
+import com.yuhang.novel.pirate.widget.glidepalette.BitmapPalette
+import com.yuhang.novel.pirate.widget.glidepalette.GlidePalette
 import org.greenrobot.eventbus.EventBus
 import kotlin.concurrent.thread
-import kotlin.math.abs
 
 
 /**

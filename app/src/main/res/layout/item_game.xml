@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <co.mobiwise.library.ProgressLayout
+    <com.yuhang.novel.pirate.widget.progressLayout.ProgressLayout
             android:id="@+id/progressLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"

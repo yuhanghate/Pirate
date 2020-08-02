@@ -18,15 +18,14 @@ package com.yuhang.novel.pirate.utils;
 
 import android.content.Context;
 import android.os.Environment;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
 import com.orhanobut.logger.Logger;
+import com.yuhang.novel.pirate.widget.progressLayout.ProgressLayout;
 
 import java.io.File;
 
-import co.mobiwise.library.ProgressLayout;
 
 public class DownloadUtil {
 

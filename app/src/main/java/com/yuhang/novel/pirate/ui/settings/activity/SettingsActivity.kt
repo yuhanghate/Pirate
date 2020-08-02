@@ -10,8 +10,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
 import android.widget.RadioButton
 import android.widget.Toast
-import com.github.aakira.expandablelayout.Utils
-import com.vondear.rxtool.RxDeviceTool
+import com.tamsiree.rxkit.RxDeviceTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
@@ -23,6 +22,7 @@ import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.settings.viewmodel.SettingsViewModel
 import com.yuhang.novel.pirate.utils.GlideCacheUtil
+import com.yuhang.novel.pirate.widget.expandablelayout.Utils
 import kotlin.concurrent.thread
 
 

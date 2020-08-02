@@ -2,7 +2,7 @@ package com.yuhang.novel.pirate.ui.user.viewmodel
 
 import android.annotation.SuppressLint
 import android.widget.EditText
-import com.vondear.rxtool.RxRegTool
+import com.tamsiree.rxkit.RxRegTool
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity

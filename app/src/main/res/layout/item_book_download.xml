@@ -7,7 +7,7 @@
         android:background="@drawable/bg_material_item"
         android:orientation="vertical">
 
-    <co.mobiwise.library.ProgressLayout
+    <com.yuhang.novel.pirate.widget.progressLayout.ProgressLayout
             android:id="@+id/progressLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"

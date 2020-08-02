@@ -4,11 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.view.View
-import co.mobiwise.library.ProgressLayout
 import com.liulishuo.filedownloader.model.FileDownloadStatus
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
-import com.vondear.rxtool.RxAppTool
+import com.tamsiree.rxkit.RxAppTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseDownloadBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityGameBinding
@@ -22,11 +21,11 @@ import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
 import com.yuhang.novel.pirate.ui.ad.dialog.DownloadDeleteDialog
 import com.yuhang.novel.pirate.ui.ad.viewmodel.GameViewModel
 import com.yuhang.novel.pirate.viewholder.ItemGameVH
+import com.yuhang.novel.pirate.widget.progressLayout.ProgressLayout
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
-import kotlin.experimental.or
 
 /**
  * 游戏推荐

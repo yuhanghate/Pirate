@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <ezy.ui.layout.LoadingLayout
+        <com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout
                 android:id="@+id/loading"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -118,6 +118,7 @@
                             android:background="@drawable/bg_material_item_pink"
                             android:clickable="true"
                             android:focusable="true"
+                            android:visibility="gone"
                             android:gravity="center"
                             android:paddingStart="30dp"
                             android:paddingTop="12dp"
@@ -130,7 +131,7 @@
 
             </FrameLayout>
 
-        </ezy.ui.layout.LoadingLayout>
+        </com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <Button

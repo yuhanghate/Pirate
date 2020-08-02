@@ -2,13 +2,12 @@ package com.yuhang.novel.pirate.viewholder
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
-import co.mobiwise.library.ProgressLayoutListener
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.liulishuo.filedownloader.model.FileDownloadStatus
-import com.vondear.rxtool.RxAppTool
-import com.vondear.rxtool.RxDataTool
+import com.tamsiree.rxkit.RxAppTool
+import com.tamsiree.rxkit.RxDataTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewHolder
 import com.yuhang.novel.pirate.databinding.ItemGameBinding
@@ -18,6 +17,7 @@ import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickGameDownloadListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameDataResult
 import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
+import com.yuhang.novel.pirate.widget.progressLayout.ProgressLayoutListener
 
 class ItemGameVH(parent: ViewGroup) :
     BaseViewHolder<GameDataResult, ItemGameBinding>(parent, R.layout.item_game),

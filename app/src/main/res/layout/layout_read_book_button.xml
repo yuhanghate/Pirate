@@ -81,7 +81,7 @@
                 android:textColor="@color/secondary_text"
                 android:textSize="20sp" />
 
-        <com.xw.repo.BubbleSeekBar
+        <com.yuhang.novel.pirate.widget.bubble.BubbleSeekBar
                 android:id="@+id/seek_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
                     android:textColor="@color/primary_text"
                     android:textSize="15sp" />
 
-            <com.xw.repo.BubbleSeekBar
+            <com.yuhang.novel.pirate.widget.bubble.BubbleSeekBar
                     android:id="@+id/chapter_progress_sb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

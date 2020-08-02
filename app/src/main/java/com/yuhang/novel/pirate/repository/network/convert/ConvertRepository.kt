@@ -1,7 +1,7 @@
 package com.yuhang.novel.pirate.repository.network.convert
 
 import com.google.gson.Gson
-import com.vondear.rxtool.RxEncodeTool
+import com.tamsiree.rxkit.RxEncodeTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.extension.*
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity

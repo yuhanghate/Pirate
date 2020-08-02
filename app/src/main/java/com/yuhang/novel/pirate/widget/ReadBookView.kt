@@ -15,7 +15,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
-import com.xw.repo.BubbleSeekBar
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.constant.ConfigConstant
@@ -25,6 +24,7 @@ import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
+import com.yuhang.novel.pirate.widget.bubble.BubbleSeekBar
 import kotlin.math.abs
 
 /**

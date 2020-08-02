@@ -7,9 +7,8 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
-import com.orhanobut.logger.Logger
-import com.vondear.rxtool.RxDeviceTool
-import com.vondear.rxtool.RxNetTool
+import com.tamsiree.rxkit.RxDeviceTool
+import com.tamsiree.rxkit.RxNetTool
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.io_main

@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <ezy.ui.layout.LoadingLayout
+            <com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout
                     android:id="@+id/loading"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -92,7 +92,7 @@
                         android:clipToPadding="false"
                         android:paddingTop="20dp"
                         tools:listitem="@layout/item_sotre" />
-            </ezy.ui.layout.LoadingLayout>
+            </com.yuhang.novel.pirate.widget.loadingLayout.LoadingLayout>
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

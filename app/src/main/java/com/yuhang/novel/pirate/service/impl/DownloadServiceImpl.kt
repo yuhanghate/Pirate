@@ -7,8 +7,8 @@ import android.content.Intent
 import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.model.FileDownloadStatus
 import com.liulishuo.filedownloader.util.FileDownloadUtils
-import com.vondear.rxtool.RxFileTool
-import com.vondear.rxtool.RxTool
+import com.tamsiree.rxkit.RxFileTool
+import com.tamsiree.rxkit.RxTool
 import com.yuhang.novel.pirate.eventbus.DownloadStatusEvent
 import com.yuhang.novel.pirate.service.listener.DownloadListener
 import com.yuhang.novel.pirate.utils.NotificationUtils

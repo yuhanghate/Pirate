@@ -5,12 +5,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.list.ItemListener
 import com.afollestad.materialdialogs.list.listItems
-import com.vondear.rxtool.RxNetTool
+import com.tamsiree.rxkit.RxNetTool
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
-import kotlinx.android.synthetic.main.activity_problem_note.*
 
 class DownloadChapterDialog(val activity:ReadBookActivity, val viewModel:ReadBookViewModel, val obj:BooksResult):DialogCallback {
     override fun invoke(p1: MaterialDialog) {

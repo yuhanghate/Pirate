@@ -1,6 +1,6 @@
 package com.yuhang.novel.pirate.repository.network
 
-import com.vondear.rxtool.RxDeviceTool
+import com.tamsiree.rxkit.RxDeviceTool
 import com.yuhang.novel.pirate.app.PirateApp
 import okhttp3.Interceptor
 import okhttp3.Response

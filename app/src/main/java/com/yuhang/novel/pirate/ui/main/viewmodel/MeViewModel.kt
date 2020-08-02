@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
-import com.vondear.rxtool.RxDeviceTool
+import com.tamsiree.rxkit.RxDeviceTool
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
