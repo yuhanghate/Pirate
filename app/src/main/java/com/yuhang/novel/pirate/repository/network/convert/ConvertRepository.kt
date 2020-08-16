@@ -88,18 +88,19 @@ class ConvertRepository {
 
             //快读
             obj.isKuaiDu() -> {
-                Flowable.just("")
-                    .flatMap {
-                        //获取快读官方源列表
-                        val entity = mDatabase.bookResouceTypeKDDao.query(obj.bookKdId)
-                        if (entity == null || entity.tocId.isEmpty()) {
-                            return@flatMap mKuaiDuNetApi.getChapterList(obj.bookKdId)
-                                .map { it.niceBookChapterKSEntity() }
-                        }
-
-                        //获取快读子渠道列表
-                        return@flatMap getResouceChapterList(entity.tocId, obj.bookKdId)
-                    }
+                Flowable.empty<List<BookChapterKSEntity>>()
+//                Flowable.just("")
+//                    .flatMap {
+//                        //获取快读官方源列表
+//                        val entity = mDatabase.bookResouceTypeKDDao.query(obj.bookKdId)
+//                        if (entity == null || entity.tocId.isEmpty()) {
+//                            return@flatMap mKuaiDuNetApi.getChapterList(obj.bookKdId)
+//                                .map { it.niceBookChapterKSEntity() }
+//                        }
+//
+//                        //获取快读子渠道列表
+//                        return@flatMap getResouceChapterList(entity.tocId, obj.bookKdId)
+//                    }
             }
 
             //小黄书

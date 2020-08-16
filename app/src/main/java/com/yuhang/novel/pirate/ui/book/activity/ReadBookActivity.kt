@@ -114,7 +114,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
      */
     private fun getInitChapter() = intent.getBooleanExtra(IS_INIT_CHAPTER, false)
 
-    private fun getChapterid() = intent.getStringExtra(CHAPTERID)!!
+    private fun getChapterid() = intent.getStringExtra(CHAPTERID) ?: ""
 
 
     /**
@@ -312,7 +312,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             mReadBookView.toggleMenu()
             Handler().postDelayed({
                 netDataChatpterContent(isCache = false)
-            },500)
+            }, 500)
 
         }
 
@@ -352,7 +352,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             mBinding.layoutButton.chapterProgressLl.visibility = View.VISIBLE
             mBinding.layoutButton.colorLl.visibility = View.GONE
             mBinding.layoutButton.fontLl.visibility = View.GONE
-            mBinding.layoutButton.chapterProgressSb.setProgress(mViewModel.getChapterIndex().toFloat() + 1)
+            mBinding.layoutButton.chapterProgressSb.setProgress(
+                mViewModel.getChapterIndex().toFloat() + 1
+            )
         }
 
         //页面重新刷新
@@ -760,7 +762,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
      */
     override fun onPageIndexListener(position: Int) {
         //如果是最后一页.返回.因为是假数据
-        if (mViewModel.adapter.getList().isEmpty() || position == mViewModel.adapter.itemCount - 1 || position < 0) {
+        if (mViewModel.adapter.getList()
+                .isEmpty() || position == mViewModel.adapter.itemCount - 1 || position < 0
+        ) {
             return
         }
         val obj = mViewModel.adapter.getObj(position)

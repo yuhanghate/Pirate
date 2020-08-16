@@ -32,6 +32,12 @@ interface BookChapterKSDao {
   fun update(obj:BookChapterKSEntity)
 
   /**
+   * 根据小说id
+   */
+  @Query("select * from bookchapterksentity where bookId=:bookid")
+  fun query(bookid: String):BookChapterKSEntity?
+
+  /**
    * 获取第一章节id
    */
   @Query("select c.chapterId from bookchapterksentity as c where c.bookId = :bookid limit 1")

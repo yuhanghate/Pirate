@@ -31,6 +31,7 @@ import com.yuhang.novel.pirate.ui.main.dialog.MainDialog
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import io.reactivex.Flowable
+import org.greenrobot.eventbus.Logger
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -206,7 +207,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 
         mViewModel.queryCollection(obj.bookid)
             .compose(bindToLifecycle())
-            .subscribe({ ReadBookActivity.start(mActivity!!, it!!, isShowLabel) }, {})
+            .subscribe({ ReadBookActivity.start(mActivity!!, it!!, isShowLabel) }, {
+                com.orhanobut.logger.Logger.i("")
+
+            })
 
 
     }

@@ -113,7 +113,10 @@ class DataRepository(val context: Context) {
      * 删除数据库书籍对应的章节列表
      */
     fun deleteChapterList(bookid: String) {
-        mDatabase.bookChapterKSDao.delete(bookid)
+        mDatabase.bookChapterKSDao.query(bookid)?.let {
+            mDatabase.bookChapterKSDao.delete(bookid)
+        }
+
     }
 
     /**
