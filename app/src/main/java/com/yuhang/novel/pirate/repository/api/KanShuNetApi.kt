@@ -28,7 +28,7 @@ interface KanShuNetApi {
     /**
      * 看书站内搜索
      */
-    @GET("https://sou.jiaston.com/search.aspx")
+    @GET("https://souxs.pigqq.com/search.aspx")
     fun searchBook(
         @Query("key") key: String, @Query("page") page: Int = 1, @Query("siteid") siteid: String = "app2"
     ): Flowable<BookSearchResult>
@@ -44,7 +44,7 @@ interface KanShuNetApi {
      * dirId = (bookId - 后三位) + 1
      * bookId: 书本id
      */
-    @GET("https://infos.jiaston.com/BookFiles/Html/{dirId}/{bookId}/info.html")
+    @GET("https://infosxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/info.html")
     fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -54,7 +54,7 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
-    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/index.html")
+    @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -64,7 +64,7 @@ interface KanShuNetApi {
     /**
      * 获取章节内容
      */
-    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -76,7 +76,7 @@ interface KanShuNetApi {
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
      */
-    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun downloadChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
@@ -87,7 +87,7 @@ interface KanShuNetApi {
      * 下载章节内容
      * 不知道为什么要区分,可能这个域名是CDN
      */
-    @GET("https://content.jiaston.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
+    @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
     fun downloadNovel(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
