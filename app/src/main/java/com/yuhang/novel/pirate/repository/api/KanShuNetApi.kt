@@ -36,7 +36,7 @@ interface KanShuNetApi {
     /**
      * 男生 -> 分类
      */
-    @GET("https://appbdsc.cdn.bcebos.com/BookCategory.html")
+    @GET("https://scxs.pigqq.com/BookCategory.html")
     fun getBookCategory(): Flowable<BookCategoryResult>
 
     /**
@@ -104,7 +104,7 @@ interface KanShuNetApi {
      * date -> week:周榜 month:月榜  total:总榜
      * pageNum : 分页
      */
-    @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
+    @GET("https://scxs.pigqq.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
     fun getRankingList(
         @Path("gender") gender: String, @Path("type") type: String, @Path("date") date: String, @Path(
             "pageNum"
@@ -114,25 +114,25 @@ interface KanShuNetApi {
     /**
      * 书城 -> 男生
      */
-    @GET("https://appbdsc.cdn.bcebos.com/v6/base/man.html")
+    @GET("https://scxs.pigqq.com/v6/base/man.html")
     fun getStoreMan(): Flowable<StoreManResult>
 
     /**
      * 书城 -> 女生
      */
-    @GET("https://appbdsc.cdn.bcebos.com/v6/base/lady.html")
+    @GET("https://scxs.pigqq.com/v6/base/lady.html")
     fun getStoreLady(): Flowable<StoreManResult>
 
     /**
      * 书城 -> 榜单 -> 男生
      */
-    @GET("https://appbdsc.cdn.bcebos.com/top/man/index.html")
+    @GET("https://scxs.pigqq.com/top/man/index.html")
     fun getStoreRankingMan(): Flowable<StoreRankingResult>
 
     /**
      * 书城 -> 榜单 -> 女生
      */
-    @GET("https://appbdsc.cdn.bcebos.com/top/lady/index.html")
+    @GET("https://scxs.pigqq.com/top/lady/index.html")
     fun getStoreRankingLady(): Flowable<StoreRankingResult>
 
     /**
@@ -140,7 +140,7 @@ interface KanShuNetApi {
      *
      * 最新发布/本周最热/最多收藏/小编推荐
      */
-    @GET("https://appbdsc.cdn.bcebos.com/shudan/{gender}/all/{type}/{pageNum}.html")
+    @GET("https://scxs.pigqq.com/shudan/{gender}/all/{type}/{pageNum}.html")
     fun getBooksList(@Path("gender") gender: String, @Path("type") type: String, @Path("pageNum") pageNum: String): Flowable<BooksListResult>
 
     /**
@@ -148,18 +148,18 @@ interface KanShuNetApi {
      *
      * 起点/纵横/去起/若初/红薯/潇湘/逐浪
      */
-    @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/more/{type}/{pageNum}.html")
+    @GET("https://scxs.pigqq.com/top/{gender}/more/{type}/{pageNum}.html")
     fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):Flowable<MoreRankingResult>
 
     /**
      * 看书神器 排行榜
      */
-    @GET("https://appbdsc.cdn.bcebos.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
+    @GET("https://scxs.pigqq.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
     fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : Flowable<KanShuRankingResult>
 
     /**
      * 书单详情
      */
-    @GET("https://appbdsc.cdn.bcebos.com/shudan/detail/{id}.html")
+    @GET("https://scxs.pigqq.com/shudan/detail/{id}.html")
     fun getBookListDetail(@Path("id") id:String):Flowable<ShuDanDetailResult>
 }

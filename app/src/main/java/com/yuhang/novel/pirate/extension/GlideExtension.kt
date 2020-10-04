@@ -33,7 +33,7 @@ fun Any.niceCoverPic(conver: String):String {
         return conver
     }
 
-    val url = "http://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(conver, "utf-8")}"
+    val url = "http://scxs.pigqq.com/BookFiles/BookImages/${URLEncoder.encode(conver, "utf-8")}"
     Logger.t("cover").i("$url")
     return url
 }
@@ -43,7 +43,7 @@ fun String.niceCoverPic(): String {
         return this
     }
 
-    val url = "http://appbdimg.cdn.bcebos.com/BookFiles/BookImages/${URLEncoder.encode(this, "utf-8")}"
+    val url = "http://scxs.pigqq.com/BookFiles/BookImages/${URLEncoder.encode(this, "utf-8")}"
     Logger.t("cover").i("$url")
     return url
 }
