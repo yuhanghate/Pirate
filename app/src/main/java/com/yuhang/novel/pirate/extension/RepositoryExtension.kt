@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.yuhang.novel.pirate.repository.DataRepository
 import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part
 import okhttp3.RequestBody
@@ -12,12 +13,12 @@ import java.io.File
 /**
  * String -> RequestBody对象进行post
  */
-fun DataRepository.nicePart(key:String, str: String?): MultipartBody.Part {
+fun DataRepository.nicePart(key:String, str: String): MultipartBody.Part {
 
 
 
     val part = RequestBody.create(
-            MediaType.parse("multipart/form-data"), str
+        "multipart/form-data".toMediaTypeOrNull(), str
     )
     return Part.createFormData(key, str)
 }
@@ -27,10 +28,10 @@ fun DataRepository.nicePart(key:String, str: String?): MultipartBody.Part {
  */
 fun DataRepository.nicePart(
         key: String,
-        value: File?
+        value: File
 ): MultipartBody.Part {
 
-    val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), value)
+    val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), value)
     return Part.createFormData(key, value?.name, requestBody)
 }
 
@@ -42,7 +43,7 @@ fun DataRepository.nicePartList(
         value: List<File>
 ): List<MultipartBody.Part> {
     return value.map {
-        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), it)
+        val requestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), it)
         val createFormData = Part.createFormData(key, it.name, requestBody)
         createFormData
     }.toList()
@@ -52,7 +53,7 @@ fun DataRepository.nicePartList(
  * Post 上传json 格式
  */
 fun DataRepository.niceBody(obj: Any): RequestBody {
-    return RequestBody.create(MediaType.parse("application/json"), Gson().toJson(obj))
+    return RequestBody.create("application/json".toMediaTypeOrNull(), Gson().toJson(obj))
 }
 
 /**
@@ -73,7 +74,7 @@ fun DataRepository.niceDir(bookid: Long): Int {
  * Post 上传json 格式
  */
 fun ConvertRepository.niceBody(obj: Any): RequestBody {
-    return RequestBody.create(MediaType.parse("application/json"), Gson().toJson(obj))
+    return RequestBody.create("application/json".toMediaTypeOrNull(), Gson().toJson(obj))
 }
 
 /**

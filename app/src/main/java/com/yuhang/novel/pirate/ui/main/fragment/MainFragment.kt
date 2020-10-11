@@ -7,11 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
-import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -19,7 +19,6 @@ import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.FragmentMainBinding
 import com.yuhang.novel.pirate.eventbus.*
 import com.yuhang.novel.pirate.extension.clickWithTrigger
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.listener.OnClickItemMoreListener
@@ -30,8 +29,13 @@ import com.yuhang.novel.pirate.ui.download.activity.BookDownloadActivity
 import com.yuhang.novel.pirate.ui.main.dialog.MainDialog
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
-import io.reactivex.Flowable
-import org.greenrobot.eventbus.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -179,7 +183,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * 重要提示
      */
     private fun showTipdialog() {
-        MaterialDialog(activity!!).show {
+        MaterialDialog(requireActivity()).show {
             title(text = "提示")
             message(
                 text = "1.搜索不到小说可以查看 我的-帮助与问题\n\n" +
@@ -205,14 +209,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
 //        val isShowLabel  = true
         obj.isShowLabel = false
 
-        mViewModel.queryCollection(obj.bookid)
-            .compose(bindToLifecycle())
-            .subscribe({ ReadBookActivity.start(mActivity!!, it!!, isShowLabel) }, {
-                com.orhanobut.logger.Logger.i("")
-
-            })
-
-
+        lifecycleScope.launch {
+            val result = mViewModel.queryCollection(obj.bookid) ?: return@launch
+            ReadBookActivity.start(requireContext(), result, isShowLabel)
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -241,24 +241,28 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      * 从本地数据库加载书架数据
      */
     fun netLocalData() {
-        mViewModel.getBookInfoListLocal()
-            .compose(bindToLifecycle())
-            .subscribe({
-                mBinding.loading.showContent()
-                mBinding.refreshLayout.finishRefresh()
-                mBinding.refreshLayout.setEnableLoadMore(false)
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getBookInfoListLocal()) }
+                .catch {
+                    mViewModel.adapter.setRefersh(arrayListOf())
+                    mBinding.refreshLayout.finishRefresh(false)
+                }
+                .onCompletion { mBinding.loading.showContent() }
+                .collect {
+                    withContext(Dispatchers.Main) {
+                        mBinding.refreshLayout.finishRefresh()
+                        mBinding.refreshLayout.setEnableLoadMore(false)
 
-                val list = arrayListOf<BookInfoKSEntity>()
-                it.filterNotNull().forEach { list.add(it) }
-                mViewModel.adapter.getList().clear()
-                mViewModel.adapter.setRefersh(list)
+                        val list = arrayListOf<BookInfoKSEntity>()
+                        it.filterNotNull().forEach { list.add(it) }
+                        mViewModel.adapter.getList().clear()
+                        mViewModel.adapter.setRefersh(list)
+                        initEmptyView()
+                    }
 
-                initEmptyView()
-            }, {
-                mBinding.loading.showContent()
-                mViewModel.adapter.setRefersh(arrayListOf())
-                mBinding.refreshLayout.finishRefresh(false)
-            })
+                }
+        }
+
     }
 
     /**
@@ -277,26 +281,26 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
      */
 
     private fun netServiceData() {
-        val list = arrayListOf<BookInfoKSEntity>()
-        mViewModel.getBookDetailsListKS()
-            .compose(io_main())
-            .compose(bindToLifecycle())
-            .subscribe({ obj ->
-                list.filter { it.bookid != obj.bookid }.forEach { list.add(it) }
-            }, {
-                mBinding.loading.showContent()
-                mViewModel.adapter.setRefersh(list)
-                mBinding.refreshLayout.finishRefresh(false)
-            }, {
-                //新标题的章节进行刷新
-                mViewModel.updateChapterToDB()
-                    .compose(io_main())
-                    .compose(bindUntilEvent(FragmentEvent.DESTROY))
-                    .subscribe({}, {})
 
-                netLocalData()
-                PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
-            })
+        lifecycleScope.launch {
+            flow {
+                emit(mViewModel.getBookDetailsListKS())
+            }
+                .catch {
+                    mBinding.loading.showContent()
+                    mBinding.refreshLayout.finishRefresh(false)
+                }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mViewModel.adapter.setRefersh(it)
+                        //新标题的章节进行刷新
+                        mViewModel.updateChapterToDB()
+                        netLocalData()
+                        PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
+                    }
+
+                }
+        }
     }
 
     /**

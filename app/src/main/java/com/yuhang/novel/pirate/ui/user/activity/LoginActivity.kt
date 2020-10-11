@@ -3,6 +3,8 @@ package com.yuhang.novel.pirate.ui.user.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
+import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
@@ -10,13 +12,13 @@ import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
 import com.yuhang.novel.pirate.databinding.ActivityLoginBinding
 import com.yuhang.novel.pirate.extension.clickWithTrigger
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
 import com.yuhang.novel.pirate.ui.user.viewmodel.LoginViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Logger
 
 /**
  * 登录
@@ -68,44 +70,34 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         val password = mBinding.passwordEt.text.toString()
 
         if (mViewModel.checkParams(mBinding.mobileEt, mBinding.passwordEt)) {
-            showProgressbar("登录中...")
-            mViewModel.login(username, password)
-                .compose(bindToLifecycle())
-                .subscribe({
-                    closeProgressbar()
-                    if (it.code == 200) {
-                        //保存到本地
-                        val userResult = it
-                        //当用户使用自有账号登录时，可以这样统计：
-                        MobclickAgent.onProfileSignIn(userResult.data.id)
-                        PirateApp.getInstance().setToken(userResult.data.token)
-                        mViewModel.synCollection()
-                            .compose(bindToLifecycle())
-                            .subscribe({
-                            }, {
-                                closeProgressbar()
-                                onBackPressed()
-                            },{
-                                mUsersService.updateUsersToLocal(userResult = userResult).subscribe({
-                                    EventBus.getDefault().postSticky(userResult)
-                                    onBackPressed()
-                                }, {
-                                    closeProgressbar()
-                                    onBackPressed()
-                                },{
-                                    com.orhanobut.logger.Logger.i("","")
-                                })
-                            })
 
-
-                    } else {
-                        niceToast(it.msg)
+            lifecycleScope.launch {
+                flow<Unit> {
+                    val userResult = mViewModel.login(username, password)
+                    if (userResult.code != 200) {
+                        niceToast(userResult.msg)
+                        return@flow
                     }
+                    //当用户使用自有账号登录时，可以这样统计：
+                    MobclickAgent.onProfileSignIn(userResult.data.id)
+                    PirateApp.getInstance().setToken(userResult.data.token)
 
-                }, {
-                    closeProgressbar()
-                    niceToast("登录失败")
-                })
+                    mViewModel.synCollection()
+
+                    mUsersService.updateUsersToLocal(userResult = userResult)
+                    EventBus.getDefault().postSticky(userResult)
+                    onBackPressed()
+                }
+                    .onStart { showProgressbar("登录中...") }
+                    .onCompletion { closeProgressbar() }
+                    .catch {
+                        niceToast("登陆失败")
+                        Logger.e("error", it.message)
+                    }
+                    .collect { }
+            }
+
+
         }
 
     }

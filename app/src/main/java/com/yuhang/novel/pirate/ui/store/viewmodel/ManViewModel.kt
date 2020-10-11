@@ -3,14 +3,12 @@ package com.yuhang.novel.pirate.ui.store.viewmodel
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.repository.database.entity.StoreEntity
 import com.yuhang.novel.pirate.repository.database.entity.StoreRankingEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 import com.yuhang.novel.pirate.ui.common.model.RankingModel
 import com.yuhang.novel.pirate.ui.common.model.StoreRankingModel
 import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
-import io.reactivex.Flowable
 import kotlin.properties.Delegates
 
 class ManViewModel : BaseViewModel() {
@@ -65,45 +63,38 @@ class ManViewModel : BaseViewModel() {
     /**
      * 获取本地精选
      */
-    fun queryStoreMan(): Flowable<List<StoreEntity>> {
-        return Flowable.just("")
-            .map { mDataRepository.queryStoreEntity("man") }
+    suspend fun queryStoreMan(): List<StoreEntity> {
+        return mDataRepository.queryStoreEntity("man")
     }
 
     /**
      * 本地查询  书城 -> 榜单 -> 男生
      */
-    fun queryStoreRankingMan(): Flowable<StoreRankingEntity> {
-        return Flowable.just("")
-            .map {
-                mDataRepository.queryStoreRanking("man")
-                    ?: return@map StoreRankingEntity()
-            }
-            .compose(io_main())
+    suspend fun queryStoreRankingMan(): StoreRankingEntity {
+        return mDataRepository.queryStoreRanking("man")
+            ?: return StoreRankingEntity()
     }
 
     /**
      * 获取精选
      */
-    fun getStoreMan(): Flowable<List<StoreEntity>> {
-        return mDataRepository.getStoreMan().map {
-            it.data.forEach { obj -> obj.genderType = "man" }
-            mDataRepository.deleteStoreEntity("man")
-            mDataRepository.insertStoreEntity(it.data)
-            it.data
-        }.compose(io_main())
+    suspend fun getStoreMan(): List<StoreEntity> {
+        val storeMan = mDataRepository.getStoreMan()
+        storeMan.data.forEach { obj -> obj.genderType = "man" }
+        mDataRepository.deleteStoreEntity("man")
+        mDataRepository.insertStoreEntity(storeMan.data)
+        return storeMan.data
     }
 
     /**
      * 书城 -> 榜单 -> 男生
      */
-    fun getStoreRankingMan(): Flowable<StoreRankingEntity> {
-        return mDataRepository.getStoreRankingMan().map {
-            it.data.apply { this.genderType = "man" }
-            mDataRepository.cleanStoreRanking("man")
-            mDataRepository.insertStoreRanking(it.data)
-            it.data
-        }.compose(io_main())
+    suspend fun getStoreRankingMan(): StoreRankingEntity {
+        val storeRankingMan = mDataRepository.getStoreRankingMan()
+        storeRankingMan.data.apply { this.genderType = "man" }
+        mDataRepository.cleanStoreRanking("man")
+        mDataRepository.insertStoreRanking(storeRankingMan.data)
+        return storeRankingMan.data
     }
 
     /**

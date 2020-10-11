@@ -2,18 +2,15 @@ package com.yuhang.novel.pirate.ui.settings.viewmodel
 
 import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.databinding.ActivitySearchFeedbackBinding
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceTipTop
-import io.reactivex.Flowable
 
 class SearchFeedbackViewModel:BaseViewModel() {
 
     /**
      * 精确求书
      */
-    fun requestBook(bookname: String, author: String) :Flowable<String>{
+    suspend fun requestBook(bookname: String, author: String) :String{
         return mDataRepository.getBookFeedback(bookname, author)
-            .compose(io_main())
     }
 
     fun checkParams(binding: ActivitySearchFeedbackBinding):Boolean {

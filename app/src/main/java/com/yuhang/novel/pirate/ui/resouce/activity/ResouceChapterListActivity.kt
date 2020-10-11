@@ -4,20 +4,27 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.BookConstant
 import com.yuhang.novel.pirate.databinding.ActivityResouceChapterListBinding
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceChapterListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.logging.Handler
 
 /**
@@ -32,7 +39,12 @@ class ResouceChapterListActivity :
         const val CHAPTER = "chapter"
         const val BOOKS_RESULT = "books_result"
         const val BOOKS_CHAPTER_INDEX = "books_chapter_index"
-        fun start(context: Activity, obj: BooksResult, chapter: ResouceListKdResult, chapterIndex:Int) {
+        fun start(
+            context: Activity,
+            obj: BooksResult,
+            chapter: ResouceListKdResult,
+            chapterIndex: Int,
+        ) {
             val intent = Intent(context, ResouceChapterListActivity::class.java)
             intent.putExtra(CHAPTER, Gson().toJson(chapter))
             intent.putExtra(BOOKS_RESULT, obj.toJson())
@@ -99,23 +111,37 @@ class ResouceChapterListActivity :
     @SuppressLint("CheckResult")
     override fun initData() {
         super.initData()
-        mBinding.progressView.show()
-        mViewModel.getChapterList(getResouceListKdResult()._id, getResouceListKdResult().book)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mBinding.titleTv.text =
-                    "${getResouceListKdResult().name}(${getBooksResult().bookName})"
-                mViewModel.chapterList.addAll(it)
-                mViewModel.adapter.setRefersh(it)
 
-                //跳转到附近的章节
-//                android.os.Handler().postDelayed({mBinding.recyclerView.scrollToPosition(mViewModel.getChapterIndex(getBooksChapterIndex()))}, 200)
-                mBinding.recyclerView.scrollToPosition(mViewModel.getChapterIndex(getBooksChapterIndex()))
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getChapterList(
+                        getResouceListKdResult()._id,
+                        getResouceListKdResult().book
+                    )
+                )
+            }
+                .catch { Logger.e(it.message ?: "") }
+                .onStart { mBinding.progressView.show() }
+                .onCompletion { mBinding.progressView.hide() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mBinding.titleTv.text =
+                            "${getResouceListKdResult().name}(${getBooksResult().bookName})"
+                        mViewModel.chapterList.addAll(it)
+                        mViewModel.adapter.setRefersh(it)
 
-                mBinding.progressView.hide()
-            }, {
-                mBinding.progressView.hide()
-            })
+                        //跳转到附近的章节
+                        mBinding.recyclerView.scrollToPosition(
+                            mViewModel.getChapterIndex(
+                                getBooksChapterIndex()
+                            )
+                        )
+                    }
+
+                }
+        }
+
     }
 
     /**
@@ -123,22 +149,34 @@ class ResouceChapterListActivity :
      */
     @SuppressLint("CheckResult")
     override fun onClickItemListener(view: View, position: Int) {
-        val obj = mViewModel.chapterList[position]
-        mViewModel.insertChapterList(BookResouceTypeKDEntity().apply {
-            this.bookName = getBooksResult().bookName
-            this.bookid = getResouceListKdResult().book
-            this.resouce = getBooksResult().resouce
-            this.tocId = getResouceListKdResult()._id
-            this.typeName = getResouceListKdResult().name
-        }, getBooksResult()).compose(bindToLifecycle()).subscribe({
-            ReadBookActivity.start(this, BooksResult().apply {
-                this.bookKdId = obj.bookId
-                this.bookName = getBooksResult().bookName
-                this.typeKd = 1
-                this.typeKs = 2
-                this.resouce = obj.resouce
-            }, obj.chapterId)
-            finish()
-        }, {})
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.insertChapterList(BookResouceTypeKDEntity().apply {
+                        this.bookName = getBooksResult().bookName
+                        this.bookid = getResouceListKdResult().book
+                        this.resouce = getBooksResult().resouce
+                        this.tocId = getResouceListKdResult()._id
+                        this.typeName = getResouceListKdResult().name
+                    }, getBooksResult())
+                )
+            }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        val obj = mViewModel.chapterList[position]
+                        ReadBookActivity.start(this@ResouceChapterListActivity, BooksResult().apply {
+                            this.bookKdId = obj.bookId
+                            this.bookName = getBooksResult().bookName
+                            this.typeKd = 1
+                            this.typeKs = 2
+                            this.resouce = obj.resouce
+                        }, obj.chapterId)
+                        finish()
+                    }
+
+                }
+        }
+
     }
 }

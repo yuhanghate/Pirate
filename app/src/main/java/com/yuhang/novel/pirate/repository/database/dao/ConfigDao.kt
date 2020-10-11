@@ -9,8 +9,8 @@ import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 interface ConfigDao {
 
     @Insert
-    fun insert(obj:ConfigEntity)
+    suspend fun insert(obj:ConfigEntity)
 
     @Query("select * from configentity order by id desc limit 1")
-    fun query():ConfigEntity
+    suspend fun query():ConfigEntity
 }

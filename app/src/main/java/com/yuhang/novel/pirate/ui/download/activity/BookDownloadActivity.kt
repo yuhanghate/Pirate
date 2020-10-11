@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
@@ -24,6 +25,7 @@ import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.download.dialog.DownloadDeleteDialog
 import com.yuhang.novel.pirate.ui.download.viewmodel.BookDownloadViewModel
 import com.yuhang.novel.pirate.viewholder.ItemBookDownloadVH
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -77,23 +79,24 @@ class BookDownloadActivity :
 
     override fun initData() {
         super.initData()
-        mViewModel.queryBookDownloadAll()
-            .compose(bindToLifecycle())
-            .subscribe({
-                it.forEach { entity ->
-                    val liveData =
-                        WorkManager.getInstance().getWorkInfoByIdLiveData(entity.toUUId())
-                    liveData.observe(this, androidx.lifecycle.Observer<WorkInfo> { info ->
-                        workMap[info.id.toString()] = info
-                        //下载失败时重新下载
-                        if (info.state == WorkInfo.State.FAILED) {
-                            mViewModel.downloadBook(entity.niceBookResult())
-                        }
-                    })
 
-                }
-                mViewModel.adapter.setRefersh(it)
-            }, {})
+        lifecycleScope.launch {
+            val  list = mViewModel.queryBookDownloadAll()
+            list.forEach { entity ->
+                val liveData =
+                    WorkManager.getInstance().getWorkInfoByIdLiveData(entity.toUUId())
+                liveData.observe(this@BookDownloadActivity, { info ->
+                    workMap[info.id.toString()] = info
+                    //下载失败时重新下载
+                    if (info.state == WorkInfo.State.FAILED) {
+                        mViewModel.downloadBook(entity.niceBookResult())
+                    }
+                })
+
+            }
+            mViewModel.adapter.setRefersh(list)
+        }
+
     }
 
     /**

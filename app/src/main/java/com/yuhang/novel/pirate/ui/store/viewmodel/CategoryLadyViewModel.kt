@@ -2,9 +2,7 @@ package com.yuhang.novel.pirate.ui.store.viewmodel
 
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
-import io.reactivex.Flowable
 import kotlin.properties.Delegates
 
 class CategoryLadyViewModel:BaseViewModel() {
@@ -16,9 +14,7 @@ class CategoryLadyViewModel:BaseViewModel() {
     /**
      * 男生分类
      */
-    fun getCategoryLady(): Flowable<List<CategoryKDEntity>> {
-        return Flowable.just("")
-            .map { mDataRepository.queryCategoryLady() }
-            .compose(io_main())
+    suspend fun getCategoryLady(): List<CategoryKDEntity> {
+        return mDataRepository.queryCategoryLady()
     }
 }

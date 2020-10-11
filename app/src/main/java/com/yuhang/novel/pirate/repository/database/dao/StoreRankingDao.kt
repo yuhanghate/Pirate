@@ -10,17 +10,17 @@ import com.yuhang.novel.pirate.repository.database.entity.StoreRankingEntity
 interface StoreRankingDao {
 
     @Insert
-    fun insert(obj: StoreRankingEntity)
+    suspend fun insert(obj: StoreRankingEntity)
 
     /**
      * 查询
      */
     @Query("select * from storerankingentity where genderType = :genderType order by id desc limit 1")
-    fun query(genderType: String): StoreRankingEntity?
+    suspend fun query(genderType: String): StoreRankingEntity?
 
     /**
      * 清空数据
      */
     @Query("delete from storerankingentity where genderType = :genderType")
-    fun clean(genderType: String)
+    suspend fun clean(genderType: String)
 }

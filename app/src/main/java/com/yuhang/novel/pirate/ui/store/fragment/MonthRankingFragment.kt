@@ -1,8 +1,10 @@
 package com.yuhang.novel.pirate.ui.store.fragment
 
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
@@ -12,11 +14,14 @@ import com.yuhang.novel.pirate.databinding.FragmentWeekRankingBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.KanShuRankingResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.adapter.MoreRankingListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.MonthRankingViewModel
 import com.yuhang.novel.pirate.ui.store.viewmodel.WeekRankingViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 /**
  * 月榜
@@ -52,27 +57,28 @@ class MonthRankingFragment:BaseFragment<FragmentMonthRankingBinding, MonthRankin
 
     override fun initData() {
         super.initData()
-        mViewModel.queryKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH)
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            flow { emit(mViewModel.queryKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH)) }
+                .catch { Logger.e(it.message?:"") }
+                .collect {
+                    if (it.isEmpty()) {
+                        mBinding.refreshLayout.autoRefresh()
+                        return@collect
+                    }
+                    mViewModel.adapter.clear()
 
-                if (it.isEmpty()) {
-                    mBinding.refreshLayout.autoRefresh()
-                    return@subscribe
+                    val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+
+                    val adapter = MoreRankingListAdapter()
+                        .setListener(this)
+                        .initData(it)
+
+                    adapters.add(adapter.toAdapter())
+
+                    mViewModel.adapter.addAdapters(adapters)
+                    mBinding.recyclerview.requestLayout()
                 }
-                mViewModel.adapter.clear()
-
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
-            },{})
+        }
     }
 
     override fun initRefreshLayout() {
@@ -92,50 +98,51 @@ class MonthRankingFragment:BaseFragment<FragmentMonthRankingBinding, MonthRankin
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
 
-        PAGE_NUM = 1
-        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH, PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH, PAGE_NUM)) }
+                .onStart { PAGE_NUM = 1 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message?:"") }
+                .collect {
+                    if (!it.data.isHasNext) {
+                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                    }
 
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                    mViewModel.adapter.clear()
+
+                    val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+
+                    val adapter = MoreRankingListAdapter()
+                        .setListener(this)
+                        .initData(it.data.bookList)
+
+                    adapters.add(adapter.toAdapter())
+
+                    mViewModel.adapter.addAdapters(adapters)
+                    mBinding.recyclerview.requestLayout()
                 }
-
-                mViewModel.adapter.clear()
-
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
-                mBinding.refreshLayout.finishRefresh()
-            }, { mBinding.refreshLayout.finishRefresh() })
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        PAGE_NUM++
 
-        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH, PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_MONTH, PAGE_NUM)) }
+                .onStart { PAGE_NUM++ }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .catch { Logger.e(it.message?:"") }
+                .collect {
+                    if (!it.data.isHasNext) {
+                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                    }
+
+                    val adapter = MoreRankingListAdapter()
+                        .setListener(this)
+                        .initData(it.data.bookList)
+
+                    mViewModel.adapter.addAdapter(adapter.toAdapter())
                 }
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
-
-                mViewModel.adapter.addAdapter(adapter.toAdapter())
-                mBinding.refreshLayout.finishLoadMore()
-            }, {
-                mBinding.refreshLayout.finishLoadMore()
-            })
+        }
     }
 
     /**

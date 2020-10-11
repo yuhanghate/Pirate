@@ -1,12 +1,13 @@
 package com.yuhang.novel.pirate.ui.store.fragment
 
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
-import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.FragmentManBinding
@@ -27,6 +28,10 @@ import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.activity.MoreRankingListActivity
 import com.yuhang.novel.pirate.ui.store.adapter.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.ManViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -63,24 +68,26 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
     }
 
     override fun initData() {
-//        mBinding.progressView.show()
-        mViewModel.queryStoreRankingMan()
-            .flatMap {
-                mViewModel.buildRanking(it)
-                return@flatMap mViewModel.queryStoreMan()
+        lifecycleScope.launch {
+            flow {
+                val queryStoreRankingMan = mViewModel.queryStoreRankingMan()
+                mViewModel.buildRanking(queryStoreRankingMan)
+                emit(mViewModel.queryStoreMan())
             }
-            .compose(bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe({
-                mBinding.progressView.hide()
-                if (it.isEmpty()) {
-                    mBinding.refreshLayout.autoRefresh()
-                    return@subscribe
+                .onCompletion { mBinding.progressView.hide() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main) {
+                        if (it.isEmpty()) {
+                            mBinding.refreshLayout.autoRefresh()
+                            return@withContext
+                        }
+                        buildRecylerView(it)
+                    }
                 }
-                buildRecylerView(it)
-            }, {
-                mBinding.progressView.hide()
-                mBinding.refreshLayout.autoRefresh()
-            })
+
+        }
+
     }
 
     override fun initRecyclerView() {
@@ -105,27 +112,26 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
 
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        PAGE_NUM = 1
-        mViewModel.getStoreRankingMan()
-            .flatMap {
-                mViewModel.buildRanking(it)
-                mViewModel.getStoreMan()
+
+        lifecycleScope.launch {
+            flow {
+                val storeRankingMan = mViewModel.getStoreRankingMan()
+                mViewModel.buildRanking(storeRankingMan)
+                emit(mViewModel.getStoreMan())
             }
-            .compose(bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe({
-
-                buildRecylerView(it)
-                mBinding.refreshLayout.finishRefresh()
-
-            }, {
-                mBinding.refreshLayout.finishRefresh()
-            })
+                .onStart { PAGE_NUM = 1 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main)  { buildRecylerView(it) }
+                }
+        }
     }
 
     /**
      * 组装Adapter
      */
-    private fun buildRecylerView(list:List<StoreEntity>) {
+    private fun buildRecylerView(list: List<StoreEntity>) {
         mViewModel.adapter.clear()
         mViewModel.buildBook(list)
 
@@ -191,7 +197,7 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
     /**
      * 分隔线 粗
      */
-    private fun getBoldLineAdapter() :DelegateAdapter.Adapter<RecyclerView.ViewHolder>{
+    private fun getBoldLineAdapter(): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
         val adapter = StoreLineBoldAdapter()
             .initData(LineModel(bottom = 20))
         return adapter.toAdapter()
@@ -269,13 +275,23 @@ class ManFragment : BaseFragment<FragmentManBinding, ManViewModel>(), OnRefreshL
      * 点击正版排行榜
      */
     override fun onClickMoreRankingListener(obj: RankingModel, position: Int) {
-        MoreRankingListActivity.start(mActivity!!, MoreRankingListActivity.TYPE_MAN, obj.type, obj.name)
+        MoreRankingListActivity.start(
+            mActivity!!,
+            MoreRankingListActivity.TYPE_MAN,
+            obj.type,
+            obj.name
+        )
     }
 
     /**
      * 点击更多
      */
     override fun onClickItemStoreTitleMoreListener(view: View, obj: String, position: Int) {
-        KanShuRankingActivity.start(mActivity!!, obj, KanShuRankingActivity.TYPE_MAN, mViewModel.rankingMap[obj]!!)
+        KanShuRankingActivity.start(
+            mActivity!!,
+            obj,
+            KanShuRankingActivity.TYPE_MAN,
+            mViewModel.rankingMap[obj]!!
+        )
     }
 }

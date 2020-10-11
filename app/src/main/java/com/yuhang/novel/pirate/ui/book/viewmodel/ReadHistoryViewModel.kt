@@ -6,9 +6,6 @@ import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.extension.niceBookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.ui.book.adapter.ReadHistoryAdapter
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class ReadHistoryViewModel : BaseViewModel() {
 
@@ -17,27 +14,19 @@ class ReadHistoryViewModel : BaseViewModel() {
     /**
      * 获取最近浏览的小说
      */
-    fun queryReadHistoryList(pageNum: Int): Flowable<List<BookInfoKSEntity>> {
-        return Flowable.just("")
-            .map { mDataRepository.queryReadHistoryList(pageNum).filterNotNull().map { it }.toList() }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    private suspend fun queryReadHistoryList(pageNum: Int): List<BookInfoKSEntity> {
+        return mDataRepository.queryReadHistoryList(pageNum).filterNotNull().map { it }.toList()
     }
 
     /**
      * 获取在线最近阅读
      */
-    fun getReadHistoryListLocal(pageNum: Int): Flowable<List<BookInfoKSEntity>> {
-        return mDataRepository.getReadHistoryList(pageNum).subscribeOn(Schedulers.io())
-            .map {
-                it.data.list.map {
-                    it.niceBookInfoKSEntity()
-                }.toList()
-            }
-            .observeOn(AndroidSchedulers.mainThread())
+    private suspend fun getReadHistoryListLocal(pageNum: Int): List<BookInfoKSEntity> {
+        val history = mDataRepository.getReadHistoryList(pageNum)
+        return history.data.list.map { it.niceBookInfoKSEntity() }.toList()
     }
 
-    fun getReadHistoryList(pageNum: Int): Flowable<List<BookInfoKSEntity>> {
+    suspend fun getReadHistoryList(pageNum: Int): List<BookInfoKSEntity> {
         return if (TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
             //从本地获取
             queryReadHistoryList(pageNum)

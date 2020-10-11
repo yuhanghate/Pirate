@@ -24,6 +24,7 @@ import com.yuhang.novel.pirate.service.ReadAloudService
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.utils.IntentHelp
 import com.yuhang.novel.pirate.utils.MediaHelp
+import kotlinx.coroutines.runBlocking
 
 /**
  * 朗读模块
@@ -200,15 +201,19 @@ abstract open class ReadAloudServiceImpl : Service(), ReadAloudService, AudioMan
 
 
 
-        PirateApp.getInstance().getDataRepository().queryBookInfo(aloudModel.bookid)?.let {
-            ReadBookActivity.start(this@ReadAloudServiceImpl, it.niceBooksResult(), false)
-            val intent = Intent(this, ReadBookActivity::class.java)
-            intent.putExtra(ReadBookActivity.BOOKS_RESULT, it.niceBooksResult().toJson())
+        runBlocking{
+            val bookInfo =
+                PirateApp.getInstance().getDataRepository().queryBookInfo(aloudModel.bookid)
+                    ?: return@runBlocking
+
+            ReadBookActivity.start(this@ReadAloudServiceImpl, bookInfo.niceBooksResult(), false)
+            val intent = Intent(this@ReadAloudServiceImpl, ReadBookActivity::class.java)
+            intent.putExtra(ReadBookActivity.BOOKS_RESULT, bookInfo.niceBooksResult().toJson())
             intent.putExtra(ReadBookActivity.IS_INIT_CHAPTER, false)
             val pendingIntent =
-                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(this@ReadAloudServiceImpl, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            val builder = NotificationCompat.Builder(this, AloudSealed.Notification.CHANNEL)
+            val builder = NotificationCompat.Builder(this@ReadAloudServiceImpl, AloudSealed.Notification.CHANNEL)
                 .setSmallIcon(R.drawable.ic_volume_up)
                 .setOngoing(true)
                 .setContentTitle(nTitle)
@@ -246,7 +251,6 @@ abstract open class ReadAloudServiceImpl : Service(), ReadAloudService, AudioMan
             val notification = builder.build()
             startForeground(AloudSealed.Notification.ID, notification)
         }
-
 
     }
 

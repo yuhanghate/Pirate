@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.orhanobut.logger.Logger
@@ -25,6 +26,7 @@ import com.yuhang.novel.pirate.ui.book.adapter.ReadBookAdapter
 import com.yuhang.novel.pirate.ui.book.fragment.DrawerLayoutLeftFragment
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
 import com.yuhang.novel.pirate.widget.bubble.BubbleSeekBar
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /**
@@ -148,7 +150,10 @@ class ReadBookView(val activity:ReadBookActivity, val vm:ReadBookViewModel) {
                 ) {
                     super.getProgressOnActionUp(bubbleSeekBar, progress, progressFloat)
 
-                    activity.netDataChapterContentFromId(vm.chapterList[progress - 1].chapterId)
+                    activity.lifecycleScope.launch {
+                        activity.netDataChapterContentFromId(vm.chapterList[progress - 1].chapterId)
+                    }
+
                 }
             }
     }

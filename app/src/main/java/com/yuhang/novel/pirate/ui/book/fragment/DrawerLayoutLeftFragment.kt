@@ -6,6 +6,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -25,13 +26,15 @@ import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.ui.book.viewmodel.DrawerlayoutLeftViewModel
 import com.yuhang.novel.pirate.utils.DateUtils
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
  * 阅读界面左滑出来的章节目录
  */
-class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, DrawerlayoutLeftViewModel>(),
-        OnClickItemListener {
+class DrawerLayoutLeftFragment :
+    BaseFragment<FragmentDrawerlayoutLeftBinding, DrawerlayoutLeftViewModel>(),
+    OnClickItemListener {
 
 
     var bookid: String? = null
@@ -39,7 +42,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     /**
      * 章节列表
      */
-    var chapterList : List<BookChapterKSEntity> = arrayListOf()
+    var chapterList: List<BookChapterKSEntity> = arrayListOf()
 
     var chapterid: String = ""
 
@@ -78,12 +81,11 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     @SuppressLint("CheckResult")
     fun initLastChapterItem() {
         bookid ?: return
-        mViewModel.queryLastChapter(bookid= bookid!!)
-                .subscribe({
-                    it?.chapterId?.let { id ->
-                        setCurrentReadItem(id)
-                    }
-                }, {})
+        lifecycleScope.launch {
+            val queryLastChapter = mViewModel.queryLastChapter(bookid = bookid!!) ?: return@launch
+            setCurrentReadItem(queryLastChapter.chapterId)
+
+        }
     }
 
     /**
@@ -109,7 +111,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
                 sortStatus = false
                 mBinding.recyclerView.scrollToPosition(mViewModel.adapter.itemCount - 15)
                 mBinding.recyclerView.smoothScrollToPosition(mViewModel.adapter.getList().size - 1)
-                val animation = AnimationUtils.loadAnimation(activity!!, R.anim.rotate_sort_top)
+                val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_sort_top)
                 animation.interpolator = AccelerateInterpolator()
                 animation.fillAfter = true
                 mBinding.itemDrawerHeader.sortIv.startAnimation(animation)
@@ -141,27 +143,23 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
     @SuppressLint("CheckResult")
     fun initHeaderView() {
         bookid ?: return
-        mViewModel.queryBookInfo(bookid!!)
-                .compose(bindToLifecycle())
-                .subscribe({ bookInfo ->
-                    mBinding.itemDrawerHeader.athorTv.text = bookInfo?.author
-                    mBinding.itemDrawerHeader.titleTv.text = bookInfo?.bookName
-                    mBinding.itemDrawerHeader.updateTimeTv.text = DateUtils.getTimeZhanxin(Date(bookInfo?.lastTime!!))
 
-                    mBinding.itemDrawerHeader.converIv.let {
+        lifecycleScope.launch {
+            val queryBookInfo = mViewModel.queryBookInfo(bookid!!)?:return@launch
+            mBinding.itemDrawerHeader.athorTv.text = queryBookInfo.author
+            mBinding.itemDrawerHeader.titleTv.text = queryBookInfo.bookName
+            mBinding.itemDrawerHeader.updateTimeTv.text =
+                DateUtils.getTimeZhanxin(Date(queryBookInfo.lastTime))
 
-                        val drawable = ContextCompat.getDrawable(mActivity!!, R.drawable.ic_default_img)
-                        val placeholder =
-                                RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
-                                        .placeholder(drawable)
-                                        .error(drawable)
-                        Glide.with(this).load(niceCoverPic(bookInfo?.cover))
-                                .apply(placeholder)
-                                .into(mBinding.itemDrawerHeader.converIv)
-                    }
-                }, {
-                    Logger.i("")
-                })
+            val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_default_img)
+            val placeholder =
+                RequestOptions().transforms(CenterCrop(), RoundedCorners(niceDp2px(3f)))
+                    .placeholder(drawable)
+                    .error(drawable)
+            Glide.with(this@DrawerLayoutLeftFragment).load(niceCoverPic(queryBookInfo.cover))
+                .apply(placeholder)
+                .into(mBinding.itemDrawerHeader.converIv)
+        }
 
     }
 
@@ -171,7 +169,7 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
         mViewModel.adapter.setListener(this)
         mViewModel.adapter
             .setlayoutManager(LinearLayoutManager(mActivity))
-                .setRecyclerView(mBinding.recyclerView, false)
+            .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
     }
@@ -181,7 +179,8 @@ class DrawerLayoutLeftFragment : BaseFragment<FragmentDrawerlayoutLeftBinding, D
      */
     override fun onClickItemListener(view: View, position: Int) {
         //章节目录点击事件
-        mOnClickChapterItemListener?.onClickChapterItemListener(view, mViewModel.adapter.getObj(position).chapterId)
+        mOnClickChapterItemListener?.onClickChapterItemListener(view,
+            mViewModel.adapter.getObj(position).chapterId)
         setCurrentReadItem(mViewModel.adapter.getObj(position).chapterId)
     }
 

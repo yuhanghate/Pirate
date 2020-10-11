@@ -9,11 +9,11 @@ import com.yuhang.novel.pirate.repository.database.entity.BooksKSEntity
 interface BooksKSDao {
 
     @Insert
-    fun insert(list:List<BooksKSEntity>)
+    suspend fun insert(list:List<BooksKSEntity>)
 
     @Query("delete from BooksKSEntity where gender =:gender and toobarName =:toobarName and type =:type and date =:date")
-    fun delete(gender:String, toobarName:String, type:String, date:String = "")
+    suspend fun delete(gender:String, toobarName:String, type:String, date:String = "")
 
     @Query("select * from BooksKSEntity where gender = :gender and toobarName = :toobarName and type = :type and date = :date")
-    fun query(gender:String, toobarName:String, type:String, date:String = ""):List<BooksKSEntity>
+    suspend fun query(gender:String, toobarName:String, type:String, date:String = ""):List<BooksKSEntity>
 }

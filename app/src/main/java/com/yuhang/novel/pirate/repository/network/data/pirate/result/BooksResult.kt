@@ -120,7 +120,7 @@ class BooksResult {
         if (resouce == "KD" && typeKd == 1) {
             return true
         }
-        return true
+        return false
     }
 
     /**

@@ -2,6 +2,8 @@ package com.yuhang.novel.pirate.ui.user.activity
 
 import android.app.Activity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
+import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
@@ -13,12 +15,15 @@ import com.yuhang.novel.pirate.service.UsersService
 import com.yuhang.novel.pirate.service.impl.UsersServiceImpl
 import com.yuhang.novel.pirate.ui.user.viewmodel.UpdatePasswordViewModel
 import com.yuhang.novel.pirate.utils.AppManagerUtils
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 /**
  * 修改密码
  */
-class UpdatePasswordActivity : BaseActivity<ActivityUpdatePasswordBinding, UpdatePasswordViewModel>() {
+class UpdatePasswordActivity :
+    BaseActivity<ActivityUpdatePasswordBinding, UpdatePasswordViewModel>() {
 
     private val mUsersService: UsersService by lazy { UsersServiceImpl() }
 
@@ -44,43 +49,44 @@ class UpdatePasswordActivity : BaseActivity<ActivityUpdatePasswordBinding, Updat
     private fun onClick() {
         mBinding.btnBack.clickWithTrigger { onBackPressedSupport() }
         mBinding.btnCommit.clickWithTrigger {
-            if (mViewModel.checkParams(mBinding.mobileEt, mBinding.passwordEt, mBinding.passwordAgainEt)) {
+            val mobileEt = mBinding.mobileEt
+            val passwordEt = mBinding.passwordEt
+            val passwordAgainEt = mBinding.passwordAgainEt
+            if (mViewModel.checkParams(mobileEt, passwordEt, passwordAgainEt)) {
 
-                showProgressbar("加载中...")
-                mViewModel.updatePassword(mBinding.mobileEt, mBinding.passwordEt, mBinding.passwordAgainEt)
-                        .compose(bindToLifecycle())
-                        .subscribe({
-                            closeProgressbar()
-                            if (it.code == 200) {
-                                //保存到本地
-                                val userResult = it
-                                //当用户使用自有账号登录时，可以这样统计：
-                                MobclickAgent.onProfileSignIn(userResult.data.id)
-                                PirateApp.getInstance().setToken(userResult.data.token)
-                                mViewModel.synCollection()
-                                        .subscribe({
-                                        }, {
-                                            onBackPressed()
-                                        }, {
-                                            mUsersService.updateUsersToLocal(userResult = userResult)
-                                                    .compose(bindToLifecycle()).subscribe({
-                                                        EventBus.getDefault().postSticky(userResult)
-                                                        AppManagerUtils.getAppManager().finishActivity(UpdatePasswordActivity::class.java)
-                                                        AppManagerUtils.getAppManager().finishActivity(ForgetActivity::class.java)
-                                                        AppManagerUtils.getAppManager().finishActivity(ForgetMailActivity::class.java)
-                                                        AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
-                                                    }, {
-                                                        onBackPressed()
-                                                    }, {
-                                                        com.orhanobut.logger.Logger.i("", "")
-                                                    })
-                                        })
-                            } else {
-                                niceTipTop(mBinding.btnCommit, it.msg)
-                            }
-                        }, {
-                            closeProgressbar()
-                        })
+                lifecycleScope.launch {
+                    flow {
+                        val userResult =
+                            mViewModel.updatePassword(mobileEt, passwordEt, passwordAgainEt)
+                        if (userResult.code != 200) {
+                            niceTipTop(mBinding.btnCommit, userResult.msg)
+                        }
+
+                        //当用户使用自有账号登录时，可以这样统计：
+                        MobclickAgent.onProfileSignIn(userResult.data.id)
+                        PirateApp.getInstance().setToken(userResult.data.token)
+                        mViewModel.synCollection()
+                        mUsersService.updateUsersToLocal(userResult = userResult)
+                        EventBus.getDefault().postSticky(userResult)
+                        emit(Unit)
+                    }
+                        .onStart { showProgressbar("加载中...") }
+                        .onCompletion { closeProgressbar() }
+                        .catch { Logger.e(it.message ?: "") }
+                        .collect {
+                            AppManagerUtils.getAppManager()
+                                .finishActivity(UpdatePasswordActivity::class.java)
+                            AppManagerUtils.getAppManager()
+                                .finishActivity(ForgetActivity::class.java)
+                            AppManagerUtils.getAppManager()
+                                .finishActivity(ForgetMailActivity::class.java)
+                            AppManagerUtils.getAppManager()
+                                .finishActivity(LoginActivity::class.java)
+                            onBackPressed()
+                        }
+                }
+
+
             }
         }
     }

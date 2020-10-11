@@ -9,8 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Transformations.map
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -22,18 +25,25 @@ import com.yuhang.novel.pirate.databinding.FragmentSotreBinding
 import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.RankingDataListResult
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.RankingListResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.main.viewmodel.StoreViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.ProblemActivity
 import com.yuhang.novel.pirate.widget.DoubleClick
 import com.yuhang.novel.pirate.widget.DoubleClickListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
  * 书架
  */
-class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRefreshLoadMoreListener,
+class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(),
+    OnRefreshLoadMoreListener,
     OnClickItemListener {
 
 
@@ -44,7 +54,10 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     private var mBackgroundInTransparent: Animation? = null
     private var mBackgroundOutTransparent: Animation? = null
 
-    private val genderList by lazy { arrayListOf<ConstraintLayout>(mBinding.genderManCl, mBinding.genderLadyCl) }
+    private val genderList by lazy {
+        arrayListOf<ConstraintLayout>(mBinding.genderManCl,
+            mBinding.genderLadyCl)
+    }
     private val typeList by lazy {
         arrayListOf<ConstraintLayout>(
             mBinding.typeHotCl,
@@ -90,6 +103,7 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
 //        mViewModel.onPageEnd("商城页面")
 
     }
+
     override fun onResume() {
         super.onResume()
 
@@ -226,8 +240,10 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
         mTopOutAnim = AnimationUtils.loadAnimation(mActivity, R.anim.slide_top_out)
         mBottomInAnim = AnimationUtils.loadAnimation(mActivity, R.anim.slide_bottom_in)
         mBottomOutAnim = AnimationUtils.loadAnimation(mActivity, R.anim.slide_bottom_out)
-        mBackgroundInTransparent = AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_transparent)
-        mBackgroundOutTransparent = AnimationUtils.loadAnimation(mActivity, R.anim.slide_out_transparent)
+        mBackgroundInTransparent =
+            AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_transparent)
+        mBackgroundOutTransparent =
+            AnimationUtils.loadAnimation(mActivity, R.anim.slide_out_transparent)
         //退出的速度要快
         mTopOutAnim?.duration = DURATION
         mBottomOutAnim?.duration = DURATION
@@ -271,7 +287,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
 
         if (isClick) {
             textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.text_white_color))
-            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_select_color))
+            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!,
+                R.color.item_select_color))
             imageView.visibility = View.GONE
             val tag = textview.tag as String
 
@@ -283,7 +300,8 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
             }
         } else {
             textview.setTextColor(ContextCompat.getColor(mActivity!!, R.color.primary_text))
-            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!, R.color.item_unselect_color))
+            textview.setBackgroundColor(ContextCompat.getColor(mActivity!!,
+                R.color.item_unselect_color))
             imageView.visibility = View.GONE
         }
     }
@@ -294,24 +312,22 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
     @SuppressLint("CheckResult")
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
-        mViewModel.getRankingList(PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getRankingList(PAGE_NUM)) }
+                .catch { mBinding.refreshLayout.finishRefresh() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mBinding.loading.showContent()
+                        if (!it.data.isHasNext) {
+                            mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        } else {
+                            mBinding.refreshLayout.finishLoadMore()
+                            mViewModel.adapter.loadMore(it.data.bookList)
+                        }
+                    }
 
-                mBinding.loading.showContent()
-
-
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-                } else {
-                    mBinding.refreshLayout.finishLoadMore()
-                    mViewModel.adapter.loadMore(it.data.bookList)
                 }
-
-            }, {
-                //                    mBinding.loading.showError()
-                mBinding.refreshLayout.finishRefresh()
-            })
+        }
     }
 
     /**
@@ -319,19 +335,24 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
      */
     @SuppressLint("CheckResult")
     override fun onRefresh(refreshLayout: RefreshLayout) {
-
         PAGE_NUM = 1
         mBinding.loading.showContent()
         mBinding.refreshLayout.finishLoadMore()
-        mViewModel.getRankingList(PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.adapter.setRefersh(it.data.bookList)
-                mBinding.refreshLayout.finishRefresh()
-            }, {
-                //                    mBinding.loading.showError()
-                mBinding.refreshLayout.finishRefresh()
-            })
+
+        lifecycleScope.launch {
+            flow {
+                emit(mViewModel.getRankingList(PAGE_NUM))
+            }
+                .catch { mBinding.refreshLayout.finishRefresh() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mViewModel.adapter.setRefersh(it.data.bookList)
+                        mBinding.refreshLayout.finishRefresh()
+                    }
+
+                }
+        }
+
     }
 
     /**
@@ -339,20 +360,24 @@ class StoreFragment : BaseFragment<FragmentSotreBinding, StoreViewModel>(), OnRe
      */
     @SuppressLint("CheckResult")
     private fun loadLocalRankingList() {
-        mViewModel.getRankingListLocal()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.isEmpty()) {
-                    //如果本地没有数据,就从服务器加载
-                    mBinding.refreshLayout.autoRefresh()
-                } else {
-                    mViewModel.adapter.setRefersh(it.map { result -> result!! }.toList())
-                    mBinding.refreshLayout.finishRefresh()
-                }
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getRankingListLocal()) }
+                .catch { Logger.e(it.message ?: "") }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (it.isEmpty()) {
+                            //如果本地没有数据,就从服务器加载
+                            mBinding.refreshLayout.autoRefresh()
+                        } else {
+                            mViewModel.adapter.setRefersh(it.map { result -> result }.toList())
+                            mBinding.refreshLayout.finishRefresh()
+                        }
+                    }
 
-            }, {
-                mBinding.refreshLayout.finishRefresh()
-            })
+                }
+        }
+
     }
 
     override fun onClickItemListener(view: View, position: Int) {

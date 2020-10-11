@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.user.viewmodel
 
 import android.annotation.SuppressLint
+import android.os.CountDownTimer
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.yuhang.novel.pirate.R
@@ -9,10 +10,6 @@ import com.yuhang.novel.pirate.databinding.ActivityForgetBinding
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.EmailCodeResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class ForgetViewModel : BaseViewModel() {
 
@@ -32,26 +29,24 @@ class ForgetViewModel : BaseViewModel() {
     @SuppressLint("CheckResult")
     fun sendMailCodeView(binding: ActivityForgetBinding) {
 
-//        RxKeyboardTool.showSoftInput(mActivity, binding.codeEt)
-        val count: Long = 60
-        Flowable.interval(0, 1, TimeUnit.SECONDS)
-                .take(count + 1)
-                .map { count - it }
-                .compose(mActivity?.bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    binding.btnCode.isEnabled = false
-                    binding.btnCode.background = null
-                    binding.btnCode.setTextColor(ContextCompat.getColor(mActivity!!, R.color.secondary_text))
-                }
-                .subscribe({
-                    binding.btnCode.text = "${it}秒后重新获取"
-                }, {}, {
-                    binding.btnCode.isEnabled = true
-                    binding.btnCode.setBackgroundResource(R.drawable.bg_material_item_blue_round)
-                    binding.btnCode.text = "获取验证码"
-                    binding.btnCode.setTextColor(ContextCompat.getColor(mActivity!!, R.color.md_red_300))
-                })
+        binding.btnCode.isEnabled = false
+        binding.btnCode.background = null
+        binding.btnCode.setTextColor(ContextCompat.getColor(mActivity!!, R.color.secondary_text))
+
+        var count = 60
+        object : CountDownTimer(60 * 1000, 1000) {
+            override fun onFinish() {
+                binding.btnCode.isEnabled = true
+                binding.btnCode.setBackgroundResource(R.drawable.bg_material_item_blue_round)
+                binding.btnCode.text = "获取验证码"
+                binding.btnCode.setTextColor(ContextCompat.getColor(mActivity!!,
+                    R.color.md_red_300))
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                binding.btnCode.text = "${count--}秒后重新获取"
+            }
+        }.start()
     }
 
     /**
@@ -73,19 +68,15 @@ class ForgetViewModel : BaseViewModel() {
     /**
      * 发送验证码到服务器
      */
-    fun postMailCode(email: String): Flowable<EmailCodeResult> {
-        return mDataRepository.getMailCode(email).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    suspend fun postMailCode(email: String): EmailCodeResult {
+        return mDataRepository.getMailCode(email)
     }
 
     /**
      * 检测邮箱验证码
      */
-    fun checkEmailCode(binding: ActivityForgetBinding):Flowable<StatusResult> {
-
+    suspend fun checkEmailCode(binding: ActivityForgetBinding): StatusResult {
         return mDataRepository.checkEmailCode(email, binding.codeEt.text.toString(), code)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

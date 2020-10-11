@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.ui.user.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
 import com.orhanobut.logger.Logger
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.R
@@ -14,6 +15,8 @@ import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.user.viewmodel.RegisterViewModel
 import com.yuhang.novel.pirate.utils.AppManagerUtils
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.lang.NullPointerException
 
 /**
@@ -42,7 +45,13 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         mBinding.btnBack.clickWithTrigger { onBackPressed() }
         mBinding.btnCommit.clickWithTrigger {
             mViewModel.onUMEvent(this, UMConstant.TYPE_REGISTER, "点击注册")
-            netRegister()
+            lifecycleScope.launch {
+                flow<Unit> {
+                    netRegister()
+                }.catch { println("Exception : ${it.message}") }
+                    .collect { }
+            }
+
         }
     }
 
@@ -51,46 +60,41 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
      */
     @SuppressLint("CheckResult")
     private fun netRegister() {
-
         val username = mBinding.mobileEt.text.toString()
         val password = mBinding.passwordEt.text.toString()
-        val email = mBinding.emailEt.text.toString()
-        if (mViewModel.checkParams(
-                mBinding.mobileEt,
-                mBinding.passwordEt,
-                mBinding.passwordAgainEt,
-                mBinding.emailEt
-            )
-        ) {
-            showProgressbar()
-            mViewModel.register(username, password, email)
-                .compose(bindToLifecycle())
-                .subscribe({result ->
-                    closeProgressbar()
-                    if (result.code == 200) {
-                        MobclickAgent.onProfileSignIn(result.data.id)
-                        PirateApp.getInstance().setToken(result.data.token)
-                        mViewModel.synCollection()
-                            .subscribe({
-                            }, {
-                                Logger.t(TAG).i(it.message!!)
-                            }, {
-                                mViewModel.saveAccount(result)
-                                AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
-                                onBackPressed()
-                            })
+        val email = mBinding.mobileEt.text.toString()
 
-                    } else {
-                        niceToast(result.msg)
-                    }
-                    Logger.t(TAG).i(result.msg)
-                }, {
-                    closeProgressbar()
-                    Logger.t(TAG).i(it.message!!)
-                    niceToast("注册失败, 请检查网络")
-                })
+        val mobileEt = mBinding.mobileEt
+        val emailEt = mBinding.emailEt
+        val passwordEt = mBinding.passwordEt
+        val passwordAgainEt = mBinding.passwordAgainEt
+
+        if (!mViewModel.checkParams(mobileEt, passwordEt, passwordAgainEt, emailEt)) {
+            return
         }
 
+        lifecycleScope.launch {
+            flow {
+                val userResult = mViewModel.register(username, password, email)
+                if (userResult.code != 200) {
+                    niceToast(userResult.msg)
+                    return@flow
+                }
+
+                MobclickAgent.onProfileSignIn(userResult.data.id)
+                PirateApp.getInstance().setToken(userResult.data.token)
+                mViewModel.synCollection()
+                mViewModel.saveAccount(userResult)
+                emit(Unit)
+            }
+                .onStart { showProgressbar() }
+                .onCompletion { closeProgressbar() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    AppManagerUtils.getAppManager().finishActivity(LoginActivity::class.java)
+                    onBackPressed()
+                }
+        }
     }
 
     override fun onResume() {

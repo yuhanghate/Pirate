@@ -1,10 +1,8 @@
 package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
-import io.reactivex.Flowable
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -29,15 +27,15 @@ interface KanShuNetApi {
      * 看书站内搜索
      */
     @GET("https://souxs.pigqq.com/search.aspx")
-    fun searchBook(
+    suspend fun searchBook(
         @Query("key") key: String, @Query("page") page: Int = 1, @Query("siteid") siteid: String = "app2"
-    ): Flowable<BookSearchResult>
+    ): BookSearchResult
 
     /**
      * 男生 -> 分类
      */
     @GET("https://scxs.pigqq.com/BookCategory.html")
-    fun getBookCategory(): Flowable<BookCategoryResult>
+    suspend fun getBookCategory(): BookCategoryResult
 
     /**
      * 书本详情
@@ -45,31 +43,31 @@ interface KanShuNetApi {
      * bookId: 书本id
      */
     @GET("https://infosxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/info.html")
-    fun getBookDetails(
+    suspend fun getBookDetails(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
         ) bookId: Long
-    ): Flowable<BookDetailsResult>
+    ): BookDetailsResult
 
     /**
      * 书本章节目录
      */
     @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/index.html")
-    fun getBookChapterList(
+    suspend fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
         ) bookId: Long
-    ): Flowable<String>
+    ): String
 
     /**
      * 获取章节内容
      */
     @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/{chapterId}.html")
-    fun getChapterContent(
+    suspend fun getChapterContent(
         @Path("dirId") dirId: Int, @Path(
             "bookId"
         ) bookId: Long, @Path("chapterId") chapterId: String
-    ): Flowable<ContentResult>
+    ): ContentResult
 
 
     /**
@@ -105,35 +103,35 @@ interface KanShuNetApi {
      * pageNum : 分页
      */
     @GET("https://scxs.pigqq.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
-    fun getRankingList(
+    suspend fun getRankingList(
         @Path("gender") gender: String, @Path("type") type: String, @Path("date") date: String, @Path(
             "pageNum"
         ) pageNum: Int
-    ): Flowable<RankingListResult>
+    ): RankingListResult
 
     /**
      * 书城 -> 男生
      */
     @GET("https://scxs.pigqq.com/v6/base/man.html")
-    fun getStoreMan(): Flowable<StoreManResult>
+    suspend fun getStoreMan(): StoreManResult
 
     /**
      * 书城 -> 女生
      */
     @GET("https://scxs.pigqq.com/v6/base/lady.html")
-    fun getStoreLady(): Flowable<StoreManResult>
+    suspend fun getStoreLady(): StoreManResult
 
     /**
      * 书城 -> 榜单 -> 男生
      */
     @GET("https://scxs.pigqq.com/top/man/index.html")
-    fun getStoreRankingMan(): Flowable<StoreRankingResult>
+    suspend fun getStoreRankingMan(): StoreRankingResult
 
     /**
      * 书城 -> 榜单 -> 女生
      */
     @GET("https://scxs.pigqq.com/top/lady/index.html")
-    fun getStoreRankingLady(): Flowable<StoreRankingResult>
+    suspend fun getStoreRankingLady(): StoreRankingResult
 
     /**
      * 获取书单
@@ -141,7 +139,7 @@ interface KanShuNetApi {
      * 最新发布/本周最热/最多收藏/小编推荐
      */
     @GET("https://scxs.pigqq.com/shudan/{gender}/all/{type}/{pageNum}.html")
-    fun getBooksList(@Path("gender") gender: String, @Path("type") type: String, @Path("pageNum") pageNum: String): Flowable<BooksListResult>
+    suspend fun getBooksList(@Path("gender") gender: String, @Path("type") type: String, @Path("pageNum") pageNum: String): BooksListResult
 
     /**
      * 正版排行榜
@@ -149,17 +147,17 @@ interface KanShuNetApi {
      * 起点/纵横/去起/若初/红薯/潇湘/逐浪
      */
     @GET("https://scxs.pigqq.com/top/{gender}/more/{type}/{pageNum}.html")
-    fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):Flowable<MoreRankingResult>
+    suspend fun getMoreRankingList(@Path("gender") gender: String, @Path("type") type: Int, @Path("pageNum") pageNum: String):MoreRankingResult
 
     /**
      * 看书神器 排行榜
      */
     @GET("https://scxs.pigqq.com/top/{gender}/top/{type}/{date}/{pageNum}.html")
-    fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : Flowable<KanShuRankingResult>
+    suspend fun getKanShuRankingList(@Path("gender") gender:String, @Path("type") type:String, @Path("date") date:String, @Path("pageNum") pageNum:Int) : KanShuRankingResult
 
     /**
      * 书单详情
      */
     @GET("https://scxs.pigqq.com/shudan/detail/{id}.html")
-    fun getBookListDetail(@Path("id") id:String):Flowable<ShuDanDetailResult>
+    suspend fun getBookListDetail(@Path("id") id:String):ShuDanDetailResult
 }

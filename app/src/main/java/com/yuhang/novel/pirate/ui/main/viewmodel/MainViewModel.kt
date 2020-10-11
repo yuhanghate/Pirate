@@ -7,27 +7,26 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.viewModelScope
 import com.tamsiree.rxkit.RxDeviceTool
 import com.tamsiree.rxkit.RxNetTool
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceCategoryKDEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.AppConfigResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlin.concurrent.thread
+import com.yuhang.novel.pirate.utils.application
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel : BaseViewModel() {
 
@@ -46,7 +45,13 @@ class MainViewModel : BaseViewModel() {
     /**
      * 主页标签
      */
-    val tabIcons by lazy { listOf(R.drawable.ic_tab_main_normal, R.drawable.ic_tab_store_normal, R.drawable.ic_tab_me_normal) }
+    val tabIcons by lazy {
+        listOf(
+            R.drawable.ic_tab_main_normal,
+            R.drawable.ic_tab_store_normal,
+            R.drawable.ic_tab_me_normal
+        )
+    }
 
     /**
      * 主页名称
@@ -61,60 +66,36 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取本地所有书本详情
      */
-    fun getBookInfoListLocal(): Flowable<List<BookInfoKSEntity?>> {
-        return Flowable.just("")
-            .flatMap { queryCollectionAll() }
-            .map { list ->
-                return@map list.filterNotNull().map {
-                    return@map it.apply { this.isShowLabel = isShowNewLabel(it.bookid) }
-                }.toList()
-            }.compose(io_main())
+    suspend fun getBookInfoListLocal(): List<BookInfoKSEntity?> {
+        val list = queryCollectionAll()
+        return list.filterNotNull().map {
+            return@map it.apply { this.isShowLabel = isShowNewLabel(it.bookid) }
+        }.toList()
     }
 
-
-    /**
-     * 收藏列表 快读源
-     */
-    fun getBookDetailsListKD(): Flowable<BookInfoKSEntity> {
-        return Flowable.just("")
-            .flatMap {
-                val list = mDataRepository.queryCollectionKD()
-
-                if (!RxNetTool.isAvailable(PirateApp.getInstance()) || list.isEmpty()) {
-                    return@flatMap Flowable.fromIterable(list)
-                }
-                val sb = StringBuilder()
-                list.forEach { sb.append(it.bookid).append(",") }
-                sb.deleteCharAt(sb.length - 1)
-                return@flatMap mConvertRepository.updateBookKD(sb.toString())
-            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}
-    }
 
     /**
      * 收藏列表 看书源
      */
-    fun getBookDetailsListKS(): Flowable<BookInfoKSEntity> {
-        return Flowable.just("")
-            .flatMap {
-                val list = mDataRepository.queryCollectionKS()
-                return@flatMap Flowable.fromIterable(list)
+    suspend fun getBookDetailsListKS(): List<BookInfoKSEntity> {
+
+        if (!RxNetTool.isAvailable(application)) {
+            return emptyList()
+        }
+        val list = mDataRepository.queryCollectionKS()
+        return list.map {
+            if (it.bookStatus == "完结") {
+                return@map it
             }
-            .flatMap {
-                if (it.bookStatus == "完结") {
-                    //不刷新完结小说
-                    return@flatMap Flowable.just(it)
-                }
-                if (RxNetTool.isAvailable(PirateApp.getInstance())) {
-                    return@flatMap mConvertRepository.updateBookKS(it.bookid)
-                }
-                return@flatMap Flowable.just(it)
-            }.flatMap {return@flatMap Flowable.just(updateBookInfo(it))}
+            val updateBookKS = mConvertRepository.updateBookKS(it.bookid)
+            updateBookInfo(updateBookKS)
+        }.toList()
     }
 
     /**
      * 更新书籍信息
      */
-    private fun updateBookInfo(obj: BookInfoKSEntity): BookInfoKSEntity {
+    private suspend fun updateBookInfo(obj: BookInfoKSEntity): BookInfoKSEntity {
         val bookInfo = queryBookInfo(obj.bookid)
         return if (bookInfo == null) {
             //书籍信息插入本地
@@ -134,14 +115,14 @@ class MainViewModel : BaseViewModel() {
     /**
      * 从本地查询书籍信息
      */
-    private fun queryBookInfo(bookid: String): BookInfoKSEntity? {
+    private suspend fun queryBookInfo(bookid: String): BookInfoKSEntity? {
         return mDataRepository.queryBookInfo(bookid = bookid)
     }
 
     /**
      * 插入本地书籍信息
      */
-    private fun insertBookInfo(obj: BookInfoKSEntity) {
+    private suspend fun insertBookInfo(obj: BookInfoKSEntity) {
         mDataRepository.insertBookInfo(obj)
     }
 
@@ -149,7 +130,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取章节列表
      */
-    private fun getChapterList(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
+    private suspend fun getChapterList(obj: BooksResult): List<BookChapterKSEntity> {
         return mConvertRepository.getChapterList(obj)
     }
 
@@ -157,73 +138,67 @@ class MainViewModel : BaseViewModel() {
     /**
      * 插入章节列表到本地
      */
-    private fun insertChapterList(list: List<BookChapterKSEntity>) {
+    private suspend fun insertChapterList(list: List<BookChapterKSEntity>) {
         mDataRepository.insertChapterList(list)
     }
 
     /**
      * 删除本地对应的书籍章节
      */
-    private fun deleteChapterList(bookid: String) {
+    private suspend fun deleteChapterList(bookid: String) {
         mDataRepository.deleteChapterList(bookid)
     }
 
     /**
      * 从服务器更新书籍章节到本地
      */
-    fun updateChapterToDB(): Flowable<List<BookChapterKSEntity>> {
-        return Flowable.just("")
-            .map { mDataRepository.queryCollectionAllSerial() }
-            .flatMap { Flowable.fromIterable(it) }
-            .flatMap {
-                getChapterList(it.niceBooksResult())
-            }
-            .map {
-                deleteChapterList(it[0].bookId)
-                insertChapterList(it)
-                return@map it
-            }.compose(io_main())
+    suspend fun updateChapterToDB() {
+        val list = mDataRepository.queryCollectionAllSerial()
+        list.forEach {
+            val niceBooksResult = it.niceBooksResult()
+            val chapterList = getChapterList(niceBooksResult)
+            deleteChapterList(niceBooksResult.getBookid())
+            insertChapterList(chapterList)
+        }
     }
 
 
     /**
      * 查询所有收藏
      */
-    private fun queryCollectionAll(): Flowable<List<BookInfoKSEntity?>> {
-        return Flowable.just("")
-            .map { mDataRepository.queryBookInfoCollectionAll() }
-            .subscribeOn(Schedulers.io())
+    private suspend fun queryCollectionAll(): List<BookInfoKSEntity?> {
+        return mDataRepository.queryBookInfoCollectionAll()
     }
 
     /**
      * 查找收藏
      */
-    fun queryCollection(bookid: String): Flowable<BooksResult?> {
-        return Flowable.just(bookid)
-            .map { mDataRepository.queryCollection(it) }
-            .map {
-                val info = mDataRepository.queryBookInfo(it.bookid)
-                it.niceBooksResult().apply {
-                    this.author = info?.author!!
-                    this.bookName = info.bookName
-                    this.cover = info.cover
-                }
-            }
-            .compose(io_main())
+    suspend fun queryCollection(bookid: String) = withContext(Dispatchers.IO) {
+        val info = mDataRepository.queryBookInfo(bookid)
+        return@withContext info?.niceBooksResult()?.apply {
+            this.author = info.author
+            this.bookName = info.bookName
+            this.cover = info.cover
+        }
     }
+
 
     /**
      * 更新置顶时间戳
      */
     fun updateStickTime(bookid: String) {
-        thread { mDataRepository.updateBookInfoStickTime(bookid) }
+        viewModelScope.launch(Dispatchers.IO) {
+            mDataRepository.updateBookInfoStickTime(bookid)
+        }
     }
 
     /**
      * 取消置顶
      */
     fun updateBookInfoClearStickTime(bookid: String) {
-        thread { mDataRepository.updateBookInfoClearStickTime(bookid) }
+        viewModelScope.launch {
+            mDataRepository.updateBookInfoClearStickTime(bookid)
+        }
     }
 
     /**
@@ -231,17 +206,11 @@ class MainViewModel : BaseViewModel() {
      */
     @SuppressLint("CheckResult")
     fun deleteCollection(bookid: String) {
-        thread {
+        viewModelScope.launch {
             //删除线上收藏
             if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
-
-                mDataRepository.deleteNetCollect(
-                    bookid,
-                    mDataRepository.queryCollection(bookid)?.resouce ?: ""
-                )
-                    .compose(io_main())
-                    .compose(mFragment?.bindToLifecycle())
-                    .subscribe({}, {})
+                val resouce = mDataRepository.queryCollection(bookid)?.resouce ?: ""
+                mDataRepository.deleteNetCollect(bookid, resouce)
             }
             //删除本地收藏
             mDataRepository.deleteCollection(bookid)
@@ -262,10 +231,8 @@ class MainViewModel : BaseViewModel() {
     /**
      * 检测版本
      */
-    fun checkVersion(): Flowable<VersionResult> {
+    suspend fun checkVersion(): VersionResult {
         return mDataRepository.checkVersion(RxDeviceTool.getAppVersionName(mActivity))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getMessage(result: VersionResult): String {
@@ -284,17 +251,15 @@ class MainViewModel : BaseViewModel() {
             .toString()
     }
 
-    fun getPushMessageEntity(): Flowable<PushMessageEntity?> {
-        return Flowable.just("")
-            .map { mDataRepository.queryNoteEntity() }
-            .compose(io_main())
+    suspend fun getPushMessageEntity(): PushMessageEntity? {
+        return mDataRepository.queryNoteEntity()
     }
 
     /**
      * 删除公告信息
      */
-    fun deletePushMessage(obj: PushMessageEntity) {
-        thread { mDataRepository.delete(obj) }
+    suspend fun deletePushMessage(obj: PushMessageEntity) {
+        mDataRepository.delete(obj)
     }
 
 
@@ -364,26 +329,22 @@ class MainViewModel : BaseViewModel() {
     /**
      * 快读分类预加载
      */
-    fun preloadCategory(): Flowable<Unit> {
-        return mDataRepository.getCategoryList()
-            .map { it.map { it.niceCategoryKDEntity() }.toList() }
-            .map { mDataRepository.insertCategoryList(it) }
-            .compose(io_main())
+    suspend fun preloadCategory() {
+        val list = mDataRepository.getCategoryList()
+        val toList = list.map { it.niceCategoryKDEntity() }.toList()
+        mDataRepository.insertCategoryList(toList)
     }
 
     /**
      * 加载配置
      */
-    fun preloadConfig(): Flowable<AppConfigResult> {
-        return mDataRepository.getAppConfig()
-            .map {
-                mDataRepository.insertConfig(ConfigEntity().apply {
-                    this.showGameRecommended = it.data.isShowGameRecommended
-                    this.showSexBook = it.data.isShowSexBook
-                    this.isOpenVip = it.data.isOpenVip
-                })
-                it
-            }
-            .compose(io_main())
+    suspend fun preloadConfig() {
+        val config = mDataRepository.getAppConfig()
+        mDataRepository.insertConfig(obj = ConfigEntity().apply {
+            this.showGameRecommended = config.data.isShowGameRecommended
+            this.showSexBook = config.data.isShowSexBook
+            this.isOpenVip = config.data.isOpenVip
+        })
     }
+
 }

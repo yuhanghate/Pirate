@@ -11,8 +11,6 @@ import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterList
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.SearchSuggestResult
-import io.reactivex.Flowable
-import org.joda.time.DateTime
 
 class ConvertRepository {
 
@@ -39,16 +37,14 @@ class ConvertRepository {
     /**
      * 搜索
      */
-    fun getSearchResult(type: String, keyword: String): Flowable<List<BooksResult>> {
+    suspend fun getSearchResult(type: String, keyword: String): List<BooksResult> {
         return when (type) {
-            "KS" -> mKanShuNetApi.searchBook(keyword).map {
-                it.data.map { it.niceBooksResult() }.toList()
-            }
-            "KD" -> mKuaiDuNetApi.search(
-                hashMapOf("key" to keyword, "start" to "0", "limit" to "100")
-            )
-                .map { it.books.map { it.niceBooksResult() }.toList() }
-            else -> Flowable.error<List<BooksResult>> { NullPointerException("搜索信息异常") }
+            "KS" -> mKanShuNetApi.searchBook(keyword).data.map { it.niceBooksResult() }.toList()
+            "KD" -> mKuaiDuNetApi.search(hashMapOf("key" to keyword,
+                "start" to "0",
+                "limit" to "100")
+            ).books.map { it.niceBooksResult() }.toList()
+            else -> arrayListOf()
         }
 
     }
@@ -56,17 +52,16 @@ class ConvertRepository {
     /**
      * 获取详情页
      */
-    fun getDetailsInfo(obj: BooksResult): Flowable<BookInfoKSEntity> {
+    suspend fun getDetailsInfo(obj: BooksResult): BookInfoKSEntity {
         return when {
             //看书源
             obj.isKanShu() -> mKanShuNetApi.getBookDetails(
                 dirId = niceDir(obj.bookKsId),
                 bookId = obj.bookKsId.toLong()
-            )
-                .map { it.data.niceBookInfoKSEntity() }
+            ).data.niceBookInfoKSEntity()
             //快读源
-            obj.isKuaiDu() -> mKuaiDuNetApi.getBookDetails(obj.bookKdId).map { it.niceBookInfoKSEntity() }
-            else -> Flowable.error<BookInfoKSEntity> { NullPointerException("没有源信息") }
+            obj.isKuaiDu() -> mKuaiDuNetApi.getBookDetails(obj.bookKdId).niceBookInfoKSEntity()
+            else -> BookInfoKSEntity()
         }
     }
 
@@ -74,69 +69,60 @@ class ConvertRepository {
     /**
      *获取章节列表
      */
-    fun getChapterList(obj: BooksResult): Flowable<List<BookChapterKSEntity>> {
+    suspend fun getChapterList(obj: BooksResult): List<BookChapterKSEntity> {
         return when {
 
             //看书
-            obj.isKanShu() -> mKanShuNetApi.getBookChapterList(
-                dirId = niceDir(obj.bookKsId),
-                bookId = obj.bookKsId.toLong()
-            )
-                .map { it.replace("},]}}", "}]}}") }
-                .flatMap { Flowable.just(Gson().fromJson(it, ChapterListResult::class.java)) }
-                .map { it.data.niceBookChapterKSEntity() }
+            obj.isKanShu() -> {
+
+                //数据格式有问题,需要转换
+                val data = mKanShuNetApi.getBookChapterList(
+                    dirId = niceDir(obj.bookKsId),
+                    bookId = obj.bookKsId.toLong()
+                ).replace("},]}}", "}]}}")
+
+                //序列化
+                val result = Gson().fromJson(data, ChapterListResult::class.java)
+                result.data.niceBookChapterKSEntity()
+            }
 
             //快读
             obj.isKuaiDu() -> {
-                Flowable.empty<List<BookChapterKSEntity>>()
-//                Flowable.just("")
-//                    .flatMap {
-//                        //获取快读官方源列表
-//                        val entity = mDatabase.bookResouceTypeKDDao.query(obj.bookKdId)
-//                        if (entity == null || entity.tocId.isEmpty()) {
-//                            return@flatMap mKuaiDuNetApi.getChapterList(obj.bookKdId)
-//                                .map { it.niceBookChapterKSEntity() }
-//                        }
-//
-//                        //获取快读子渠道列表
-//                        return@flatMap getResouceChapterList(entity.tocId, obj.bookKdId)
-//                    }
+                arrayListOf()
             }
 
             //小黄书
-            obj.isSex() -> mPirateNetApi.getBookSexChapter(niceBody(hashMapOf("bookId" to obj.bookSexId)))
-                .map { it.data.list.map { it.niceBookChapterKSEntity() }.toList() }
+            obj.isSex() -> {
+                mPirateNetApi.getBookSexChapter(niceBody(hashMapOf("bookId" to obj.bookSexId)))
+                    .data.list.map { it.niceBookChapterKSEntity() }.toList()
+            }
 
-            else -> Flowable.error<List<BookChapterKSEntity>> { NullPointerException("没有章节信息") }
+            else -> arrayListOf()
         }
     }
 
     /**
      * 获取章节对应的内容
      */
-    fun getChapterContent(
+    suspend fun getChapterContent(
         obj: BooksResult,
-        chapter: BookChapterKSEntity
-    ): Flowable<BookContentKSEntity> {
+        chapter: BookChapterKSEntity,
+    ): BookContentKSEntity {
         return when {
-
             //看书
             obj.isKanShu() -> mKanShuNetApi.getChapterContent(
                 niceDir(obj.bookKsId),
                 obj.bookKsId.toLong(),
                 chapter.chapterId
-            ).map { it.niceBookContentKSEntity(obj, chapter) }
+            ).niceBookContentKSEntity(obj, chapter)
 
             //快读
             obj.isKuaiDu() -> mKuaiDuNetApi.getResouceContent(RxEncodeTool.urlEncode(chapter.chapterId))
-                .map { it.niceBookContentKSEntity(obj, chapter) }
-
-
+                .niceBookContentKSEntity(obj, chapter)
             //小黄书
             obj.isSex() -> mPirateNetApi.getBookSexContent(niceBody(hashMapOf("chapterId" to chapter.chapterId)))
-                .map { it.data.niceBookContentKSEntity() }
-
-            else -> Flowable.error<BookContentKSEntity> { NullPointerException("没有内容信息") }
+                .data.niceBookContentKSEntity()
+            else -> BookContentKSEntity()
         }
     }
 
@@ -146,7 +132,7 @@ class ConvertRepository {
     @Synchronized
     fun downloadChapterContent(
         obj: BooksResult,
-        chapter: BookChapterKSEntity
+        chapter: BookChapterKSEntity,
     ): BookContentKSEntity {
         return when {
             obj.isKanShu() -> {
@@ -186,17 +172,16 @@ class ConvertRepository {
     /**
      * 作者相关作品
      */
-    fun getAuthorBooksList(obj: BooksResult): Flowable<List<BooksResult>> {
+    suspend fun getAuthorBooksList(obj: BooksResult): List<BooksResult> {
         return when {
             //看书源
-            obj.isKanShu() -> mKanShuNetApi.getBookDetails(
-                dirId = niceDir(obj.bookKsId),
-                bookId = obj.bookKsId.toLong()
-            ).map {
-                it.data.SameUserBooks?.map {
+            obj.isKanShu() ->
+                mKanShuNetApi.getBookDetails(
+                    dirId = niceDir(obj.bookKsId),
+                    bookId = obj.bookKsId.toLong()
+                ).data.SameUserBooks?.map {
                     it.niceBooksResult()
-                }?.toList()
-            }
+                }?.toList() ?: arrayListOf()
 
             //快读
             obj.isKuaiDu() -> mKuaiDuNetApi.getAuthorBookAll(
@@ -205,14 +190,12 @@ class ConvertRepository {
                     "start" to "0",
                     "limit" to "50"
                 )
-            ).map {
-                it.books.filter {
-                    it.title != obj.bookName
-                }.map {
-                    it.niceBooksResult()
-                }.toList()
-            }
-            else -> Flowable.error<List<BooksResult>> { NullPointerException("作者全部作品失败") }
+            ).books.filter {
+                it.title != obj.bookName
+            }.map {
+                it.niceBooksResult()
+            }.toList()
+            else -> arrayListOf()
         }
     }
 
@@ -220,11 +203,12 @@ class ConvertRepository {
     /**
      * 源列表
      */
-    fun getResouceList(obj: BooksResult): Flowable<List<ResouceListKdResult>> {
+    suspend fun getResouceList(obj: BooksResult): List<ResouceListKdResult> {
         if (obj.isKanShu()) {
             //如果是看书,去服务器转换一下
-            return mPirateNetApi.getBooksSearch(niceBody(hashMapOf("bookid" to obj.getBookid())))
-                .flatMap { mKuaiDuNetApi.getResouceList(it.data.bookKdId) }
+            val result =
+                mPirateNetApi.getBooksSearch(niceBody(hashMapOf("bookid" to obj.getBookid())))
+            mKuaiDuNetApi.getResouceList(result.data.bookKdId)
         }
         return mKuaiDuNetApi.getResouceList(obj.getBookid())
     }
@@ -233,62 +217,31 @@ class ConvertRepository {
     /**
      * 第三方源目录列表
      */
-    fun getResouceChapterList(
-        tocId: String, bookid: String
-    ): Flowable<List<BookChapterKSEntity>> {
-
-        return mKuaiDuNetApi.getResouceChapterList(tocId).map {
-            it.chapters.map { it.niceBookChapterKSEntity(bookid) }.toList()
-        }
+    suspend fun getResouceChapterList(
+        tocId: String, bookid: String,
+    ): List<BookChapterKSEntity> {
+        return mKuaiDuNetApi.getResouceChapterList(tocId).chapters.map {
+            it.niceBookChapterKSEntity(bookid)
+        }.toList()
     }
 
-    /**
-     * 主页小说刷新
-     */
-    fun updateBook(obj: BookInfoKSEntity, resouce: String): Flowable<BookInfoKSEntity> {
-        return when (resouce) {
-            "KD" -> mKuaiDuNetApi.getBookUpdate(obj.bookid).map {
-                obj.apply {
-                    this.lastChapterName = it[0].lastChapter
-                    this.lastTime = DateTime(it[0].updated).millis
-                    this.bookid = it[0]._id
-                    this.author = it[0].author
-                }
-            }
-            "KS" -> mKanShuNetApi.getBookDetails(
-                dirId = niceDir(obj.bookid),
-                bookId = obj.bookid.toLong()
-            )
-                .map { it.data.niceBookInfoKSEntity() }
-            else -> Flowable.error<BookInfoKSEntity> { NullPointerException("刷新失败") }
-        }
-    }
 
-    /**
-     * 主页小说刷新 快读源
-     */
-    fun updateBookKD(bookids: String): Flowable<BookInfoKSEntity> {
-        return mKuaiDuNetApi.getBookUpdate(bookids)
-            .flatMap { Flowable.fromIterable(it) }
-            .map { it.niceBookInfoKSEntity() }
-    }
 
     /**
      * 主页小说刷新 看书源
      */
-    fun updateBookKS(bookid: String): Flowable<BookInfoKSEntity> {
+    suspend fun updateBookKS(bookid: String): BookInfoKSEntity {
         return mKanShuNetApi.getBookDetails(
             dirId = niceDir(bookid),
             bookId = bookid.toLong()
-        ).map { it.data.niceBookInfoKSEntity() }
+        ).data.niceBookInfoKSEntity()
     }
 
     /**
      * 搜索模糊匹配
      */
-    fun searchSuggest(keyword: String): Flowable<List<SearchSuggestResult>> {
-        return mKuaiDuNetApi.searchSuggest(keyword)
-            .map { it.keywords }
+    suspend fun searchSuggest(keyword: String): List<SearchSuggestResult> {
+        return  mKuaiDuNetApi.searchSuggest(keyword).keywords
     }
 
 }

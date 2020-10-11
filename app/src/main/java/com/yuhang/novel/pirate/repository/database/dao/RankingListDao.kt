@@ -15,17 +15,17 @@ interface RankingListDao {
      * 插入排行榜数据
      */
     @Insert
-    fun insert(obj:List<RankingListEntity>)
+    suspend fun insert(obj:List<RankingListEntity>)
 
     /**
      * 查询所有排行榜数据
      */
     @Query("select * from rankinglistentity group by bookdid order by `index` asc")
-    fun queryAll():List<RankingListEntity>
+    suspend fun queryAll():List<RankingListEntity>
 
     /**
      * 删除排行榜数据
      */
     @Query("delete from rankinglistentity")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

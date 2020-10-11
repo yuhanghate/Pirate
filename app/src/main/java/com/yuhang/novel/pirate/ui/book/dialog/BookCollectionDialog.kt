@@ -1,6 +1,7 @@
 package com.yuhang.novel.pirate.ui.book.dialog
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -8,9 +9,13 @@ import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.ui.book.activity.ReadBookActivity
 import com.yuhang.novel.pirate.ui.book.viewmodel.ReadBookViewModel
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
-class BookCollectionDialog(val activity:ReadBookActivity, val viewModel:ReadBookViewModel) {
+class BookCollectionDialog(val activity: ReadBookActivity, val viewModel: ReadBookViewModel) {
 
     fun show() {
         MaterialDialog(activity).show {
@@ -31,10 +36,11 @@ class BookCollectionDialog(val activity:ReadBookActivity, val viewModel:ReadBook
                 @SuppressLint("CheckResult")
                 override fun invoke(p1: MaterialDialog) {
 
-                    viewModel.postCollection(viewModel.mBooksResult!!)
-                    viewModel.insertCollection(viewModel.mBooksResult!!)
-                        .compose(activity.bindToLifecycle())
-                        .subscribe({
+                    activity.lifecycleScope.launch {
+
+                        flow {
+                            viewModel.postCollection(viewModel.mBooksResult!!)
+                            viewModel.insertCollection(viewModel.mBooksResult!!)
                             viewModel.onUMEvent(
                                 context,
                                 UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE,
@@ -44,9 +50,14 @@ class BookCollectionDialog(val activity:ReadBookActivity, val viewModel:ReadBook
                             viewModel.isCollection = true
                             EventBus.getDefault().post(UpdateChapterEvent())
                             activity.onBackPressed()
+                            emit(Unit)
+                        }
+                            .catch { activity.niceToast("加入失败") }
+                            .collect { }
 
-                        },
-                            { activity.niceToast("加入失败") })
+                    }
+
+
                 }
 
             })

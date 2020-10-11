@@ -4,24 +4,17 @@ import android.annotation.SuppressLint
 import android.widget.EditText
 import com.tamsiree.rxkit.RxRegTool
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceTipTop
-import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class LoginViewModel : BaseViewModel() {
 
     /**
      * 登录
      */
-    fun login(username: String, password: String): Flowable<UserResult> {
+    suspend fun login(username: String, password: String): UserResult {
         return mDataRepository.login(username, password)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     /**
@@ -54,50 +47,49 @@ class LoginViewModel : BaseViewModel() {
      * 同步本地收藏数据到服务器
      */
     @SuppressLint("CheckResult")
-    fun synCollection(): Flowable<StatusResult> {
-        return Flowable.just("")
-            .map {
+    suspend fun synCollection(): StatusResult {
 
-                //本地查找收藏列表
-                mDataRepository.queryBookInfoCollectionAll().filterNotNull().map { it }.toList()
-            }
-            .flatMap {
-                if (it.isEmpty()) {
-                    return@flatMap Flowable.just<BookInfoKSEntity>(BookInfoKSEntity())
-                }
-                Flowable.fromArray(* it.toTypedArray())
-            }
-            .flatMap { bookINfoEntity ->
+        //本地查找收藏列表
+        val list = mDataRepository.queryBookInfoCollectionAll().filterNotNull().map { it }.toList()
+        if (list.isEmpty()) {
+            return StatusResult(code = -1, msg = "本地收藏数据为空")
+        }
 
-                //最新记录上传到服务器
-                val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookINfoEntity.bookid)
-                    ?: return@flatMap Flowable.just(bookINfoEntity)
-                return@flatMap mDataRepository.updateReadHistory(
-                    bookName = bookINfoEntity.bookName,
-                    bookid = bookINfoEntity.bookid,
-                    chapterid = lastOpenChapter.chapterId,
-                    chapterName = lastOpenChapter.chapterName,
-                    author = bookINfoEntity.author,
-                    cover = bookINfoEntity.cover,
-                    description = bookINfoEntity.description,
-                    resouceType = mDataRepository.queryCollection(bookINfoEntity.bookid)?.resouce!!,
-                    content = ""
-                ).compose(io_main()).map { bookINfoEntity }
-            }
-            .flatMap {
-                //收藏列表上传服务器
-                if (it.bookName.isNotEmpty()) {
-                    return@flatMap mDataRepository.addCollection(
-                        bookName = it.bookName, bookid = it.bookid,
-                        author = it.author, cover = it.cover, description = it.description,
-                        bookStatus = it.bookStatus, classifyName = it.classifyName,
-                        resouceType = mDataRepository.queryCollection(it.bookid)?.resouce!!
-                    ).compose(io_main())
-                } else {
-                    return@flatMap Flowable.just(StatusResult(code = -1, msg = "本地收藏数据为空"))
-                }
+        list.forEach { bookInfoEntity ->
+            //最新记录上传到服务器
+            val lastOpenChapter = mDataRepository.queryLastOpenChapter(bookInfoEntity.bookid)
+                ?: return StatusResult(code = -1, msg = "本地收藏数据为空")
+            val status = mDataRepository.updateReadHistory(
+                bookName = bookInfoEntity.bookName,
+                bookid = bookInfoEntity.bookid,
+                chapterid = lastOpenChapter.chapterId,
+                chapterName = lastOpenChapter.chapterName,
+                author = bookInfoEntity.author,
+                cover = bookInfoEntity.cover,
+                description = bookInfoEntity.description,
+                resouceType = mDataRepository.queryCollection(bookInfoEntity.bookid)?.resouce!!,
+                content = ""
+            )
 
-            }.compose(io_main())
+            if (bookInfoEntity.bookName.isEmpty()) {
+                return StatusResult(code = -1, msg = "本地收藏数据为空")
+            }
+
+            //收藏列表上传服务器
+            mDataRepository.addCollection(
+                bookName = bookInfoEntity.bookName,
+                bookid = bookInfoEntity.bookid,
+                author = bookInfoEntity.author,
+                cover = bookInfoEntity.cover,
+                description = bookInfoEntity.description,
+                bookStatus = bookInfoEntity.bookStatus,
+                classifyName = bookInfoEntity.classifyName,
+                resouceType = mDataRepository.queryCollection(bookInfoEntity.bookid)?.resouce!!
+            )
+        }
+
+        return StatusResult(200,"成功")
+
     }
 
 }

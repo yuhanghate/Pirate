@@ -28,12 +28,13 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import com.yuhang.novel.pirate.widget.TopSmoothScroller
+import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
 
 
-abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() {
+abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : SupportActivity() {
     open lateinit var mBinding: D
     lateinit var mViewModel: VM
 
@@ -77,11 +78,11 @@ abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : RxActivity() 
      * 初始化数据库
      */
     private fun initSqlScoutServer() {
-        try {
-            SqlScoutServer.create(this, packageName)
-        } catch (e: IOException) {
-
-        }
+//        try {
+//            SqlScoutServer.create(this, packageName)
+//        } catch (e: IOException) {
+//
+//        }
 
     }
 

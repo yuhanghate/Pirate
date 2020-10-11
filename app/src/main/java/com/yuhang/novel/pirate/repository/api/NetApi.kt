@@ -1,9 +1,7 @@
 package com.yuhang.novel.pirate.repository.api
 
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
-import io.reactivex.Flowable
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.http.*
 
 
@@ -13,138 +11,138 @@ interface NetApi {
      * 登录
      */
     @POST("/api/m/user/login")
-    fun login(@Body body: RequestBody): Flowable<UserResult>
+     suspend fun login(@Body body: RequestBody): UserResult
 
     /**
      * 注册
      */
     @POST("/api/m/user/register")
-    fun register(@Body body: RequestBody): Flowable<UserResult>
+     suspend fun register(@Body body: RequestBody): UserResult
 
     /**
      * 添加收藏
      */
     @POST("/api/m/book/collection/add")
-    fun addCollection(@Body body: RequestBody): Flowable<StatusResult>
+    suspend fun addCollection(@Body body: RequestBody): StatusResult
 
     /**
      * 获取收藏列表
      */
     @GET("/api/m/book/collection/list")
-    fun getCollectionList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<CollectionResult>
+    suspend fun getCollectionList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): CollectionResult
 
     /**
      * 检测版本更新
      */
     @GET("/api/m/version/check/update")
-    fun checkVersion(@Query("versionName") versionName: String): Flowable<VersionResult>
+    suspend fun checkVersion(@Query("versionName") versionName: String): VersionResult
 
     /**
      * 删除收藏
      */
     @DELETE("/api/m/book/collection/delete")
-    fun deleteCollectList(@Query("bookid") bookid: String, @Query("resouceType") resouceType: String): Flowable<StatusResult>
+    suspend fun deleteCollectList(@Query("bookid") bookid: String, @Query("resouceType") resouceType: String): StatusResult
 
     /**
      * 最近浏览
      */
     @GET("/api/m/book/read/history/list")
-    fun getReadHistoryList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<ReadHistoryResult>
+    suspend fun getReadHistoryList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): ReadHistoryResult
 
     /**
      * 更新阅读记录
      */
     @POST("/api/m/book/read/history/update")
-    fun updateReadHistory(@Body body: RequestBody):Flowable<StatusResult>
+    suspend fun updateReadHistory(@Body body: RequestBody):StatusResult
 
     /**
      * 获取收藏列表的阅读记录
      */
     @GET("/api/m/book/read/collection/history/list")
-    fun getReadHistoryCollectionsList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): Flowable<ReadHistoryResult>
+    suspend fun getReadHistoryCollectionsList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int): ReadHistoryResult
 
     /**
      * 获取指定小说的阅读记录
      */
     @GET("/api/m/book/read/history/book")
-    fun getReadHistoryCollectionsList(@Query("bookid") bookid: String): Flowable<ReadHistoryBookResult>
+    suspend fun getReadHistoryCollectionsList(@Query("bookid") bookid: String): ReadHistoryBookResult
 
     /**
      * 发送邮箱验证码
      */
     @GET("/api/m/email/code/send")
-    fun getMailCode(@Query("mail") mail:String):Flowable<EmailCodeResult>
+    suspend fun getMailCode(@Query("mail") mail:String):EmailCodeResult
 
     /**
      * 检测用户邮箱是否存在
      */
     @GET("/api/m/email/user/check")
-    fun checkEmailEmpty(@Query("email") email:String):Flowable<StatusResult>
+    suspend fun checkEmailEmpty(@Query("email") email:String):StatusResult
 
     /**
      * 检测邮箱验证码
      */
     @POST("/api/m/email/code/check")
-    fun checkEmailCode(@Body body: RequestBody):Flowable<StatusResult>
+    suspend fun checkEmailCode(@Body body: RequestBody):StatusResult
 
     /**
      * 修改密码
      */
     @POST("/api/m/email/update/password")
-    fun updatePassword(@Body body: RequestBody):Flowable<UserResult>
+    suspend fun updatePassword(@Body body: RequestBody):UserResult
 
     /**
      * 书源列表
      */
     @POST("/api/m/resouce/list/get")
-    fun getResouceList(@Body body: RequestBody):Flowable<BookResouceResult>
+    suspend fun getResouceList(@Body body: RequestBody):BookResouceResult
 
     /**
      * 书名/作者搜索
      */
     @POST("/api/m/book/books/search")
-    fun getBookSearchList(@Body body: RequestBody):Flowable<SearchSuggestResult>
+    suspend fun getBookSearchList(@Body body: RequestBody):SearchSuggestResult
 
     /**
      * 作者所有作品
      */
     @POST("/api/m/book/books/author/all")
-    fun getAuthorBooksList(@Body body: RequestBody):Flowable<AuthorBooksResult>
+    suspend fun getAuthorBooksList(@Body body: RequestBody):AuthorBooksResult
 
     /**
      * 根据看书id查找
      */
     @POST("/api/m/book/books/search/bookid/ks")
-    fun getBooksSearch(@Body body: RequestBody):Flowable<BookSearchKdResult>
+    suspend fun getBooksSearch(@Body body: RequestBody):BookSearchKdResult
 
     /**
      * 获取游戏推荐
      */
     @Headers("Cache-Control: public, max-stale=86400")
     @GET("/api/m/ad/game/recomment")
-    fun getGameRecommentList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int):Flowable<GameRecommentResult>
+    suspend fun getGameRecommentList(@Query("pageNum") pageNum: Int, @Query("pageSize") pageSize: Int):GameRecommentResult
 
     /**
      * 获取配置文件
      */
     @POST("/api/m/user/config")
-    fun getAppConfig():Flowable<AppConfigResult>
+    suspend fun getAppConfig():AppConfigResult
 
     /**
      * 随机获取小黄书列表
      */
     @POST("/api/m/book/books/sex/rand/list")
-    fun getBookSexList(@Body body: RequestBody):Flowable<ChapterSexResult>
+    suspend fun getBookSexList(@Body body: RequestBody):ChapterSexResult
 
     /**
      * 小黄书章节
      */
     @POST("/api/m/book/books/sex/chapter/list")
-    fun getBookSexChapter(@Body body: RequestBody):Flowable<SexChapterResult>
+     suspend fun getBookSexChapter(@Body body: RequestBody):SexChapterResult
 
     /**
      * 小黄书内容
      */
     @POST("/api/m/book/books/sex/content")
-    fun getBookSexContent(@Body body: RequestBody):Flowable<SexContentResult>
+    suspend fun getBookSexContent(@Body body: RequestBody):SexContentResult
 }

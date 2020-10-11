@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.main.fragment
 
 import android.content.Context
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
@@ -18,6 +19,7 @@ import com.yuhang.novel.pirate.utils.ScaleTransitionPagerTitleView
 import com.yuhang.novel.pirate.utils.bindViewPager
 import com.yuhang.novel.pirate.utils.dp
 import com.yuhang.novel.pirate.utils.getColorCompat
+import kotlinx.coroutines.launch
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -42,9 +44,18 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
 
     override fun initView() {
         super.initView()
+        initUser()
         initMagicIndicator()
         initViewPager()
         onClick()
+
+    }
+
+    private fun initUser() {
+        lifecycleScope.launch {
+            val user = mViewModel.getUser() ?: return@launch
+            mViewModel.isVip = user.isVip
+        }
 
     }
 
@@ -83,12 +94,22 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
 
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
                 val simplePagerTitleView = ScaleTransitionPagerTitleView(context)
-                simplePagerTitleView.text = mViewModel.getTitles()[index]
-                simplePagerTitleView.normalColor = context.getColorCompat(R.color.secondary_text)
-                simplePagerTitleView.selectedColor = context.getColorCompat(R.color.primary_text)
-                simplePagerTitleView.textSize = 19f
-                simplePagerTitleView.setOnClickListener { mBinding.viewPager.setCurrentItem(index, false) }
-                simplePagerTitleView.listener = this@StoreFragmentV2
+                lifecycleScope.launch {
+                    simplePagerTitleView.text = mViewModel.getTitles()[index]
+                    simplePagerTitleView.normalColor =
+                        context.getColorCompat(R.color.secondary_text)
+                    simplePagerTitleView.selectedColor =
+                        context.getColorCompat(R.color.primary_text)
+                    simplePagerTitleView.textSize = 19f
+                    simplePagerTitleView.setOnClickListener {
+                        mBinding.viewPager.setCurrentItem(
+                            index,
+                            false
+                        )
+                    }
+                    simplePagerTitleView.listener = this@StoreFragmentV2
+                }
+
                 return simplePagerTitleView
             }
 
@@ -111,20 +132,38 @@ class StoreFragmentV2 : BaseFragment<FragmentStoreV2Binding, StoreViewModelV2>()
      */
     override fun onReselectListener() {
         when (val fragment = mViewModel.getFragments()[mBinding.viewPager.currentItem]) {
-            is ManFragment -> onTopRecyclerView(
-                fragment.mBinding.refreshLayout,
-                fragment.mBinding.recyclerview,
-                -1
-            )
-            is LadyFragment -> onTopRecyclerView(
-                fragment.mBinding.refreshLayout,
-                fragment.mBinding.recyclerview,
-                -1
-            )
-            is SexFragment -> onTopRecyclerView(fragment.mBinding.refreshLayout,
-                fragment.mBinding.recyclerview,
-                -1)
+            is ManFragment -> {
+                if (fragment.isPreBinding()) {
+                    onTopRecyclerView(
+                        fragment.mBinding.refreshLayout,
+                        fragment.mBinding.recyclerview,
+                        -1
+                    )
+                }
+
+            }
+
+            is LadyFragment -> {
+                if (fragment.isPreBinding()) {
+                    onTopRecyclerView(
+                        fragment.mBinding.refreshLayout,
+                        fragment.mBinding.recyclerview,
+                        -1
+                    )
+
+                }
+            }
+            is SexFragment -> {
+                if (fragment.isPreBinding()) {
+                    onTopRecyclerView(
+                        fragment.mBinding.refreshLayout,
+                        fragment.mBinding.recyclerview,
+                        -1
+                    )
+                }
+            }
         }
+
     }
 
 }

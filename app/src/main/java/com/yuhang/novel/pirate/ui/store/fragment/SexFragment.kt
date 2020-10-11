@@ -1,7 +1,9 @@
 package com.yuhang.novel.pirate.ui.store.fragment
 
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
@@ -10,8 +12,13 @@ import com.yuhang.novel.pirate.databinding.FragmentSexBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.SexBooksEntity
 import com.yuhang.novel.pirate.ui.book.activity.SexReadBookActivity
 import com.yuhang.novel.pirate.ui.store.viewmodel.SexViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 书城 -> 小黄书
@@ -52,34 +59,39 @@ class SexFragment : BaseFragment<FragmentSexBinding, SexViewModel>(), OnRefreshL
 
     override fun initData() {
         super.initData()
-        mViewModel.queryStoreSex()
-            .compose(bindToLifecycle())
-            .subscribe {
-                if (it.isEmpty()) {
-                    mBinding.refreshLayout.autoRefresh()
-                    return@subscribe
+        lifecycleScope.launch {
+            flow { emit(mViewModel.queryStoreSex()) }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main) {
+                        if (it.isEmpty()) {
+                            mBinding.refreshLayout.autoRefresh()
+                            return@withContext
+                        }
+                        mViewModel.adapter.setRefersh(it)
+                    }
+
                 }
-                mViewModel.adapter.setRefersh(it)
-            }
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        mViewModel.getStoreSex(PAGE_NUM, false)
-            .subscribe({
-                mBinding.refreshLayout.finishLoadMore()
-                mViewModel.adapter.loadMore(it)
-            }, { mBinding.refreshLayout.finishLoadMore() })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getStoreSex(PAGE_NUM, false)) }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect { withContext(Dispatchers.Main) { mViewModel.adapter.loadMore(it) } }
+        }
     }
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        PAGE_NUM = 20
-        mViewModel.getStoreSex(PAGE_NUM, true)
-            .subscribe({
-                mBinding.refreshLayout.finishRefresh()
-                mViewModel.adapter.setRefersh(it)
-            }, {
-                mBinding.refreshLayout.finishRefresh()
-            })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getStoreSex(PAGE_NUM, true)) }
+                .onStart { PAGE_NUM = 20 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect { withContext(Dispatchers.Main) { mViewModel.adapter.setRefersh(it) } }
+        }
     }
 
     /**

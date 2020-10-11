@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -30,6 +31,10 @@ import com.yuhang.novel.pirate.ui.book.viewmodel.BookDetailsViewModel
 import com.yuhang.novel.pirate.widget.BookDetailsHeaderView
 import com.yuhang.novel.pirate.widget.glidepalette.BitmapPalette
 import com.yuhang.novel.pirate.widget.glidepalette.GlidePalette
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import kotlin.concurrent.thread
 
@@ -41,7 +46,6 @@ import kotlin.concurrent.thread
 class BookDetailsActivity :
     BaseSwipeBackActivity<ActivityBookDetailsBinding, BookDetailsViewModel>(),
     AppBarLayout.OnOffsetChangedListener {
-
 
 
     /**
@@ -78,11 +82,11 @@ class BookDetailsActivity :
         super.initView()
         netServiceData()
         onClick()
+
         //每次打开详情页加载一下章节目录 .防止进入阅读时本地获取不到章节
-        mViewModel.updateChapterToDB(getBookResult()).compose(bindToLifecycle()).subscribe({
-            //点击过立即阅读,加载完成就直接打开阅读界面
-            if (hasProgressbar()) {
-                closeProgressbar()
+        lifecycleScope.launch {
+            flow<Unit> {
+                mViewModel.updateChapterToDB(getBookResult())
                 if (clickOpenRead) {
                     clickOpenRead = false
                     mBinding.openReadBookTv.callOnClick()
@@ -91,8 +95,14 @@ class BookDetailsActivity :
                     clickDownloadBook = false
                     mBinding.downloadTv.callOnClick()
                 }
+                //点击过立即阅读,加载完成就直接打开阅读界面
+                if (hasProgressbar()) {
+                    closeProgressbar()
+                }
             }
-        }, {})
+                .catch { Logger.e(it.message?:"") }
+                .collect {}
+        }
 
     }
 
@@ -136,9 +146,11 @@ class BookDetailsActivity :
     }
 
     override fun onResume() {
-
         super.onResume()
-        initCollectionStatus()
+        lifecycleScope.launch {
+            initCollectionStatus()
+        }
+
         mViewModel.onResume(this)
 
     }
@@ -146,19 +158,15 @@ class BookDetailsActivity :
     /**
      * 书箱是否在书架中
      */
-    private fun initCollectionStatus() {
-        thread {
-            val bookid = mViewModel.entity?.bookid ?: return@thread
-            val collection = mViewModel.queryCollection(bookid)
-            runOnUiThread {
-                if (collection != null) {
-                    mViewModel.isCollection = true
-                    mBinding.addBookrackTv.text = "移出书架"
-                } else {
-                    mViewModel.isCollection = false
-                    mBinding.addBookrackTv.text = "加入书架"
-                }
-            }
+    private suspend fun initCollectionStatus() {
+        val bookid = mViewModel.entity?.bookid ?: return
+        val collection = mViewModel.queryCollection(bookid)
+        if (collection != null) {
+            mViewModel.isCollection = true
+            mBinding.addBookrackTv.text = "移出书架"
+        } else {
+            mViewModel.isCollection = false
+            mBinding.addBookrackTv.text = "加入书架"
         }
     }
 
@@ -190,9 +198,11 @@ class BookDetailsActivity :
             } else {
 
                 //是否会员
-                if (mViewModel.queryCollectionAll().size > 20 && !mViewModel.isVip()) {
-                    niceToast("超过20本小说请开通会员哦~")
-                    return@clickWithTrigger
+                lifecycleScope.launch {
+                    if (mViewModel.queryCollectionAll().size > 20 && !mViewModel.isVip()) {
+                        niceToast("超过20本小说请开通会员哦~")
+                        return@launch
+                    }
                 }
                 mViewModel.onUMEvent(this, UMConstant.TYPE_DETAILS_CLICK_REMOVE_BOOKCASE, "加入书架")
                 addCollection()
@@ -203,19 +213,22 @@ class BookDetailsActivity :
 
         //全本缓存
         mBinding.downloadTv.clickWithTrigger {
-            clickDownloadBook = true
-            //阅读界面需要等章节列表全部加载完成
-            if (mViewModel.chapterList.isEmpty()) {
-                showProgressbar("努力获取章节列表...", true)
-                return@clickWithTrigger
+            lifecycleScope.launch {
+                clickDownloadBook = true
+                //阅读界面需要等章节列表全部加载完成
+                if (mViewModel.chapterList.isEmpty()) {
+                    showProgressbar("努力获取章节列表...", true)
+                    return@launch
+                }
+                //是否会员
+                if (mViewModel.queryDownloadAll().size > 20 && !mViewModel.isVip()) {
+                    niceToast("超过20本小说请开通会员哦~")
+                    return@launch
+                }
+                mViewModel.downloadBook(getBookResult())
+                niceToast("已加入缓存队列")
             }
-            //是否会员
-            if (mViewModel.queryDownloadAll().size > 20 && !mViewModel.isVip()) {
-                niceToast("超过20本小说请开通会员哦~")
-                return@clickWithTrigger
-            }
-            mViewModel.downloadBook(getBookResult())
-            niceToast("已加入缓存队列")
+
         }
     }
 
@@ -282,22 +295,35 @@ class BookDetailsActivity :
      */
     @SuppressLint("CheckResult")
     private fun netServiceData() {
-        mBinding.loading.showLoading()
-        mViewModel.getBookDetails(getBookResult())
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.entity = it
-                //点击立即阅读,返回就刷新一次
-                initCollectionStatus()
-                //插入或更新书箱信息
-                mViewModel.insertBookInfoEntity()
+        lifecycleScope.launch {
+            flow {
+                emit(mViewModel.getBookDetails(getBookResult()))
+            }
+                .catch {
+                    Logger.e(it.message ?: "")
+                }
+                .onStart { mBinding.loading.showLoading() }
+                .onCompletion {
+                    if (it?.cause != null) {
+                        mBinding.loading.showError()
+                    } else {
+                        mBinding.loading.showContent()
+                    }
+                }
+                .collect {
+                    mViewModel.entity = it
+                    //点击立即阅读,返回就刷新一次
+                    initCollectionStatus()
+                    //插入或更新书箱信息
+                    mViewModel.insertBookInfoEntity()
 
-                resetView(it)
-                netAuthorBooksData()
-            }, {
-                Logger.e(it.message!!)
-                mBinding.loading.showError()
-            })
+                    withContext(Dispatchers.Main){
+                        resetView(it)
+                        netAuthorBooksData()
+                    }
+
+                }
+        }
     }
 
 
@@ -305,15 +331,9 @@ class BookDetailsActivity :
      * 作者所有作品
      */
     @SuppressLint("CheckResult")
-    private fun netAuthorBooksData() {
-        mViewModel.getAuthorBooksList(getBookResult())
-            .compose(bindToLifecycle())
-            .subscribe({
-                resetAuthorBooksView(it)
-                mBinding.loading.showContent()
-            }, {
-                mBinding.loading.showError()
-            })
+    private suspend fun netAuthorBooksData() {
+        val list = mViewModel.getAuthorBooksList(getBookResult())
+        resetAuthorBooksView(list)
     }
 
 
@@ -373,15 +393,21 @@ class BookDetailsActivity :
     @SuppressLint("CheckResult")
     private fun addCollection() {
         mViewModel.entity?.bookid ?: return
-        mViewModel.postCollection(getBookResult())
-        mViewModel.insertCollection(getBookResult())
-            .compose(bindToLifecycle())
-            .subscribe({
+
+        lifecycleScope.launch {
+            flow<Unit> {
+                mViewModel.postCollection(getBookResult())
+                mViewModel.insertCollection(getBookResult())
                 mViewModel.isCollection = true
                 mBinding.addBookrackTv.text = "移出书架"
                 EventBus.getDefault().post(UpdateChapterEvent())
                 niceToast("加入成功")
-            }, { niceToast("加入失败") })
+            }
+                .catch { niceToast("加入失败") }
+                .collect {  }
+
+        }
+
     }
 
     /**
@@ -389,15 +415,25 @@ class BookDetailsActivity :
      */
     @SuppressLint("CheckResult")
     private fun removeCollection() {
+
         val bookid = mViewModel.entity?.bookid ?: return
-        mViewModel.deleteCollection(bookid)
-            .compose(bindToLifecycle())
-            .subscribe({
+
+        lifecycleScope.launch {
+            flow<Unit> {
+                mViewModel.deleteCollection(bookid)
                 mViewModel.isCollection = false
                 mBinding.addBookrackTv.text = "加入书架"
                 EventBus.getDefault().post(RemoveCollectionEvent())
                 niceToast("移除成功")
-            }, { niceToast("加入失败") })
+            }
+                .catch { niceToast("加入失败") }
+                .collect {
+                }
+        }
+
+
+
+
     }
 
 

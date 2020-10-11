@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -15,9 +16,12 @@ import com.yuhang.novel.pirate.databinding.ActivityResouceListKdBinding
 import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntity
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.resouce.viewmodel.ResouceListKdViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 /**
  * 快读源列表
@@ -30,7 +34,7 @@ class ResouceListKdActivity :
     companion object {
         const val BOOKS_RESULT = "books_result"
         const val BOOKS_CHAPTER_INDEX = "books_chapter_index"
-        fun start(context: Activity, obj: BooksResult, chapterIndex:Int) {
+        fun start(context: Activity, obj: BooksResult, chapterIndex: Int) {
             val intent = Intent(context, ResouceListKdActivity::class.java)
             intent.putExtra(BOOKS_CHAPTER_INDEX, chapterIndex)
             intent.putExtra(BOOKS_RESULT, obj.toJson())
@@ -89,18 +93,17 @@ class ResouceListKdActivity :
     @SuppressLint("CheckResult")
     override fun initData() {
         super.initData()
-        mBinding.progressView.show()
 
-        mViewModel.getResouceList(getBooksResult())
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.adapter.setRefersh(it)
-                mBinding.titleTv.text = "共搜索到${it.size}个网站"
-                mBinding.progressView.hide()
-            }, {
-                mBinding.progressView.hide()
-                mBinding.titleTv.text = "共搜索到0个网站"
-            })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getResouceList(getBooksResult())) }
+                .onStart { mBinding.progressView.show() }
+                .onCompletion { mBinding.progressView.hide() }
+                .catch { mBinding.titleTv.text = "共搜索到0个网站" }
+                .collect {
+                    mViewModel.adapter.setRefersh(it)
+                    mBinding.titleTv.text = "共搜索到${it.size}个网站"
+                }
+        }
     }
 
     private fun onClick() {

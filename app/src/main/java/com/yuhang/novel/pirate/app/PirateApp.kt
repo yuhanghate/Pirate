@@ -16,6 +16,8 @@ import com.scwang.smartrefresh.header.MaterialHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.tamsiree.rxkit.RxTool
 import com.tamsiree.rxkit.TLog
+import com.tamsiree.rxkit.crash.TCrashProfile
+import com.tamsiree.rxkit.crash.TCrashTool
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
@@ -26,8 +28,11 @@ import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.constant.ConfigConstant
 import com.yuhang.novel.pirate.push.PushUmengMessageHandler
 import com.yuhang.novel.pirate.repository.DataRepository
+import com.yuhang.novel.pirate.repository.network.Http
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.AppManagerUtils
+import com.yuhang.novel.pirate.utils.application
+import kotlinx.coroutines.*
 import me.yokeyword.fragmentation.Fragmentation
 import kotlin.concurrent.thread
 
@@ -63,9 +68,10 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 //        initStrictModel()
         mInstance = this
         super.onCreate()
+        this.registerActivityLifecycleCallbacks(this)
         initContext(this)
         initAppcation()
-        this.registerActivityLifecycleCallbacks(this)
+
     }
 
     /**
@@ -75,11 +81,11 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
         PreferenceUtil.init(this)
         pageType =
             PreferenceUtil.getInt(ConfigConstant.PAGE_TYPE, ConfigConstant.PAGE_TYPE_HORIZONTAL)
-        TLog.switchCrashFile(false)
+        TCrashTool.getConfig().setEnabled(false)
         initRefreshLayout()
         initFragmentManger()
         initLog()
-        thread { initYouMent() }
+        initYouMent()
         initToken()
         initDownload()
     }
@@ -143,61 +149,67 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
      * 友盟统计初始化
      */
     private fun initYouMent() {
+        GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            coroutineScope {
 
-        /**
-         * 设置组件化的Log开关
-         * 参数: boolean 默认为false，如需查看LOG设置为true
-         */
-        if (BuildConfig.DEBUG) {
-            UMConfigure.setLogEnabled(true)
+                /**
+                 * 设置组件化的Log开关
+                 * 参数: boolean 默认为false，如需查看LOG设置为true
+                 */
+                if (BuildConfig.DEBUG) {
+                    UMConfigure.setLogEnabled(true)
+                }
+
+                /**
+                 * 设置日志加密
+                 * 参数：boolean 默认为false（不加密）
+                 */
+                UMConfigure.setEncryptEnabled(true)
+
+
+                //获取渠道
+                val channel = WalleChannelReader.getChannelInfo(application)?.channel ?: "debug"
+                /**
+                 * 初始化common库
+                 * 参数1:上下文，不能为空
+                 * 参数2:【友盟+】 AppKey
+                 * 参数3:【友盟+】 Channel
+                 * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
+                 * 参数5:Push推送业务的secret
+                 */
+                UMConfigure.init(
+                    application,
+                    ConfigConstant.YOUMENT_KEY,
+                    channel,
+                    UMConfigure.DEVICE_TYPE_PHONE,
+                    ConfigConstant.YOUMENT_PUSH
+                )
+
+
+                // 选用LEGACY_AUTO页面采集模式
+                MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
+
+                // 支持在子进程中统计自定义事件
+                UMConfigure.setProcessEvent(true)
+
+                val mPushAgent = PushAgent.getInstance(application)
+                //注册推送服务，每次调用register方法都会回调该接口
+                mPushAgent.register(object : IUmengRegisterCallback {
+                    override fun onSuccess(deviceToken: String) {
+                        //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
+                        Logger.t("UMLog").i("注册成功：deviceToken：-------->  $deviceToken")
+                    }
+
+                    override fun onFailure(s: String, s1: String) {
+                        Logger.t("UMLog").i("注册失败：-------->  s:$s,s1:$s1")
+                    }
+                })
+
+                mPushAgent.messageHandler = PushUmengMessageHandler()
+            }
         }
 
-        /**
-         * 设置日志加密
-         * 参数：boolean 默认为false（不加密）
-         */
-        UMConfigure.setEncryptEnabled(true)
 
-
-        //获取渠道
-        val channel = WalleChannelReader.getChannelInfo(this)?.channel ?: "debug"
-        /**
-         * 初始化common库
-         * 参数1:上下文，不能为空
-         * 参数2:【友盟+】 AppKey
-         * 参数3:【友盟+】 Channel
-         * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
-         * 参数5:Push推送业务的secret
-         */
-        UMConfigure.init(
-            this,
-            ConfigConstant.YOUMENT_KEY,
-            channel,
-            UMConfigure.DEVICE_TYPE_PHONE,
-            ConfigConstant.YOUMENT_PUSH
-        )
-
-
-        // 选用LEGACY_AUTO页面采集模式
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
-
-        // 支持在子进程中统计自定义事件
-        UMConfigure.setProcessEvent(true)
-
-        val mPushAgent = PushAgent.getInstance(this)
-        //注册推送服务，每次调用register方法都会回调该接口
-        mPushAgent.register(object : IUmengRegisterCallback {
-            override fun onSuccess(deviceToken: String) {
-                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
-                Logger.t("UMLog").i("注册成功：deviceToken：-------->  $deviceToken")
-            }
-
-            override fun onFailure(s: String, s1: String) {
-                Logger.t("UMLog").i("注册失败：-------->  s:$s,s1:$s1")
-            }
-        })
-
-        mPushAgent.messageHandler = PushUmengMessageHandler()
     }
 
 
@@ -205,12 +217,13 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
      * 初始化Token
      */
     private fun initToken() {
-        thread {
-            getDataRepository().getLastUser()?.let {
-                setToken(this.getToken())
+
+        GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            coroutineScope {
+                val user = getDataRepository().getLastUser() ?: return@coroutineScope
+                setToken(user.token)
             }
         }
-
     }
 
     /**
@@ -224,7 +237,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
             .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
             .methodCount(2)         // (Optional) How many method line to show. Default 2
             .methodOffset(7)        // (Optional) Hides internal method calls up to offset. Default 5
-            .tag("live")   // (Optional) Global tag for every log. Default PRETTY_LOGGER
+            .tag("noval")   // (Optional) Global tag for every log. Default PRETTY_LOGGER
             .build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
@@ -244,7 +257,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
 
     fun getDataRepository(): DataRepository {
         if (mDataRepository == null) {
-            mDataRepository = DataRepository(this)
+            mDataRepository = DataRepository()
         }
         return mDataRepository!!
     }

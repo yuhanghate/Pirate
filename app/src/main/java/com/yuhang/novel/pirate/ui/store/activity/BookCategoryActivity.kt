@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.store.activity
 
 import android.app.Activity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
@@ -14,6 +15,7 @@ import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
 import com.yuhang.novel.pirate.ui.store.adapter.CategoryAdapter
 import com.yuhang.novel.pirate.ui.store.adapter.CategoryTitleAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.BookCategoryViewModel
+import kotlinx.coroutines.launch
 
 /**
  * 小说分类
@@ -55,29 +57,25 @@ class BookCategoryActivity :
 
     override fun initData() {
         super.initData()
-        mViewModel.getCategoryList()
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            mViewModel.getCategoryList()
+            mViewModel.adapter.addAdapter(getTitleAdapter("男生"))
+            mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.man))
 
-                mViewModel.adapter.addAdapter(getTitleAdapter("男生"))
-                mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.man))
+            mViewModel.adapter.addAdapter(getTitleAdapter("女生"))
+            mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.lady))
 
-                mViewModel.adapter.addAdapter(getTitleAdapter("女生"))
-                mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.lady))
+            mViewModel.adapter.addAdapter(getTitleAdapter("出版"))
+            mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.press))
 
-                mViewModel.adapter.addAdapter(getTitleAdapter("出版"))
-                mViewModel.adapter.addAdapter(getCategoryAdatper(mViewModel.press))
-
-                mBinding.recyclerview.requestLayout()
-                mViewModel.adapter
-            },{})
-
+            mBinding.recyclerview.requestLayout()
+        }
     }
 
     /**
      * 获取标题
      */
-    private fun getTitleAdapter(obj:String): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
+    private fun getTitleAdapter(obj: String): DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
         val adapter = CategoryTitleAdapter()
             .setListener(this)
             .initData(obj)

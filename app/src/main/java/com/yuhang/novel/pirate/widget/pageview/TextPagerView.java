@@ -17,6 +17,7 @@ import com.orhanobut.logger.Logger;
 import com.yuhang.novel.pirate.app.PirateApp;
 import com.yuhang.novel.pirate.constant.ConfigConstant;
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil;
+import com.yuhang.novel.pirate.utils.ContextUtil;
 import com.yuhang.novel.pirate.utils.IOUtils;
 import com.yuhang.novel.pirate.utils.PageUtils;
 import com.yuhang.novel.pirate.utils.ScreenUtils;
@@ -286,13 +287,14 @@ public class TextPagerView extends ReadBookTextView {
         float y = mDisplayHeight - getPaddingBottom() - mMarginHeightButton - mTipPaint.getFontSpacing();
 
         // 只有finish的时候采用页码
+
         String percent = (mTextPageBean.getCurrentPage() + 1) + "/" + mTextPageBean.getMaxPage() + "页";
-        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ScreenUtils.dpToPx(10), y, mTipPaint);
+        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ContextUtil.getToSp(10), y, mTipPaint);
 
 
         /******绘制电池********/
 
-        int visibleRight = ScreenUtils.dpToPx(25) + getPaddingStart() + mMarginWidthStart;
+        int visibleRight = (int) ContextUtil.getToSp(25) + getPaddingStart() + mMarginWidthStart;
         int visibleBottom = (int) y;
 
         int outFrameWidth = (int) mTipPaint.measureText("xxx");

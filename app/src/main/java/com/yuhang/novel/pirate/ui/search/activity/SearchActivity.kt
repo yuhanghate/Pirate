@@ -12,9 +12,11 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
+import com.orhanobut.logger.Logger
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseSwipeBackActivity
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -25,17 +27,23 @@ import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
 import com.yuhang.novel.pirate.listener.OnClickSearchSuggestListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.SearchSuggestResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
+import com.yuhang.novel.pirate.ui.search.result.SearchResult
 import com.yuhang.novel.pirate.ui.search.viewmodel.SearchViewModel
 import com.yuhang.novel.pirate.ui.settings.activity.SearchFeedbackActivity
 import com.yuhang.novel.pirate.widget.TextWatcherAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
  * 搜索书籍
  */
 class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewModel>(),
-    OnClickItemListener,TextView.OnEditorActionListener, OnClickSearchSuggestListener {
+    OnClickItemListener, TextView.OnEditorActionListener, OnClickSearchSuggestListener {
 
 
     var LONG_SEARCH_SUGGES = System.currentTimeMillis()
@@ -81,7 +89,7 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
         mBinding.btnResouce.clickWithTrigger { showResouceDialog() }
         mBinding.searchEt.setOnEditorActionListener(this)
         mBinding.btnCancel.clickWithTrigger { onBackPressedSupport() }
-        mBinding.btnClear.clickWithTrigger{mBinding.searchEt.setText("", null)}
+        mBinding.btnClear.clickWithTrigger { mBinding.searchEt.setText("", null) }
         mBinding.searchEt.addTextChangedListener(object : TextWatcherAdapter() {
             override fun afterTextChanged(s: Editable?) {
                 super.afterTextChanged(s)
@@ -109,25 +117,31 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
     private fun netServiceSearch(keyword: String?) {
         if (TextUtils.isEmpty(keyword)) return
 
-        showProgress()
-        mViewModel.lastKeyword = keyword?.trim()!!
-        mViewModel.resouce = if (mBinding.resouceTv.text.toString() == "笔趣阁") "KS" else "KD"
-        mViewModel.insertSearchHistory(keyword.trim())
-        mViewModel.searchBookV2(keyword.trim())
-            .compose(bindToLifecycle())
-            .subscribe({
-                val list = arrayListOf<BooksResult>()
-                list.add(BooksResult())
-                list.addAll(it)
-                mViewModel.adapter.setRefersh(list)
-                mBinding.recyclerview.visibility = View.VISIBLE
-                mBinding.searchSuggestRecyclerview.visibility = View.GONE
-                hideProgress()
-            }, {
-                hideProgress()
-                mBinding.recyclerview.visibility = View.VISIBLE
-                mBinding.searchSuggestRecyclerview.visibility = View.GONE
-            })
+        lifecycleScope.launch {
+            flow {
+                mViewModel.lastKeyword = keyword?.trim()!!
+                mViewModel.resouce = if (mBinding.resouceTv.text.toString() == "笔趣阁") "KS" else "KD"
+                mViewModel.insertSearchHistory(keyword.trim())
+                emit(mViewModel.searchBookV2(keyword.trim()))
+            }
+                .onStart { showProgress() }
+                .onCompletion {
+                    hideProgress()
+                    mBinding.recyclerview.visibility = View.VISIBLE
+                    mBinding.searchSuggestRecyclerview.visibility = View.GONE
+                }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        val list = arrayListOf<BooksResult>()
+                        list.add(BooksResult())
+                        list.addAll(it)
+                        mViewModel.adapter.setRefersh(list)
+                    }
+
+                }
+        }
+
     }
 
     /**
@@ -139,14 +153,16 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
             return
         }
 
-        mViewModel.searchSuggest(keyword!!)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mBinding.searchSuggestRecyclerview.visibility = View.VISIBLE
-                mViewModel.searchAdapter.setRefersh(it)
-            },{
-                mBinding.searchSuggestRecyclerview.visibility = View.GONE
-            })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.searchSuggest(keyword!!)) }
+                .catch { mBinding.searchSuggestRecyclerview.visibility = View.GONE }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mBinding.searchSuggestRecyclerview.visibility = View.VISIBLE
+                        mViewModel.searchAdapter.setRefersh(it)
+                    }
+                }
+        }
     }
 
     /**
@@ -188,20 +204,25 @@ class SearchActivity : BaseSwipeBackActivity<ActivitySearchBinding, SearchViewMo
      */
     @SuppressLint("CheckResult")
     private fun initHistoryView() {
-        mViewModel.getSearchHistory()
-            .compose(bindToLifecycle())
-            .subscribe({
-                it.filter { !TextUtils.isEmpty(it?.keyword) }.forEach {result ->
-                    val tag = createHistoryTag(result?.keyword!!)
-                    mBinding.flexboxLayout.addView(tag)
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getSearchHistory()) }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        it.filter { !TextUtils.isEmpty(it?.keyword) }.forEach { result ->
+                            val tag = createHistoryTag(result?.keyword!!)
+                            mBinding.flexboxLayout.addView(tag)
+                        }
+                    }
+
                 }
-            }, {})
+        }
     }
 
     /**
      * 创建历史记录View
      */
-    private fun createHistoryTag(keyword: String) :View{
+    private fun createHistoryTag(keyword: String): View {
         val binding = LayoutSearchHistoryBinding.inflate(LayoutInflater.from(this))
         binding.contentTv.text = keyword
         binding.contentTv.clickWithTrigger {

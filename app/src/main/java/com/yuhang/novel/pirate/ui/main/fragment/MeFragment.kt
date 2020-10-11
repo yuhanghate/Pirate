@@ -9,7 +9,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -19,6 +21,7 @@ import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
 import com.tamsiree.rxkit.RxAppTool
 import com.tamsiree.rxkit.RxEncryptTool
+import com.yh.video.pirate.utils.permissions.requestMultiplePermissionsByLanuch
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.base.BaseFragment
@@ -28,8 +31,9 @@ import com.yuhang.novel.pirate.databinding.FragmentMeBinding
 import com.yuhang.novel.pirate.eventbus.LoginEvent
 import com.yuhang.novel.pirate.eventbus.LogoutEvent
 import com.yuhang.novel.pirate.extension.clickWithTrigger
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
+import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
+import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.UserResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
@@ -47,11 +51,13 @@ import com.yuhang.novel.pirate.ui.user.activity.LoginActivity
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.ImageUtils
 import com.yuhang.novel.pirate.utils.ThemeHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
 import java.io.File
 
 
@@ -59,9 +65,16 @@ import java.io.File
  * 我的
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
-@RuntimePermissions
 class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
+    private val PERMISSION_VERSION_UPDATE = arrayOf(Manifest.permission.INTERNET,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+
+    /**
+     * 权限申请
+     */
+    val launch: ActivityResultLauncher<Array<String>> = checkVersion()
 
     private val mUsersService: UsersService by lazy { UsersServiceImpl() }
 
@@ -107,8 +120,8 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
         EventBus.getDefault().register(this)
         onClick()
         initUserInfoView()
-//        checkVersionWithPermissionCheck()
     }
+
 
     /**
      * 初始化用户信息
@@ -127,38 +140,45 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             mBinding.subjectModeIv.setImageResource(R.drawable.ic_moon)
         }
 
-        //控制游戏显示或隐藏
-        mViewModel.queryConfig()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.showGameRecommended) {
-                    mBinding.gamesCl.visibility = View.VISIBLE
-                } else {
-                    mBinding.gamesCl.visibility = View.GONE
-                }
-            }, {})
 
-        mViewModel.getUserInfo()
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it == null) {
+
+        lifecycleScope.launch {
+            //控制游戏显示或隐藏
+            flow { emit(mViewModel.queryConfig()) }
+                .catch { Logger.e(it.message?:"") }
+                .collect {
+                    if (it.showGameRecommended) {
+                        mBinding.gamesCl.visibility = View.VISIBLE
+                    } else {
+                        mBinding.gamesCl.visibility = View.GONE
+                    }
+                }
+
+            flow<UserEntity?> { mViewModel.getUserInfo() }
+                .catch {
                     onClick()
                     mBinding.btnLogin.text = "立即登录"
                     mBinding.btnLogin.textSize = 24f
-                    mBinding.loginDescTv.visibility = View.VISIBLE
-                } else {
-                    mBinding.btnLogin.text = "随友:${it?.username}"
-                    mBinding.loginDescTv.visibility = View.GONE
-                    mBinding.btnLogin.textSize = 18f
-                    mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                    Logger.e(it.message?:"")
+                }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (it == null) {
+                            onClick()
+                            mBinding.btnLogin.text = "立即登录"
+                            mBinding.btnLogin.textSize = 24f
+                            mBinding.loginDescTv.visibility = View.VISIBLE
+                        } else {
+                            mBinding.btnLogin.text = "随友:${it?.username}"
+                            mBinding.loginDescTv.visibility = View.GONE
+                            mBinding.btnLogin.textSize = 18f
+                            mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
+                        }
+                    }
 
                 }
+        }
 
-            }, {
-                onClick()
-                mBinding.btnLogin.text = "立即登录"
-                mBinding.btnLogin.textSize = 24f
-            })
     }
 
     private fun onClick() {
@@ -187,7 +207,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
             mViewModel.onUMEvent(mActivity!!, UMConstant.TYPE_ME_CLICK_VERSION_CHECK, "我的 -> 检测升级")
             isInitView = true
             if (mViewModel.installProcess()) {
-                checkVersionWithPermissionCheck()
+                launch.launch(PERMISSION_VERSION_UPDATE)
             }
 
         }
@@ -344,31 +364,33 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     /**
      * 版本升级
      */
-    @SuppressLint("CheckResult")
-    @NeedsPermission(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    fun checkVersion() {
-//        mActivity?.showProgressbar()
-        mViewModel.checkVersion()
-            .compose(bindToLifecycle())
-            .subscribe({
-                mActivity?.closeProgressbar()
-                if (it.update == "Yes") {
-                    mBinding.versionNameTv.text = "可升级"
+    fun checkVersion(): ActivityResultLauncher<Array<String>> {
+        return requestMultiplePermissionsByLanuch(
+            allGranted = {
+                lifecycleScope.launch {
+                    flow { emit(mViewModel.checkVersion()) }
+                        .onCompletion {
+                            mActivity?.closeProgressbar()
+                        }
+                        .collect {
+                            if (it.update == "Yes") {
+                                mBinding.versionNameTv.text = "可升级"
 
-                    if (isInitView) {
-                        showVersionUpdateDialog(it)
-                        isInitView = false
-                    }
+                                if (isInitView) {
+                                    showVersionUpdateDialog(it)
+                                    isInitView = false
+                                }
 
-                } else {
-                    if (isInitView) {
-                        niceToast("当前已是最新版本")
-                        isInitView = false
-                    }
-
-                    mBinding.versionNameTv.text = ""
+                            } else {
+                                if (isInitView) {
+                                    niceToast("当前已是最新版本")
+                                    isInitView = false
+                                }
+                                mBinding.versionNameTv.text = ""
+                            }
+                        }
                 }
-            }, {
+
             })
     }
 
@@ -448,39 +470,30 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
     }
 
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // NOTE: delegate the permission handling to generated function
-        onRequestPermissionsResult(requestCode, grantResults)
-    }
-
     /**
      * 弹出同步收藏数据
      */
     @SuppressLint("CheckResult")
     private fun showUpdateCollectDialog() {
-        showProgressbar(message = "正在同步大量数据\n请不要切换出APP并耐心等待..")
 
-        //从服务器下载收藏
-        mUsersService.updateCollectionToLocal()
-//            .flatMap { mUsersService.updateChapterListToLocal(it) }
-            .flatMap { mUsersService.updateBookInfoToLocal(it) }
-            .flatMap { mUsersService.updateReadHistoryToLocal(it) }
-//            .flatMap { mUsersService.updateContentToLocal(it) }
-            .compose(bindToLifecycle())
-            .compose(io_main())
-            .subscribe({
-            }, {
-                closeProgressbar()
-                showUpdateCollectionDialog()
-            }, {
-                closeProgressbar()
-                EventBus.getDefault().postSticky(LoginEvent())
-            })
+
+        lifecycleScope.launch {
+            flow {
+                //从服务器下载收藏
+                val list = mUsersService.updateCollectionToLocal()
+                list.forEach {
+                    mUsersService.updateBookInfoToLocal(it)
+                    mUsersService.updateReadHistoryToLocal(it)
+                }
+                emit(Unit)
+            }
+                .onStart { showProgressbar(message = "正在同步大量数据\n请不要切换出APP并耐心等待..") }
+                .onCompletion { closeProgressbar() }
+                .catch { showUpdateCollectionDialog() }
+                .collect {
+                    EventBus.getDefault().postSticky(LoginEvent())
+                }
+        }
 
     }
 

@@ -85,7 +85,6 @@ public abstract class AppDatabase
         if (INSTANCE == null) {
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
-                            .allowMainThreadQueries()
                             .addMigrations(
                                     Migration_3_4.instance(),
                                     Migration_4_5.instance(),

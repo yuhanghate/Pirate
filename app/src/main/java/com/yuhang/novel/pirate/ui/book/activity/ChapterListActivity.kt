@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.gyf.immersionbar.BarHide
@@ -17,9 +18,14 @@ import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.viewmodel.ChapterListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 章节目录
@@ -97,11 +103,10 @@ class ChapterListActivity :
 
     @SuppressLint("CheckResult")
     private fun initBookInfo() {
-        mViewModel.queryBookInfo(getBooksResult().getBookid())
-            .compose(bindToLifecycle())
-            .subscribe({
-                mBinding.titleCloseTv.text = it?.bookName
-            }, {})
+        lifecycleScope.launch {
+            val info = mViewModel.queryBookInfo(getBooksResult().getBookid())
+            mBinding.titleCloseTv.text = info?.bookName
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -114,13 +119,20 @@ class ChapterListActivity :
             .setRecyclerView(mBinding.recyclerView, false)
         mBinding.fastscroll.setRecyclerView(mBinding.recyclerView)
 
-        mBinding.progressView.show()
-        mViewModel.queryChapterList(getBooksResult())
-            .compose(bindToLifecycle())
-            .subscribe({ list ->
-                mViewModel.adapter.setRefersh(list)
-                mBinding.progressView.hide()
-            }, { mBinding.progressView.hide() })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.queryChapterList(getBooksResult())) }
+                .catch {
+                    mBinding.progressView.hide()
+                    Logger.e(it.message?:"")
+                }
+                .onCompletion { mBinding.progressView.hide() }
+                .onStart { mBinding.progressView.show() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        mViewModel.adapter.setRefersh(it)
+                    }
+                }
+        }
     }
 
     private fun onClick() {
@@ -132,15 +144,11 @@ class ChapterListActivity :
      */
     @SuppressLint("CheckResult")
     override fun onClickChapterItemListener(view: View, chapterid: String) {
-        mViewModel.queryCollection(getBookid())
-            .compose(bindToLifecycle())
-            .subscribe({
-                ReadBookActivity.start(this, it?.niceBooksResult()!!, chapterid)
-                onBackPressedSupport()
-            }, {
-                Logger.i("")
-            })
-
+        lifecycleScope.launch {
+            val queryCollection = mViewModel.queryCollection(getBookid())
+            ReadBookActivity.start(this@ChapterListActivity, queryCollection?.niceBooksResult()!!, chapterid)
+            onBackPressedSupport()
+        }
     }
 
     /**
@@ -148,16 +156,12 @@ class ChapterListActivity :
      */
     @SuppressLint("CheckResult")
     override fun onClickItemListener(view: View, position: Int) {
-        val chapterKSEntity = mViewModel.adapter.getObj(position)
-        mViewModel.queryCollection(chapterKSEntity.bookId)
-            .compose(bindToLifecycle())
-            .subscribe({
-                ReadBookActivity.start(this, it?.niceBooksResult()!!, chapterKSEntity.chapterId)
-                onBackPressedSupport()
-            }, {
-
-            })
-
+        lifecycleScope.launch {
+            val chapterKSEntity = mViewModel.adapter.getObj(position)
+            val queryCollection = mViewModel.queryCollection(chapterKSEntity.bookId)
+            ReadBookActivity.start(this@ChapterListActivity, queryCollection?.niceBooksResult()!!, chapterKSEntity.chapterId)
+            onBackPressedSupport()
+        }
     }
 
     override fun onPause() {

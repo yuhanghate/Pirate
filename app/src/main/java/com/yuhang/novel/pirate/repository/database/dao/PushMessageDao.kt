@@ -7,17 +7,17 @@ import com.yuhang.novel.pirate.repository.database.entity.PushMessageEntity
 interface PushMessageDao {
 
     @Insert
-    fun insert(obj:PushMessageEntity)
+    suspend fun insert(obj:PushMessageEntity)
 
     @Update
-    fun update(obj:PushMessageEntity)
+    suspend fun update(obj:PushMessageEntity)
 
     /**
      * 查找最近的公告信息
      */
     @Query("select * from pushmessageentity where type = 'NOTE' and hasRead = 0 order by id desc limit 1")
-    fun queryNote():PushMessageEntity
+    suspend fun queryNote():PushMessageEntity
 
     @Delete
-    fun delete(obj:PushMessageEntity)
+    suspend fun delete(obj:PushMessageEntity)
 }

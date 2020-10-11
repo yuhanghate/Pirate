@@ -6,9 +6,6 @@ import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.databinding.ActivityForgetMailBinding
 import com.yuhang.novel.pirate.extension.niceTipTop
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.StatusResult
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class ForgetMailViewModel : BaseViewModel() {
 
@@ -31,9 +28,7 @@ class ForgetMailViewModel : BaseViewModel() {
     /**
      * 检测用户邮箱是否存在
      */
-    fun checkEmailEmpty(email: String): Flowable<StatusResult> {
+    suspend fun checkEmailEmpty(email: String): StatusResult {
         return mDataRepository.checkEmailEmpty(email)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
     }
 }

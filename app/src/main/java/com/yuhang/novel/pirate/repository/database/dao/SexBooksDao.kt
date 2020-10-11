@@ -9,11 +9,11 @@ import com.yuhang.novel.pirate.repository.database.entity.SexBooksEntity
 interface SexBooksDao {
 
     @Insert
-    fun insert(list: List<SexBooksEntity>)
+    suspend fun insert(list: List<SexBooksEntity>)
 
     @Query("select * from sexbooksentity")
-    fun queryAll():List<SexBooksEntity>
+    suspend fun queryAll():List<SexBooksEntity>
 
     @Query("delete from sexbooksentity")
-    fun clean()
+    suspend fun clean()
 }

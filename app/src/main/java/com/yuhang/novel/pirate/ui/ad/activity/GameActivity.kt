@@ -4,10 +4,15 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.lifecycleScope
 import com.liulishuo.filedownloader.model.FileDownloadStatus
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.tamsiree.rxkit.RxAppTool
+import com.yh.video.pirate.utils.permissions.requestMultiplePermissions
+import com.yh.video.pirate.utils.permissions.requestMultiplePermissionsByLanuch
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseDownloadBackActivity
 import com.yuhang.novel.pirate.databinding.ActivityGameBinding
@@ -17,25 +22,35 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickGameDownloadListener
 import com.yuhang.novel.pirate.listener.OnClickItemLongListener
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameDataResult
+import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameRecommentResult
 import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
 import com.yuhang.novel.pirate.ui.ad.dialog.DownloadDeleteDialog
 import com.yuhang.novel.pirate.ui.ad.viewmodel.GameViewModel
 import com.yuhang.novel.pirate.viewholder.ItemGameVH
 import com.yuhang.novel.pirate.widget.progressLayout.ProgressLayout
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
 
 /**
  * 游戏推荐
  */
-@RuntimePermissions
 class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel>(),
     OnRefreshLoadMoreListener, OnClickItemLongListener,
     OnClickGameDownloadListener {
 
     var PAGE_NUM = 1
+
+    val PERMISSION_INSTALL =
+        arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    var filePath = ""
+
+    val launch = installApk()
 
     companion object {
         fun start(context: Activity) {
@@ -88,15 +103,13 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
     /**
      * 安装apk
      */
-    @NeedsPermission(
-        Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_PHONE_STATE
-    )
-    fun installApk(file: String) {
-        if (mViewModel.installProcess()) {
-            RxAppTool.installApp(this, file)
-        }
-
+    fun installApk(): ActivityResultLauncher<Array<String>> {
+        return requestMultiplePermissionsByLanuch(
+            allGranted = {
+                if (mViewModel.installProcess()) {
+                    RxAppTool.installApp(this, filePath)
+                }
+            })
     }
 
     /**
@@ -105,17 +118,23 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         PAGE_NUM++
 
-        mViewModel.getGameRecommentList(PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.adapter.loadMore(mViewModel.createTask(it.data.list))
-                mBinding.refreshLayout.finishLoadMore()
-                if (mViewModel.adapter.itemCount == it.data.total) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+
+        lifecycleScope.launch {
+
+            flow {
+                emit(mViewModel.getGameRecommentList(PAGE_NUM))
+            }
+                .catch { Logger.e("error", it.message) }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .collect {
+                    mViewModel.adapter.loadMore(mViewModel.createTask(it.data.list))
+                    mBinding.refreshLayout.finishLoadMore()
+                    if (mViewModel.adapter.itemCount == it.data.total) {
+                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                    }
                 }
-            }, {
-                mBinding.refreshLayout.finishLoadMore()
-            })
+        }
+
     }
 
 
@@ -124,17 +143,22 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
      */
     override fun onRefresh(refreshLayout: RefreshLayout) {
         PAGE_NUM = 1
-        mViewModel.getGameRecommentList(PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.adapter.setRefersh(mViewModel.createTask(it.data.list))
-                mBinding.refreshLayout.finishRefresh()
-                if (mViewModel.adapter.itemCount == it.data.total) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+
+        lifecycleScope.launch {
+            flow {
+                emit(mViewModel.getGameRecommentList(PAGE_NUM))
+            }
+                .catch { Logger.e("error",it.message) }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .collect {
+                    mViewModel.adapter.setRefersh(mViewModel.createTask(it.data.list))
+                    mBinding.refreshLayout.finishRefresh()
+                    if (mViewModel.adapter.itemCount == it.data.total) {
+                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                    }
                 }
-            }, {
-                mBinding.refreshLayout.finishRefresh()
-            })
+        }
+
     }
 
     /**
@@ -143,7 +167,7 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
     override fun onGameDownloadStartListener(
         view: ProgressLayout,
         obj: GameDataResult,
-        position: Int
+        position: Int,
     ) {
         DownloadServiceImpl.start(this, obj.downloadUrl, obj.name)
     }
@@ -155,8 +179,9 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
     override fun onGameDownloadListener(obj: GameDataResult, position: Int) {
         when (DownloadServiceImpl.getDownloadStatus(obj.downloadUrl)) {
             FileDownloadStatus.completed -> {
+                filePath = DownloadServiceImpl.getDownloadPath(obj.downloadUrl)
                 //安装
-                installApkWithPermissionCheck(DownloadServiceImpl.getDownloadPath(obj.downloadUrl))
+                launch.launch(PERMISSION_INSTALL)
                 return
             }
         }
@@ -213,8 +238,9 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: DownloadStatusEvent) {
+        filePath = obj.path
         when (obj.status) {
-            DownloadServiceImpl.SERVICE_ACTION_INSTALL -> installApkWithPermissionCheck(obj.path)
+            DownloadServiceImpl.SERVICE_ACTION_INSTALL -> launch.launch(PERMISSION_INSTALL)
             DownloadServiceImpl.SERVICE_ACTION_PROGRESS -> updateProgressView(obj.url, obj.progress)
             DownloadServiceImpl.SERVICE_ACTION_PAUSE -> updateDownloadTextView(obj.url, "继续", true)
             DownloadServiceImpl.SERVICE_ACTION_START -> {
@@ -222,14 +248,15 @@ class GameActivity : BaseDownloadBackActivity<ActivityGameBinding, GameViewModel
                 niceToast("开始下载...")
             }
             DownloadServiceImpl.SERVICE_ACTION_PENDING -> {
-                updateDownloadTextView(obj.url,"暂停",false)
+                updateDownloadTextView(obj.url, "暂停", false)
                 niceToast("开始下载...")
             }
             DownloadServiceImpl.SERVICE_ACTION_ERROR -> updateDownloadTextView(obj.url, "重试", true)
             DownloadServiceImpl.SERVICE_ACTION_COMPLETED -> {
                 //跳安装
                 updateDownloadTextView(obj.url, "安装", false)
-                installApkWithPermissionCheck(obj.path)
+                filePath = obj.path
+                launch.launch(PERMISSION_INSTALL)
             }
             DownloadServiceImpl.SERVICE_ACTION_DELETE -> {
                 updateDownloadTextView(obj.url, "下载", false)

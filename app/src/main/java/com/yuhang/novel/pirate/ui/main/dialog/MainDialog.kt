@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.ui.main.dialog
 
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -8,6 +9,7 @@ import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.book.activity.ChapterListActivity
 import com.yuhang.novel.pirate.ui.main.fragment.MainFragment
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainDialog(val fragment: MainFragment, val vm: MainViewModel, val obj: BookInfoKSEntity) {
@@ -27,29 +29,25 @@ class MainDialog(val fragment: MainFragment, val vm: MainViewModel, val obj: Boo
             listItems(items = myItems, selection = { dialog, index, text ->
                 when (text) {
                     "书籍详情" -> {
-                        vm.queryCollection(obj.bookid)
-                            .compose(fragment.bindToLifecycle())
-                            .subscribe({
-                                vm.onUMEvent(
-                                    activity!!,
-                                    UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS,
-                                    "主页 -> 书箱详情"
-                                )
-                                BookDetailsActivity.start(activity, it!!)
-                            }, {})
-
+                        fragment.lifecycleScope.launch {
+                            val queryCollection = vm.queryCollection(obj.bookid) ?: return@launch
+                            vm.onUMEvent(
+                                activity,
+                                UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DETAILS,
+                                "主页 -> 书箱详情"
+                            )
+                            BookDetailsActivity.start(activity, queryCollection)
+                        }
                     }
                     "目录书摘" -> {
-                        vm.queryCollection(obj.bookid)
-                            .compose(fragment.bindToLifecycle())
-                            .subscribe({
-                                vm.onUMEvent(
-                                    activity,
-                                    UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER, "主页 -> 目录书箱"
-                                )
-                                ChapterListActivity.start(activity, it!!)
-                            }, {})
-
+                        fragment.lifecycleScope.launch {
+                            val queryCollection = vm.queryCollection(obj.bookid) ?: return@launch
+                            vm.onUMEvent(
+                                activity,
+                                UMConstant.TYPE_MAIN_ITEM_LONG_CLICK_DIR_CHANPTER, "主页 -> 目录书箱"
+                            )
+                            ChapterListActivity.start(activity, queryCollection)
+                        }
                     }
                     "删除" -> {
                         vm.onUMEvent(

@@ -3,11 +3,9 @@ package com.yuhang.novel.pirate.ui.store.viewmodel
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.CategoryDetailResult
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.SearchDataKdResult
 import com.yuhang.novel.pirate.ui.store.fragment.CategoryDetailFragment
-import io.reactivex.Flowable
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -54,14 +52,13 @@ class CategoryDetailViewModel : BaseViewModel() {
     /**
      * 分类详情
      */
-    fun getCategoryDetailList(
+    suspend fun getCategoryDetailList(
         gender: String,
         type: Int,
         major: String,
         pageNum: Int
-    ): Flowable<CategoryDetailResult> {
+    ): CategoryDetailResult {
         return mDataRepository.getCategoryDetailList(gender, type, major, pageNum)
-            .compose(io_main())
 
     }
 }

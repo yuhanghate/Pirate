@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.gyf.immersionbar.ImmersionBar
@@ -16,7 +17,7 @@ import com.lzy.okgo.model.Progress
 import com.orhanobut.logger.Logger
 import com.tamsiree.rxkit.RxAppTool
 import com.tamsiree.rxkit.RxEncryptTool
-import com.trello.rxlifecycle2.android.ActivityEvent
+import com.yh.video.pirate.utils.permissions.requestMultiplePermissionsByLanuch
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseActivity
 import com.yuhang.novel.pirate.constant.UMConstant
@@ -24,7 +25,6 @@ import com.yuhang.novel.pirate.databinding.ActivityMain2Binding
 import com.yuhang.novel.pirate.databinding.DialogVersionUpdateBinding
 import com.yuhang.novel.pirate.databinding.LayoutMainTabBinding
 import com.yuhang.novel.pirate.eventbus.UpdateChapterEvent
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.NetURL
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
@@ -38,7 +38,11 @@ import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.evaluate
 import com.yuhang.novel.pirate.utils.getColorCompat
-import io.reactivex.Flowable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -46,12 +50,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.RuntimePermissions
 import java.io.File
-import java.util.concurrent.TimeUnit
 
-@RuntimePermissions
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     var binding: DialogVersionUpdateBinding? = null
 
@@ -59,7 +59,17 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
 
     var result: VersionResult? = null
 
+    /**
+     * 版本升级需要权限
+     */
+    private val PERMISSION_VERSION_UPDATE = arrayOf(Manifest.permission.INTERNET,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_NETWORK_STATE,
+        Manifest.permission.READ_PHONE_STATE)
+
+
     companion object {
+
 
         private const val PUSH_TITLE = "push_title"
         private const val PUSH_CONTENT = "push_content"
@@ -118,30 +128,39 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         )
 
         initMagicIndicator()
-        Handler(Looper.getMainLooper()).postDelayed({ checkVersionWithPermissionCheck() }, 1000 * 2)
 
-        initCategory()
+
+//        initCategory()
         initConfig()
 
+        checkVersion()
+
+
         AppManagerUtils.getAppManager().finishActivity(LaunchActivity::class.java)
+
     }
+
 
     /**
      * 预加载分类数据
      */
     private fun initCategory() {
-        mViewModel.preloadCategory()
-            .compose(bindToLifecycle())
-            .subscribe({}, {})
+       lifecycleScope.launch {
+           flow { emit(mViewModel.preloadCategory()) }
+               .catch { Logger.e(it.message?:"") }
+               .collect {  }
+
+       }
     }
 
     /**
      * 加载配置文件
      */
     private fun initConfig() {
-        mViewModel.preloadConfig()
-            .compose(bindToLifecycle())
-            .subscribe({}, {})
+        lifecycleScope.launch {
+            mViewModel.preloadConfig()
+        }
+
     }
 
     /**
@@ -163,11 +182,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        Flowable.interval(1, 60 * 5, TimeUnit.SECONDS)
-            .flatMap { mViewModel.updateChapterToDB() }
-            .compose(io_main())
-            .compose(bindUntilEvent(ActivityEvent.DESTROY))
-            .subscribe({ }, { })
+        lifecycleScope.launch {
+            delay(60 * 5 * 1000)
+            mViewModel.updateChapterToDB()
+        }
     }
 
 
@@ -180,49 +198,37 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
-        mViewModel.updateChapterToDB()
-            .compose(bindUntilEvent(ActivityEvent.DESTROY))
-            .subscribe({
-                Logger.i("")
-            }, {
-                Logger.i("")
-            })
+        lifecycleScope.launch {
+            mViewModel.updateChapterToDB()
+        }
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // NOTE: delegate the permission handling to generated function
-        onRequestPermissionsResult(requestCode, grantResults)
-    }
 
     /**
      * 版本升级
      */
-    @NeedsPermission(
-        Manifest.permission.INTERNET,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_NETWORK_STATE,
-        Manifest.permission.READ_PHONE_STATE
-    )
     fun checkVersion() {
-        if (mViewModel.isShowVersionDialog()) {
-            mViewModel.checkVersion()
-                .compose(bindToLifecycle())
-                .subscribe({
-                    if (it.update == "Yes") {
-                        showVersionUpdateDialog(it)
+
+
+        lifecycleScope.launchWhenCreated {
+            val launch = requestMultiplePermissionsByLanuch(
+                allGranted = {
+                    if (mViewModel.isShowVersionDialog()) {
+                        lifecycleScope.launch {
+                            val check = mViewModel.checkVersion()
+                            if (check.update == "Yes") {
+                                showVersionUpdateDialog(check)
+                            }
+                        }
                     }
-                }, {
-                    Logger.i("")
+                },
+            )
+            lifecycleScope.launch {
+                delay(2000)
+                launch.launch(PERMISSION_VERSION_UPDATE)
+            }
 
-                })
         }
-
     }
 
 
@@ -232,6 +238,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
         mViewModel.onResume(this)
 
         showNoteDialog()
+
     }
 
     override fun onPause() {
@@ -246,24 +253,23 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun showNoteDialog() {
 
-        mViewModel.getPushMessageEntity()
-            .compose(bindToLifecycle())
-            .subscribe({ entity ->
-                Handler().postDelayed({
-                    MaterialDialog(this).show {
-                        title(text = entity?.title)
-                        message(text = entity?.message)
-                        positiveButton(text = "确定", click = object : DialogCallback {
-                            override fun invoke(p1: MaterialDialog) {
-                                mViewModel.deletePushMessage(entity!!)
-                                p1.dismiss()
-                            }
-                        })
-                        cancelable(cancelable = false)
+        lifecycleScope.launch {
+            val entity = mViewModel.getPushMessageEntity() ?: return@launch
+            delay(1200)
+            MaterialDialog(this@MainActivity).show {
+                title(text = entity.title)
+                message(text = entity.message)
+                positiveButton(text = "确定", click = object : DialogCallback {
+                    override fun invoke(p1: MaterialDialog) {
+                        p1.dismiss()
+                        lifecycleScope.launch {
+                            mViewModel.deletePushMessage(entity)
+                        }
                     }
-                }, 1200)
-
-            }, {})
+                })
+                cancelable(cancelable = false)
+            }
+        }
     }
 
     /**
@@ -386,7 +392,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                         index: Int,
                         totalCount: Int,
                         leavePercent: Float,
-                        leftToRight: Boolean
+                        leftToRight: Boolean,
                     ) {
                         // 1. 颜色变换
                         val finalColor: Int = evaluate(
@@ -404,7 +410,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                         index: Int,
                         totalCount: Int,
                         enterPercent: Float,
-                        leftToRight: Boolean
+                        leftToRight: Boolean,
                     ) {
                         val finalColor: Int = evaluate(
                             enterPercent,

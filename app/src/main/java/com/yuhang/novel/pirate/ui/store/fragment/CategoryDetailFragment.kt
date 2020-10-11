@@ -2,8 +2,10 @@ package com.yuhang.novel.pirate.ui.store.fragment
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
@@ -13,9 +15,12 @@ import com.yuhang.novel.pirate.databinding.FragmentCategoryDetailBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.listener.OnClickItemListener
+import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.CategoryDetailResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.store.adapter.CategoryDetailAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.CategoryDetailViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 /**
  * 分类详情
@@ -78,42 +83,63 @@ class CategoryDetailFragment :
     }
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        PAGE_NUM = 0
 
-        mViewModel.getCategoryDetailList(gender, type = type, major = major, pageNum = PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                mViewModel.adapter.clear()
-                val adapter = CategoryDetailAdapter()
-                    .setListener(this)
-                    .initData(it.books)
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getCategoryDetailList(
+                        gender,
+                        type = type,
+                        major = major,
+                        pageNum = PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM = 0 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    mViewModel.adapter.clear()
+                    val adapter = CategoryDetailAdapter()
+                        .setListener(this)
+                        .initData(it.books)
 
-                mViewModel.list.addAll(it.books)
-                mViewModel.adapter.addAdapter(adapter.toAdapter())
-                adapter.notifyDataSetChanged()
-                mBinding.refreshLayout.finishRefresh()
-            }, { mBinding.refreshLayout.finishRefresh() })
+                    mViewModel.list.addAll(it.books)
+                    mViewModel.adapter.addAdapter(adapter.toAdapter())
+                    adapter.notifyDataSetChanged()
+                }
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        PAGE_NUM += 51
-        mViewModel.getCategoryDetailList(gender, type = type, major = major, pageNum = PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getCategoryDetailList(
+                        gender,
+                        type = type,
+                        major = major,
+                        pageNum = PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM += 51 }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    if (it.books.isEmpty()) {
+                        //最后一页
+                        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        return@collect
+                    }
+                    val adapter =
+                        mViewModel.adapter.findAdapterByIndex(0) as? CategoryDetailAdapter
 
-                if (it.books.isEmpty()) {
-                    //最后一页
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-                    return@subscribe
+                    mViewModel.list.addAll(it.books)
+                    adapter?.getList()?.addAll(it.books)
+                    adapter?.notifyDataSetChanged()
                 }
-                val adapter =
-                    mViewModel.adapter.findAdapterByIndex(0) as? CategoryDetailAdapter
-
-                mViewModel.list.addAll(it.books)
-                adapter?.getList()?.addAll(it.books)
-                adapter?.notifyDataSetChanged()
-                mBinding.refreshLayout.finishLoadMore()
-            }, { mBinding.refreshLayout.finishLoadMore() })
+        }
     }
 
     /**

@@ -10,26 +10,26 @@ import com.yuhang.novel.pirate.repository.database.entity.BookDownloadEntity
 interface BookDownloadDao {
 
     @Insert
-    fun insert(obj:BookDownloadEntity)
+    suspend fun insert(obj:BookDownloadEntity)
 
     @Update
-    fun update(obj:BookDownloadEntity)
+    suspend fun update(obj:BookDownloadEntity)
 
     @Query("select * from bookdownloadentity where bookId = :bookid")
-    fun query(bookid:String):BookDownloadEntity?
+    suspend fun query(bookid:String):BookDownloadEntity?
 
     /**
      * 获取所有下载书籍
      */
     @Query("select * from bookdownloadentity group by bookId order by id desc")
-    fun queryAll():List<BookDownloadEntity>
+    suspend fun queryAll():List<BookDownloadEntity>
 
     /**
      * 删除指定缓存
      */
     @Query("delete from bookdownloadentity where bookId = :bookid")
-    fun deleteDownload(bookid: String)
+    suspend fun deleteDownload(bookid: String)
 
     @Query("delete from bookdownloadentity")
-    fun clear()
+    suspend fun clear()
 }

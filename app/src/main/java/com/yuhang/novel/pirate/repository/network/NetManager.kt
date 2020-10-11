@@ -6,14 +6,12 @@ import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.repository.api.KanShuNetApi
 import com.yuhang.novel.pirate.repository.api.KuaiDuNetApi
 import com.yuhang.novel.pirate.repository.api.NetApi
-import com.yuhang.novel.pirate.repository.network.adapter.LiveDataCallAdapterFactory
 import com.yuhang.novel.pirate.utils.SSLSocketClient
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
@@ -64,8 +62,8 @@ class NetManager {
         return Retrofit.Builder().baseUrl(NetURL.HOST)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(mGson))
-            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(mOkHttpClient).build()
             .create(NetApi::class.java)
     }
 
@@ -76,8 +74,8 @@ class NetManager {
         return Retrofit.Builder().baseUrl(NetURL.HOST_KANSHU)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(mGson))
-            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(mOkHttpClient).build()
             .create(KanShuNetApi::class.java)
     }
 
@@ -88,8 +86,8 @@ class NetManager {
         return Retrofit.Builder().baseUrl(NetURL.HOST_KUAIDU)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(mGson))
-            .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(mOkHttpClient).build()
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(mOkHttpClient).build()
             .create(KuaiDuNetApi::class.java)
     }
 

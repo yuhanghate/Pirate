@@ -1,8 +1,10 @@
 package com.yuhang.novel.pirate.ui.store.fragment
 
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
@@ -11,10 +13,15 @@ import com.yuhang.novel.pirate.databinding.FragmentTotalRankingBinding
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.KanShuRankingResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.adapter.MoreRankingListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.TotalRankingViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 月榜
@@ -29,7 +36,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
     var type: String = ""
 
     //标题名称
-    var name:String = ""
+    var name: String = ""
 
     var PAGE_NUM = 1
 
@@ -57,27 +64,37 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
 
     override fun initData() {
         super.initData()
-        mViewModel.queryKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL)
-            .compose(bindToLifecycle())
-            .subscribe({
 
-                if (it.isEmpty()) {
-                    mBinding.refreshLayout.autoRefresh()
-                    return@subscribe
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.queryKanShuRanking(
+                        name,
+                        gender,
+                        type,
+                        KanShuRankingActivity.TYPE_TOTAL
+                    )
+                )
+            }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (it.isEmpty()) {
+                            mBinding.refreshLayout.autoRefresh()
+                            return@withContext
+                        }
+                        mViewModel.adapter.clear()
+                        val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+                        val adapter = MoreRankingListAdapter()
+                            .setListener(this)
+                            .initData(it)
+                        adapters.add(adapter.toAdapter())
+                        mViewModel.adapter.addAdapters(adapters)
+                        mBinding.recyclerview.requestLayout()
+                    }
+
                 }
-
-                mViewModel.adapter.clear()
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
-            },{})
+        }
     }
 
     override fun initRecyclerView() {
@@ -91,50 +108,69 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
 
-        PAGE_NUM = 1
-        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getKanShuRanking(
+                        name,
+                        gender,
+                        type,
+                        KanShuRankingActivity.TYPE_TOTAL,
+                        PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM = 1 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (!it.data.isHasNext) {
+                            mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        }
+                        mViewModel.adapter.clear()
+                        val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
+                        val adapter = MoreRankingListAdapter()
+                            .setListener(this)
+                            .initData(it.data.bookList)
+                        adapters.add(adapter.toAdapter())
+                        mViewModel.adapter.addAdapters(adapters)
+                        mBinding.recyclerview.requestLayout()
+                    }
 
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                 }
-
-                mViewModel.adapter.clear()
-
-                val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
-
-                adapters.add(adapter.toAdapter())
-
-                mViewModel.adapter.addAdapters(adapters)
-                mBinding.recyclerview.requestLayout()
-                mBinding.refreshLayout.finishRefresh()
-            }, { mBinding.refreshLayout.finishRefresh() })
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        PAGE_NUM++
 
-        mViewModel.getKanShuRanking(name, gender, type, KanShuRankingActivity.TYPE_TOTAL, PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getKanShuRanking(
+                        name,
+                        gender,
+                        type,
+                        KanShuRankingActivity.TYPE_TOTAL,
+                        PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM++ }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (!it.data.isHasNext) {
+                            mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        }
+                        val adapter = MoreRankingListAdapter()
+                            .setListener(this)
+                            .initData(it.data.bookList)
+                        mViewModel.adapter.addAdapter(adapter.toAdapter())
+                    }
+
                 }
-
-                val adapter = MoreRankingListAdapter()
-                    .setListener(this)
-                    .initData(it.data.bookList)
-
-                mViewModel.adapter.addAdapter(adapter.toAdapter())
-                mBinding.refreshLayout.finishLoadMore()
-            }, {
-                mBinding.refreshLayout.finishLoadMore()
-            })
+        }
     }
 
     /**

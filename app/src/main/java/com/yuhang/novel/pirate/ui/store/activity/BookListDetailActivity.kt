@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.ui.store.activity
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
@@ -25,6 +26,10 @@ import com.yuhang.novel.pirate.ui.store.adapter.ShuDanDetailDescAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.BookListDetailViewModel
 import com.yuhang.novel.pirate.widget.glidepalette.BitmapPalette
 import com.yuhang.novel.pirate.widget.glidepalette.GlidePalette
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 /**
@@ -44,7 +49,7 @@ class BookListDetailActivity :
     }
 
     //获取书单id
-    private fun getId() = intent.getStringExtra(ID)?:""
+    private fun getId() = intent.getStringExtra(ID) ?: ""
 
     override fun onLayoutId(): Int {
         return R.layout.activity_book_list_detail
@@ -118,14 +123,18 @@ class BookListDetailActivity :
      * 加载数据
      */
     private fun netData() {
-        mBinding.loading.showLoading()
-        mViewModel.getBookListDetail(getId())
-            .compose(bindToLifecycle())
-            .subscribe({
-                mBinding.loading.showContent()
-                setHeaderView(it.data)
-                setRecyclerView(it.data)
-            }, { mBinding.loading.showError() })
+        lifecycleScope.launch {
+            flow { emit(mViewModel.getBookListDetail(getId())) }
+                .onStart { mBinding.loading.showLoading() }
+                .onCompletion { mBinding.loading.showContent() }
+                .catch { mBinding.loading.showError() }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        setHeaderView(it.data)
+                        setRecyclerView(it.data)
+                    }
+                }
+        }
     }
 
     /**

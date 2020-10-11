@@ -10,9 +10,7 @@ import com.yuhang.novel.pirate.base.BaseViewModel
 import com.yuhang.novel.pirate.repository.database.entity.ConfigEntity
 import com.yuhang.novel.pirate.repository.database.entity.UserEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.yuhang.novel.pirate.utils.application
 
 
 class MeViewModel : BaseViewModel() {
@@ -20,20 +18,15 @@ class MeViewModel : BaseViewModel() {
     /**
      * 检测版本
      */
-    fun checkVersion(): Flowable<VersionResult> {
-        return mDataRepository.checkVersion(RxDeviceTool.getAppVersionName(mFragment?.context))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    suspend fun checkVersion(): VersionResult {
+        return mDataRepository.checkVersion(RxDeviceTool.getAppVersionName(application))
     }
 
     /**
      * 获取用户信息
      */
-    fun getUserInfo(): Flowable<UserEntity?> {
-        return Flowable.just("")
-                .map { mDataRepository.getLastUser() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    suspend fun getUserInfo(): UserEntity? {
+        return mDataRepository.getLastUser()
     }
 
     fun getMessage(result: VersionResult): String {
@@ -85,9 +78,8 @@ class MeViewModel : BaseViewModel() {
     /**
      * 查询配置
      */
-    fun queryConfig(): Flowable<ConfigEntity> {
-        return Flowable.just("")
-            .map { mDataRepository.queryConfig() }
+    suspend fun queryConfig(): ConfigEntity {
+        return mDataRepository.queryConfig()
     }
 
 

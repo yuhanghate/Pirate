@@ -12,8 +12,8 @@ android {
         applicationId "com.yuhang.novel.pirate"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 173
-        versionName "1.7.3"
+        versionCode 174
+        versionName "1.7.4"
         resConfigs "zh"
 
         renderscriptTargetApi 30
@@ -55,7 +55,6 @@ android {
     }
 
     buildFeatures{
-//        dataBinding = true
         // for vi ew binding :
         viewBinding = true
     }
@@ -94,16 +93,20 @@ walle {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
 
     //官方兼容包
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha02'
+    implementation 'com.google.android.material:material:1.3.0-alpha03'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'android.arch.work:work-runtime:1.0.1'
+    implementation "androidx.fragment:fragment-ktx:1.3.0-beta01"
+    implementation "androidx.activity:activity-ktx:1.2.0-beta01"
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
@@ -115,25 +118,22 @@ dependencies {
     //下拉刷新,上拉加载
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
-    //权限申请
-    implementation 'org.permissionsdispatcher:permissionsdispatcher:4.3.1'
-    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.3.1"
     //Material Dialogs
     implementation 'com.afollestad.material-dialogs:core:3.1.0'
     implementation 'com.afollestad.material-dialogs:lifecycle:2.6.0'
     //squareup全家桶
-    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
+//    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
     //流式函数
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.14'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.trello.rxlifecycle2:rxlifecycle:2.2.2'
-    implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
-    implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.2'
+//    implementation 'io.reactivex.rxjava2:rxjava:2.2.14'
+//    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+//    implementation 'com.trello.rxlifecycle2:rxlifecycle:2.2.2'
+//    implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2'
+//    implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.2'
     //序列化
     implementation 'com.google.code.gson:gson:2.8.6'
     //事件总线
@@ -141,7 +141,8 @@ dependencies {
     //数据库
     implementation 'androidx.room:room-runtime:2.2.5'
     kapt "androidx.room:room-compiler:2.2.5"
-    implementation 'androidx.room:room-rxjava2:2.2.5'
+//    implementation 'androidx.room:room-rxjava2:2.2.5'
+    implementation "androidx.room:room-ktx:2.2.5"
     debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
     releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
     //自动换行线性布局
@@ -195,8 +196,6 @@ dependencies {
     implementation 'com.liulishuo.filedownloader:library:1.7.7'
     //阿里巴巴首页布局
     implementation('com.alibaba.android:vlayout:1.2.8@aar') { transitive = true }
-    //圆形头像
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
     //动画库
     implementation 'com.airbnb.android:lottie:3.3.1'
     //Tab库

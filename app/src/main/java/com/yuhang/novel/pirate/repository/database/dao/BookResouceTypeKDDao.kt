@@ -10,17 +10,17 @@ import com.yuhang.novel.pirate.repository.database.entity.BookResouceTypeKDEntit
 interface BookResouceTypeKDDao {
 
     @Insert
-    fun insert(obj: BookResouceTypeKDEntity)
+    suspend fun insert(obj: BookResouceTypeKDEntity)
 
     @Query("select * from bookresoucetypekdentity where bookid = :bookid limit 1")
-    fun query(bookid:String):BookResouceTypeKDEntity?
+    suspend fun query(bookid:String):BookResouceTypeKDEntity?
 
     @Query("select * from bookresoucetypekdentity where tocId = :tocid limit 1")
-    fun queryByTocid(tocid:String):BookResouceTypeKDEntity?
+    suspend fun queryByTocid(tocid:String):BookResouceTypeKDEntity?
 
     @Update
-    fun update(obj: BookResouceTypeKDEntity)
+    suspend fun update(obj: BookResouceTypeKDEntity)
 
     @Query("delete from bookresoucetypekdentity")
-    fun clear()
+    suspend fun clear()
 }

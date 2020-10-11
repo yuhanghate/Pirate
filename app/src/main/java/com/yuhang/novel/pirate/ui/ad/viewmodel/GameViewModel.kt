@@ -6,13 +6,11 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import com.yuhang.novel.pirate.base.BaseViewModel
-import com.yuhang.novel.pirate.extension.io_main
 import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.GameRecommentResult
 import com.yuhang.novel.pirate.service.impl.DownloadServiceImpl
 import com.yuhang.novel.pirate.ui.ad.adapter.GameAdapter
-import io.reactivex.Flowable
 
 class GameViewModel : BaseViewModel() {
 
@@ -24,8 +22,8 @@ class GameViewModel : BaseViewModel() {
     /**
      * 获取游戏推荐列表
      */
-    fun getGameRecommentList(pageNum:Int): Flowable<GameRecommentResult> {
-        return mDataRepository.getGameRecommentList(pageNum).compose(io_main())
+    suspend fun getGameRecommentList(pageNum:Int): GameRecommentResult {
+        return mDataRepository.getGameRecommentList(pageNum)
     }
 
     /**

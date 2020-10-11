@@ -9,29 +9,29 @@ import com.yuhang.novel.pirate.repository.database.entity.CategoryKDEntity
 interface CategoryKDDao {
 
     @Insert
-    fun insert(obj:List<CategoryKDEntity>)
+    suspend fun insert(obj:List<CategoryKDEntity>)
 
     /**
      * 获取男生
      */
     @Query("select * from categorykdentity where gender = 'male' order by `order` desc")
-    fun queryMan():List<CategoryKDEntity>
+    suspend fun queryMan():List<CategoryKDEntity>
 
     /**
      * 获取女生
      */
     @Query("select * from categorykdentity where gender = 'female' order by `order` desc")
-    fun queryLady():List<CategoryKDEntity>
+    suspend fun queryLady():List<CategoryKDEntity>
 
     /**
      * 获取出版
      */
     @Query("select * from categorykdentity where gender = 'press' order by `order` desc")
-    fun queryPress():List<CategoryKDEntity>
+    suspend fun queryPress():List<CategoryKDEntity>
 
     @Query("select * from categorykdentity")
-    fun queryAll():List<CategoryKDEntity>
+    suspend fun queryAll():List<CategoryKDEntity>
 
     @Query("delete from categorykdentity")
-    fun clear()
+    suspend fun clear()
 }

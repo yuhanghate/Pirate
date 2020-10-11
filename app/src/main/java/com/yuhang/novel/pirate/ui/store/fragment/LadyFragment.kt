@@ -1,12 +1,13 @@
 package com.yuhang.novel.pirate.ui.store.fragment
 
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
-import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.base.BaseFragment
 import com.yuhang.novel.pirate.databinding.FragmentLadyBinding
@@ -27,6 +28,10 @@ import com.yuhang.novel.pirate.ui.store.activity.KanShuRankingActivity
 import com.yuhang.novel.pirate.ui.store.activity.MoreRankingListActivity
 import com.yuhang.novel.pirate.ui.store.adapter.*
 import com.yuhang.novel.pirate.ui.store.viewmodel.LadyViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 书城 - 女生
@@ -54,24 +59,26 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
     }
 
     override fun initData() {
-        mBinding.progressView.show()
-        mViewModel.queryStoreRankingMan()
-            .flatMap {
-                mViewModel.buildRanking(it)
-                return@flatMap mViewModel.queryStoreMan()
+        lifecycleScope.launch {
+            flow {
+                val queryStoreRankingMan = mViewModel.queryStoreRankingMan()
+                mViewModel.buildRanking(queryStoreRankingMan)
+                emit(mViewModel.queryStoreMan())
             }
-            .compose(bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe({
+                .onStart { mBinding.progressView.show() }
+                .onCompletion { mBinding.progressView.hide() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main) {
+                        if (it.isEmpty()) {
+                            onRefresh(mBinding.refreshLayout)
+                            return@withContext
+                        }
+                        buildRecylerView(it)
+                    }
 
-                if (it.isEmpty()) {
-                    onRefresh(mBinding.refreshLayout)
-                    return@subscribe
                 }
-                buildRecylerView(it)
-                mBinding.progressView.hide()
-            }, {
-                mBinding.progressView.hide()
-            })
+        }
     }
 
     override fun initRefreshLayout() {
@@ -101,29 +108,32 @@ class LadyFragment : BaseFragment<FragmentLadyBinding, LadyViewModel>(), OnRefre
 
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        PAGE_NUM = 1
-        mViewModel.getStoreRankingLady()
-            .flatMap {
-                mViewModel.buildRanking(it)
-                mViewModel.getStoreLady()
+        lifecycleScope.launch {
+            flow {
+                val storeRankingLady = mViewModel.getStoreRankingLady()
+                mViewModel.buildRanking(storeRankingLady)
+                emit(mViewModel.getStoreLady())
             }
-            .compose(bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe({
-                mBinding.progressView.hide()
-                buildRecylerView(it)
-                mBinding.refreshLayout.finishRefresh()
+                .onStart { PAGE_NUM = 1 }
+                .onCompletion {
+                    mBinding.refreshLayout.finishRefresh()
+                    mBinding.progressView.hide()
+                }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main) {
+                        buildRecylerView(it)
+                    }
+                }
+        }
 
 
-            }, {
-                mBinding.refreshLayout.finishRefresh()
-                mBinding.progressView.hide()
-            })
     }
 
     /**
      * 组装Adapter
      */
-    private fun buildRecylerView(list:List<StoreEntity>) {
+    private fun buildRecylerView(list: List<StoreEntity>) {
         mViewModel.adapter.clear()
 
         mViewModel.buildBook(list)

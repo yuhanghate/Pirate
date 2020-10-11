@@ -10,6 +10,10 @@ import com.yuhang.novel.pirate.eventbus.DownloadEvent
 import com.yuhang.novel.pirate.eventbus.WorkInfoEvent
 import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -30,6 +34,8 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
 
     override fun doWork(): Result {
 
+
+
         EventBus.getDefault().register(this)
 
         val obj =
@@ -37,68 +43,73 @@ class NovelDownloadWorker(context: Context, workerParams: WorkerParameters) :
                 ?: return Result.failure()
 
 
-        val dataRepository = PirateApp.getInstance().getDataRepository()
-        val convertRepository = ConvertRepository()
-        val info = dataRepository.queryBookInfo(obj.getBookid())
-        val chapterList = dataRepository.queryChapterObjList(obj.getBookid())
-        var isStart = false
-        chapterList.forEachIndexed { index, chapterKSEntity ->
+        GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            coroutineScope{
+                val dataRepository = PirateApp.getInstance().getDataRepository()
+                val convertRepository = ConvertRepository()
+                val info = dataRepository.queryBookInfo(obj.getBookid())
+                val chapterList = dataRepository.queryChapterObjList(obj.getBookid())
+                var isStart = false
+                chapterList.forEachIndexed { index, chapterKSEntity ->
 
-            //全本缓存或者指定章节开始
-            if (obj.lastChapterId.isEmpty() || obj.lastChapterId == chapterKSEntity.chapterId) {
-                isStart = true
-            }
+                    //全本缓存或者指定章节开始
+                    if (obj.lastChapterId.isEmpty() || obj.lastChapterId == chapterKSEntity.chapterId) {
+                        isStart = true
+                    }
 
-            if (!isStart) {
-                return@forEachIndexed
-            }
+                    if (!isStart) {
+                        return@forEachIndexed
+                    }
 
-            //如果点击取消就结束任务
-            if (isCancel) {
-                dataRepository.deleteDownload(obj.getBookid())
-                return Result.success()
-            }
-            //返回本地数据
+                    //如果点击取消就结束任务
+                    if (isCancel) {
+                        dataRepository.deleteDownload(obj.getBookid())
+                        return@coroutineScope
+                    }
+                    //返回本地数据
 
-            val contentKSEntity =
-                dataRepository.queryBookContent(obj.getBookid(), chapterKSEntity.chapterId)
+                    val contentKSEntity =
+                        dataRepository.queryBookContent(obj.getBookid(), chapterKSEntity.chapterId)
 
-            try {
-                if (contentKSEntity == null) {
-                    //返回服务器数据
-                    val entity = convertRepository.downloadChapterContent(obj, chapterKSEntity)
-                    dataRepository.insertBookContent(entity.apply { lastOpenTime = 0 })
+                    try {
+                        if (contentKSEntity == null) {
+                            //返回服务器数据
+                            val entity = convertRepository.downloadChapterContent(obj, chapterKSEntity)
+                            dataRepository.insertBookContent(entity.apply { lastOpenTime = 0 })
+                        }
+
+                        //更新进度到数据库
+                        dataRepository.updateDownloadBook(
+                            obj.getBookid(),
+                            obj.bookName,
+                            obj.resouce,
+                            index + 1,
+                            chapterList.size,
+                            info?.cover ?: "",
+                            author = info?.author ?: "",
+                            uuid = id.toString()
+                        )
+
+                        //如果点击取消就结束任务
+                        if (isCancel) {
+                            dataRepository.deleteDownload(obj.getBookid())
+                            return@coroutineScope
+                        }
+                        EventBus.getDefault().post(DownloadEvent().apply {
+                            this.bookName = info?.bookName ?: ""
+                            this.progress = index + 1
+                            this.total = chapterList.size
+                            this.cover = info?.cover ?: ""
+                            this.bookId = info?.bookid ?: ""
+                            this.author = info?.author ?: ""
+                        })
+
+                    } catch (e: Exception) {
+                    }
                 }
-
-                //更新进度到数据库
-                dataRepository.updateDownloadBook(
-                    obj.getBookid(),
-                    obj.bookName,
-                    obj.resouce,
-                    index + 1,
-                    chapterList.size,
-                    info?.cover ?: "",
-                    author = info?.author ?: "",
-                    uuid = id.toString()
-                )
-
-                //如果点击取消就结束任务
-                if (isCancel) {
-                    dataRepository.deleteDownload(obj.getBookid())
-                    return Result.success()
-                }
-                EventBus.getDefault().post(DownloadEvent().apply {
-                    this.bookName = info?.bookName ?: ""
-                    this.progress = index + 1
-                    this.total = chapterList.size
-                    this.cover = info?.cover ?: ""
-                    this.bookId = info?.bookid ?: ""
-                    this.author = info?.author ?: ""
-                })
-
-            } catch (e: Exception) {
             }
         }
+
 
         EventBus.getDefault().unregister(this)
         return Result.success()

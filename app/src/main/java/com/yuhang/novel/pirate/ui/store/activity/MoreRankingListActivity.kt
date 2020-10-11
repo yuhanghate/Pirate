@@ -2,9 +2,11 @@ package com.yuhang.novel.pirate.ui.store.activity
 
 import android.app.Activity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
+import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.yuhang.novel.pirate.R
@@ -14,10 +16,15 @@ import com.yuhang.novel.pirate.extension.clickWithTrigger
 import com.yuhang.novel.pirate.extension.niceBooksResult
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
+import com.yuhang.novel.pirate.repository.network.data.kanshu.result.MoreRankingResult
 import com.yuhang.novel.pirate.ui.book.activity.BookDetailsActivity
 import com.yuhang.novel.pirate.ui.store.adapter.BooksListAdapter
 import com.yuhang.novel.pirate.ui.store.adapter.MoreRankingListAdapter
 import com.yuhang.novel.pirate.ui.store.viewmodel.MoreRankingViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 正版排行榜 (男生/女生)
@@ -26,7 +33,7 @@ import com.yuhang.novel.pirate.ui.store.viewmodel.MoreRankingViewModel
  */
 class MoreRankingListActivity :
     BaseSwipeBackActivity<ActivityMoreRankingListBinding, MoreRankingViewModel>(),
-    OnRefreshLoadMoreListener , OnClickMoreRankingListListener {
+    OnRefreshLoadMoreListener, OnClickMoreRankingListListener {
 
     var PAGE_NUM = 1
 
@@ -76,16 +83,21 @@ class MoreRankingListActivity :
 
     override fun initData() {
         super.initData()
-        mViewModel.queryMoreRankingList(getName(), getGender(), getType())
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (it.isEmpty()) {
+        lifecycleScope.launch {
+            flow<Unit> {
+                val list =
+                    mViewModel.queryMoreRankingList(getName(), getGender(), getType())
+                if (list.isEmpty()) {
                     mBinding.refreshLayout.autoRefresh()
-                    return@subscribe
+                    return@flow
                 }
 
-                biuldRecylerView(it)
-            },{mBinding.refreshLayout.autoRefresh()})
+                biuldRecylerView(list)
+            }
+                .onCompletion { mBinding.refreshLayout.autoRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect { }
+        }
     }
 
     private fun onClick() {
@@ -115,45 +127,65 @@ class MoreRankingListActivity :
 
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        PAGE_NUM = 1
 
-        mViewModel.getMoreRankingList(getName(), getGender(), getType(), PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getMoreRankingList(
+                        getName(),
+                        getGender(),
+                        getType(),
+                        PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM = 1 }
+                .onCompletion { mBinding.refreshLayout.finishRefresh() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (!it.data.isHasNext) {
+                            mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        }
+
+                        biuldRecylerView(it.data.bookList)
+                    }
                 }
-
-                biuldRecylerView(it.data.bookList)
-                mBinding.refreshLayout.finishRefresh()
-
-            },{
-                mBinding.refreshLayout.finishRefresh()
-            })
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        PAGE_NUM ++
+        lifecycleScope.launch {
+            flow {
+                emit(
+                    mViewModel.getMoreRankingList(
+                        getName(),
+                        getGender(),
+                        getType(),
+                        PAGE_NUM
+                    )
+                )
+            }
+                .onStart { PAGE_NUM++ }
+                .onCompletion { mBinding.refreshLayout.finishLoadMore() }
+                .catch { Logger.e(it.message ?: "") }
+                .collect {
+                    withContext(Dispatchers.Main){
+                        if (!it.data.isHasNext) {
+                            mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+                        }
+                        val adapter =
+                            mViewModel.adapter.findAdapterByIndex(0) as? MoreRankingListAdapter
+                        adapter?.getList()?.addAll(it.data.bookList)
+                        adapter?.notifyDataSetChanged()
+                    }
 
-        mViewModel.getMoreRankingList(getName(), getGender(), getType(), PAGE_NUM)
-            .compose(bindToLifecycle())
-            .subscribe({
-                if (!it.data.isHasNext) {
-                    mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                 }
-
-
-                val adapter = mViewModel.adapter.findAdapterByIndex(0) as? MoreRankingListAdapter
-                adapter?.getList()?.addAll(it.data.bookList)
-                adapter?.notifyDataSetChanged()
-
-                mBinding.refreshLayout.finishLoadMore()
-            },{
-                mBinding.refreshLayout.finishLoadMore()
-            })
+        }
     }
 
-    private fun biuldRecylerView(list:List<BooksKSResult>) {
+    private fun biuldRecylerView(list: List<BooksKSResult>) {
         mViewModel.adapter.clear()
         val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
 

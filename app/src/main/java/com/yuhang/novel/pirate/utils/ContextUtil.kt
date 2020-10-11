@@ -19,7 +19,7 @@ import com.yuhang.novel.pirate.app.PirateApp
 private class GlobalContext(context: Context) : ContextWrapper(context)
 
 
-private lateinit var sApplication: Application
+private lateinit var sApplication: PirateApp
 private lateinit var sGlobalContext: GlobalContext
 
 
@@ -37,7 +37,7 @@ val context: Context
     get() = sGlobalContext
 
 
-val application: Application
+val application: PirateApp
     get() = sApplication
 
 

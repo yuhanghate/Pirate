@@ -18,15 +18,13 @@ import androidx.viewbinding.ViewBinding
 import by.kirich1409.viewbindingdelegate.internal.FragmentViewBinder
 import com.bumptech.glide.Glide
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.trello.rxlifecycle2.LifecycleProvider
-import com.trello.rxlifecycle2.android.FragmentEvent
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.widget.TopSmoothScroller
+import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
-    LifecycleProvider<FragmentEvent> {
+abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : SupportFragment() {
 
     var mActivity: BaseActivity<*, *>? = null
 
@@ -62,6 +60,13 @@ abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
         return (this::class.java.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<out VM>
     }
 
+    /**
+     * 是否初始化
+     */
+    fun isPreBinding(): Boolean {
+        return ::mBinding.isInitialized
+    }
+
     private fun initContentView(container: ViewGroup?): View {
 
         if (::mBinding.isInitialized) {
@@ -71,8 +76,11 @@ abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
         container?.setBackgroundResource(android.R.color.transparent)
 
 
-        val view  =  layoutInflater.inflate(onLayoutId(), null, false)
-        val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val view = layoutInflater.inflate(onLayoutId(), null, false)
+        val params = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         view.layoutParams = params
 
         //利用反射，调用指定ViewBinding中的inflate方法填充视图
@@ -114,7 +122,7 @@ abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
 
     }
 
-    open fun initData(){
+    open fun initData() {
 
     }
 
@@ -236,7 +244,7 @@ abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : RxFragment(),
         dismissListener: PopupMenu.OnDismissListener? = null
     ): PopupMenu {
         // 这里的view代表popupMenu需要依附的view
-        val popupMenu = PopupMenu(activity!!, view)
+        val popupMenu = PopupMenu(requireContext(), view)
         // 获取布局文件
         popupMenu.menuInflater.inflate(layout, popupMenu.menu)
         popupMenu.gravity = Gravity.END
