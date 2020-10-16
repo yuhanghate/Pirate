@@ -486,7 +486,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
     @SuppressLint("CheckResult")
     fun netDataChatpterContent(isCache: Boolean = true) {
 
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Main) {
             flow<Unit> {
                 val lastBookContent =
                     mViewModel.getLastBookContent(mViewModel.mBooksResult!!, isCache)
@@ -497,11 +497,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
                     mViewModel.mBooksResult!!
                 )
 
-                withContext(Dispatchers.Main) {
-                    mViewModel.adapter.setRefersh(list)
-                    mBinding.recyclerView.scrollToPosition(lastBookContent.lastContentPosition)
-                    onPageIndexListener(lastBookContent.lastContentPosition)
-                }
+                mViewModel.adapter.setRefersh(list)
+                mBinding.recyclerView.scrollToPosition(lastBookContent.lastContentPosition)
+                onPageIndexListener(lastBookContent.lastContentPosition)
             }
                 .catch {
                     if (!mBinding.loading.isError) {
@@ -520,34 +518,29 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
      * 获取指定章节的内容
      */
     @SuppressLint("CheckResult")
-    suspend fun netDataChapterContentFromId(chapterid: String) {
-
-        withContext(Dispatchers.IO) {
-            val contentKSEntity = mViewModel.getBookContent(
-                mViewModel.mBooksResult!!,
-                mViewModel.getChapterEntity(chapterid)
-            )
-            val list = mViewModel.getTxtPageList(mBinding.textPage, contentKSEntity)
-            mViewModel.updateReadHistory(
-                contentKSEntity.chapterId,
-                contentKSEntity.chapterName,
-                mViewModel.mBooksResult!!
-            )
-
-            withContext(Dispatchers.Main) {
-                mViewModel.adapter.setRefersh(list)
-                moveToPosition(0)
-            }
+    suspend fun netDataChapterContentFromId(chapterid: String) = withContext(Dispatchers.IO) {
 
 
-            delay(200)
-            withContext(Dispatchers.Main) {
-                onPageIndexListener(0)
-            }
+        val contentKSEntity = mViewModel.getBookContent(
+            mViewModel.mBooksResult!!,
+            mViewModel.getChapterEntity(chapterid)
+        )
+        val list = mViewModel.getTxtPageList(mBinding.textPage, contentKSEntity)
+        mViewModel.updateReadHistory(
+            contentKSEntity.chapterId,
+            contentKSEntity.chapterName,
+            mViewModel.mBooksResult!!
+        )
 
+        withContext(Dispatchers.Main) {
+            mViewModel.adapter.setRefersh(list)
+            moveToPosition(0)
         }
 
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            onPageIndexListener(0)
+        }, 200)
     }
 
 
@@ -606,11 +599,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
                         isNext = false
 
                         //刷新有延迟
-                        delay(200)
-                        withContext(Dispatchers.Main) {
+                        Handler(Looper.getMainLooper()).postDelayed({
                             onPageIndexListener(mViewModel.getLastVisiblePosition(mBinding.recyclerView))
-                        }
-
+                        },200)
                     }
             }
 
@@ -681,15 +672,9 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
          * 手动刷新界面
          * 因为刷新界面有延迟,所以
          */
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(200)
-            withContext(Dispatchers.Main) {
-                onPageIndexListener(mViewModel.getFirstVisiblePosition(mBinding.recyclerView))
-            }
-
-        }
-
-
+        Handler(Looper.getMainLooper()).postDelayed({
+            onPageIndexListener(mViewModel.getFirstVisiblePosition(mBinding.recyclerView))
+        },200)
     }
 
 

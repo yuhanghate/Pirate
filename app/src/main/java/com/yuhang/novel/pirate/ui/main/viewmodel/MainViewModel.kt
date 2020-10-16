@@ -66,9 +66,9 @@ class MainViewModel : BaseViewModel() {
     /**
      * 获取本地所有书本详情
      */
-    suspend fun getBookInfoListLocal(): List<BookInfoKSEntity?> {
+    suspend fun getBookInfoListLocal() = withContext(Dispatchers.IO) {
         val list = queryCollectionAll()
-        return list.filterNotNull().map {
+        list.filterNotNull().map {
             return@map it.apply { this.isShowLabel = isShowNewLabel(it.bookid) }
         }.toList()
     }
@@ -77,13 +77,13 @@ class MainViewModel : BaseViewModel() {
     /**
      * 收藏列表 看书源
      */
-    suspend fun getBookDetailsListKS(): List<BookInfoKSEntity> {
+    suspend fun getBookDetailsListKS()= withContext(Dispatchers.IO) {
 
         if (!RxNetTool.isAvailable(application)) {
-            return emptyList()
+             return@withContext emptyList()
         }
         val list = mDataRepository.queryCollectionKS()
-        return list.map {
+         list.map {
             if (it.bookStatus == "完结") {
                 return@map it
             }
@@ -95,9 +95,9 @@ class MainViewModel : BaseViewModel() {
     /**
      * 更新书籍信息
      */
-    private suspend fun updateBookInfo(obj: BookInfoKSEntity): BookInfoKSEntity {
+    private suspend fun updateBookInfo(obj: BookInfoKSEntity) = withContext(Dispatchers.IO) {
         val bookInfo = queryBookInfo(obj.bookid)
-        return if (bookInfo == null) {
+         if (bookInfo == null) {
             //书籍信息插入本地
             insertBookInfo(obj)
             queryBookInfo(obj.bookid)!!
@@ -152,7 +152,7 @@ class MainViewModel : BaseViewModel() {
     /**
      * 从服务器更新书籍章节到本地
      */
-    suspend fun updateChapterToDB() {
+    suspend fun updateChapterToDB() = withContext(Dispatchers.IO) {
         val list = mDataRepository.queryCollectionAllSerial()
         list.forEach {
             val niceBooksResult = it.niceBooksResult()
@@ -206,7 +206,7 @@ class MainViewModel : BaseViewModel() {
      */
     @SuppressLint("CheckResult")
     fun deleteCollection(bookid: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             //删除线上收藏
             if (!TextUtils.isEmpty(PirateApp.getInstance().getToken())) {
                 val resouce = mDataRepository.queryCollection(bookid)?.resouce ?: ""

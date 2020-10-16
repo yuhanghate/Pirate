@@ -184,10 +184,11 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(60 * 5 * 1000)
-            mViewModel.updateChapterToDB()
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            lifecycleScope.launch {
+                mViewModel.updateChapterToDB()
+            }
+        },60 * 5 * 1000)
     }
 
 
@@ -225,13 +226,10 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     }
                 },
             )
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(2000)
-                withContext(Dispatchers.Main){
-                    launch.launch(PERMISSION_VERSION_UPDATE)
-                }
-            }
 
+            Handler(Looper.getMainLooper()).postDelayed({
+                launch.launch(PERMISSION_VERSION_UPDATE)
+            },2000)
         }
     }
 
@@ -257,24 +255,26 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun showNoteDialog() {
 
+
         lifecycleScope.launch(Dispatchers.IO) {
             val entity = mViewModel.getPushMessageEntity() ?: return@launch
-            delay(1200)
-            withContext(Dispatchers.Main){
-                MaterialDialog(this@MainActivity).show {
-                    title(text = entity.title)
-                    message(text = entity.message)
-                    positiveButton(text = "确定", click = object : DialogCallback {
-                        override fun invoke(p1: MaterialDialog) {
-                            p1.dismiss()
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                mViewModel.deletePushMessage(entity)
+            Handler(Looper.getMainLooper()).postDelayed({
+                lifecycleScope.launch {
+                    MaterialDialog(this@MainActivity).show {
+                        title(text = entity.title)
+                        message(text = entity.message)
+                        positiveButton(text = "确定", click = object : DialogCallback {
+                            override fun invoke(p1: MaterialDialog) {
+                                p1.dismiss()
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    mViewModel.deletePushMessage(entity)
+                                }
                             }
-                        }
-                    })
-                    cancelable(cancelable = false)
+                        })
+                        cancelable(cancelable = false)
+                    }
                 }
-            }
+            }, 1200)
 
         }
     }

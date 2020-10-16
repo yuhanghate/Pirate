@@ -291,13 +291,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     mBinding.refreshLayout.finishRefresh(false)
                 }
                 .collect {
-                    withContext(Dispatchers.Main){
-                        mViewModel.adapter.setRefersh(it)
-                        //新标题的章节进行刷新
-                        mViewModel.updateChapterToDB()
-                        netLocalData()
-                        PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
-                    }
+                    mViewModel.adapter.setRefersh(it)
+                    //新标题的章节进行刷新
+                    mViewModel.updateChapterToDB()
+                    netLocalData()
+                    PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
 
                 }
         }
