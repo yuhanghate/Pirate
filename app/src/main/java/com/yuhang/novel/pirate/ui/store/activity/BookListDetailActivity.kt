@@ -129,10 +129,8 @@ class BookListDetailActivity :
                 .onCompletion { mBinding.loading.showContent() }
                 .catch { mBinding.loading.showError() }
                 .collect {
-                    withContext(Dispatchers.Main){
-                        setHeaderView(it.data)
-                        setRecyclerView(it.data)
-                    }
+                    setHeaderView(it.data)
+                    setRecyclerView(it.data)
                 }
         }
     }

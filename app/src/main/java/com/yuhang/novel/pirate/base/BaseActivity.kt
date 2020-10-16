@@ -14,23 +14,20 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.yuhang.novel.pirate.viewbinding.ActivityViewBinder
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
-import com.idescout.sql.SqlScoutServer
 import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
+import com.yuhang.novel.pirate.viewbinding.ActivityViewBinder
 import com.yuhang.novel.pirate.widget.TopSmoothScroller
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
-import java.io.IOException
 import java.lang.reflect.ParameterizedType
 
 

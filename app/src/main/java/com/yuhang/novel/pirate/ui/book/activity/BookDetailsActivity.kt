@@ -317,10 +317,8 @@ class BookDetailsActivity :
                     //插入或更新书箱信息
                     mViewModel.insertBookInfoEntity()
 
-                    withContext(Dispatchers.Main){
-                        resetView(it)
-                        netAuthorBooksData()
-                    }
+                    resetView(it)
+                    netAuthorBooksData()
 
                 }
         }

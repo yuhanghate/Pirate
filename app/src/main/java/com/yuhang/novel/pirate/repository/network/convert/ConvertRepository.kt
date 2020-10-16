@@ -8,9 +8,9 @@ import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookInfoKSEntity
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.ChapterListResult
-import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.ResouceListKdResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
-import com.yuhang.novel.pirate.repository.network.data.pirate.result.SearchSuggestResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ConvertRepository {
 
@@ -37,23 +37,26 @@ class ConvertRepository {
     /**
      * 搜索
      */
-    suspend fun getSearchResult(type: String, keyword: String): List<BooksResult> {
-        return when (type) {
-            "KS" -> mKanShuNetApi.searchBook(keyword).data.map { it.niceBooksResult() }.toList()
-            "KD" -> mKuaiDuNetApi.search(hashMapOf("key" to keyword,
+    suspend fun getSearchResult(type: String, keyword: String) = withContext(Dispatchers.IO) {
+         when (type) {
+        "KS" -> mKanShuNetApi.searchBook(keyword).data.map { it.niceBooksResult() }.toList()
+        "KD" -> mKuaiDuNetApi.search(
+            hashMapOf(
+                "key" to keyword,
                 "start" to "0",
-                "limit" to "100")
-            ).books.map { it.niceBooksResult() }.toList()
-            else -> arrayListOf()
-        }
+                "limit" to "100"
+            )
+        ).books.map { it.niceBooksResult() }.toList()
+        else -> arrayListOf()
+    }
 
     }
 
     /**
      * 获取详情页
      */
-    suspend fun getDetailsInfo(obj: BooksResult): BookInfoKSEntity {
-        return when {
+    suspend fun getDetailsInfo(obj: BooksResult) = withContext(Dispatchers.IO) {
+        when {
             //看书源
             obj.isKanShu() -> mKanShuNetApi.getBookDetails(
                 dirId = niceDir(obj.bookKsId),
@@ -69,8 +72,8 @@ class ConvertRepository {
     /**
      *获取章节列表
      */
-    suspend fun getChapterList(obj: BooksResult): List<BookChapterKSEntity> {
-        return when {
+    suspend fun getChapterList(obj: BooksResult) = withContext(Dispatchers.IO) {
+        when {
 
             //看书
             obj.isKanShu() -> {
@@ -107,8 +110,8 @@ class ConvertRepository {
     suspend fun getChapterContent(
         obj: BooksResult,
         chapter: BookChapterKSEntity,
-    ): BookContentKSEntity {
-        return when {
+    ) = withContext(Dispatchers.IO) {
+        when {
             //看书
             obj.isKanShu() -> mKanShuNetApi.getChapterContent(
                 niceDir(obj.bookKsId),
@@ -172,8 +175,8 @@ class ConvertRepository {
     /**
      * 作者相关作品
      */
-    suspend fun getAuthorBooksList(obj: BooksResult): List<BooksResult> {
-        return when {
+    suspend fun getAuthorBooksList(obj: BooksResult) = withContext(Dispatchers.IO) {
+        when {
             //看书源
             obj.isKanShu() ->
                 mKanShuNetApi.getBookDetails(
@@ -203,14 +206,14 @@ class ConvertRepository {
     /**
      * 源列表
      */
-    suspend fun getResouceList(obj: BooksResult): List<ResouceListKdResult> {
+    suspend fun getResouceList(obj: BooksResult) = withContext(Dispatchers.IO) {
         if (obj.isKanShu()) {
             //如果是看书,去服务器转换一下
             val result =
                 mPirateNetApi.getBooksSearch(niceBody(hashMapOf("bookid" to obj.getBookid())))
             mKuaiDuNetApi.getResouceList(result.data.bookKdId)
         }
-        return mKuaiDuNetApi.getResouceList(obj.getBookid())
+        mKuaiDuNetApi.getResouceList(obj.getBookid())
     }
 
 
@@ -219,19 +222,18 @@ class ConvertRepository {
      */
     suspend fun getResouceChapterList(
         tocId: String, bookid: String,
-    ): List<BookChapterKSEntity> {
-        return mKuaiDuNetApi.getResouceChapterList(tocId).chapters.map {
+    ) = withContext(Dispatchers.IO) {
+        mKuaiDuNetApi.getResouceChapterList(tocId).chapters.map {
             it.niceBookChapterKSEntity(bookid)
         }.toList()
     }
 
 
-
     /**
      * 主页小说刷新 看书源
      */
-    suspend fun updateBookKS(bookid: String): BookInfoKSEntity {
-        return mKanShuNetApi.getBookDetails(
+    suspend fun updateBookKS(bookid: String) = withContext(Dispatchers.IO) {
+        mKanShuNetApi.getBookDetails(
             dirId = niceDir(bookid),
             bookId = bookid.toLong()
         ).data.niceBookInfoKSEntity()
@@ -240,8 +242,8 @@ class ConvertRepository {
     /**
      * 搜索模糊匹配
      */
-    suspend fun searchSuggest(keyword: String): List<SearchSuggestResult> {
-        return  mKuaiDuNetApi.searchSuggest(keyword).keywords
+    suspend fun searchSuggest(keyword: String) = withContext(Dispatchers.IO) {
+        mKuaiDuNetApi.searchSuggest(keyword).keywords
     }
 
 }

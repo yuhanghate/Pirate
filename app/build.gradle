@@ -143,8 +143,8 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.5"
 //    implementation 'androidx.room:room-rxjava2:2.2.5'
     implementation "androidx.room:room-ktx:2.2.5"
-    debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
-    releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
+//    debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
+//    releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
     //自动换行线性布局
     implementation 'com.google.android:flexbox:1.1.0'
     //圆形图片

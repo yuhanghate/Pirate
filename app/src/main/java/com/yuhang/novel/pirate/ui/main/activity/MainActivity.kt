@@ -38,11 +38,13 @@ import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.evaluate
 import com.yuhang.novel.pirate.utils.getColorCompat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -182,7 +184,7 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             delay(60 * 5 * 1000)
             mViewModel.updateChapterToDB()
         }
@@ -223,9 +225,11 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
                     }
                 },
             )
-            lifecycleScope.launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 delay(2000)
-                launch.launch(PERMISSION_VERSION_UPDATE)
+                withContext(Dispatchers.Main){
+                    launch.launch(PERMISSION_VERSION_UPDATE)
+                }
             }
 
         }
@@ -253,22 +257,25 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun showNoteDialog() {
 
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             val entity = mViewModel.getPushMessageEntity() ?: return@launch
             delay(1200)
-            MaterialDialog(this@MainActivity).show {
-                title(text = entity.title)
-                message(text = entity.message)
-                positiveButton(text = "确定", click = object : DialogCallback {
-                    override fun invoke(p1: MaterialDialog) {
-                        p1.dismiss()
-                        lifecycleScope.launch {
-                            mViewModel.deletePushMessage(entity)
+            withContext(Dispatchers.Main){
+                MaterialDialog(this@MainActivity).show {
+                    title(text = entity.title)
+                    message(text = entity.message)
+                    positiveButton(text = "确定", click = object : DialogCallback {
+                        override fun invoke(p1: MaterialDialog) {
+                            p1.dismiss()
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                mViewModel.deletePushMessage(entity)
+                            }
                         }
-                    }
-                })
-                cancelable(cancelable = false)
+                    })
+                    cancelable(cancelable = false)
+                }
             }
+
         }
     }
 

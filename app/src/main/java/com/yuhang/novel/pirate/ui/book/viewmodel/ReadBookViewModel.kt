@@ -451,7 +451,7 @@ open class ReadBookViewModel : BaseViewModel() {
     fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) {
         //单独查询.懒加载.防止多线程锁死
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             delay(5 * 1000)
             chapterList.forEach {
                 val content = mDataRepository.queryBookContent(it.bookId, it.chapterId)
@@ -461,7 +461,10 @@ open class ReadBookViewModel : BaseViewModel() {
             }
 
             fragment?.chapterList = chapterList
-            fragment?.setRefreshView()
+            withContext(Dispatchers.Main){
+                fragment?.setRefreshView()
+            }
+
         }
     }
 

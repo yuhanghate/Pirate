@@ -681,7 +681,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
          * 手动刷新界面
          * 因为刷新界面有延迟,所以
          */
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             delay(200)
             withContext(Dispatchers.Main) {
                 onPageIndexListener(mViewModel.getFirstVisiblePosition(mBinding.recyclerView))
