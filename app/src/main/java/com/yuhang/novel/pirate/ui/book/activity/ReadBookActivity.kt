@@ -563,7 +563,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
             mViewModel.adapter.notifyDataSetChanged()
             return
         }
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Main) {
 
             //加载最后一页
             if (position >= mViewModel.adapter.getList().size - 2 && !mViewModel.isLoadAdapter(
@@ -578,7 +578,6 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
                             mViewModel.mBooksResult!!,
                             mViewModel.getNextPage(obj.chapterId)
                         )
-
                     )
                 }
                     .map {

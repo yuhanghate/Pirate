@@ -289,19 +289,19 @@ public class TextPagerView extends ReadBookTextView {
         // 只有finish的时候采用页码
 
         String percent = (mTextPageBean.getCurrentPage() + 1) + "/" + mTextPageBean.getMaxPage() + "页";
-        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ContextUtil.getToSp(10), y, mTipPaint);
+        canvas.drawText(percent, mDisplayWidth - getPaddingEnd() - mMarginWidthEnd - mTipPaint.measureText(percent) - ContextUtil.getDp(10), y, mTipPaint);
 
 
         /******绘制电池********/
 
-        int visibleRight = (int) ContextUtil.getToSp(25) + getPaddingStart() + mMarginWidthStart;
+        int visibleRight = ContextUtil.getDp(25) + getPaddingStart() + mMarginWidthStart;
         int visibleBottom = (int) y;
 
         int outFrameWidth = (int) mTipPaint.measureText("xxx");
         int outFrameHeight = (int) mTipPaint.getTextSize();
 
-        int polarHeight = ScreenUtils.dpToPx(6);
-        int polarWidth = ScreenUtils.dpToPx(2);
+        int polarHeight = ContextUtil.getDp(6);
+        int polarWidth = ContextUtil.getDp(2);
         int border = 1;
         int innerMargin = 1;
 
@@ -309,7 +309,7 @@ public class TextPagerView extends ReadBookTextView {
         int polarLeft = visibleRight - polarWidth;
         int polarTop = visibleBottom - (outFrameHeight + polarHeight) / 2;
         Rect polar = new Rect(polarLeft, polarTop, visibleRight,
-                polarTop + polarHeight - ScreenUtils.dpToPx(2));
+                polarTop + polarHeight - ContextUtil.getDp(2));
 
         mBatteryPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(polar, mBatteryPaint);
@@ -317,7 +317,7 @@ public class TextPagerView extends ReadBookTextView {
         //外框的制作
         int outFrameLeft = polarLeft - outFrameWidth;
         int outFrameTop = visibleBottom - outFrameHeight;
-        int outFrameBottom = visibleBottom - ScreenUtils.dpToPx(2);
+        int outFrameBottom = visibleBottom - ContextUtil.getDp(2);
         Rect outFrame = new Rect(outFrameLeft, outFrameTop, polarLeft, outFrameBottom);
 
         mBatteryPaint.setStyle(Paint.Style.STROKE);
@@ -337,10 +337,10 @@ public class TextPagerView extends ReadBookTextView {
             /******绘制当前时间********/
             //底部的字显示的位置Y
             String time = StringUtils.dateConvert(System.currentTimeMillis(), "HH:mm");
-            canvas.drawText(time, polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+            canvas.drawText(time, polarLeft + ContextUtil.getDp(5), outFrameBottom, mTipPaint);
         } else {
             /******绘制当前电量********/
-            canvas.drawText((mBatteryLevel) + "%", polarLeft + ScreenUtils.dpToPx(5), outFrameBottom, mTipPaint);
+            canvas.drawText((mBatteryLevel) + "%", polarLeft + ContextUtil.getDp(5), outFrameBottom, mTipPaint);
 
         }
 
