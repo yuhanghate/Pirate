@@ -1103,4 +1103,11 @@ class DataRepository {
     suspend fun querySexBooksEntityAll() = withContext(Dispatchers.IO) {
          getDatabase().sexBooksDao.queryAll()
     }
+
+    /**
+     * 更新 最后更新时间
+     */
+    suspend fun updateLastTime(bookid: String, lastTime: Long) {
+        getDatabase().bookInfoKSDao.updateLastTime(bookid, lastTime)
+    }
 }

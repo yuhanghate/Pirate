@@ -78,6 +78,12 @@ interface BookInfoKSDao {
     @Query("select max(lastTime) from bookinfoksentity where bookid = :bookid")
     suspend fun queryLastTime(bookid: String):Long
 
+    /**
+     * 更新 最后更新时间
+     */
+    @Query("update bookinfoksentity set lastTime = :lastTime where bookid = :bookid")
+    suspend fun updateLastTime(bookid: String, lastTime: Long)
+
 
     @Query("delete from bookinfoksentity")
     suspend fun clear()

@@ -23,6 +23,7 @@ import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.VersionResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
+import com.yuhang.novel.pirate.utils.StringUtils
 import com.yuhang.novel.pirate.utils.application
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,13 +78,13 @@ class MainViewModel : BaseViewModel() {
     /**
      * 收藏列表 看书源
      */
-    suspend fun getBookDetailsListKS()= withContext(Dispatchers.IO) {
+    suspend fun getBookDetailsListKS() = withContext(Dispatchers.IO) {
 
         if (!RxNetTool.isAvailable(application)) {
-             return@withContext emptyList()
+            return@withContext emptyList()
         }
         val list = mDataRepository.queryCollectionKS()
-         list.map {
+        list.map {
             if (it.bookStatus == "完结") {
                 return@map it
             }
@@ -97,7 +98,7 @@ class MainViewModel : BaseViewModel() {
      */
     private suspend fun updateBookInfo(obj: BookInfoKSEntity) = withContext(Dispatchers.IO) {
         val bookInfo = queryBookInfo(obj.bookid)
-         if (bookInfo == null) {
+        if (bookInfo == null) {
             //书籍信息插入本地
             insertBookInfo(obj)
             queryBookInfo(obj.bookid)!!
@@ -108,16 +109,18 @@ class MainViewModel : BaseViewModel() {
                 bookInfo.lastChapterName = obj.lastChapterName
                 mDataRepository.updateBookInfo(bookInfo)
             }
-            obj
+            if (bookInfo.lastTime != obj.lastTime) {
+                mDataRepository.updateLastTime(bookInfo.bookid, obj.lastTime)
+            }
         }
+        obj
     }
 
     /**
      * 从本地查询书籍信息
      */
-    private suspend fun queryBookInfo(bookid: String): BookInfoKSEntity? {
-        return mDataRepository.queryBookInfo(bookid = bookid)
-    }
+    private suspend fun queryBookInfo(bookid: String) =
+        mDataRepository.queryBookInfo(bookid = bookid)
 
     /**
      * 插入本地书籍信息

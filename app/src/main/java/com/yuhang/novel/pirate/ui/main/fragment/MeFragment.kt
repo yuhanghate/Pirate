@@ -154,7 +154,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     }
                 }
 
-            flow<UserEntity?> { mViewModel.getUserInfo() }
+            flow { emit(mViewModel.getUserInfo()) }
                 .catch {
                     onClick()
                     mBinding.btnLogin.text = "立即登录"
@@ -162,20 +162,17 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     Logger.e(it.message?:"")
                 }
                 .collect {
-                    withContext(Dispatchers.Main){
-                        if (it == null) {
-                            onClick()
-                            mBinding.btnLogin.text = "立即登录"
-                            mBinding.btnLogin.textSize = 24f
-                            mBinding.loginDescTv.visibility = View.VISIBLE
-                        } else {
-                            mBinding.btnLogin.text = "随友:${it?.username}"
-                            mBinding.loginDescTv.visibility = View.GONE
-                            mBinding.btnLogin.textSize = 18f
-                            mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
-                        }
+                    if (it == null) {
+                        onClick()
+                        mBinding.btnLogin.text = "立即登录"
+                        mBinding.btnLogin.textSize = 24f
+                        mBinding.loginDescTv.visibility = View.VISIBLE
+                    } else {
+                        mBinding.btnLogin.text = "随友:${it?.username}"
+                        mBinding.loginDescTv.visibility = View.GONE
+                        mBinding.btnLogin.textSize = 18f
+                        mBinding.avatarIv.setImageResource(R.drawable.ic_default_login_avatar)
                     }
-
                 }
         }
 
