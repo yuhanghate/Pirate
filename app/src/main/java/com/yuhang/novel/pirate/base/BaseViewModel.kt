@@ -5,9 +5,14 @@ import androidx.lifecycle.ViewModel
 import com.umeng.analytics.MobclickAgent
 import com.yuhang.novel.pirate.app.PirateApp
 import com.yuhang.novel.pirate.repository.network.convert.ConvertRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
 import org.greenrobot.eventbus.EventBus
 
 open class BaseViewModel : ViewModel() {
+
+    val catch = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler got $exception")
+    }
 
     val mDataRepository by lazy { PirateApp.getInstance().getDataRepository() }
 

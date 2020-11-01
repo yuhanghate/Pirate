@@ -25,11 +25,10 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.main.adapter.MainAdapter
 import com.yuhang.novel.pirate.utils.StringUtils
 import com.yuhang.novel.pirate.utils.application
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class MainViewModel : BaseViewModel() {
+
 
     /**
      * 更新检测时间3天
@@ -191,7 +190,11 @@ class MainViewModel : BaseViewModel() {
      */
     fun updateStickTime(bookid: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            mDataRepository.updateBookInfoStickTime(bookid)
+            try {
+                mDataRepository.updateBookInfoStickTime(bookid)
+            } catch (e: Exception) {
+            }
+
         }
     }
 
@@ -329,14 +332,6 @@ class MainViewModel : BaseViewModel() {
         return false
     }
 
-    /**
-     * 快读分类预加载
-     */
-    suspend fun preloadCategory() {
-        val list = mDataRepository.getCategoryList()
-        val toList = list.map { it.niceCategoryKDEntity() }.toList()
-        mDataRepository.insertCategoryList(toList)
-    }
 
     /**
      * 加载配置

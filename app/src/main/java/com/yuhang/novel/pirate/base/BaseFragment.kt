@@ -20,11 +20,15 @@ import com.bumptech.glide.Glide
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.yuhang.novel.pirate.R
 import com.yuhang.novel.pirate.widget.TopSmoothScroller
+import kotlinx.coroutines.CoroutineExceptionHandler
 import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
 
 abstract class BaseFragment<D : ViewBinding, VM : BaseViewModel> : SupportFragment() {
+    val catch = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler got $exception")
+    }
 
     var mActivity: BaseActivity<*, *>? = null
 

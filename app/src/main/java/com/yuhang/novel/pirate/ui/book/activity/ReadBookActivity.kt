@@ -27,7 +27,6 @@ import com.yuhang.novel.pirate.extension.niceToast
 import com.yuhang.novel.pirate.listener.OnClickChapterItemListener
 import com.yuhang.novel.pirate.listener.OnPageIndexListener
 import com.yuhang.novel.pirate.listener.OnRefreshLoadMoreListener
-import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.BooksResult
 import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.ui.book.dialog.BookCollectionDialog
@@ -42,7 +41,6 @@ import com.yuhang.novel.pirate.widget.ReadBookTextView
 import com.yuhang.novel.pirate.widget.ReadBookView
 import com.yuhang.novel.pirate.widget.WrapContentLinearLayoutManager
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -488,14 +486,22 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
 
         lifecycleScope.launch(Dispatchers.Main) {
             flow<Unit> {
-                val lastBookContent =
-                    mViewModel.getLastBookContent(mViewModel.mBooksResult!!, isCache)
-                val list = mViewModel.getTxtPageList(mBinding.textPage, lastBookContent)
+                val lastBookContent = mViewModel.getLastBookContent(
+                    mViewModel.mBooksResult!!,
+                    isCache
+                )
+                val list =
+                    mViewModel.getTxtPageList(
+                        mBinding.textPage,
+                        lastBookContent
+                    )
+
                 mViewModel.updateReadHistory(
                     lastBookContent.chapterId,
                     lastBookContent.chapterName,
                     mViewModel.mBooksResult!!
                 )
+
 
                 mViewModel.adapter.setRefersh(list)
                 mBinding.recyclerView.scrollToPosition(lastBookContent.lastContentPosition)
@@ -600,7 +606,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
                         //刷新有延迟
                         Handler(Looper.getMainLooper()).postDelayed({
                             onPageIndexListener(mViewModel.getLastVisiblePosition(mBinding.recyclerView))
-                        },200)
+                        }, 200)
                     }
             }
 
@@ -673,7 +679,7 @@ open class ReadBookActivity : BaseActivity<ActivityReadBookBinding, ReadBookView
          */
         Handler(Looper.getMainLooper()).postDelayed({
             onPageIndexListener(mViewModel.getFirstVisiblePosition(mBinding.recyclerView))
-        },200)
+        }, 200)
     }
 
 

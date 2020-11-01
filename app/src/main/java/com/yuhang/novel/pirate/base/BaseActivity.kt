@@ -25,6 +25,7 @@ import com.yuhang.novel.pirate.repository.preferences.PreferenceUtil
 import com.yuhang.novel.pirate.utils.ThemeHelper
 import com.yuhang.novel.pirate.viewbinding.ActivityViewBinder
 import com.yuhang.novel.pirate.widget.TopSmoothScroller
+import kotlinx.coroutines.CoroutineExceptionHandler
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.ParameterizedType
@@ -35,6 +36,10 @@ abstract class BaseActivity<D : ViewBinding, VM : BaseViewModel> : SupportActivi
     lateinit var mViewModel: VM
 
     lateinit var mProgressbar: ProgressDialog
+
+    val catch = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler got $exception")
+    }
 
     companion object {
 

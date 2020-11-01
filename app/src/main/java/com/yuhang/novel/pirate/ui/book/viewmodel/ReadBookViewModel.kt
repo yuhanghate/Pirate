@@ -19,7 +19,6 @@ import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_FONT
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_NAME
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_READ_TIME
 import com.yuhang.novel.pirate.constant.UMConstant.TypeBook.BOOK_READ_TIME_STAMP
-import com.yuhang.novel.pirate.extension.niceDp2px
 import com.yuhang.novel.pirate.repository.database.entity.BookChapterKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookContentKSEntity
 import com.yuhang.novel.pirate.repository.database.entity.BookReadHistoryEntity
@@ -33,11 +32,11 @@ import com.yuhang.novel.pirate.widget.pageview.TextPagerView
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.Handler
-import kotlin.concurrent.thread
 
 
 open class ReadBookViewModel : BaseViewModel() {
+
+
 
     /**
      * 计算加载次数
@@ -145,11 +144,11 @@ open class ReadBookViewModel : BaseViewModel() {
      * 后台操作,不影响前台显示
      */
     @SuppressLint("CheckResult")
-    suspend fun preloadBookContents(obj: BooksResult) = withContext(Dispatchers.IO) {
+    suspend fun preloadBookContents(obj: BooksResult) {
         //延迟10秒,防止加载死锁
 
         android.os.Handler(Looper.getMainLooper()).postDelayed({
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.async(Dispatchers.IO + catch) {
                 //查询上次章节内容
                 val history =
                     mDataRepository.queryBookReadHistoryEntity(mBooksResult?.getBookid()!!)
@@ -161,7 +160,7 @@ open class ReadBookViewModel : BaseViewModel() {
                 val indexOf = chapterMap.keys.indexOf(history.chapterid)
 
                 if (indexOf == -1) {
-                    return@launch
+                    return@async
                 }
                 val list = (indexOf until chapterList.size).map { chapterList[it] }.toList()
 
@@ -228,7 +227,7 @@ open class ReadBookViewModel : BaseViewModel() {
     ) = withContext(Dispatchers.IO) {
 
         val margin = 20f.dp.toInt()
-        withContext(Dispatchers.Main){
+        withContext(Dispatchers.Main) {
             pagerView.textSize = BookConstant.getPageTextSize()
         }
 
@@ -373,7 +372,7 @@ open class ReadBookViewModel : BaseViewModel() {
      */
     @SuppressLint("SimpleDateFormat")
     fun postUM() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.async(Dispatchers.IO) {
             val info = mDataRepository.queryBookInfo(mBooksResult?.getBookid()!!)
             val time = Date()
             val book = HashMap<String, Any>()
@@ -446,11 +445,11 @@ open class ReadBookViewModel : BaseViewModel() {
      * 后台刷新状态
      * 不跟前台UI抢资源
      */
-    suspend fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) = withContext(Dispatchers.IO) {
+    fun setCacheChapter(fragment: DrawerLayoutLeftFragment?) {
         //单独查询.懒加载.防止多线程锁死
 
         android.os.Handler(Looper.getMainLooper()).postDelayed({
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.async(Dispatchers.IO + catch) {
                 chapterList.forEach {
                     val content = mDataRepository.queryBookContent(it.bookId, it.chapterId)
                     if (content != null) it.hasContent = 1 else it.hasContent = 0
@@ -463,6 +462,7 @@ open class ReadBookViewModel : BaseViewModel() {
                     fragment?.setRefreshView()
                 }
             }
+
         }, 5 * 1000)
 
 

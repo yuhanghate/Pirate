@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.ui.main.fragment
 
 import android.annotation.SuppressLint
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -30,12 +31,14 @@ import com.yuhang.novel.pirate.ui.main.dialog.MainDialog
 import com.yuhang.novel.pirate.ui.main.viewmodel.MainViewModel
 import com.yuhang.novel.pirate.ui.search.activity.SearchActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -216,7 +219,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             mBinding.refreshLayout.finishLoadMore()
         }, 1500)
     }
@@ -240,12 +243,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
     /**
      * 从本地数据库加载书架数据
      */
-    fun netLocalData() {
-        lifecycleScope.launch {
+    fun netLocalData() =
+        lifecycleScope.launch(Dispatchers.IO + catch) {
             flow { emit(mViewModel.getBookInfoListLocal()) }
                 .catch {
-                    mViewModel.adapter.setRefersh(arrayListOf())
-                    mBinding.refreshLayout.finishRefresh(false)
+                    withContext(Dispatchers.Main) {
+                        mViewModel.adapter.setRefersh(arrayListOf())
+                        mBinding.refreshLayout.finishRefresh(false)
+                    }
                 }
                 .onCompletion { mBinding.loading.showContent() }
                 .collect {
@@ -254,7 +259,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                         mBinding.refreshLayout.setEnableLoadMore(false)
 
                         val list = arrayListOf<BookInfoKSEntity>()
-                        it.filterNotNull().forEach { list.add(it) }
+                        it.forEach { list.add(it) }
                         mViewModel.adapter.getList().clear()
                         mViewModel.adapter.setRefersh(list)
                         initEmptyView()
@@ -263,7 +268,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                 }
         }
 
-    }
 
     /**
      * 去搜索书
@@ -294,8 +298,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainViewModel>(), OnRefre
                     mViewModel.adapter.setRefersh(it)
                     //新标题的章节进行刷新
                     mViewModel.updateChapterToDB()
+
                     netLocalData()
-                    PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
+
+                    withContext(Dispatchers.IO){
+                        PreferenceUtil.commitBoolean(BookConstant.IS_FIRST_INSTALL, false)
+                    }
 
                 }
         }

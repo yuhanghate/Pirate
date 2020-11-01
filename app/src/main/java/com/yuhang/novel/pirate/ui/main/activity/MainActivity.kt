@@ -38,21 +38,20 @@ import com.yuhang.novel.pirate.utils.AppManagerUtils
 import com.yuhang.novel.pirate.utils.DownloadUtil
 import com.yuhang.novel.pirate.utils.evaluate
 import com.yuhang.novel.pirate.utils.getColorCompat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView
+import okhttp3.internal.wait
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
+import kotlin.concurrent.thread
 
 class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     var binding: DialogVersionUpdateBinding? = null
@@ -143,17 +142,6 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     }
 
 
-    /**
-     * 预加载分类数据
-     */
-    private fun initCategory() {
-       lifecycleScope.launch {
-           flow { emit(mViewModel.preloadCategory()) }
-               .catch { Logger.e(it.message?:"") }
-               .collect {  }
-
-       }
-    }
 
     /**
      * 加载配置文件
@@ -185,9 +173,12 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
     @SuppressLint("CheckResult")
     private fun initUpdateChapterList() {
         Handler(Looper.getMainLooper()).postDelayed({
-            lifecycleScope.launch {
-                mViewModel.updateChapterToDB()
+            thread {
+                lifecycleScope.launch(catch) {
+                    mViewModel.updateChapterToDB()
+                }
             }
+
         },60 * 5 * 1000)
     }
 
@@ -201,9 +192,12 @@ class MainActivity : BaseActivity<ActivityMain2Binding, MainViewModel>() {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(obj: UpdateChapterEvent) {
-        lifecycleScope.launch {
-            mViewModel.updateChapterToDB()
+        thread {
+            lifecycleScope.launch(catch) {
+                mViewModel.updateChapterToDB()
+            }
         }
+
     }
 
 
