@@ -238,7 +238,7 @@ open class ReadBookViewModel : BaseViewModel() {
         pagerView
             .setTitle(obj.chapterName)
             .setMargin(margin, margin, ImmersionBar.getStatusBarHeight(mActivity!!), 0)
-            .setContent(obj.content)
+            .setContent(obj.content.replace("<br/>",System.getProperty("line.separator")))
             .setPageType(getPageType())
             .build2().map {
                 BookContentKSEntity().apply {
