@@ -3,6 +3,7 @@ package com.yuhang.novel.pirate.repository.api
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.*
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -52,6 +53,7 @@ interface KanShuNetApi {
     /**
      * 书本章节目录
      */
+    @Headers("Content-Type: application/json")
     @GET("https://contentxs.pigqq.com/BookFiles/Html/{dirId}/{bookId}/index.html")
     suspend fun getBookChapterList(
         @Path("dirId") dirId: Int, @Path(

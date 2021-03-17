@@ -19,15 +19,25 @@ class TokenInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
 
+//        val originalHttpUrl = original.newBuilder()
+//            .header("token", PirateApp.getInstance().getToken())
+//            .header("X-Device-Id", deviceId)
+//            .header("User-Agent", agent)
+//            .build()
+//        return chain.proceed(originalHttpUrl)
+
         val originalHttpUrl = original.newBuilder()
             .header("token", PirateApp.getInstance().getToken())
-            .header("X-Device-Id", deviceId)
+            .header("Content-Type", "application/json")
             .header("User-Agent", agent)
             .build()
+        return chain.proceed(originalHttpUrl)
+
+//        return chain.proceed(original)
 
         // Request customization: add request headers
 
-        return chain.proceed(originalHttpUrl)
+
     }
 
 }
