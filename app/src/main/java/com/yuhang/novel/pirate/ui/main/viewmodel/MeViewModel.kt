@@ -78,7 +78,7 @@ class MeViewModel : BaseViewModel() {
     /**
      * 查询配置
      */
-    suspend fun queryConfig(): ConfigEntity {
+    suspend fun queryConfig(): ConfigEntity? {
         return mDataRepository.queryConfig()
     }
 

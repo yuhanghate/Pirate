@@ -106,12 +106,8 @@ class BookDetailsViewModel : BaseViewModel() {
      */
     suspend fun isVip(): Boolean {
         //是否开启会员模式
-        if (!mDataRepository.queryConfig().isOpenVip) {
-            return true
-        }
-        //不是会员
-        if (mDataRepository.getLastUser()?.isVip == null) {
-            return false
+        mDataRepository.queryConfig()?.let {
+            return it.isOpenVip
         }
         return mDataRepository.getLastUser()?.isVip!!
     }

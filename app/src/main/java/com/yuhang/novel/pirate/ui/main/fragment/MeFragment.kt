@@ -144,15 +144,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
         lifecycleScope.launch {
             //控制游戏显示或隐藏
-            flow { emit(mViewModel.queryConfig()) }
-                .catch { Logger.e(it.message?:"") }
-                .collect {
-                    if (it.showGameRecommended) {
-                        mBinding.gamesCl.visibility = View.VISIBLE
-                    } else {
-                        mBinding.gamesCl.visibility = View.GONE
-                    }
-                }
+            mBinding.gamesCl.visibility = View.GONE
 
             flow { emit(mViewModel.getUserInfo()) }
                 .catch {

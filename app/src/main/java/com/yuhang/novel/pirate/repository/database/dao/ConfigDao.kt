@@ -12,5 +12,5 @@ interface ConfigDao {
     suspend fun insert(obj:ConfigEntity)
 
     @Query("select * from configentity order by id desc limit 1")
-    suspend fun query():ConfigEntity
+    suspend fun query():ConfigEntity?
 }
