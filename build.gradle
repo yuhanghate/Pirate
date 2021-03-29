@@ -7,6 +7,7 @@ buildscript {
         jcenter()
         maven { url 'https://jitpack.io' }
         maven { url 'https://dl.bintray.com/qichuan/maven/' }
+        maven { url "https://dl.bintray.com/thelasterstar/maven/" }
         maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://github.com/psiegman/mvn-repo/raw/master/releases' }
@@ -32,6 +33,7 @@ allprojects {
         maven { url 'https://dl.bintray.com/qichuan/maven/' }
         maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://dl.bintray.com/thelasterstar/maven/" }
         maven { url 'https://github.com/psiegman/mvn-repo/raw/master/releases' }
         maven { url 'http://www.idescout.com/maven/repo/'}
         mavenCentral()

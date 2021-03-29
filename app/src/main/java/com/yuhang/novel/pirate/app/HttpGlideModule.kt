@@ -11,15 +11,15 @@ import com.yuhang.novel.pirate.repository.network.Http
 import java.io.InputStream
 
 
-@GlideModule
-class HttpGlideModule: AppGlideModule() {
-
-    override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        // 注意这里用我们刚才现有的Client实例传入即可
-        registry.replace(
-            GlideUrl::class.java,
-            InputStream::class.java,
-            OkHttpUrlLoader.Factory(Http.okGlide)
-        )
-    }
-}
+//@GlideModule
+//class HttpGlideModule: AppGlideModule() {
+//
+//    override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
+//        // 注意这里用我们刚才现有的Client实例传入即可
+//        registry.replace(
+//            GlideUrl::class.java,
+//            InputStream::class.java,
+//            OkHttpUrlLoader.Factory(Http.okGlide)
+//        )
+//    }
+//}

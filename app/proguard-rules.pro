@@ -352,3 +352,6 @@ public static final int *;
 -keep public class **.R$*{
    public static final int *;
 }
+-keepclassmembers class * implements javax.net.ssl.SSLSocketFactory {
+    private final javax.net.ssl.SSLSocketFactory delegate;
+}

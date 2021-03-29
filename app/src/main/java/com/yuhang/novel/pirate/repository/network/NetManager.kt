@@ -1,5 +1,9 @@
 package com.yuhang.novel.pirate.repository.network
 
+import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.yuhang.novel.pirate.BuildConfig
 import com.yuhang.novel.pirate.app.PirateApp
@@ -11,19 +15,20 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.tls.HandshakeCertificates
+import okhttp3.tls.HeldCertificate
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
+import java.net.InetAddress
 import java.net.Proxy
-import java.security.SecureRandom
+import java.net.Socket
+import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.X509TrustManager
+import javax.net.ssl.*
 
 
 /**
@@ -101,6 +106,15 @@ class NetManager {
 //    }
 
     private fun createOkhttp(): OkHttpClient {
+//        val localhost: String = InetAddress.getByName("localhost").getCanonicalHostName()
+//        val localhostCertificate: HeldCertificate = HeldCertificate.Builder()
+//            .addSubjectAlternativeName(localhost)
+//            .build()
+//
+//        val clientCertificates: HandshakeCertificates = HandshakeCertificates.Builder()
+//            .addTrustedCertificate(localhostCertificate.certificate)
+//            .build()
+
         val builder = OkHttpClient().newBuilder()
             .protocols(Collections.singletonList(Protocol.HTTP_1_1))
             //缓存1g
@@ -113,6 +127,9 @@ class NetManager {
             .writeTimeout(15L, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+//            .sslSocketFactory(clientCertificates.sslSocketFactory(),
+//                clientCertificates.trustManager
+//            )
             .sslSocketFactory(
                 SSLSocketClient.getSSLSocketFactory(),
                 SSLSocketClient.createTrustAllManager()
@@ -122,6 +139,11 @@ class NetManager {
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             )
 
+//        //忽略ssl证书,android10及以上的版本就不用了
+//        if (Build.VERSION.SDK_INT < 29) {
+//            builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(),SSLSocketClient.createTrustAllManager())
+//        }
+
         if (!BuildConfig.DEBUG) {
             //不能代理
             return builder.proxy(Proxy.NO_PROXY).build()
@@ -129,38 +151,5 @@ class NetManager {
         return builder.build()
     }
 
-    private fun getHostnameVerifier(): HostnameVerifier {
-        return HostnameVerifier { _, _ -> true }
-    }
 
-
-    private fun createCertificates(): SSLSocketFactory? {
-        var sSLSocketFactory: SSLSocketFactory? = null
-
-        val manager = object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-
-            }
-
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-
-            }
-
-            override fun getAcceptedIssuers(): Array<X509Certificate?> {
-                return arrayOfNulls(0)
-//                return X509Certificate[0]
-            }
-        }
-
-        try {
-            var sc = SSLContext.getInstance("TLS")
-            val array = arrayOf(manager)
-            sc.init(null, array, SecureRandom())
-            sSLSocketFactory = sc.socketFactory
-        } catch (e: Exception) {
-        }
-
-        return sSLSocketFactory
-
-    }
 }
