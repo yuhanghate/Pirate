@@ -16,8 +16,6 @@ object Http : AbstractHttp() {
 
     override val header: Map<String, String>
         get() = mapOf("Accept-Language" to "zh-cn,zh;q=0.8",
-            "X-Device-Id" to RxDeviceTool.getAndroidId(
-                application),
         "User-Agent" to System.getProperty("http.agent"))
 
     override val convertersFactories: Iterable<Converter.Factory> = listOf(

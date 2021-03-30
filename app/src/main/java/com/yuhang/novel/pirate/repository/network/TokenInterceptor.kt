@@ -27,11 +27,14 @@ class TokenInterceptor : Interceptor {
 //        return chain.proceed(originalHttpUrl)
 
         val originalHttpUrl = original.newBuilder()
-            .header("token", PirateApp.getInstance().getToken())
             .header("Content-Type", "application/json")
             .header("User-Agent", agent)
-            .build()
-        return chain.proceed(originalHttpUrl)
+
+        if (original.url.host == "www.suibiankanshu.com") {
+            originalHttpUrl.header("token", PirateApp.getInstance().getToken())
+
+        }
+        return chain.proceed(originalHttpUrl.build())
 
 //        return chain.proceed(original)
 

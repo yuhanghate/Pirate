@@ -11,7 +11,11 @@ import com.yuhang.novel.pirate.extension.niceDefaultImageVertical
 import com.yuhang.novel.pirate.listener.OnClickMoreRankingListListener
 import com.yuhang.novel.pirate.repository.network.data.kanshu.result.BooksKSResult
 
-class ItemMoreRankingListVH(parent:ViewGroup):BaseViewHolder<BooksKSResult, ItemMoreRankingListBinding>(parent, R.layout.item_more_ranking_list) {
+class ItemMoreRankingListVH(parent: ViewGroup) :
+    BaseViewHolder<BooksKSResult, ItemMoreRankingListBinding>(
+        parent,
+        R.layout.item_more_ranking_list
+    ) {
 
     override fun onBindViewHolder(obj: BooksKSResult, position: Int) {
         super.onBindViewHolder(obj, position)
@@ -28,6 +32,11 @@ class ItemMoreRankingListVH(parent:ViewGroup):BaseViewHolder<BooksKSResult, Item
             .transition(niceCrossFade())
             .into(mBinding.coverIv)
 
-        mBinding.root.clickWithTrigger { getListener<OnClickMoreRankingListListener>()?.onClickMoreRankingListListener(obj, position) }
+        mBinding.root.clickWithTrigger {
+            getListener<OnClickMoreRankingListListener>()?.onClickMoreRankingListListener(
+                obj,
+                position
+            )
+        }
     }
 }
