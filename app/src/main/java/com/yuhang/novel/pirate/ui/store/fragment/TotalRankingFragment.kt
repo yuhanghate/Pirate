@@ -86,7 +86,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
                         mViewModel.adapter.clear()
                         val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@TotalRankingFragment)
                             .initData(it)
                         adapters.add(adapter.toAdapter())
                         mViewModel.adapter.addAdapters(adapters)
@@ -131,7 +131,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
                         mViewModel.adapter.clear()
                         val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@TotalRankingFragment)
                             .initData(it.data.bookList)
                         adapters.add(adapter.toAdapter())
                         mViewModel.adapter.addAdapters(adapters)
@@ -164,7 +164,7 @@ class TotalRankingFragment : BaseFragment<FragmentTotalRankingBinding, TotalRank
                             mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                         }
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@TotalRankingFragment)
                             .initData(it.data.bookList)
                         mViewModel.adapter.addAdapter(adapter.toAdapter())
                     }

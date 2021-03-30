@@ -56,7 +56,7 @@ class CategoryManFragment : BaseFragment<FragmentCategoryManBinding, CategoryMan
                 .catch { Logger.e(it.message ?: "") }
                 .collect {
                     val adapter = CategoryAdapter()
-                        .setListener(this)
+                        .setListener(this@CategoryManFragment)
                         .initData(it)
                     mViewModel.list.addAll(it)
                     mViewModel.adapter.addAdapter(adapter)

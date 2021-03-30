@@ -55,7 +55,7 @@ class CategoryPressFragment:BaseFragment<FragmentCategoryPressBinding, CategoryP
                 .catch { Logger.e(it.message?:"") }
                 .collect {
                     val adapter = CategoryAdapter()
-                        .setListener(this)
+                        .setListener(this@CategoryPressFragment)
                         .initData(it)
                     mViewModel.list.addAll(it)
                     mViewModel.adapter.addAdapter(adapter)

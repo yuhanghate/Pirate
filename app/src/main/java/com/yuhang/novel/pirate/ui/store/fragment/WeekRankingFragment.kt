@@ -79,7 +79,7 @@ class WeekRankingFragment : BaseFragment<FragmentWeekRankingBinding, WeekRanking
                         mViewModel.adapter.clear()
                         val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@WeekRankingFragment)
                             .initData(it)
                         adapters.add(adapter.toAdapter())
                         mViewModel.adapter.addAdapters(adapters)
@@ -128,7 +128,7 @@ class WeekRankingFragment : BaseFragment<FragmentWeekRankingBinding, WeekRanking
                         mViewModel.adapter.clear()
                         val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@WeekRankingFragment)
                             .initData(it.data.bookList)
                         adapters.add(adapter.toAdapter())
                         mViewModel.adapter.addAdapters(adapters)
@@ -161,7 +161,7 @@ class WeekRankingFragment : BaseFragment<FragmentWeekRankingBinding, WeekRanking
                             mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
                         }
                         val adapter = MoreRankingListAdapter()
-                            .setListener(this)
+                            .setListener(this@WeekRankingFragment)
                             .initData(it.data.bookList)
                         mViewModel.adapter.addAdapter(adapter.toAdapter())
                     }

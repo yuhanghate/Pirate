@@ -70,7 +70,7 @@ class MonthRankingFragment:BaseFragment<FragmentMonthRankingBinding, MonthRankin
                     val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
 
                     val adapter = MoreRankingListAdapter()
-                        .setListener(this)
+                        .setListener(this@MonthRankingFragment)
                         .initData(it)
 
                     adapters.add(adapter.toAdapter())
@@ -113,7 +113,7 @@ class MonthRankingFragment:BaseFragment<FragmentMonthRankingBinding, MonthRankin
                     val adapters = arrayListOf<DelegateAdapter.Adapter<RecyclerView.ViewHolder>>()
 
                     val adapter = MoreRankingListAdapter()
-                        .setListener(this)
+                        .setListener(this@MonthRankingFragment)
                         .initData(it.data.bookList)
 
                     adapters.add(adapter.toAdapter())
@@ -137,7 +137,7 @@ class MonthRankingFragment:BaseFragment<FragmentMonthRankingBinding, MonthRankin
                     }
 
                     val adapter = MoreRankingListAdapter()
-                        .setListener(this)
+                        .setListener(this@MonthRankingFragment)
                         .initData(it.data.bookList)
 
                     mViewModel.adapter.addAdapter(adapter.toAdapter())

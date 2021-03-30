@@ -101,7 +101,7 @@ class CategoryDetailFragment :
                 .collect {
                     mViewModel.adapter.clear()
                     val adapter = CategoryDetailAdapter()
-                        .setListener(this)
+                        .setListener(this@CategoryDetailFragment)
                         .initData(it.books)
 
                     mViewModel.list.addAll(it.books)

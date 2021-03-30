@@ -55,7 +55,7 @@ class CategoryLadyFragment : BaseFragment<FragmentCategoryLadyBinding, CategoryL
                 .catch { Logger.e(it.message ?: "") }
                 .collect {
                     val adapter = CategoryAdapter()
-                        .setListener(this)
+                        .setListener(this@CategoryLadyFragment)
                         .initData(it)
                     mViewModel.list.addAll(it)
                     mViewModel.adapter.addAdapter(adapter)
