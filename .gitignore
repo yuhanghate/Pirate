@@ -84,3 +84,4 @@ lint/tmp/
 .idea
 release
 /.idea/
+app/proguardMapping.txt
