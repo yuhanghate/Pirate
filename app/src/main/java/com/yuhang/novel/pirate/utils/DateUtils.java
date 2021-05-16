@@ -157,7 +157,7 @@ public class DateUtils {
     }
 
     public static Date getStr2Date(String date) {
-        if (date.contains("PM")) {
+        if (date.contains("/")) {
             return TimeUtils.string2Date(date, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
         }
         if (date.split(":").length == 2) {
