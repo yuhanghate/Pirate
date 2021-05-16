@@ -14,9 +14,6 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import com.scwang.smartrefresh.header.MaterialHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.tamsiree.rxkit.RxTool
-import com.tamsiree.rxkit.TLog
-import com.tamsiree.rxkit.crash.TCrashProfile
 import com.tamsiree.rxkit.crash.TCrashTool
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
@@ -77,6 +74,7 @@ open class PirateApp : Application(), Application.ActivityLifecycleCallbacks {
     /**
      * 初始化Application
      */
+    @SuppressLint("RestrictedApi")
     private fun initAppcation() {
         PreferenceUtil.init(this)
         pageType =

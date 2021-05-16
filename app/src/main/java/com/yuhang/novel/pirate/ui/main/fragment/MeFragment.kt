@@ -67,8 +67,10 @@ import java.io.File
 @Suppress("IMPLICIT_CAST_TO_ANY")
 class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
 
-    private val PERMISSION_VERSION_UPDATE = arrayOf(Manifest.permission.INTERNET,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val PERMISSION_VERSION_UPDATE = arrayOf(
+        Manifest.permission.INTERNET,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
 
     /**
@@ -151,7 +153,7 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                     onClick()
                     mBinding.btnLogin.text = "立即登录"
                     mBinding.btnLogin.textSize = 24f
-                    Logger.e(it.message?:"")
+                    Logger.e(it.message ?: "")
                 }
                 .collect {
                     if (it == null) {
@@ -477,8 +479,12 @@ class MeFragment : BaseFragment<FragmentMeBinding, MeViewModel>() {
                 emit(Unit)
             }
                 .onStart { showProgressbar(message = "正在同步大量数据\n请不要切换出APP并耐心等待..") }
-                .onCompletion { closeProgressbar() }
-                .catch { showUpdateCollectionDialog() }
+                .onCompletion { cause ->
+                    closeProgressbar()
+                }
+                .catch {
+                    showUpdateCollectionDialog()
+                }
                 .collect {
                     EventBus.getDefault().postSticky(LoginEvent())
                 }

@@ -1,5 +1,6 @@
 package com.yuhang.novel.pirate.extension
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.yuhang.novel.pirate.constant.BookConstant
@@ -10,7 +11,9 @@ import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.*
 import com.yuhang.novel.pirate.repository.network.data.kuaidu.result.BookCategoryDataResult
 import com.yuhang.novel.pirate.repository.network.data.pirate.result.*
 import com.yuhang.novel.pirate.ui.search.result.SearchResult
+import com.yuhang.novel.pirate.utils.DateUtils
 import org.joda.time.DateTime
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -78,9 +81,10 @@ fun ContentDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
 /**
  * 看书神器 书籍详情Bean转成本地数据库
  */
+@SuppressLint("SimpleDateFormat")
 fun BookDetailsDataResult.niceBookInfoKSEntity(): BookInfoKSEntity {
     val obj = this
-    val date = Date(obj.LastTime).time
+    val date = DateUtils.getStr2Date(obj.LastTime).time
     return BookInfoKSEntity().apply {
         this.bookid = obj.Id
         this.cover = obj.Img

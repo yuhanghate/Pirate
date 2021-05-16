@@ -13,5 +13,5 @@ data class BookDetailsDataResult(val SameUserBooks: List<BooksKSResult>?,
                                  val CName: String = "",
                                  val LastChapterId: String = "",
                                  val SameCategoryBooks: List<BooksKSResult?>,
-                                 val LastTime: String = "",
+                                 var LastTime: String = "",
                                  val CId: Int = 0)

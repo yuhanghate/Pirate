@@ -2,6 +2,7 @@ package com.yuhang.novel.pirate.utils;
 
 import android.annotation.SuppressLint;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -153,5 +154,19 @@ public class DateUtils {
         }
 
         return ret;
+    }
+
+    public static Date getStr2Date(String date) {
+        if (date.contains("PM")) {
+            return TimeUtils.string2Date(date, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
+        }
+        if (date.split(":").length == 2) {
+            return TimeUtils.string2Date(date, new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+        }
+        if (date.split(":").length == 3) {
+            return TimeUtils.string2Date(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        return null;
     }
 }
